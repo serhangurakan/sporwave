@@ -1,6 +1,6 @@
 # SPORWAVE — Proje Master Dokümanı
 
-> Bu doküman, Spor APP projesinin tüm kararlarını, sayfa haritasını, wireframe detaylarını ve teknik gereksinimlerini içerir.
+> Bu doküman, SPORWAVE projesinin tüm kararlarını, sayfa haritasını, wireframe detaylarını ve teknik gereksinimlerini içerir.
 > VS Code'daki Claude bu dosyayı okuyarak projenin tam bağlamını anlayabilir.
 > Son güncelleme: 22 Şubat 2026
 
@@ -8,7 +8,7 @@
 
 ## 1. PROJE ÖZETİ
 
-**Uygulama Adı:** Sporwave (çalışma adı, değişebilir)
+**Uygulama Adı:** SPORWAVE
 **Amaç:** İnsanların spor yapmak için hızlıca eşleşmesini sağlayan sosyal platform
 **Hedef Pazar:** Türkiye (İstanbul'dan başlayarak), ileride global
 **Platform:** Mobil (iOS + Android) + Web Admin Paneli
@@ -51,7 +51,7 @@
 
 ### Üst Navbar (her sayfada)
 ```
-[ SporWave (logo) ]        [🔔 Bildirimler]  [ 💬 Mesajlar ]  [ ☰ Menü ]
+[ SPORWAVE (logo) ]        [🔔 Bildirimler]  [ 💬 Mesajlar ]  [ ☰ Menü ]
 ```
 
 ### Alt Footer Tab Bar (ana sayfalarda)
@@ -120,6 +120,10 @@
   - **"Popüler Eğitmenler"** bölümü: Yüksek puanlı dersler — eğitmen/tesis adı, rating yıldızı, spor dalı, fiyat
 - Her bölüm başlığının yanında **"Tümünü Gör"** linki (ilgili modüle yönlendirir)
 - Kart tasarımı mevcut modül kartlarıyla tutarlı (S07, S05, S12 stilleri)
+- **Feed öncelik sırası:**
+  - 1) Arkadaşların oluşturduğu aktiviteler
+  - 2) Arkadaşların katıldığı aktiviteler
+  - 3) Diğer yakındaki içerikler
 - **Amaç:** Uygulamanın growth engine'i — yeni kullanıcıyı içerikle hızla buluşturur, tüm modülleri tek ekranda tanıtır
 
 ---
@@ -178,7 +182,7 @@
   - **Geçmiş aktiviteler:** Aynı gizlilik kuralları, katılımcı listesi salt okunur şekilde görünür
 - **Butonlar** (yan yana):
   - "Katıl (X kişilik yer var)" (birincil) → Deneyim seviyesi seçimi (bottom sheet)
-  - "Mesaj Gönder" (ikincil) → Organizatörle 1-1 mesajlaşma sayfasına git (login gerekli)
+  - "Mesaj Gönder" (ikincil) → Organizatörle 1-1 mesajlaşma sayfasına git: **Sohbet (S19)** (login gerekli)
 - ⋮ Menü: Raporla / Engelle (login gerekli)
 - Back butonu
 
@@ -265,7 +269,7 @@
   - Fiyat (büyük, accent renk)
 - Konum (harita widget)
 - "Rezervasyon Yap" butonu (birincil)
-- "Mesaj Gönder" butonu (ikincil) → tesis ile mesajlaşma
+- "Mesaj Gönder" butonu (ikincil) → tesis ile mesajlaşma: **Sohbet (S19)**
 - Back butonu
 
 #### S14: Ders Rezervasyon Sayfası (Login gerekli)
@@ -317,7 +321,12 @@
 - **Rozetler** (kazanılanlar)
 - Favori sporlar
 - Toplam Maç sayısı
-- "Mesaj Gönder" butonu
+- "Mesaj Gönder" butonu → **Sohbet (S19)**
+- **Arkadaşlık durumu aksiyonları:**
+  - Arkadaş değilse: **Arkadaş Ekle**
+  - İstek gönderildiyse: **İstek Gönderildi** (pasif durum)
+  - Karşı taraftan istek geldiyse: **Kabul Et** / **Reddet**
+  - Zaten arkadaşsa: **Arkadaşsın** etiketi + Mesaj Gönder aktif
 - ⋮ Menü: Raporla / Engelle
 - "Profili Düzenle" butonu YOK (sadece kendi profilinde var)
 - **Erişim noktaları — avatar/isim tıklanınca S17 açılır:**
@@ -372,15 +381,20 @@
 - Yaklaşan ve Geçmiş tabları birbirinden bağımsız veri gösterir
 
 #### S22: Arkadaşlarım (Login gerekli)
+- Sekmeler: **Arkadaşlar** / **Gelen İstekler** / **Gönderilen İstekler**
 - Arkadaş listesi: avatar + isim + favori spor
 - Her satırda: mesaj gönder ikonu
 - Arama çubuğu (üstte)
 - Tıklayınca → Kullanıcı profiline git
+- Gelen isteklerde aksiyon: **Kabul Et** / **Reddet**
+- Kabul sonrası bildirim akışı:
+  - Alıcıya: "Yeni arkadaş eklendi"
+  - Gönderene: "XXX arkadaşlık isteğinizi kabul etti"
 
 #### S23: Arkadaşlarını Davet Et (Login gerekli)
 - Davet ikonu/illüstrasyonu
 - Açıklama metni
-- Kişiye özel referans kodu/linki (örn: sporapp.co/davet/BERK2026)
+- Kişiye özel referans kodu/linki (örn: sporwave.co/davet/BERK2026)
 - "Linki Kopyala" butonu
 - "WhatsApp ile Paylaş" butonu
 - (İleride: SMS ile davet, kişi listesinden seçim)
@@ -392,7 +406,7 @@
     - Aktivite başvurusu onaylandı/reddedildi → Aktivite Detay (S09)
     - Yeni ders ilanı eklendi → Ders Detay (S13)
     - Yaklaşan etkinlik hatırlatıcısı → Etkinlik Detay (S06)
-    - Arkadaşlık daveti → Aktivite Detay (S09)
+    - Arkadaşlık daveti → Arkadaşlarım (S22) / Profil (S17)
     - Maç bitti — puanla → Puanlama Akışı (S33)
     - Yeni mesaj → doğrudan Sohbet (S19) açılır
   - Bildirim türleri:
@@ -400,7 +414,9 @@
     - Yeni mesaj
     - Yaklaşan etkinlik hatırlatıcısı
     - Yeni ders ilanı eklendi
-    - Arkadaşlık daveti
+    - Yeni arkadaşlık isteği
+    - Arkadaşlık isteğin kabul edildi
+    - Arkadaşlık isteğin reddedildi
     - **Maç bitti — oyuncuları puanla** (aktivite bitiş saatinden 2 saat sonra)
 
 #### S25: Ayarlar (Login gerekli)
@@ -490,6 +506,9 @@
 - **"Gönder" butonu** → Tüm puanlar birlikte backend'e gider
 - **Profil entegrasyonu:** Puanlar Bayesian average ile S15/S17 skor kartına yansır (bkz. Bölüm 14)
 - **Moderasyon entegrasyonu:** Ortalama < 2 yıldız veya tekrarlı No-show → admin flag (bkz. A05)
+- **Bildirim entegrasyonu (çift yönlü):**
+  - S24'teki "Maç bitti — puanla" bildirimi kullanıcıyı S33'e açar
+  - S33 tamamlandığında S24'e "Değerlendirme kaydedildi" bildirimi düşer (detay: S15/S17 skor kartı)
 
 **State Diagram:**
 ```
@@ -620,7 +639,7 @@ Keşfet veya Etkinlik tab → Etkinliğe tıkla → Detay sayfası
 ```
 Keşfet veya Dersler tab → Derse tıkla → Detay sayfası
 → "Rezervasyon Yap" (login gerekli) → Tarih/saat seç → Onay
-→ VEYA "Mesaj Gönder" → Tesis ile mesajlaşma
+→ VEYA "Mesaj Gönder" → Tesis ile mesajlaşma (S19)
 → Ders "Aktivitelerim → Yaklaşan" listesine eklenir
 ```
 
@@ -1012,7 +1031,7 @@ Bayesian_Avg = (C × m + Σ ratings) / (C + n)
 
 ---
 
-## 13. YAPILACAKLAR (TODO)
+## 15. YAPILACAKLAR (TODO)
 
 - [ ] Wireframe'lerin tamamlanması (React interaktif prototip)
 - [ ] S00 Keşfet sayfası wireframe tasarımı (karma feed layout)
