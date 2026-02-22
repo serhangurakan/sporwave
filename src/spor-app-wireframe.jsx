@@ -2,15 +2,17 @@ import { useState, useCallback } from "react";
 
 const C = {
   // Yüzeyler
-  bg:"#F7F9FC", s:"#FFFFFF",  s2:"#F1F4F8", b:"#E6EAF0",
+  bg:"#F7F9FC",  s:"#FFFFFF",  s2:"#F1F4F8", b:"#E6EAF0",
   // Metin
   t:"#0F172A",  d:"#475569",  d2:"#94A3B8", dis:"#CBD5E1",
   // Accent
-  a:"#B7F000",  ap:"#A3DB00", ad:"rgba(183,240,0,0.12)", at:"#5A7A00",
+  a:"#5A7A00",  ap:"#4A6900", ad:"rgba(90,122,0,0.10)", at:"#5A7A00",
   // Durum
   r:"#EF4444",  bl:"#3B82F6", o:"#F59E0B",  g:"#22C55E",
   // Sabit
   bk:"#0B0F14", w:"#fff",
+  // Buton
+  btn:"#B7F000",
 };
 
 const events=[
@@ -72,7 +74,7 @@ const sportGrid=[{e:"⚽",n:"Futbol"},{e:"🎾",n:"Tenis"},{e:"🏀",n:"Basketbo
 const favSports=["⚽ Futbol","🎾 Tenis","🏀 Basketbol","🏐 Voleybol","🏃 Koşu","🧘 Yoga","🏊 Yüzme","♟️ Satranç","🏋️ Fitness"];
 
 const LogoSvg = () => (
-  <svg width="26" height="15" viewBox="0 0 70 40" fill="none">
+  <svg width="42" height="24" viewBox="0 0 70 40" fill="none">
     <path d="M42.1261 8.00107C42.5309 7.98553 42.9239 8.1395 43.2104 8.42596L53.0909 18.3066L59.3353 12.0624C59.9033 11.4944 60.8242 11.4944 61.3923 12.0624C61.9603 12.6305 61.9603 13.5514 61.3923 14.1194L54.1195 21.3922C53.5515 21.9602 52.6305 21.9602 52.0625 21.3922L42.264 11.5937L32.3772 23.1284C32.1135 23.436 31.7335 23.6197 31.3286 23.6353C30.9238 23.6508 30.5308 23.4969 30.2443 23.2104L20.2745 13.2405L10.3858 21.4811C9.76863 21.9954 8.85147 21.9119 8.33719 21.2948C7.82292 20.6777 7.90624 19.7606 8.52335 19.2463L19.4324 10.1553L19.4875 10.1116C20.0633 9.6766 20.8769 9.72895 21.3922 10.2443L31.1905 20.0425L41.0775 8.50794C41.3412 8.20033 41.7212 8.01663 42.1261 8.00107Z" fill="#5A7A00"/>
     <path opacity="0.3" d="M42.154 17.8187C42.3564 17.811 42.553 17.888 42.6962 18.0312L53.091 28.426L59.8495 21.6676C60.1335 21.3835 60.5941 21.3835 60.8781 21.6676C61.1621 21.9516 61.1621 22.4121 60.8781 22.6962L53.6053 29.9688C53.3213 30.2528 52.8609 30.2528 52.5769 29.9688L42.2229 19.615L31.825 31.746C31.6932 31.8998 31.5032 31.9917 31.3008 31.9995C31.0984 32.0072 30.9018 31.9303 30.7585 31.7871L20.319 21.3475L9.92012 30.0133C9.61156 30.2704 9.15297 30.2288 8.89584 29.9202C8.6387 29.6117 8.68049 29.1531 8.98906 28.896L19.8981 19.805L19.9256 19.7831C20.2135 19.5656 20.6202 19.5918 20.8779 19.8494L31.2317 30.2031L41.6298 18.0722L41.6552 18.044C41.7854 17.9072 41.9642 17.826 42.154 17.8187Z" fill="#5A7A00"/>
   </svg>
@@ -143,7 +145,7 @@ export default function App() {
     card:{background:C.s,border:`1px solid ${C.b}`,borderRadius:14,margin:"0 16px 12px",overflow:"hidden",cursor:"pointer",transition:"border-color .2s",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"},
     cb:{padding:"14px 16px"},
     img:{width:"100%",height:160,background:`linear-gradient(135deg,${C.s2},${C.b})`,display:"flex",alignItems:"center",justifyContent:"center",color:C.d},
-    fab:{position:"absolute",bottom:80,right:20,width:56,height:56,borderRadius:16,background:C.a,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 4px 20px rgba(183,240,0,0.35)",color:C.bk,zIndex:10},
+    fab:{position:"absolute",bottom:80,right:20,width:56,height:56,borderRadius:16,background:C.btn,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 4px 20px rgba(183,240,0,0.35)",color:C.bk,zIndex:10},
     btn:{width:"100%",padding:"14px",borderRadius:12,border:"none",fontSize:15,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8},
     inp:{width:"100%",padding:"12px 16px",borderRadius:10,border:`1px solid ${C.b}`,background:C.s2,color:C.t,fontSize:14,outline:"none",boxSizing:"border-box"},
     av:{width:40,height:40,borderRadius:"50%",background:`linear-gradient(135deg,#1a4bcc,${C.bl})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:C.w,flexShrink:0},
@@ -163,7 +165,7 @@ export default function App() {
   const TopBar = ({title, showBack, right}) => (
     <div style={sty.topB}>
       {showBack ? <div style={sty.ic} onClick={back}>{Ico.back}</div> :
-        <div style={{display:"flex",alignItems:"center",gap:6}}><LogoSvg/><span style={{fontSize:18,fontWeight:800,color:C.at,letterSpacing:-0.5}}>Sporwave</span></div>}
+        <div style={{display:"flex",alignItems:"center",gap:6}}><LogoSvg/><span style={{fontSize:18,fontWeight:800,letterSpacing:-0.5,fontFamily:"'Plus Jakarta Sans',-apple-system,sans-serif"}}><span style={{color:C.t}}>Spor</span><span style={{color:C.a}}>wave</span></span></div>}
       <div style={{fontSize:16,fontWeight:700,color:C.t}}>{showBack ? title : ""}</div>
       <div style={{display:"flex",gap:4}}>
         {right || <>
@@ -232,7 +234,7 @@ export default function App() {
                   <div style={{fontSize:10,color:C.d}}>kişi</div>
                 </div>
               </div>
-              <button style={{...sty.btn,background:C.a,color:C.bk,padding:"8px",fontSize:12,borderRadius:8}} onClick={e=>{e.stopPropagation();reqLog(()=>nav("act-det",a));}}>
+              <button style={{...sty.btn,background:C.btn,color:C.bk,padding:"8px",fontSize:12,borderRadius:8}} onClick={e=>{e.stopPropagation();reqLog(()=>nav("act-det",a));}}>
                 Katıl — {a.max-a.cur} yer kaldı
               </button>
             </div>
@@ -317,7 +319,7 @@ export default function App() {
         <p style={{fontSize:13,color:C.d,lineHeight:1.7,marginBottom:20}}>Bu etkinlik hakkında detaylı bilgi, katılım koşulları, parkur bilgisi ve kayıt detayları burada yer alacaktır. Etkinlik organizatörü tarafından eklenen açıklama metni.</p>
         <div style={{background:C.s2,borderRadius:12,height:100,display:"flex",alignItems:"center",justifyContent:"center",color:C.d,fontSize:12,marginBottom:20,border:`1px dashed ${C.b}`}}>📍 Konum Haritası</div>
         <div style={{display:"flex",gap:10}}>
-          <button style={{...sty.btn,background:C.a,color:C.bk,flex:2}} onClick={()=>reqLog()}>Kayıt Ol</button>
+          <button style={{...sty.btn,background:C.btn,color:C.bk,flex:2}} onClick={()=>reqLog()}>Kayıt Ol</button>
           <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}}>Paylaş</button>
         </div>
       </div>
@@ -388,7 +390,7 @@ export default function App() {
         </div>
         {/* Butonlar: Katıl + Mesaj Gönder */}
         <div style={{display:"flex",gap:10}}>
-          <button style={{...sty.btn,background:C.a,color:C.bk,flex:2}} onClick={()=>reqLog(()=>setSheet("lv"))}>
+          <button style={{...sty.btn,background:C.btn,color:C.bk,flex:2}} onClick={()=>reqLog(()=>setSheet("lv"))}>
             Katıl ({a.max-a.cur} yer var)
           </button>
           <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}} onClick={()=>reqLog(()=>nav("sohbet",{name:a.owner,av:a.owner.substring(0,2)}))}>
@@ -403,7 +405,7 @@ export default function App() {
         <div style={{fontSize:16,fontWeight:800,color:C.t,marginBottom:4}}>Deneyim Seviyeniz</div>
         <div style={{fontSize:12,color:C.d,marginBottom:16}}>Aktivite sahibinin sizi değerlendirebilmesi için seviyenizi seçin</div>
         {levels.map(l=><button key={l} onClick={()=>setSelLv(l)} style={{display:"block",width:"100%",padding:"14px 16px",borderRadius:12,border:`1px solid ${selLv===l?C.a:C.b}`,background:selLv===l?C.ad:C.s2,color:C.t,cursor:"pointer",textAlign:"left",fontSize:14,fontWeight:500,marginBottom:8,boxSizing:"border-box"}}>{l}</button>)}
-        <button style={{...sty.btn,background:C.a,color:C.bk,marginTop:8}} onClick={()=>{setSheet(null);setSelLv(null);}}>
+        <button style={{...sty.btn,background:C.btn,color:C.bk,marginTop:8}} onClick={()=>{setSheet(null);setSelLv(null);}}>
           {det?.mode==="approve"?"Başvuru Gönder":"Katıl"}
         </button>
       </div>
@@ -435,7 +437,7 @@ export default function App() {
           <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:16}}>Detayları gir</div>
           <div style={{marginBottom:14}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Başlık</label><input style={sty.inp} placeholder="Örn: Halısaha Maçı"/></div>
           <div style={{marginBottom:20}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Açıklama</label><textarea style={{...sty.inp,height:100,resize:"none"}} placeholder="Aktivitenizi tanımlayın..."/></div>
-          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>setCStep(2)}>Devam</button>
+          <button style={{...sty.btn,background:C.btn,color:C.bk}} onClick={()=>setCStep(2)}>Devam</button>
         </>}
         {cStep===2&&<>
           <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:16}}>Tarih & Konum</div>
@@ -444,7 +446,7 @@ export default function App() {
           <div style={{marginBottom:20}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Konum</label><input style={sty.inp} placeholder="Adres veya mekan adı"/>
             <div style={{height:80,background:C.s2,borderRadius:8,marginTop:8,display:"flex",alignItems:"center",justifyContent:"center",color:C.d,fontSize:12,border:`1px dashed ${C.b}`}}>📍 Haritadan seç</div>
           </div>
-          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>setCStep(3)}>Devam</button>
+          <button style={{...sty.btn,background:C.btn,color:C.bk}} onClick={()=>setCStep(3)}>Devam</button>
         </>}
         {cStep===3&&<>
           <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:16}}>Ayarlar</div>
@@ -460,7 +462,7 @@ export default function App() {
               </div>
             )}
           </div>
-          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{nav("oyna");setCStep(0);}}>Yayınla 🚀</button>
+          <button style={{...sty.btn,background:C.btn,color:C.bk}} onClick={()=>{nav("oyna");setCStep(0);}}>Yayınla 🚀</button>
         </>}
       </div>
     </div></>
@@ -512,7 +514,7 @@ export default function App() {
           </div>
         </div>
         <div style={{display:"flex",gap:10}}>
-          <button style={{...sty.btn,background:C.a,color:C.bk,flex:2}} onClick={()=>reqLog()}>Rezervasyon Yap</button>
+          <button style={{...sty.btn,background:C.btn,color:C.bk,flex:2}} onClick={()=>reqLog()}>Rezervasyon Yap</button>
           <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}} onClick={()=>reqLog(()=>nav("sohbet",{name:l.fac,av:l.fac.substring(0,2)}))}>Mesaj</button>
         </div>
       </div>
@@ -604,7 +606,7 @@ export default function App() {
           <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>E-posta adresi</label>
           <input style={sty.inp} placeholder="ornek@mail.com" type="email"/>
         </div>
-        <button style={{...sty.btn,background:C.a,color:C.bk,marginBottom:16}}>Sıfırlama Linki Gönder</button>
+        <button style={{...sty.btn,background:C.btn,color:C.bk,marginBottom:16}}>Sıfırlama Linki Gönder</button>
         <div style={{textAlign:"center"}}>
           <span style={{fontSize:13,color:C.at,cursor:"pointer",fontWeight:600}} onClick={back}>← Girişe geri dön</span>
         </div>
@@ -652,12 +654,12 @@ export default function App() {
     <><TopBar title="" showBack right={<div style={{width:36}}/>}/><div style={sty.cnt}>
       <div style={{padding:"40px 24px"}}>
         <div style={{textAlign:"center",marginBottom:40}}>
-          <div style={{fontSize:32,fontWeight:800,color:C.a,marginBottom:4}}>Sporwave</div>
+          <div style={{fontSize:32,fontWeight:800,marginBottom:4,fontFamily:"'Plus Jakarta Sans',-apple-system,sans-serif",letterSpacing:-0.5}}><span style={{color:C.t}}>Spor</span><span style={{color:C.a}}>wave</span></div>
           <div style={{fontSize:14,color:C.d}}>Spor arkadaşını bul, harekete geç!</div>
         </div>
         <div style={{marginBottom:14}}><input style={sty.inp} placeholder="E-posta adresi"/></div>
         <div style={{marginBottom:20}}><input style={sty.inp} type="password" placeholder="Şifre"/></div>
-        <button style={{...sty.btn,background:C.a,color:C.bk,marginBottom:12}} onClick={()=>{setLogged(true);back();}}>Giriş Yap</button>
+        <button style={{...sty.btn,background:C.btn,color:C.bk,marginBottom:12}} onClick={()=>{setLogged(true);back();}}>Giriş Yap</button>
         <div style={{textAlign:"center",marginBottom:20}}><span style={{fontSize:13,color:C.d,cursor:"pointer"}}>Şifremi Unuttum</span></div>
         <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
           <div style={{flex:1,height:1,background:C.b}}/><span style={{fontSize:12,color:C.d}}>veya</span><div style={{flex:1,height:1,background:C.b}}/>
@@ -666,7 +668,7 @@ export default function App() {
         <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`}} onClick={()=>{setLogged(true);back();}}>🍎 Apple ile giriş yap</button>
         <div style={{textAlign:"center",marginTop:20}}>
           <span style={{fontSize:13,color:C.d}}>Hesabın yok mu? </span>
-          <span style={{fontSize:13,color:C.a,cursor:"pointer",fontWeight:600}} onClick={()=>nav("register")}>Kayıt Ol</span>
+          <span style={{fontSize:13,color:C.at,cursor:"pointer",fontWeight:600}} onClick={()=>nav("register")}>Kayıt Ol</span>
         </div>
       </div>
     </div></>
@@ -682,7 +684,7 @@ export default function App() {
           </div>
           <span style={{fontSize:12,color:C.d,lineHeight:1.5}}>Kullanım şartlarını ve KVKK aydınlatma metnini okudum, kabul ediyorum.</span>
         </div>
-        <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{setLogged(true);nav("onboard");}}>Kayıt Ol</button>
+        <button style={{...sty.btn,background:C.btn,color:C.bk}} onClick={()=>{setLogged(true);nav("onboard");}}>Kayıt Ol</button>
       </div>
     </div></>
   );
@@ -710,7 +712,7 @@ export default function App() {
         <div style={{display:"flex",gap:4,marginBottom:30}}>{steps.map((_,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:i<=obStep?C.a:C.b}}/>)}</div>
         <div style={{fontSize:22,fontWeight:800,color:C.t,marginBottom:24}}>{steps[obStep].t}</div>
         {steps[obStep].c}
-        <button style={{...sty.btn,background:C.a,color:C.bk,marginTop:30}} onClick={()=>{
+        <button style={{...sty.btn,background:C.btn,color:C.bk,marginTop:30}} onClick={()=>{
           if(obStep<steps.length-1)setObStep(obStep+1);else{setObStep(0);nav("etkinlik");}
         }}>{obStep<steps.length-1?"Devam":"Başla! 🚀"}</button>
       </div>
@@ -825,7 +827,7 @@ export default function App() {
           {u.badges.map(b=><span key={b} style={{fontSize:10,padding:"4px 10px",borderRadius:8,background:C.ad,color:C.at,fontWeight:600}}>{b}</span>)}
         </div>}
         <div style={{fontSize:12,color:C.d,marginBottom:16}}>{u.acts} aktivite tamamlandı</div>
-        <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>nav("sohbet",{name:u.name,av:u.av,last:""})}>Mesaj Gönder 💬</button>
+        <button style={{...sty.btn,background:C.btn,color:C.bk}} onClick={()=>nav("sohbet",{name:u.name,av:u.av,last:""})}>Mesaj Gönder 💬</button>
       </div>
     </div></>
   );};
@@ -938,7 +940,7 @@ export default function App() {
               <StarPicker val={rStars[p.name]||0} onChange={v=>setRStars({...rStars,[p.name]:v})}/>
             </div>
           ))}
-          <button style={{...sty.btn,background:C.a,color:C.bk,marginTop:20}} onClick={()=>setRStep(2)}>Devam</button>
+          <button style={{...sty.btn,background:C.btn,color:C.bk,marginTop:20}} onClick={()=>setRStep(2)}>Devam</button>
         </>}
 
         {rStep===2&&<>
@@ -958,7 +960,7 @@ export default function App() {
             <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Yorum (opsiyonel, maks 100 karakter)</label>
             <input style={sty.inp} placeholder="Harika organizasyon!" maxLength={100}/>
           </div>
-          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{setRStep(0);setRStars({});setROrgStar(0);nav("profil");}}>
+          <button style={{...sty.btn,background:C.btn,color:C.bk}} onClick={()=>{setRStep(0);setRStars({});setROrgStar(0);nav("profil");}}>
             Gönder ✓
           </button>
         </>}
@@ -1014,8 +1016,8 @@ export default function App() {
         <div style={{fontSize:48,marginBottom:16}}>🎉</div>
         <div style={{fontSize:16,fontWeight:700,color:C.t,marginBottom:8}}>Arkadaşlarını davet et!</div>
         <div style={{fontSize:13,color:C.d,marginBottom:24,lineHeight:1.6}}>Birlikte spor yapmanın keyfini çıkarın.</div>
-        <div style={{background:C.s2,border:`1px solid ${C.b}`,borderRadius:10,padding:14,marginBottom:16,fontSize:13,color:C.a,fontWeight:600}}>sporapp.co/davet/BERK2026</div>
-        <button style={{...sty.btn,background:C.a,color:C.bk,marginBottom:10}}>Linki Kopyala</button>
+        <div style={{background:C.s2,border:`1px solid ${C.b}`,borderRadius:10,padding:14,marginBottom:16,fontSize:13,color:C.at,fontWeight:600}}>sporapp.co/davet/BERK2026</div>
+        <button style={{...sty.btn,background:C.btn,color:C.bk,marginBottom:10}}>Linki Kopyala</button>
         <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`}}>WhatsApp ile Paylaş</button>
       </div>
     </div></>
@@ -1026,7 +1028,7 @@ export default function App() {
       <div style={{padding:20}}>
         <div style={{textAlign:"center",marginBottom:24}}>
           <Av name="Berk K" size={80} bg={`linear-gradient(135deg,${C.a},${C.bl})`}/>
-          <div style={{fontSize:13,color:C.a,cursor:"pointer",fontWeight:600,marginTop:8}}>Fotoğrafı Değiştir</div>
+          <div style={{fontSize:13,color:C.at,cursor:"pointer",fontWeight:600,marginTop:8}}>Fotoğrafı Değiştir</div>
         </div>
         {[["İsim","Berk"],["Soyisim","K."],["Şehir","İstanbul"]].map(([l,v])=>
           <div key={l} style={{marginBottom:14}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>{l}</label><input style={sty.inp} defaultValue={v}/></div>
@@ -1044,7 +1046,7 @@ export default function App() {
             )}
           </div>
         </div>
-        <button style={{...sty.btn,background:C.a,color:C.bk}}>Kaydet</button>
+        <button style={{...sty.btn,background:C.btn,color:C.bk}}>Kaydet</button>
       </div>
     </div></>
   );
@@ -1126,10 +1128,10 @@ export default function App() {
   </> : null;
 
   return (
-    <div style={{minHeight:"100vh",background:"#070A0E",display:"flex",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"system-ui,-apple-system,sans-serif"}}>
+    <div style={{minHeight:"100vh",background:"#F0F2F5",display:"flex",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"}}>
       <div>
         <div style={{textAlign:"center",marginBottom:20}}>
-          <h1 style={{fontSize:20,fontWeight:800,color:C.a,margin:0,letterSpacing:-0.5}}>Sporwave Wireframe</h1>
+          <h1 style={{fontSize:20,fontWeight:800,color:C.at,margin:0,letterSpacing:-0.5}}>Sporwave Wireframe</h1>
           <p style={{fontSize:12,color:C.d,margin:"6px 0 0"}}>Tıklayarak sayfalar arası gezin • {logged?"✅ Giriş yapıldı":"🔒 Giriş yapılmadı"} • Sayfa: {pg}</p>
         </div>
         <div style={sty.phone}>
