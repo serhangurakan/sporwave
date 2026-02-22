@@ -96,8 +96,8 @@ const Ico = {
 const SE = (e) => e === "Futbol" ? "⚽" : e === "Tenis" ? "🎾" : e === "Basketbol" ? "🏀" : "🏐";
 
 export default function App() {
-  const [pg, setPg] = useState("etkinlik");
-  const [tab, setTab] = useState("etkinlik");
+  const [pg, setPg] = useState("kesfet");
+  const [tab, setTab] = useState("kesfet");
   const [det, setDet] = useState(null);
   const [hist, setHist] = useState([]);
   const [menu, setMenu] = useState(false);
@@ -110,11 +110,14 @@ export default function App() {
   const [obStep, setObStep] = useState(0);
   const [selLv, setSelLv] = useState(null);
   const [mt, setMt] = useState("");
+  const [rStep, setRStep] = useState(0);
+  const [rStars, setRStars] = useState({});
+  const [rOrgStar, setROrgStar] = useState(0);
 
   const nav = useCallback((p, d = null) => {
     setHist(h => [...h, { pg, det, tab }]);
     setDet(d);
-    if (["etkinlik","bireysel","ders","profil"].includes(p)) setTab(p);
+    if (["kesfet","oyna","etkinlik","ders","profil"].includes(p)) setTab(p);
     setPg(p); setMenu(false); setSheet(null);
   }, [pg, det, tab]);
 
@@ -178,11 +181,11 @@ export default function App() {
 
   const TabBar = () => (
     <div style={sty.tabB}>
-      {[{id:"etkinlik",l:"Etkinlik",e:"🏆"},{id:"bireysel",l:"Bireysel",e:"⚽"},{id:"ders",l:"Ders",e:"🎓"},{id:"profil",l:"Profil",e:"👤"}].map(t=>(
-        <div key={t.id} style={sty.tab} onClick={()=>{t.id==="profil"&&!logged?nav("login"):nav(t.id)}}>
-          <span style={{fontSize:20,opacity:tab===t.id?1:.5}}>{t.e}</span>
-          <span style={{fontSize:10,fontWeight:600,color:tab===t.id?C.r:C.d}}>{t.l}</span>
-          {tab===t.id && <div style={{width:20,height:2,borderRadius:1,background:C.r,marginTop:1}}/>}
+      {[{id:"kesfet",l:"Keşfet",e:"🔍"},{id:"oyna",l:"Oyna",e:"⚽"},{id:"etkinlik",l:"Etkinlik",e:"🏆"},{id:"ders",l:"Ders",e:"🎓"},{id:"profil",l:"Profil",e:"👤"}].map(t=>(
+        <div key={t.id} style={{...sty.tab,flex:1}} onClick={()=>{t.id==="profil"&&!logged?nav("login"):nav(t.id)}}>
+          <span style={{fontSize:18,opacity:tab===t.id?1:.45}}>{t.e}</span>
+          <span style={{fontSize:9,fontWeight:600,color:tab===t.id?C.at:C.d2}}>{t.l}</span>
+          {tab===t.id && <div style={{width:16,height:2,borderRadius:1,background:C.a,marginTop:1}}/>}
         </div>
       ))}
     </div>
@@ -201,6 +204,89 @@ export default function App() {
   );
 
   // ========= PAGES =========
+
+  // ─── S00: Keşfet Feed ───────────────────────────────────────────────────────
+  const PageKesfet = () => (
+    <><TopBar/><div style={sty.cnt}>
+      <Pills items={["Yakın","İstanbul","Kadıköy","Beşiktaş","Şişli"]} val={cf} set={setCf}/>
+
+      {/* Yakında Maç */}
+      <div style={{padding:"4px 16px 0"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <div style={{fontSize:16,fontWeight:800,color:C.t}}>⚽ Yakında Maç</div>
+          <span style={{fontSize:12,color:C.at,fontWeight:600,cursor:"pointer"}} onClick={()=>nav("oyna")}>Tümünü Gör</span>
+        </div>
+        {acts.slice(0,2).map(a=>(
+          <div key={a.id} style={{...sty.card,margin:"0 0 10px"}} onClick={()=>nav("act-det",a)}>
+            <div style={sty.cb}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                  <div style={{width:32,height:32,borderRadius:8,background:C.s2,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{SE(a.sport)}</div>
+                  <div>
+                    <div style={{fontSize:13,fontWeight:700,color:C.t}}>{a.title}</div>
+                    <div style={{fontSize:11,color:C.d}}>{a.dist} • {a.date} {a.time}</div>
+                  </div>
+                </div>
+                <div style={{textAlign:"right"}}>
+                  <div style={{fontSize:12,color:C.a,fontWeight:700}}>{a.cur}/{a.max}</div>
+                  <div style={{fontSize:10,color:C.d}}>kişi</div>
+                </div>
+              </div>
+              <button style={{...sty.btn,background:C.a,color:C.bk,padding:"8px",fontSize:12,borderRadius:8}} onClick={e=>{e.stopPropagation();reqLog(()=>nav("act-det",a));}}>
+                Katıl — {a.max-a.cur} yer kaldı
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bu Hafta Etkinlikler */}
+      <div style={{padding:"8px 16px 4px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <div style={{fontSize:16,fontWeight:800,color:C.t}}>🏆 Bu Hafta Etkinlikler</div>
+          <span style={{fontSize:12,color:C.at,fontWeight:600,cursor:"pointer"}} onClick={()=>nav("etkinlik")}>Tümünü Gör</span>
+        </div>
+        <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8}}>
+          {events.slice(0,3).map(e=>(
+            <div key={e.id} style={{...sty.card,margin:0,minWidth:160,flexShrink:0}} onClick={()=>nav("evt-det",e)}>
+              <div style={{...sty.img,height:80}}><span style={{fontSize:28}}>{e.e}</span></div>
+              <div style={{padding:"10px 12px"}}>
+                <div style={{fontSize:12,fontWeight:700,color:C.t,marginBottom:4,lineHeight:1.3}}>{e.title}</div>
+                <div style={{...sty.sub,fontSize:10}}>{Ico.cal}<span>{e.date}</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Popüler Eğitmenler */}
+      <div style={{padding:"8px 16px 20px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <div style={{fontSize:16,fontWeight:800,color:C.t}}>🎓 Popüler Eğitmenler</div>
+          <span style={{fontSize:12,color:C.at,fontWeight:600,cursor:"pointer"}} onClick={()=>nav("ders")}>Tümünü Gör</span>
+        </div>
+        {lessons.map(l=>(
+          <div key={l.id} style={{...sty.card,margin:"0 0 10px"}} onClick={()=>nav("ders-det",l)}>
+            <div style={sty.cb}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div style={{display:"flex",gap:10,alignItems:"center"}}>
+                  <span style={{fontSize:28}}>{l.e}</span>
+                  <div>
+                    <div style={{fontSize:13,fontWeight:700,color:C.t}}>{l.title}</div>
+                    <div style={{fontSize:11,color:C.d}}>{l.fac}</div>
+                  </div>
+                </div>
+                <div style={{textAlign:"right"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:3,marginBottom:2}}>{Ico.star}<span style={{fontSize:12,fontWeight:700,color:C.t}}>{l.r}</span></div>
+                  <div style={{fontSize:13,fontWeight:800,color:C.a}}>{l.price}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div><TabBar/></>
+  );
 
   const PageEtkinlik = () => (
     <><TopBar/><div style={sty.cnt}>
@@ -238,7 +324,7 @@ export default function App() {
     </div></>
   );};
 
-  const PageBireysel = () => (
+  const PageOyna = () => (
     <><TopBar/><div style={sty.cnt}>
       <Pills items={sportF} val={sf} set={setSf}/>
       {acts.filter(a=>sf==="Hepsi"||a.sport===sf).map(a=>(
@@ -374,7 +460,7 @@ export default function App() {
               </div>
             )}
           </div>
-          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{nav("bireysel");setCStep(0);}}>Yayınla 🚀</button>
+          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{nav("oyna");setCStep(0);}}>Yayınla 🚀</button>
         </>}
       </div>
     </div></>
@@ -504,6 +590,63 @@ export default function App() {
       </div>
     </div><TabBar/></>
   );
+
+  // ─── S03: Şifremi Unuttum ────────────────────────────────────────────────────
+  const PageSifremiUnuttum = () => (
+    <><TopBar title="Şifremi Unuttum" showBack right={<div style={{width:36}}/>}/><div style={sty.cnt}>
+      <div style={{padding:"40px 24px"}}>
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <div style={{fontSize:36,marginBottom:12}}>🔑</div>
+          <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:8}}>Şifreni sıfırla</div>
+          <div style={{fontSize:13,color:C.d,lineHeight:1.6}}>E-posta adresine şifre sıfırlama bağlantısı göndereceğiz.</div>
+        </div>
+        <div style={{marginBottom:20}}>
+          <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>E-posta adresi</label>
+          <input style={sty.inp} placeholder="ornek@mail.com" type="email"/>
+        </div>
+        <button style={{...sty.btn,background:C.a,color:C.bk,marginBottom:16}}>Sıfırlama Linki Gönder</button>
+        <div style={{textAlign:"center"}}>
+          <span style={{fontSize:13,color:C.at,cursor:"pointer",fontWeight:600}} onClick={back}>← Girişe geri dön</span>
+        </div>
+      </div>
+    </div></>
+  );
+
+  // ─── S11: Başvuru Yönetimi ───────────────────────────────────────────────────
+  const PageBasvuruYonetimi = () => {
+    const a = det;
+    const apps = [
+      {name:"Can D.",av:"CD",level:"Orta",sport:"Futbol"},
+      {name:"Mert Y.",av:"MY",level:"İyi",sport:"Futbol"},
+      {name:"Zeynep A.",av:"ZA",level:"Başlangıç",sport:"Futbol"},
+    ];
+    return (
+    <><TopBar title="Başvuru Yönetimi" showBack/><div style={sty.cnt}>
+      <div style={{padding:"14px 20px",borderBottom:`1px solid ${C.b}`,background:C.s2}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.t}}>{a?.title||"Halısaha Maçı"}</div>
+        <div style={{fontSize:12,color:C.d,marginTop:2}}>{apps.length} bekleyen başvuru</div>
+      </div>
+      {apps.map((ap,i)=>(
+        <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 20px",borderBottom:`1px solid ${C.b}`}}>
+          <div style={{cursor:"pointer"}} onClick={()=>nav("kullanici-profil",users[ap.name]||{name:ap.name,av:ap.av,sport:ap.sport,city:"İstanbul",scores:{sp:4.0,kg:80,org:null},badges:[],acts:3})}>
+            <Av name={ap.name}/>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:14,fontWeight:600,color:C.t}}>{ap.name}</div>
+            <div style={{fontSize:12,color:C.d}}>Seviye: {ap.level}</div>
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button style={{padding:"8px 14px",borderRadius:8,border:"none",background:"rgba(34,197,94,0.12)",color:C.g,fontSize:12,fontWeight:700,cursor:"pointer"}}>✓ Onayla</button>
+            <button style={{padding:"8px 14px",borderRadius:8,border:"none",background:"rgba(239,68,68,0.12)",color:C.r,fontSize:12,fontWeight:700,cursor:"pointer"}}>✕ Reddet</button>
+          </div>
+        </div>
+      ))}
+      {apps.length===0&&<div style={{padding:40,textAlign:"center",color:C.d}}>
+        <div style={{fontSize:32,marginBottom:8}}>✅</div>
+        <div style={{fontSize:14,fontWeight:600,color:C.t}}>Tüm başvurular işlendi</div>
+      </div>}
+    </div></>
+  );};
 
   const PageLogin = () => (
     <><TopBar title="" showBack right={<div style={{width:36}}/>}/><div style={sty.cnt}>
@@ -687,6 +830,142 @@ export default function App() {
     </div></>
   );};
 
+  // ─── S31: Raporla & Engelle ──────────────────────────────────────────────────
+  const PageRaporla = () => (
+    <><TopBar title="Raporla" showBack/><div style={sty.cnt}>
+      <div style={{padding:20}}>
+        <div style={{fontSize:13,color:C.d,lineHeight:1.6,marginBottom:20}}>
+          Bu kullanıcı veya içerik hakkında bir sorun bildirin. Raporlar gizli tutulur, ekibimiz 24 saat içinde inceler.
+        </div>
+        <div style={{fontSize:14,fontWeight:700,color:C.t,marginBottom:12}}>Rapor nedeni seç</div>
+        {["Fake profil","Uygunsuz içerik","Gelmiyor / No-show","Spam","Diğer"].map(r=>(
+          <div key={r} style={{background:C.s,border:`1px solid ${C.b}`,borderRadius:12,padding:"14px 16px",marginBottom:8,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+            <span style={{fontSize:14,color:C.t}}>{r}</span>
+            <span style={{color:C.d}}>{Ico.chr}</span>
+          </div>
+        ))}
+        <div style={{marginTop:12}}>
+          <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Açıklama (opsiyonel)</label>
+          <textarea style={{...sty.inp,height:80,resize:"none"}} placeholder="Ek bilgi ekleyebilirsiniz..."/>
+        </div>
+        <button style={{...sty.btn,background:C.r,color:C.w,marginTop:16}}>Rapor Gönder</button>
+        <div style={{marginTop:12,padding:14,background:"rgba(239,68,68,0.06)",borderRadius:10,border:`1px solid rgba(239,68,68,0.15)`}}>
+          <div style={{fontSize:13,fontWeight:600,color:C.r,marginBottom:4}}>Engelle</div>
+          <div style={{fontSize:12,color:C.d,marginBottom:10}}>Bu kullanıcıyı engellerseniz sizi göremez, mesaj gönderemez.</div>
+          <button style={{...sty.btn,background:"rgba(239,68,68,0.1)",color:C.r,border:`1px solid rgba(239,68,68,0.2)`,padding:"10px"}}>
+            Kullanıcıyı Engelle
+          </button>
+        </div>
+      </div>
+    </div></>
+  );
+
+  // ─── S32: Topluluk Kuralları ──────────────────────────────────────────────────
+  const PageToplulukKurallari = () => (
+    <><TopBar title="Topluluk Kuralları" showBack/><div style={sty.cnt}>
+      <div style={{padding:20}}>
+        {[
+          {ic:"⛔",t:"No-Show Yasağı",d:"Katılacağını belirtip gelmemek topluluğu olumsuz etkiler. 3 no-show sonrası hesabın askıya alınabilir."},
+          {ic:"🤝",t:"Saygılı İletişim",d:"Tüm mesajlaşmalarda saygılı bir dil kullan. Hakaret, taciz ve ayrımcılık yasaktır."},
+          {ic:"🚫",t:"Fake Profil Yasağı",d:"Sahte kimlik veya yanıltıcı bilgi içeren profiller kalıcı olarak kapatılır."},
+          {ic:"🔞",t:"Uygunsuz İçerik Yasağı",d:"Müstehcen, şiddet içerikli veya yasadışı paylaşımlar kesinlikle yasaktır."},
+          {ic:"🚩",t:"Bildirme Yükümlülüğü",d:"Kural ihlali gördüğünde profil veya içerik üzerindeki ⋮ menüden raporla."},
+        ].map(r=>(
+          <div key={r.t} style={{background:C.s,border:`1px solid ${C.b}`,borderRadius:14,padding:16,marginBottom:10,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+            <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+              <div style={{fontSize:24,flexShrink:0}}>{r.ic}</div>
+              <div>
+                <div style={{fontSize:14,fontWeight:700,color:C.t,marginBottom:4}}>{r.t}</div>
+                <div style={{fontSize:13,color:C.d,lineHeight:1.5}}>{r.d}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div style={{textAlign:"center",padding:16,background:C.ad,borderRadius:12,border:`1px solid rgba(183,240,0,0.3)`}}>
+          <div style={{fontSize:12,color:C.at,fontWeight:600,lineHeight:1.5}}>Sporwave güvenli ve keyifli bir spor topluluğu olmayı hedefler. Birlikte güzel bir topluluk inşa edelim! 🏃</div>
+        </div>
+      </div>
+    </div></>
+  );
+
+  // ─── S33: Etkinlik Sonrası Puanlama ──────────────────────────────────────────
+  const StarPicker = ({val,onChange}) => (
+    <div style={{display:"flex",gap:2}}>
+      {[1,2,3,4,5].map(s=>(
+        <div key={s} onClick={()=>onChange(s)} style={{cursor:"pointer",fontSize:26,color:s<=val?"#F59E0B":"#CBD5E1",lineHeight:1}}>★</div>
+      ))}
+    </div>
+  );
+
+  const PageRating = () => {
+    const activity = det||acts[0];
+    const participants=[{name:"Can D.",av:"CD"},{name:"Mert Y.",av:"MY"},{name:"Zeynep A.",av:"ZA"}];
+    return (
+    <><TopBar title={`Değerlendirme ${rStep+1}/3`} showBack/><div style={sty.cnt}>
+      <div style={{padding:20}}>
+        {/* Progress bar */}
+        <div style={{display:"flex",gap:4,marginBottom:24}}>
+          {[0,1,2].map(i=><div key={i} style={{flex:1,height:3,borderRadius:2,background:i<=rStep?C.a:C.b}}/>)}
+        </div>
+
+        {rStep===0&&<>
+          <div style={{fontSize:20,fontWeight:800,color:C.t,marginBottom:6}}>Etkinliğe katıldın mı?</div>
+          <div style={{fontSize:13,color:C.d,marginBottom:24,lineHeight:1.5}}>{activity.title} · {activity.date||""}</div>
+          <button style={{...sty.btn,background:C.g,color:C.w,marginBottom:12}} onClick={()=>setRStep(1)}>✓ Evet, katıldım</button>
+          <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`}} onClick={()=>{setRStep(0);setRStars({});setROrgStar(0);nav("kesfet");}}>Hayır, gidemedim</button>
+          <div style={{marginTop:20,padding:14,background:C.s2,borderRadius:12,border:`1px solid ${C.b}`}}>
+            <div style={{fontSize:12,fontWeight:600,color:C.t,marginBottom:4}}>Organizatör: Gelmeyen var mıydı?</div>
+            <div style={{fontSize:12,color:C.d,marginBottom:10}}>No-show katılımcıları işaretleyebilirsin</div>
+            {participants.map((p,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                <div style={{width:16,height:16,borderRadius:4,border:`2px solid ${C.b}`,background:C.s,flexShrink:0}}/>
+                <Av name={p.name} size={24}/>
+                <span style={{fontSize:13,color:C.t}}>{p.name}</span>
+              </div>
+            ))}
+          </div>
+        </>}
+
+        {rStep===1&&<>
+          <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:4}}>Oyuncuları değerlendir</div>
+          <div style={{fontSize:12,color:C.d,marginBottom:20}}>Puanlar anonim tutulur — kimse kimin ne puan verdiğini göremez</div>
+          {participants.map((p,i)=>(
+            <div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 0",borderBottom:`1px solid ${C.b}`}}>
+              <div style={{display:"flex",gap:10,alignItems:"center"}}>
+                <Av name={p.name}/>
+                <div style={{fontSize:14,fontWeight:600,color:C.t}}>{p.name}</div>
+              </div>
+              <StarPicker val={rStars[p.name]||0} onChange={v=>setRStars({...rStars,[p.name]:v})}/>
+            </div>
+          ))}
+          <button style={{...sty.btn,background:C.a,color:C.bk,marginTop:20}} onClick={()=>setRStep(2)}>Devam</button>
+        </>}
+
+        {rStep===2&&<>
+          <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:4}}>Organizatörü değerlendir</div>
+          <div style={{fontSize:12,color:C.d,marginBottom:20}}>Etkinliği düzenleyen kişiyi puanla</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0",borderBottom:`1px solid ${C.b}`,marginBottom:16}}>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}>
+              <Av name={activity.owner||"Ahmet K."}/>
+              <div>
+                <div style={{fontSize:14,fontWeight:600,color:C.t}}>{activity.owner||"Ahmet K."}</div>
+                <div style={{fontSize:11,color:C.d}}>Organizatör</div>
+              </div>
+            </div>
+            <StarPicker val={rOrgStar} onChange={setROrgStar}/>
+          </div>
+          <div style={{marginBottom:20}}>
+            <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Yorum (opsiyonel, maks 100 karakter)</label>
+            <input style={sty.inp} placeholder="Harika organizasyon!" maxLength={100}/>
+          </div>
+          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{setRStep(0);setRStars({});setROrgStar(0);nav("profil");}}>
+            Gönder ✓
+          </button>
+        </>}
+      </div>
+    </div></>
+  );};
+
   const PageAktivitelerim = () => (
     <><TopBar title="Aktivitelerim" showBack/><div style={sty.cnt}>
       <div style={{display:"flex",borderBottom:`1px solid ${C.b}`}}>
@@ -802,7 +1081,7 @@ export default function App() {
     switch(pg) {
       case "etkinlik": return <PageEtkinlik/>;
       case "evt-det": return <PageEvtDet/>;
-      case "bireysel": return <PageBireysel/>;
+      case "oyna": return <PageOyna/>;
       case "act-det": return <PageActDet/>;
       case "act-create": return <PageActCreate/>;
       case "ders": return <PageDers/>;
@@ -821,7 +1100,7 @@ export default function App() {
       case "davet": return <PageDavet/>;
       case "ayarlar": return <PageAyarlar/>;
       case "yardim": return <PageYardim/>;
-      default: return <PageEtkinlik/>;
+      default: return <PageOyna/>;
     }
   };
 
@@ -858,7 +1137,7 @@ export default function App() {
           <MenuDrawer/>
         </div>
         <div style={{textAlign:"center",marginTop:16,display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-          {[["etkinlik","🏆 Etkinlik"],["bireysel","⚽ Bireysel"],["ders","🎓 Ders"],["login","🔐 Login"],["onboard","👋 Onboard"]].map(([p,l])=>
+          {[["etkinlik","🏆 Etkinlik"],["oyna","⚽ Oyna"],["ders","🎓 Ders"],["login","🔐 Login"],["onboard","👋 Onboard"]].map(([p,l])=>
             <button key={p} onClick={()=>{if(p==="onboard"){setObStep(0);}if(p==="login"){setLogged(false);}nav(p);}} style={{padding:"6px 12px",borderRadius:8,border:`1px solid ${C.b}`,background:pg===p?C.ad:C.s,color:pg===p?C.a:C.d,fontSize:11,fontWeight:600,cursor:"pointer"}}>{l}</button>
           )}
         </div>
