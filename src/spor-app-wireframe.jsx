@@ -1,9 +1,16 @@
 import { useState, useCallback } from "react";
 
 const C = {
-  bg:"#0B0F14",s:"#11161D",s2:"#161C24",b:"#232A34",
-  t:"#e8e8f0",d:"#5A6478",a:"#C8FF00",ad:"rgba(200,255,0,0.12)",
-  r:"#EF4444",bl:"#2D6BFF",p:"#2D6BFF",tl:"#2D6BFF",o:"#F59E0B",g:"#22C55E",w:"#fff"
+  // Yüzeyler
+  bg:"#F7F9FC", s:"#FFFFFF",  s2:"#F1F4F8", b:"#E6EAF0",
+  // Metin
+  t:"#0F172A",  d:"#475569",  d2:"#94A3B8", dis:"#CBD5E1",
+  // Accent
+  a:"#B7F000",  ap:"#A3DB00", ad:"rgba(183,240,0,0.12)", at:"#5A7A00",
+  // Durum
+  r:"#EF4444",  bl:"#3B82F6", o:"#F59E0B",  g:"#22C55E",
+  // Sabit
+  bk:"#0B0F14", w:"#fff",
 };
 
 const events=[
@@ -28,21 +35,54 @@ const msgs=[
   {id:3,name:"Zen Studio",last:"Rezervasyonunuz onaylandı ✓",time:"Pzt",unread:1,av:"ZS"},
 ];
 const notifs=[
-  {id:1,txt:"Halısaha Maçı başvurunuz onaylandı!",time:"2 saat önce",t:"ok"},
-  {id:2,txt:"Yeni padel dersi eklendi: Beşiktaş Academy",time:"5 saat önce",t:"info"},
-  {id:3,txt:"İstanbul Maratonu kayıtları başladı!",time:"Dün",t:"info"},
-  {id:4,txt:"Can D. seni Basketbol etkinliğine davet etti",time:"Dün",t:"inv"},
+  {id:1,txt:"Halısaha Maçı başvurunuz onaylandı!",time:"2 saat önce",t:"ok", linkPg:"act-det",linkDet:acts[0]},
+  {id:2,txt:"Yeni padel dersi eklendi: Beşiktaş Academy",time:"5 saat önce",t:"info",linkPg:"ders-det",linkDet:lessons[0]},
+  {id:3,txt:"İstanbul Maratonu kayıtları başladı!",time:"Dün",t:"info",linkPg:"evt-det",linkDet:events[0]},
+  {id:4,txt:"Can D. seni Basketbol etkinliğine davet etti",time:"Dün",t:"inv", linkPg:"act-det",linkDet:acts[2]},
 ];
+const friends=[
+  {id:1,name:"Ahmet K.",sport:"Futbol",av:"AK"},
+  {id:2,name:"Elif S.",sport:"Tenis",av:"ES"},
+  {id:3,name:"Can D.",sport:"Basketbol",av:"CD"},
+  {id:4,name:"Mert Y.",sport:"Koşu",av:"MY"},
+];
+const users={
+  "Ahmet K.":{name:"Ahmet K.",av:"AK",sport:"Futbol",city:"İstanbul",scores:{sp:4.6,kg:88,org:null},badges:["Güvenilir Sporcu 🏅"],acts:12},
+  "Elif S.":{name:"Elif S.",av:"ES",sport:"Tenis",city:"İstanbul",scores:{sp:4.8,kg:95,org:4.3},badges:["Güvenilir Sporcu 🏅","Maç Kurucusu 🎤"],acts:8},
+  "Can D.":{name:"Can D.",av:"CD",sport:"Basketbol",city:"İstanbul",scores:{sp:4.3,kg:75,org:null},badges:[],acts:5},
+  "Mert Y.":{name:"Mert Y.",av:"MY",sport:"Koşu",city:"İstanbul",scores:{sp:4.5,kg:82,org:null},badges:[],acts:7},
+};
+// Yaklaşan aktiviteler (gelecek tarihli)
+const myUpcoming=[
+  {e:"⚽",t:"Halısaha Maçı",d:"28 Şub Cts 19:00",st:"Onaylandı",stC:"g",det:{...acts[0]}},
+  {e:"🏃",t:"İstanbul Maratonu",d:"1 Kas 2026",st:"Kayıtlı",stC:"g",det:{...events[0]}},
+  {e:"🎾",t:"Padel Dersi",d:"5 Mar Sal 12:00",st:"Onay bekliyor",stC:"o",det:{...lessons[0]}},
+];
+// Geçmiş aktiviteler (tamamlanmış)
+const myPast=[
+  {e:"🏀",t:"3v3 Basketbol",d:"10 Şub Pzt 18:00",st:"Tamamlandı",stC:"d",rated:true},
+  {e:"🎾",t:"Tenis Kort Arkadaşı",d:"15 Şub Cts 19:00",st:"Tamamlandı",stC:"d",rated:false},
+  {e:"🧘",t:"Sabah Yoga Grubu",d:"18 Şub Sal 08:00",st:"Tamamlandı",stC:"d",rated:true},
+];
+
 const sportF=["Hepsi","Futbol","Tenis","Basketbol","Padel","Yoga"];
 const cityF=["Tüm Şehirler","İstanbul","Ankara","İzmir","Antalya"];
 const levels=["Başlangıç","Orta","İyi","Profesyonel"];
 const sportGrid=[{e:"⚽",n:"Futbol"},{e:"🎾",n:"Tenis"},{e:"🏀",n:"Basketbol"},{e:"🏐",n:"Voleybol"},{e:"♟️",n:"Satranç"},{e:"🏓",n:"Masa Tenisi"},{e:"🎱",n:"Padel"},{e:"➕",n:"Diğer"}];
 const favSports=["⚽ Futbol","🎾 Tenis","🏀 Basketbol","🏐 Voleybol","🏃 Koşu","🧘 Yoga","🏊 Yüzme","♟️ Satranç","🏋️ Fitness"];
 
+const LogoSvg = () => (
+  <svg width="26" height="15" viewBox="0 0 70 40" fill="none">
+    <path d="M42.1261 8.00107C42.5309 7.98553 42.9239 8.1395 43.2104 8.42596L53.0909 18.3066L59.3353 12.0624C59.9033 11.4944 60.8242 11.4944 61.3923 12.0624C61.9603 12.6305 61.9603 13.5514 61.3923 14.1194L54.1195 21.3922C53.5515 21.9602 52.6305 21.9602 52.0625 21.3922L42.264 11.5937L32.3772 23.1284C32.1135 23.436 31.7335 23.6197 31.3286 23.6353C30.9238 23.6508 30.5308 23.4969 30.2443 23.2104L20.2745 13.2405L10.3858 21.4811C9.76863 21.9954 8.85147 21.9119 8.33719 21.2948C7.82292 20.6777 7.90624 19.7606 8.52335 19.2463L19.4324 10.1553L19.4875 10.1116C20.0633 9.6766 20.8769 9.72895 21.3922 10.2443L31.1905 20.0425L41.0775 8.50794C41.3412 8.20033 41.7212 8.01663 42.1261 8.00107Z" fill="#5A7A00"/>
+    <path opacity="0.3" d="M42.154 17.8187C42.3564 17.811 42.553 17.888 42.6962 18.0312L53.091 28.426L59.8495 21.6676C60.1335 21.3835 60.5941 21.3835 60.8781 21.6676C61.1621 21.9516 61.1621 22.4121 60.8781 22.6962L53.6053 29.9688C53.3213 30.2528 52.8609 30.2528 52.5769 29.9688L42.2229 19.615L31.825 31.746C31.6932 31.8998 31.5032 31.9917 31.3008 31.9995C31.0984 32.0072 30.9018 31.9303 30.7585 31.7871L20.319 21.3475L9.92012 30.0133C9.61156 30.2704 9.15297 30.2288 8.89584 29.9202C8.6387 29.6117 8.68049 29.1531 8.98906 28.896L19.8981 19.805L19.9256 19.7831C20.2135 19.5656 20.6202 19.5918 20.8779 19.8494L31.2317 30.2031L41.6298 18.0722L41.6552 18.044C41.7854 17.9072 41.9642 17.826 42.154 17.8187Z" fill="#5A7A00"/>
+  </svg>
+);
+
 const Ico = {
   back: <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>,
   menu: <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>,
   msg: <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>,
+  bell: <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
   x: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
   plus: <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>,
   send: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>,
@@ -90,36 +130,43 @@ export default function App() {
 
   // Styles
   const sty = {
-    phone:{width:375,height:812,background:C.bg,borderRadius:44,overflow:"hidden",position:"relative",display:"flex",flexDirection:"column",border:`3px solid ${C.b}`,boxShadow:"0 0 80px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05)"},
+    phone:{width:375,height:812,background:C.bg,borderRadius:44,overflow:"hidden",position:"relative",display:"flex",flexDirection:"column",border:`3px solid ${C.b}`,boxShadow:"0 8px 48px rgba(0,0,0,0.12)",fontFamily:"SF Pro Display,-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif"},
     topB:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px",background:C.s,borderBottom:`1px solid ${C.b}`,minHeight:54,flexShrink:0},
     cnt:{flex:1,overflowY:"auto",overflowX:"hidden"},
     tabB:{display:"flex",borderTop:`1px solid ${C.b}`,background:C.s,flexShrink:0},
     tab:{flex:1,display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 0 8px",cursor:"pointer",gap:3},
     pill:{display:"inline-flex",padding:"7px 16px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",border:`1px solid ${C.b}`,background:C.s2,color:C.d,whiteSpace:"nowrap",transition:"all .15s"},
     pillA:{background:C.ad,color:C.a,borderColor:C.a},
-    card:{background:C.s,border:`1px solid ${C.b}`,borderRadius:14,margin:"0 16px 12px",overflow:"hidden",cursor:"pointer",transition:"border-color .2s"},
+    card:{background:C.s,border:`1px solid ${C.b}`,borderRadius:14,margin:"0 16px 12px",overflow:"hidden",cursor:"pointer",transition:"border-color .2s",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"},
     cb:{padding:"14px 16px"},
     img:{width:"100%",height:160,background:`linear-gradient(135deg,${C.s2},${C.b})`,display:"flex",alignItems:"center",justifyContent:"center",color:C.d},
-    fab:{position:"absolute",bottom:80,right:20,width:56,height:56,borderRadius:16,background:C.a,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 4px 24px rgba(200,255,0,0.3)",color:C.bg,zIndex:10},
+    fab:{position:"absolute",bottom:80,right:20,width:56,height:56,borderRadius:16,background:C.a,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 4px 20px rgba(183,240,0,0.35)",color:C.bk,zIndex:10},
     btn:{width:"100%",padding:"14px",borderRadius:12,border:"none",fontSize:15,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8},
     inp:{width:"100%",padding:"12px 16px",borderRadius:10,border:`1px solid ${C.b}`,background:C.s2,color:C.t,fontSize:14,outline:"none",boxSizing:"border-box"},
     av:{width:40,height:40,borderRadius:"50%",background:`linear-gradient(135deg,#1a4bcc,${C.bl})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:C.w,flexShrink:0},
     tag:{display:"inline-flex",padding:"4px 10px",borderRadius:8,fontSize:11,fontWeight:600,background:C.ad,color:C.a,marginRight:6},
-    bSheet:{position:"absolute",bottom:0,left:0,right:0,background:C.s,borderTop:`1px solid ${C.b}`,borderRadius:"20px 20px 0 0",padding:"24px 20px",zIndex:20},
-    overlay:{position:"absolute",inset:0,background:"rgba(0,0,0,0.6)",zIndex:15},
+    bSheet:{position:"absolute",bottom:0,left:0,right:0,background:C.s,borderTop:`1px solid ${C.b}`,borderRadius:"20px 20px 0 0",padding:"24px 20px",zIndex:20,boxShadow:"0 -4px 24px rgba(0,0,0,0.08)"},
+    overlay:{position:"absolute",inset:0,background:"rgba(15,23,42,0.4)",zIndex:15},
     ic:{width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:C.d,borderRadius:10},
     sub:{fontSize:12,color:C.d,display:"flex",alignItems:"center",gap:5},
     mi:{display:"flex",alignItems:"center",gap:14,padding:"16px 20px",borderBottom:`1px solid ${C.b}`,cursor:"pointer",color:C.t,fontSize:14,fontWeight:500},
     badge:{background:C.r,color:C.w,fontSize:9,fontWeight:700,borderRadius:10,padding:"1px 5px",position:"absolute",top:-2,right:-2,minWidth:14,textAlign:"center"},
   };
 
+  // ---- Status badge colors ----
+  const stColor = (stC) => stC==="g" ? C.g : stC==="o" ? C.o : C.d;
+  const stBg    = (stC) => stC==="g" ? "rgba(34,197,94,0.15)" : stC==="o" ? "rgba(245,158,11,0.15)" : "rgba(71,85,105,0.12)";
+
   const TopBar = ({title, showBack, right}) => (
     <div style={sty.topB}>
       {showBack ? <div style={sty.ic} onClick={back}>{Ico.back}</div> :
-        <div style={{fontSize:18,fontWeight:800,color:C.a,letterSpacing:-0.5}}>Spor APP</div>}
+        <div style={{display:"flex",alignItems:"center",gap:6}}><LogoSvg/><span style={{fontSize:18,fontWeight:800,color:C.at,letterSpacing:-0.5}}>Sporwave</span></div>}
       <div style={{fontSize:16,fontWeight:700,color:C.t}}>{showBack ? title : ""}</div>
       <div style={{display:"flex",gap:4}}>
         {right || <>
+          <div style={{...sty.ic,position:"relative"}} onClick={()=>reqLog(()=>nav("bildirimler"))}>
+            {Ico.bell}{logged && <div style={sty.badge}>4</div>}
+          </div>
           <div style={{...sty.ic,position:"relative"}} onClick={()=>reqLog(()=>nav("mesajlar"))}>
             {Ico.msg}{logged && <div style={sty.badge}>3</div>}
           </div>
@@ -184,7 +231,7 @@ export default function App() {
         <p style={{fontSize:13,color:C.d,lineHeight:1.7,marginBottom:20}}>Bu etkinlik hakkında detaylı bilgi, katılım koşulları, parkur bilgisi ve kayıt detayları burada yer alacaktır. Etkinlik organizatörü tarafından eklenen açıklama metni.</p>
         <div style={{background:C.s2,borderRadius:12,height:100,display:"flex",alignItems:"center",justifyContent:"center",color:C.d,fontSize:12,marginBottom:20,border:`1px dashed ${C.b}`}}>📍 Konum Haritası</div>
         <div style={{display:"flex",gap:10}}>
-          <button style={{...sty.btn,background:C.a,color:C.bg,flex:2}} onClick={()=>reqLog()}>Kayıt Ol</button>
+          <button style={{...sty.btn,background:C.a,color:C.bk,flex:2}} onClick={()=>reqLog()}>Kayıt Ol</button>
           <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}}>Paylaş</button>
         </div>
       </div>
@@ -211,7 +258,7 @@ export default function App() {
               <div style={sty.sub}>{Ico.cal}<span>{a.date} {a.time}</span></div>
             </div>
             {a.mode==="approve" && <div style={{marginTop:8}}>
-              <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,background:"rgba(45,107,255,0.15)",color:C.bl,fontWeight:600}}>Onay gerekli</span>
+              <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,background:"rgba(59,130,246,0.12)",color:C.bl,fontWeight:600}}>Onay gerekli</span>
             </div>}
           </div>
         </div>
@@ -238,15 +285,30 @@ export default function App() {
         </div>
         <div style={{marginBottom:20}}>
           <div style={{fontSize:14,fontWeight:700,color:C.t,marginBottom:10}}>Oluşturan</div>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer"}} onClick={()=>nav("kullanici-profil",users[a.owner]||{name:a.owner,av:a.owner.substring(0,2),sport:a.sport,city:a.city,scores:{sp:4.2,kg:85,org:4.0},badges:[],acts:6})}>
             <Av name={a.owner}/><div><div style={{fontSize:14,fontWeight:600,color:C.t}}>{a.owner}</div><div style={{fontSize:12,color:C.d}}>Organizatör</div></div>
           </div>
         </div>
         <div style={{marginBottom:20}}>
           <div style={{fontSize:14,fontWeight:700,color:C.t,marginBottom:10}}>Katılımcılar ({a.cur}/{a.max})</div>
-          <div style={{display:"flex"}}>{Array.from({length:a.cur}).map((_,i)=><Av key={i} name={String.fromCharCode(65+i)+" "+String.fromCharCode(75+i)} size={34} bg={`hsl(${i*60+200},60%,50%)`}/>)}</div>
+          <div style={{display:"flex",gap:4}}>
+            {Array.from({length:a.cur}).map((_,i)=>{
+              const n=String.fromCharCode(65+i)+" "+String.fromCharCode(75+i);
+              return <div key={i} style={{cursor:"pointer"}} onClick={()=>nav("kullanici-profil",{name:n,av:String.fromCharCode(65+i)+""+String.fromCharCode(75+i),sport:a.sport,city:a.city,scores:{sp:3.8+i*0.1,kg:70+i*4,org:null},badges:[],acts:2+i})}>
+                <Av name={n} size={34} bg={`hsl(${i*60+200},60%,50%)`}/>
+              </div>;
+            })}
+          </div>
         </div>
-        <button style={{...sty.btn,background:C.a,color:C.bg}} onClick={()=>reqLog(()=>setSheet("lv"))}>Katıl ({a.max-a.cur} kişilik yer var)</button>
+        {/* Butonlar: Katıl + Mesaj Gönder */}
+        <div style={{display:"flex",gap:10}}>
+          <button style={{...sty.btn,background:C.a,color:C.bk,flex:2}} onClick={()=>reqLog(()=>setSheet("lv"))}>
+            Katıl ({a.max-a.cur} yer var)
+          </button>
+          <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}} onClick={()=>reqLog(()=>nav("sohbet",{name:a.owner,av:a.owner.substring(0,2)}))}>
+            Mesaj
+          </button>
+        </div>
       </div>
     </div>
     {sheet==="lv"&&<>
@@ -255,7 +317,7 @@ export default function App() {
         <div style={{fontSize:16,fontWeight:800,color:C.t,marginBottom:4}}>Deneyim Seviyeniz</div>
         <div style={{fontSize:12,color:C.d,marginBottom:16}}>Aktivite sahibinin sizi değerlendirebilmesi için seviyenizi seçin</div>
         {levels.map(l=><button key={l} onClick={()=>setSelLv(l)} style={{display:"block",width:"100%",padding:"14px 16px",borderRadius:12,border:`1px solid ${selLv===l?C.a:C.b}`,background:selLv===l?C.ad:C.s2,color:C.t,cursor:"pointer",textAlign:"left",fontSize:14,fontWeight:500,marginBottom:8,boxSizing:"border-box"}}>{l}</button>)}
-        <button style={{...sty.btn,background:C.a,color:C.bg,marginTop:8}} onClick={()=>{setSheet(null);setSelLv(null);}}>
+        <button style={{...sty.btn,background:C.a,color:C.bk,marginTop:8}} onClick={()=>{setSheet(null);setSelLv(null);}}>
           {det?.mode==="approve"?"Başvuru Gönder":"Katıl"}
         </button>
       </div>
@@ -287,7 +349,7 @@ export default function App() {
           <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:16}}>Detayları gir</div>
           <div style={{marginBottom:14}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Başlık</label><input style={sty.inp} placeholder="Örn: Halısaha Maçı"/></div>
           <div style={{marginBottom:20}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Açıklama</label><textarea style={{...sty.inp,height:100,resize:"none"}} placeholder="Aktivitenizi tanımlayın..."/></div>
-          <button style={{...sty.btn,background:C.a,color:C.bg}} onClick={()=>setCStep(2)}>Devam</button>
+          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>setCStep(2)}>Devam</button>
         </>}
         {cStep===2&&<>
           <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:16}}>Tarih & Konum</div>
@@ -296,7 +358,7 @@ export default function App() {
           <div style={{marginBottom:20}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Konum</label><input style={sty.inp} placeholder="Adres veya mekan adı"/>
             <div style={{height:80,background:C.s2,borderRadius:8,marginTop:8,display:"flex",alignItems:"center",justifyContent:"center",color:C.d,fontSize:12,border:`1px dashed ${C.b}`}}>📍 Haritadan seç</div>
           </div>
-          <button style={{...sty.btn,background:C.a,color:C.bg}} onClick={()=>setCStep(3)}>Devam</button>
+          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>setCStep(3)}>Devam</button>
         </>}
         {cStep===3&&<>
           <div style={{fontSize:18,fontWeight:800,color:C.t,marginBottom:16}}>Ayarlar</div>
@@ -312,7 +374,7 @@ export default function App() {
               </div>
             )}
           </div>
-          <button style={{...sty.btn,background:C.a,color:C.bg}} onClick={()=>{nav("bireysel");setCStep(0);}}>Yayınla 🚀</button>
+          <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{nav("bireysel");setCStep(0);}}>Yayınla 🚀</button>
         </>}
       </div>
     </div></>
@@ -349,7 +411,7 @@ export default function App() {
           <div style={{display:"flex",alignItems:"center",gap:3}}>{Ico.star}<span style={{fontSize:15,fontWeight:700,color:C.t}}>{l.r}</span></div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-          <Av name={l.fac} size={36} bg={`linear-gradient(135deg,${C.tl},${C.bl})`}/>
+          <Av name={l.fac} size={36} bg={`linear-gradient(135deg,${C.bl},${C.bl})`}/>
           <div><div style={{fontSize:14,fontWeight:600,color:C.t}}>{l.fac}</div><div style={{fontSize:12,color:C.g}}>Doğrulanmış Tesis ✓</div></div>
         </div>
         <p style={{fontSize:13,color:C.d,lineHeight:1.7,marginBottom:16}}>{l.desc}</p>
@@ -364,7 +426,7 @@ export default function App() {
           </div>
         </div>
         <div style={{display:"flex",gap:10}}>
-          <button style={{...sty.btn,background:C.a,color:C.bg,flex:2}} onClick={()=>reqLog()}>Rezervasyon Yap</button>
+          <button style={{...sty.btn,background:C.a,color:C.bk,flex:2}} onClick={()=>reqLog()}>Rezervasyon Yap</button>
           <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}} onClick={()=>reqLog(()=>nav("sohbet",{name:l.fac,av:l.fac.substring(0,2)}))}>Mesaj</button>
         </div>
       </div>
@@ -374,14 +436,31 @@ export default function App() {
   const PageProfil = () => (
     <><TopBar/><div style={sty.cnt}>
       <div style={{padding:20,textAlign:"center"}}>
-        <Av name="Berk K" size={80} bg={`linear-gradient(135deg,${C.a},${C.tl})`}/>
+        <div style={{display:"flex",justifyContent:"center"}}>
+          <Av name="Berk K" size={80} bg={`linear-gradient(135deg,${C.a},${C.bl})`}/>
+        </div>
         <div style={{fontSize:20,fontWeight:800,color:C.t,marginTop:12}}>Berk K.</div>
         <div style={{fontSize:13,color:C.d,marginBottom:12}}>İstanbul</div>
-        <div style={{display:"flex",justifyContent:"center",gap:24,marginBottom:16}}>
-          <div style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:800,color:C.a}}>12</div><div style={{fontSize:11,color:C.d}}>Etkinlik</div></div>
-          <div style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:800,color:C.a}}>5</div><div style={{fontSize:11,color:C.d}}>Arkadaş</div></div>
+        <div style={{display:"flex",justifyContent:"center",gap:24,marginBottom:14}}>
+          <div style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:800,color:C.at}}>12</div><div style={{fontSize:11,color:C.d}}>Etkinlik</div></div>
+          <div style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:800,color:C.at}}>5</div><div style={{fontSize:11,color:C.d}}>Arkadaş</div></div>
         </div>
-        <div style={{display:"flex",justifyContent:"center",gap:6,flexWrap:"wrap",marginBottom:16}}>
+        {/* Güven & Skor kartları */}
+        <div style={{display:"flex",gap:6,marginBottom:10}}>
+          {[{ic:"⭐",val:"4.7",lbl:"Sportmenlik"},{ic:"📍",val:"%91",lbl:"Katılım Güveni"},{ic:"🎤",val:"4.5",lbl:"Organizasyon"}].map(s=>(
+            <div key={s.lbl} style={{flex:1,background:C.s2,borderRadius:12,padding:"10px 6px",border:`1px solid ${C.b}`,textAlign:"center"}}>
+              <div style={{fontSize:15,fontWeight:800,color:C.t}}>{s.ic} {s.val}</div>
+              <div style={{fontSize:9,color:C.d,marginTop:2}}>{s.lbl}</div>
+            </div>
+          ))}
+        </div>
+        {/* Rozetler */}
+        <div style={{display:"flex",justifyContent:"center",gap:6,flexWrap:"wrap",marginBottom:10}}>
+          {["Güvenilir Sporcu 🏅","Maç Kurucusu 🎤","100 Eşleşme ⚡"].map(b=>(
+            <span key={b} style={{fontSize:10,padding:"4px 10px",borderRadius:8,background:C.ad,color:C.at,fontWeight:600}}>{b}</span>
+          ))}
+        </div>
+        <div style={{display:"flex",justifyContent:"center",gap:6,flexWrap:"wrap",marginBottom:12}}>
           {["Tenis","Futbol","Koşu"].map(s=><span key={s} style={sty.tag}>{s}</span>)}
         </div>
         <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,maxWidth:200,margin:"0 auto"}} onClick={()=>nav("profil-edit")}>Profili Düzenle</button>
@@ -390,14 +469,38 @@ export default function App() {
         {["yaklaşan","geçmiş"].map(t=><div key={t} onClick={()=>setPtab(t)} style={{flex:1,textAlign:"center",padding:"12px 0",cursor:"pointer",borderBottom:`2px solid ${ptab===t?C.a:"transparent"}`,color:ptab===t?C.a:C.d,fontSize:14,fontWeight:600,textTransform:"capitalize"}}>{t==="yaklaşan"?"Yaklaşan":"Geçmiş"}</div>)}
       </div>
       <div style={{padding:16}}>
-        {ptab==="yaklaşan"?<>
-          {[{e:"⚽",t:"Halısaha Maçı",d:"21 Şub Cts 19:00"},{e:"🏃",t:"İstanbul Maratonu",d:"1 Kas 2026"}].map((a,i)=>
-            <div key={i} style={{...sty.card,margin:"0 0 10px"}}><div style={sty.cb}>
-              <div style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:18}}>{a.e}</span><span style={{fontSize:13,fontWeight:600,color:C.t}}>{a.t}</span></div>
-              <div style={{...sty.sub,marginTop:6}}>{Ico.cal}<span>{a.d}</span></div>
-            </div></div>
+        {ptab==="yaklaşan" ? <>
+          {myUpcoming.map((a,i)=>
+            <div key={i} style={{...sty.card,margin:"0 0 10px"}} onClick={()=>a.det&&nav(a.e==="🏃"?"evt-det":a.e==="🎾"?"ders-det":"act-det", a.det)}>
+              <div style={sty.cb}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{fontSize:18}}>{a.e}</span>
+                    <div><div style={{fontSize:13,fontWeight:600,color:C.t}}>{a.t}</div><div style={{fontSize:11,color:C.d}}>{a.d}</div></div>
+                  </div>
+                  <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:stBg(a.stC),color:stColor(a.stC)}}>{a.st}</span>
+                </div>
+              </div>
+            </div>
           )}
-        </>:<div style={{textAlign:"center",padding:30,color:C.d,fontSize:13}}>Henüz geçmiş etkinliğiniz yok</div>}
+        </> : <>
+          {myPast.map((a,i)=>
+            <div key={i} style={{...sty.card,margin:"0 0 10px"}}>
+              <div style={sty.cb}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{fontSize:18}}>{a.e}</span>
+                    <div><div style={{fontSize:13,fontWeight:600,color:C.t}}>{a.t}</div><div style={{fontSize:11,color:C.d}}>{a.d}</div></div>
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
+                    <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:"rgba(71,85,105,0.12)",color:C.d}}>{a.st}</span>
+                    {!a.rated && <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:"rgba(245,158,11,0.15)",color:C.o}}>Puan ver ⭐</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </>}
       </div>
     </div><TabBar/></>
   );
@@ -406,12 +509,12 @@ export default function App() {
     <><TopBar title="" showBack right={<div style={{width:36}}/>}/><div style={sty.cnt}>
       <div style={{padding:"40px 24px"}}>
         <div style={{textAlign:"center",marginBottom:40}}>
-          <div style={{fontSize:32,fontWeight:800,color:C.a,marginBottom:4}}>Spor APP</div>
+          <div style={{fontSize:32,fontWeight:800,color:C.a,marginBottom:4}}>Sporwave</div>
           <div style={{fontSize:14,color:C.d}}>Spor arkadaşını bul, harekete geç!</div>
         </div>
         <div style={{marginBottom:14}}><input style={sty.inp} placeholder="E-posta adresi"/></div>
         <div style={{marginBottom:20}}><input style={sty.inp} type="password" placeholder="Şifre"/></div>
-        <button style={{...sty.btn,background:C.a,color:C.bg,marginBottom:12}} onClick={()=>{setLogged(true);back();}}>Giriş Yap</button>
+        <button style={{...sty.btn,background:C.a,color:C.bk,marginBottom:12}} onClick={()=>{setLogged(true);back();}}>Giriş Yap</button>
         <div style={{textAlign:"center",marginBottom:20}}><span style={{fontSize:13,color:C.d,cursor:"pointer"}}>Şifremi Unuttum</span></div>
         <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
           <div style={{flex:1,height:1,background:C.b}}/><span style={{fontSize:12,color:C.d}}>veya</span><div style={{flex:1,height:1,background:C.b}}/>
@@ -436,7 +539,7 @@ export default function App() {
           </div>
           <span style={{fontSize:12,color:C.d,lineHeight:1.5}}>Kullanım şartlarını ve KVKK aydınlatma metnini okudum, kabul ediyorum.</span>
         </div>
-        <button style={{...sty.btn,background:C.a,color:C.bg}} onClick={()=>{setLogged(true);nav("onboard");}}>Kayıt Ol</button>
+        <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>{setLogged(true);nav("onboard");}}>Kayıt Ol</button>
       </div>
     </div></>
   );
@@ -464,7 +567,7 @@ export default function App() {
         <div style={{display:"flex",gap:4,marginBottom:30}}>{steps.map((_,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:i<=obStep?C.a:C.b}}/>)}</div>
         <div style={{fontSize:22,fontWeight:800,color:C.t,marginBottom:24}}>{steps[obStep].t}</div>
         {steps[obStep].c}
-        <button style={{...sty.btn,background:C.a,color:C.bg,marginTop:30}} onClick={()=>{
+        <button style={{...sty.btn,background:C.a,color:C.bk,marginTop:30}} onClick={()=>{
           if(obStep<steps.length-1)setObStep(obStep+1);else{setObStep(0);nav("etkinlik");}
         }}>{obStep<steps.length-1?"Devam":"Başla! 🚀"}</button>
       </div>
@@ -475,14 +578,17 @@ export default function App() {
     <><TopBar title="Mesajlar" showBack/><div style={sty.cnt}>
       {msgs.map(m=>(
         <div key={m.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 20px",borderBottom:`1px solid ${C.b}`,cursor:"pointer"}} onClick={()=>nav("sohbet",m)}>
-          <Av name={m.name}/><div style={{flex:1,minWidth:0}}>
+          <div onClick={e=>{e.stopPropagation();nav("kullanici-profil",users[m.name]||{name:m.name,av:m.av,sport:"Sporcu",city:"İstanbul",scores:{sp:4.0,kg:80,org:null},badges:[],acts:3});}}>
+            <Av name={m.name}/>
+          </div>
+          <div style={{flex:1,minWidth:0}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
               <span style={{fontSize:14,fontWeight:600,color:C.t}}>{m.name}</span>
               <span style={{fontSize:11,color:C.d}}>{m.time}</span>
             </div>
             <div style={{fontSize:13,color:C.d,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{m.last}</div>
           </div>
-          {m.unread>0&&<div style={{width:20,height:20,borderRadius:"50%",background:C.a,color:C.bg,fontSize:11,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center"}}>{m.unread}</div>}
+          {m.unread>0&&<div style={{width:20,height:20,borderRadius:"50%",background:C.a,color:C.bk,fontSize:11,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center"}}>{m.unread}</div>}
         </div>
       ))}
     </div></>
@@ -496,7 +602,7 @@ export default function App() {
       <div style={{...sty.cnt,display:"flex",flexDirection:"column"}}>
         <div style={{flex:1,padding:16,display:"flex",flexDirection:"column",gap:10,justifyContent:"flex-end"}}>
           {sm.map((m,i)=><div key={i} style={{display:"flex",justifyContent:m.f==="m"?"flex-end":"flex-start"}}>
-            <div style={{maxWidth:"75%",padding:"10px 14px",borderRadius:m.f==="m"?"14px 14px 4px 14px":"14px 14px 14px 4px",background:m.f==="m"?C.a:C.s2,color:m.f==="m"?C.bg:C.t,fontSize:14}}>
+            <div style={{maxWidth:"75%",padding:"10px 14px",borderRadius:m.f==="m"?"14px 14px 4px 14px":"14px 14px 14px 4px",background:m.f==="m"?C.a:C.s2,color:m.f==="m"?C.bk:C.t,fontSize:14}}>
               <div>{m.t}</div><div style={{fontSize:10,marginTop:4,opacity:.6,textAlign:"right"}}>{m.h}</div>
             </div>
           </div>)}
@@ -512,15 +618,74 @@ export default function App() {
   const PageBildirimler = () => (
     <><TopBar title="Bildirimler" showBack/><div style={sty.cnt}>
       {notifs.map(n=>(
-        <div key={n.id} style={{padding:"14px 20px",borderBottom:`1px solid ${C.b}`,display:"flex",gap:12,alignItems:"flex-start"}}>
-          <div style={{width:36,height:36,borderRadius:10,background:n.t==="ok"?"rgba(34,197,94,0.15)":n.t==="inv"?"rgba(45,107,255,0.15)":"rgba(45,107,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>
+        <div key={n.id} style={{padding:"14px 20px",borderBottom:`1px solid ${C.b}`,display:"flex",gap:12,alignItems:"flex-start",cursor:n.linkPg?"pointer":"default"}}
+          onClick={()=>n.linkPg&&nav(n.linkPg,n.linkDet)}>
+          <div style={{width:36,height:36,borderRadius:10,background:n.t==="ok"?"rgba(34,197,94,0.15)":n.t==="inv"?"rgba(59,130,246,0.12)":"rgba(59,130,246,0.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>
             {n.t==="ok"?"✓":n.t==="inv"?"👤":"🔔"}
           </div>
-          <div><div style={{fontSize:13,color:C.t,lineHeight:1.5}}>{n.txt}</div><div style={{fontSize:11,color:C.d,marginTop:4}}>{n.time}</div></div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,color:C.t,lineHeight:1.5}}>{n.txt}</div>
+            <div style={{fontSize:11,color:C.d,marginTop:4}}>{n.time}</div>
+            {n.linkPg&&<div style={{fontSize:11,color:C.at,fontWeight:600,marginTop:4}}>Detaya git →</div>}
+          </div>
         </div>
       ))}
     </div></>
   );
+
+  // Yeni: Arkadaşlarım kendi sayfası (mesajlar değil)
+  const PageArkadaslarim = () => (
+    <><TopBar title="Arkadaşlarım" showBack/><div style={sty.cnt}>
+      <div style={{padding:"12px 16px 0"}}>
+        <input style={sty.inp} placeholder="Arkadaş ara..."/>
+      </div>
+      {friends.map(f=>(
+        <div key={f.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 20px",borderBottom:`1px solid ${C.b}`,cursor:"pointer"}} onClick={()=>nav("kullanici-profil",users[f.name]||{name:f.name,av:f.av,sport:f.sport,city:"İstanbul",scores:{sp:4.0,kg:80,org:null},badges:[],acts:3})}>
+          <Av name={f.name}/>
+          <div style={{flex:1}}>
+            <div style={{fontSize:14,fontWeight:600,color:C.t}}>{f.name}</div>
+            <div style={{fontSize:12,color:C.d}}>{f.sport}</div>
+          </div>
+          <div style={{...sty.ic,color:C.a,border:`1px solid ${C.b}`,borderRadius:10}} onClick={()=>nav("sohbet",{name:f.name,av:f.av,last:""})}>
+            {Ico.msg}
+          </div>
+        </div>
+      ))}
+    </div></>
+  );
+
+  const PageKullaniciProfil = () => {
+    const u = det || {name:"Kullanıcı",av:"KK",sport:"Spor",city:"İstanbul",scores:{sp:4.0,kg:80,org:null},badges:[],acts:3};
+    return (
+    <><TopBar title="Profil" showBack/><div style={sty.cnt}>
+      <div style={{padding:20,textAlign:"center"}}>
+        <Av name={u.name} size={80} bg={`linear-gradient(135deg,${C.a},${C.bl})`}/>
+        <div style={{fontSize:20,fontWeight:800,color:C.t,marginTop:12}}>{u.name}</div>
+        <div style={{fontSize:13,color:C.d,marginBottom:14}}>{u.city} • {u.sport}</div>
+        {/* Skor kartları */}
+        <div style={{display:"flex",gap:6,marginBottom:10}}>
+          <div style={{flex:1,background:C.s2,borderRadius:12,padding:"10px 6px",border:`1px solid ${C.b}`,textAlign:"center"}}>
+            <div style={{fontSize:15,fontWeight:800,color:C.t}}>⭐ {u.scores.sp}</div>
+            <div style={{fontSize:9,color:C.d,marginTop:2}}>Sportmenlik</div>
+          </div>
+          <div style={{flex:1,background:C.s2,borderRadius:12,padding:"10px 6px",border:`1px solid ${C.b}`,textAlign:"center"}}>
+            <div style={{fontSize:15,fontWeight:800,color:C.t}}>📍 %{u.scores.kg}</div>
+            <div style={{fontSize:9,color:C.d,marginTop:2}}>Katılım Güveni</div>
+          </div>
+          {u.scores.org&&<div style={{flex:1,background:C.s2,borderRadius:12,padding:"10px 6px",border:`1px solid ${C.b}`,textAlign:"center"}}>
+            <div style={{fontSize:15,fontWeight:800,color:C.t}}>🎤 {u.scores.org}</div>
+            <div style={{fontSize:9,color:C.d,marginTop:2}}>Organizasyon</div>
+          </div>}
+        </div>
+        {/* Rozetler */}
+        {u.badges.length>0&&<div style={{display:"flex",justifyContent:"center",gap:6,flexWrap:"wrap",marginBottom:10}}>
+          {u.badges.map(b=><span key={b} style={{fontSize:10,padding:"4px 10px",borderRadius:8,background:C.ad,color:C.at,fontWeight:600}}>{b}</span>)}
+        </div>}
+        <div style={{fontSize:12,color:C.d,marginBottom:16}}>{u.acts} aktivite tamamlandı</div>
+        <button style={{...sty.btn,background:C.a,color:C.bk}} onClick={()=>nav("sohbet",{name:u.name,av:u.av,last:""})}>Mesaj Gönder 💬</button>
+      </div>
+    </div></>
+  );};
 
   const PageAktivitelerim = () => (
     <><TopBar title="Aktivitelerim" showBack/><div style={sty.cnt}>
@@ -528,16 +693,38 @@ export default function App() {
         {["Yaklaşan","Geçmiş"].map(t=><div key={t} onClick={()=>setPtab(t.toLowerCase())} style={{flex:1,textAlign:"center",padding:"12px 0",cursor:"pointer",borderBottom:`2px solid ${ptab===t.toLowerCase()?C.a:"transparent"}`,color:ptab===t.toLowerCase()?C.a:C.d,fontSize:14,fontWeight:600}}>{t}</div>)}
       </div>
       <div style={{padding:16}}>
-        {[{e:"⚽",t:"Halısaha Maçı",d:"21 Şub Cts 19:00",st:"Onaylandı"},{e:"🏃",t:"İstanbul Maratonu",d:"1 Kas 2026",st:"Kayıtlı"},{e:"🎾",t:"Padel Dersi",d:"25 Şub Sal 12:00",st:"Onay bekliyor"}].map((a,i)=>
-          <div key={i} style={{...sty.card,margin:"0 0 10px"}}><div style={sty.cb}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{fontSize:18}}>{a.e}</span><div><div style={{fontSize:13,fontWeight:600,color:C.t}}>{a.t}</div><div style={{fontSize:11,color:C.d}}>{a.d}</div></div>
+        {ptab==="yaklaşan" ? <>
+          {myUpcoming.map((a,i)=>
+            <div key={i} style={{...sty.card,margin:"0 0 10px"}} onClick={()=>a.det&&nav(a.e==="🏃"?"evt-det":a.e==="🎾"?"ders-det":"act-det", a.det)}>
+              <div style={sty.cb}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{fontSize:18}}>{a.e}</span>
+                    <div><div style={{fontSize:13,fontWeight:600,color:C.t}}>{a.t}</div><div style={{fontSize:11,color:C.d}}>{a.d}</div></div>
+                  </div>
+                  <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:stBg(a.stC),color:stColor(a.stC)}}>{a.st}</span>
+                </div>
               </div>
-              <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:a.st.includes("Onay bek")?"rgba(255,140,66,0.15)":"rgba(34,197,94,0.15)",color:a.st.includes("Onay bek")?C.o:C.g}}>{a.st}</span>
             </div>
-          </div></div>
-        )}
+          )}
+        </> : <>
+          {myPast.map((a,i)=>
+            <div key={i} style={{...sty.card,margin:"0 0 10px"}}>
+              <div style={sty.cb}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{fontSize:18}}>{a.e}</span>
+                    <div><div style={{fontSize:13,fontWeight:600,color:C.t}}>{a.t}</div><div style={{fontSize:11,color:C.d}}>{a.d}</div></div>
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
+                    <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:"rgba(71,85,105,0.12)",color:C.d}}>{a.st}</span>
+                    {!a.rated && <span style={{fontSize:10,padding:"3px 8px",borderRadius:6,fontWeight:600,background:"rgba(245,158,11,0.15)",color:C.o}}>Puan ver ⭐</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </>}
       </div>
     </div></>
   );
@@ -549,7 +736,7 @@ export default function App() {
         <div style={{fontSize:16,fontWeight:700,color:C.t,marginBottom:8}}>Arkadaşlarını davet et!</div>
         <div style={{fontSize:13,color:C.d,marginBottom:24,lineHeight:1.6}}>Birlikte spor yapmanın keyfini çıkarın.</div>
         <div style={{background:C.s2,border:`1px solid ${C.b}`,borderRadius:10,padding:14,marginBottom:16,fontSize:13,color:C.a,fontWeight:600}}>sporapp.co/davet/BERK2026</div>
-        <button style={{...sty.btn,background:C.a,color:C.bg,marginBottom:10}}>Linki Kopyala</button>
+        <button style={{...sty.btn,background:C.a,color:C.bk,marginBottom:10}}>Linki Kopyala</button>
         <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`}}>WhatsApp ile Paylaş</button>
       </div>
     </div></>
@@ -559,12 +746,17 @@ export default function App() {
     <><TopBar title="Profili Düzenle" showBack/><div style={sty.cnt}>
       <div style={{padding:20}}>
         <div style={{textAlign:"center",marginBottom:24}}>
-          <Av name="Berk K" size={80} bg={`linear-gradient(135deg,${C.a},${C.tl})`}/>
+          <Av name="Berk K" size={80} bg={`linear-gradient(135deg,${C.a},${C.bl})`}/>
           <div style={{fontSize:13,color:C.a,cursor:"pointer",fontWeight:600,marginTop:8}}>Fotoğrafı Değiştir</div>
         </div>
         {[["İsim","Berk"],["Soyisim","K."],["Şehir","İstanbul"]].map(([l,v])=>
           <div key={l} style={{marginBottom:14}}><label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>{l}</label><input style={sty.inp} defaultValue={v}/></div>
         )}
+        {/* Doğum Tarihi — düzenlenebilir */}
+        <div style={{marginBottom:14}}>
+          <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Doğum Tarihi</label>
+          <input style={sty.inp} type="date" defaultValue="1995-06-15"/>
+        </div>
         <div style={{marginBottom:20}}>
           <label style={{fontSize:12,color:C.d,marginBottom:8,display:"block"}}>Favori Sporlar</label>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
@@ -573,7 +765,7 @@ export default function App() {
             )}
           </div>
         </div>
-        <button style={{...sty.btn,background:C.a,color:C.bg}}>Kaydet</button>
+        <button style={{...sty.btn,background:C.a,color:C.bk}}>Kaydet</button>
       </div>
     </div></>
   );
@@ -624,7 +816,8 @@ export default function App() {
       case "onboard": return <PageOnboard/>;
       case "bildirimler": return <PageBildirimler/>;
       case "aktivitelerim": return <PageAktivitelerim/>;
-      case "arkadaslarim": return <PageMesajlar/>;
+      case "arkadaslarim": return <PageArkadaslarim/>;
+      case "kullanici-profil": return <PageKullaniciProfil/>;
       case "davet": return <PageDavet/>;
       case "ayarlar": return <PageAyarlar/>;
       case "yardim": return <PageYardim/>;
@@ -632,7 +825,7 @@ export default function App() {
     }
   };
 
-  // Menu drawer
+  // Menu drawer — Bildirimler menüden kaldırıldı
   const MenuDrawer = () => menu ? <>
     <div style={sty.overlay} onClick={()=>setMenu(false)}/>
     <div style={{position:"absolute",top:0,right:0,bottom:0,width:280,background:C.s,zIndex:30,borderLeft:`1px solid ${C.b}`,display:"flex",flexDirection:"column"}}>
@@ -641,7 +834,7 @@ export default function App() {
         <div style={sty.ic} onClick={()=>setMenu(false)}>{Ico.x}</div>
       </div>
       <div style={{flex:1,overflowY:"auto"}}>
-        {[{l:"Aktivitelerim",p:"aktivitelerim",e:"📅"},{l:"Arkadaşlarım",p:"arkadaslarim",e:"👥"},{l:"Arkadaşlarını Davet Et",p:"davet",e:"📨"},{l:"Bildirimler",p:"bildirimler",e:"🔔"},{l:"Ayarlar",p:"ayarlar",e:"⚙️"},{l:"Yardım & SSS",p:"yardim",e:"❓"}].map(i=>
+        {[{l:"Aktivitelerim",p:"aktivitelerim",e:"📅"},{l:"Arkadaşlarım",p:"arkadaslarim",e:"👥"},{l:"Arkadaşlarını Davet Et",p:"davet",e:"📨"},{l:"Ayarlar",p:"ayarlar",e:"⚙️"},{l:"Yardım & SSS",p:"yardim",e:"❓"}].map(i=>
           <div key={i.p} style={sty.mi} onClick={()=>{if(i.p==="yardim"||logged){setMenu(false);nav(i.p);}else reqLog();}}>
             <span style={{fontSize:18}}>{i.e}</span><span>{i.l}</span><span style={{marginLeft:"auto",color:C.d}}>{Ico.chr}</span>
           </div>
@@ -657,7 +850,7 @@ export default function App() {
     <div style={{minHeight:"100vh",background:"#070A0E",display:"flex",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"system-ui,-apple-system,sans-serif"}}>
       <div>
         <div style={{textAlign:"center",marginBottom:20}}>
-          <h1 style={{fontSize:20,fontWeight:800,color:C.a,margin:0,letterSpacing:-0.5}}>Spor APP Wireframe</h1>
+          <h1 style={{fontSize:20,fontWeight:800,color:C.a,margin:0,letterSpacing:-0.5}}>Sporwave Wireframe</h1>
           <p style={{fontSize:12,color:C.d,margin:"6px 0 0"}}>Tıklayarak sayfalar arası gezin • {logged?"✅ Giriş yapıldı":"🔒 Giriş yapılmadı"} • Sayfa: {pg}</p>
         </div>
         <div style={sty.phone}>
