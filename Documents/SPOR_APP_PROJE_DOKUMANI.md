@@ -287,6 +287,7 @@
 #### S15: Profil Sayfası (Login gerekli — login olmadan bu tab'a basılınca login'e yönlendir)
 - Profil fotoğrafı (büyük, ortalı)
 - İsim soyisim + "Doğrulanmış ✓" rozeti (varsa)
+- İstatistikler (yan yana): Toplam Maç sayısı + Arkadaş sayısı (button tıklayınca arkadaş listesi)
 - Şehir
 - **Skor Kartı** (min. 5 etkinlik sonrası görünür, altında "Yeni" etiketi gösterilir):
   - ⭐ **X.X Sportmenlik** (N değerlendirme) — her zaman gösterilir
@@ -294,7 +295,6 @@
   - 🎤 **X.X Organizasyon** (N etkinlik) — **yalnızca etkinlik düzenleyenlerde** gösterilir
   - Confidence label: `Düşük / Orta / Yüksek` (bkz. Bölüm 14)
 - **Rozetler:** Kazanılan rozetler icon+etiket halinde sıralanır (bkz. Bölüm 14.5)
-- İstatistikler (yan yana): Toplam Maç sayısı + Arkadaş sayısı
 - Favori sporlar (tag'ler halinde)
 - "Profili Düzenle" butonu
 - İki tab: **Yaklaşan** / **Geçmiş**
@@ -631,8 +631,8 @@ Keşfet veya Oyna Feed'de aktiviteye tıkla → Detay sayfası → "Katıl" (log
 ### Akış 4: Etkinliğe Katılma
 ```
 Keşfet veya Etkinlik tab → Etkinliğe tıkla → Detay sayfası
-→ "Kayıt Ol" (login gerekli) → Harici kayıt sitesine yönlendir VEYA uygulama içi kayıt
-→ Etkinlik "Aktivitelerim → Yaklaşan" listesine eklenir
+→ "Kayıt Ol" (login gerekli) → Harici kayıt sitesine yönlendir
+→ Uygulama içi kayıt -> Etkinlik "Aktivitelerim → Yaklaşan" listesine eklenir
 ```
 
 ### Akış 5: Ders Rezervasyonu
@@ -911,7 +911,6 @@ Bayesian_Avg = (C × m + Σ ratings) / (C + n)
 | **Sahte hesap rating** | Telefon doğrulaması zorunlu; yeni hesapların puanları 30 gün boyunca 0.3× ağırlık taşır |
 | **No-show yanlış işaretleme** | 48 saatlik itiraz penceresi; aynı host'tan 3+ itiraz gelirse host admin incelemeye alınır |
 | **Rating spam** | Her kullanıcı bir etkinlik için yalnızca 1 kez puanlama yapabilir |
-| **Rating ring (grup kayırma)** | Aynı grup üyeleri arasında döngüsel yüksek puan tespit edilirse (5+ kişi grubu, hepsi birbirine 5 yıldız) admin flag |
 | **Yeni hesap manipülasyonu** | < 5 etkinlik: skor gösterilmez; < 30 gün: puanlar 0.3× ağırlık |
 
 ---
