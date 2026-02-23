@@ -215,27 +215,49 @@
 - **Üstte:** Şehir filtre pilleri (Tüm Şehirler, İstanbul, Ankara, İzmir, Antalya...)
 - **İçerik:** Dikey kart listesi (scroll)
 - **Her kart:**
-  - Etkinlik banner görseli (tam genişlik)
+  - Etkinlik banner görseli — sol kenarda **kategori renk şeridi** (spor dalı rengi)
+  - **Kaynak rozeti** (sağ üst köşe): 📸 Instagram / 👥 Facebook / ✅ Resmi — kaynak her zaman gösterilir
+  - **Doğrulanmış rozeti** (varsa, sol üst): ✅ Doğrulandı
   - Etkinlik başlığı (bold)
-  - Tarih (ikon + metin)
-  - Şehir (ikon + metin)
+  - Tarih + Saat ve Konum (ilçe, şehir)
+  - **Fiyat** (yeşil = ücretsiz, siyah = ücretli)
+  - **Sosyal kanıt:** "X kişi ilgileniyor" (küçük, gri)
+  - **Son güncelleme** zaman damgası (çok küçük, gri)
 - Tıklandığında → Etkinlik Detay sayfasına git
-- **Not:** İçerik admin panelinden eklenir, tüm Türkiye geneli
+- **Not:** İçerik admin panelinden veya sosyal medya kaynaklarından eklenir; kaynak her zaman atıflanır
 
 #### S06: Etkinlik Detay Sayfası
-- Büyük banner görseli
+- Büyük banner görseli — sol kenarda kategori renk şeridi
+- Kaynak rozeti (sağ üst)
 - Etkinlik başlığı (büyük, bold)
-- Tarih/saat
-- Konum (adres + harita widget)
-- Spor dalı
+- **Doğrulanmış Organizatör rozeti** (varsa): "✅ Doğrulanmış Organizatör"
+- **Kaynak satırı:** "📸 Instagram'dan · @kullanıcıadı · Son doğrulama: X gün önce"
+- Bilgi satırları: 📅 Tarih/Saat · 📍 İlçe, Şehir · 🏷️ Spor dalı chip · 💰 Fiyat
 - Detaylı açıklama (katılım koşulları, parkur bilgisi vb.)
-- Fiyat bilgisi
-- **Katılımcı Listesi** (Etkinlik modülü için gizlilik seviyesi admin tarafından belirlenir):
-  - **Public:** Kayıtlı katılımcılar avatar + isim + Sportmenlik puanı ile görünür → profile tıklanabilir
-  - **Sadece sayı:** "X kişi kayıt oldu" (anonim liste, büyük etkinliklerde default)
-  - Geçmiş etkinlikler: katılımcı listesi salt okunur, aynı gizlilik kuralları geçerli
-- "Kayıt Ol" butonu (uygulama içi kayıt veya harici siteye yönlendirme)
-- "Paylaş" butonu
+- Konum haritası widget
+
+**CTA Hiyerarşisi — 4 Seviye:**
+
+1. **Birincil — Katılım niyeti toggle** (login gerektirmez):
+   - "İlgileniyorum" ↔ "Gidiyorum" (toggle buton çifti)
+   - "Gidiyorum" seçilirse → kullanıcının profilinde **Yaklaşan Etkinlikler** listesine eklenir
+   - Kaç kişi ilgileniyor / gidiyor sayıları her zaman gösterilir
+
+2. **İkincil — Kaydetme** (login gerektirir):
+   - "Etkinliği Kaydet" (yer imi toggle)
+   - "Takvime Ekle" → kullanıcının telefon takvimine etkinliği saat + konum bilgisiyle ekler
+
+3. **Bağlamsal — Kaynağa git** (her zaman görünür):
+   - "📸 Instagram'da Gör" / "👥 Facebook'ta Gör" / "🔗 Resmi Kayıt Sayfası"
+   - Kaynağa göre buton metni değişir; harici URL açılır
+
+4. **Sosyal — Paylaş & Keşfet**:
+   - "Paylaş" butonu → kaynağın linkini paylaşır
+   - **"Kim Gidiyor?"** bölümü: "Gidiyorum" diyen kullanıcıların avatar listesi → profil tıklanabilir
+
+**Güven katmanı:**
+- "Son doğrulama: X gün önce" her zaman gösterilir
+- "Eskimiş, bildir" linki → Raporla sayfasına (S31)
 - Back butonu (üst navbar)
 
 ---
@@ -314,25 +336,36 @@
 - Back butonu
 
 #### S17: Başka Kullanıcının Profili
-- Profil fotoğrafı, isim + "Doğrulanmış ✓" rozeti (varsa), şehir
+- Profil fotoğrafı (ortalı), isim + "Doğrulanmış ✓" rozeti (varsa), şehir · spor dalı
 - **Skor Kartı** (S15 ile aynı yapı, salt okunur):
   - ⭐ **X.X Sportmenlik** + 📍 **%XX Katılım** + (varsa) 🎤 **X.X Organizasyon**
-  - Confidence label
 - **Rozetler** (kazanılanlar)
-- Favori sporlar
-- Toplam Maç sayısı
-- "Mesaj Gönder" butonu → **Sohbet (S19)**
-- **Arkadaşlık durumu aksiyonları:**
-  - Arkadaş değilse: **Arkadaş Ekle**
-  - İstek gönderildiyse: **İstek Gönderildi** (pasif durum)
-  - Karşı taraftan istek geldiyse: **Kabul Et** / **Reddet**
-  - Zaten arkadaşsa: **Arkadaşsın** etiketi + Mesaj Gönder aktif
-- ⋮ Menü: Raporla / Engelle
+- Toplam aktivite sayısı
+- **Yaklaşan / Geçmiş** aktivite sekmeleri (ikisi de görünür)
+
+**Arkadaşlık buton sistemi — ilişkiye göre 4 durum:**
+| Durum | Görünüm |
+|-------|---------|
+| `Arkadaş değil` | **"+ Arkadaş Ekle"** (birincil, yeşil) |
+| `İstek gönderildi` | **"🕐 İstek Gönderildi — İptal Et"** (gri/disabled; tıklayınca iptal edilir) |
+| `Karşı taraf istek göndermiş` | **"✓ Kabul Et"** (yeşil) + **"Reddet"** (kırmızı, yan yana) |
+| `Zaten arkadaş` | **"✓ Arkadaşsın"** etiketi + **"💬 Mesaj Gönder"** (birincil, yeşil) |
+
+- **"💬 Mesaj Gönder"** butonu: arkadaşken birincil (yeşil), değilken ikincil (gri) → **Sohbet (S19)**
+- Kabul edilince: her iki kullanıcının arkadaş listesine (S22) eklenir; gönderene bildirim gider
+- Feed etkisi: arkadaşların aktiviteleri Keşfet (S00) feed'inde öne çıkar
+
+**⋮ Menü içeriği:**
+- Raporla → S31
+- Engelle
+- Arkadaşlıktan Çıkar (yalnızca zaten arkadaşken görünür)
+
 - "Profili Düzenle" butonu YOK (sadece kendi profilinde var)
 - **Erişim noktaları — avatar/isim tıklanınca S17 açılır:**
   - Aktivite detayında (S09): organizatör avatarı + katılımcı listesindeki her avatar
-  - Mesajlar listesinde (S18): her konuşma satırındaki avatar
+  - Mesajlar listesinde (S18): her konuşma satırındaki avatar; sohbet ekranında üst barda avatar
   - Arkadaşlarım listesinde (S22): her satırdaki avatar / kart
+  - Etkinlik detayında (S06): "Kim Gidiyor?" bölümündeki avatarlar
 
 ---
 
