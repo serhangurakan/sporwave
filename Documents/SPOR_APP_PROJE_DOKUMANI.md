@@ -72,7 +72,7 @@
 
 ---
 
-## 4. SAYFA HARİTASI — MOBİL UYGULAMA (34 sayfa)
+## 4. SAYFA HARİTASI — MOBİL UYGULAMA (33 sayfa)
 
 ### 4.1 Kimlik Doğrulama & Onboarding (4 sayfa)
 
@@ -217,12 +217,10 @@
 - **Her kart:**
   - Etkinlik banner görseli — sol kenarda **kategori renk şeridi** (spor dalı rengi)
   - **Kaynak rozeti** (sağ üst köşe): 📸 Instagram / 👥 Facebook / ✅ Resmi — kaynak her zaman gösterilir
-  - **Doğrulanmış rozeti** (varsa, sol üst): ✅ Doğrulandı
   - Etkinlik başlığı (bold)
   - Tarih + Saat ve Konum (ilçe, şehir)
   - **Fiyat** (yeşil = ücretsiz, siyah = ücretli)
   - **Sosyal kanıt:** "X kişi ilgileniyor" (küçük, gri)
-  - **Son güncelleme** zaman damgası (çok küçük, gri)
 - Tıklandığında → Etkinlik Detay sayfasına git
 - **Not:** İçerik admin panelinden veya sosyal medya kaynaklarından eklenir; kaynak her zaman atıflanır
 
@@ -230,21 +228,19 @@
 - Büyük banner görseli — sol kenarda kategori renk şeridi
 - Kaynak rozeti (sağ üst)
 - Etkinlik başlığı (büyük, bold)
-- **Doğrulanmış Organizatör rozeti** (varsa): "✅ Doğrulanmış Organizatör"
-- **Kaynak satırı:** "📸 Instagram'dan · @kullanıcıadı · Son doğrulama: X gün önce"
+- **Kaynak satırı:** "📸 Instagram'dan · @kullanıcıadı"
 - Bilgi satırları: 📅 Tarih/Saat · 📍 İlçe, Şehir · 🏷️ Spor dalı chip · 💰 Fiyat
 - Detaylı açıklama (katılım koşulları, parkur bilgisi vb.)
 - Konum haritası widget
 
 **CTA Hiyerarşisi — 4 Seviye:**
 
-1. **Birincil — Katılım niyeti toggle** (login gerektirmez):
-   - "İlgileniyorum" ↔ "Gidiyorum" (toggle buton çifti)
-   - "Gidiyorum" seçilirse → kullanıcının profilinde **Yaklaşan Etkinlikler** listesine eklenir
-   - Kaç kişi ilgileniyor / gidiyor sayıları her zaman gösterilir
+1. **Birincil — Katılım niyeti toggle** (login gerektirir):
+   - "İlgileniyorum"
+   - seçilirse → kullanıcının profilinde **Yaklaşan Etkinlikler** listesine eklenir
+   - Kaç kişi ilgileniyor sayısı her zaman gösterilir
 
 2. **İkincil — Kaydetme** (login gerektirir):
-   - "Etkinliği Kaydet" (yer imi toggle)
    - "Takvime Ekle" → kullanıcının telefon takvimine etkinliği saat + konum bilgisiyle ekler
 
 3. **Bağlamsal — Kaynağa git** (her zaman görünür):
@@ -253,16 +249,15 @@
 
 4. **Sosyal — Paylaş & Keşfet**:
    - "Paylaş" butonu → kaynağın linkini paylaşır
-   - **"Kim Gidiyor?"** bölümü: "Gidiyorum" diyen kullanıcıların avatar listesi → profil tıklanabilir
+   - **"Kim İlgileniyor?"** bölümü: "İlgileniyorum" diyen kullanıcıların avatar listesi → profil tıklanabilir
 
 **Güven katmanı:**
 - "Son doğrulama: X gün önce" her zaman gösterilir
-- "Eskimiş, bildir" linki → Raporla sayfasına (S31)
 - Back butonu (üst navbar)
 
 ---
 
-### 4.5 Dersler — Footer Tab 4 (3 sayfa)
+### 4.5 Dersler — Footer Tab 4 (2 sayfa)
 
 #### S12: Dersler Feed
 - **Üstte:** Spor dalı filtre tab'ları: Hepsi, Padel, Yoga, Okçuluk, Tenis, Fitness...
@@ -281,7 +276,7 @@
 #### S13: Ders Detay Sayfası
 - Büyük görsel
 - Ders başlığı + rating (yıldız + puan)
-- Tesis bilgisi: logo/avatar + tesis adı + "Doğrulanmış Tesis ✓" etiketi
+- Tesis bilgisi: logo/avatar + tesis adı
 - Ders açıklaması
 - Bilgi kartı (tablo formatında):
   - Ders Türü: 1-1 / Grup
@@ -289,18 +284,11 @@
   - Tarih aralığı
   - Saat
   - Fiyat (büyük, accent renk)
-- Konum (harita widget)
-- "Rezervasyon Yap" butonu (birincil)
-- "Mesaj Gönder" butonu (ikincil) → tesis ile mesajlaşma: **Sohbet (S19)**
+- **"📱 WhatsApp ile İletişime Geç" butonu (birincil, yeşil)** → tıklanınca işletme/eğitmenin WhatsApp numarasına yönlendirir
+  - Otomatik mesaj şablonu: "Merhaba, [Ders Adı] dersi hakkında bilgi almak istiyorum."
+- Alt bilgi: "Ders ve rezervasyon detayları için doğrudan iletişime geçin"
 - Back butonu
-
-#### S14: Ders Rezervasyon Sayfası (Login gerekli)
-- Tarih seçici (takvim görünümü)
-- Saat seçici (müsait slotlar)
-- Kişi sayısı (grup dersi ise)
-- Ödeme özeti
-- "Onayla" butonu
-- **Not:** İlk etapta bu sayfa basit tutulabilir, tesise mesaj/arama yönlendirmesi de olabilir
+- **Not:** Uygulama içi rezervasyon sistemi yoktur; kullanıcı WhatsApp üzerinden doğrudan tesis/eğitmen ile iletişime geçer
 
 ---
 
@@ -308,7 +296,7 @@
 
 #### S15: Profil Sayfası (Login gerekli — login olmadan bu tab'a basılınca login'e yönlendir)
 - Profil fotoğrafı (büyük, ortalı)
-- İsim soyisim + "Doğrulanmış ✓" rozeti (varsa)
+- "Doğrulanmış ✓" rozeti (varsa) + İsim soyisim
 - İstatistikler (yan yana): Toplam Maç sayısı + Arkadaş sayısı (button tıklayınca arkadaş listesi)
 - Şehir
 - **Skor Kartı** (min. 5 etkinlik sonrası görünür, altında "Yeni" etiketi gösterilir):
@@ -399,8 +387,12 @@
   - Aktivitelerim
   - Arkadaşlarım
   - Arkadaşlarını Davet Et
+  - Topluluk Kuralları
   - Ayarlar
   - Yardım & SSS
+  - **Hesabını Doğrula** (login gerekli) — telefon doğrulama akışına (S29) yönlendirir
+    - Doğrulanmamışsa: "📱 Hesabını Doğrula" (tıklanabilir)
+    - Doğrulanmışsa: "✅ Hesabın Doğrulandı" (yeşil arka plan, tıklanamaz)
 - **Not:** Bildirimler menüde yer almaz — üst navbar'da mesaj ikonunun solunda 🔔 ikonu olarak bulunur
 - Alt kısımda: "Çıkış Yap" (kırmızı)
 - Kapatma butonu (X)
@@ -474,9 +466,15 @@
 ### 4.9 Güvenlik & Moderasyon Sayfaları (4 sayfa)
 
 #### S29: Kullanıcı Doğrulama Akışı
-- Profil sayfasında "Hesabını Doğrula" butonu (doğrulanmamış kullanıcılar için)
-- Doğrulama adımı: Telefon numarası gir → SMS OTP doğrula
-- Doğrulanan kullanıcı: "Doğrulanmı�� ✓" rozeti profil sayfası ve aktivite kartlarında görünür
+- **Erişim:** Menüden (S20) "📱 Hesabını Doğrula" öğesine tıklanarak açılır (login gerekli)
+- **Doğrulama adımları:**
+  - **Adım 1:** Telefon numarası girişi (+90 formatında)
+  - **Adım 2:** SMS ile gelen 6 haneli OTP kodunu gir → "Doğrula" butonu
+- **Doğrulama sonrası:**
+  - Profil sayfasında ismin yanında "✓" (yeşil) ikonu görünür
+  - Menüdeki "Hesabını Doğrula" öğesi "✅ Hesabın Doğrulandı" olarak değişir (yeşil arka plan, tıklanamaz)
+  - Kullanıcı tekrar doğrulama yapamaz (tek seferlik işlem)
+  - Aktivite kartlarında ve detay sayfalarında "Doğrulanmış ✓" rozeti görünür
 - **Amaç:** Fake profil ve troll hesap oranını düşürür, topluluk güvenini artırır
 
 #### S30: Eğitmen Doğrulama Akışı
@@ -668,12 +666,12 @@ Keşfet veya Etkinlik tab → Etkinliğe tıkla → Detay sayfası
 → Uygulama içi kayıt -> Etkinlik "Aktivitelerim → Yaklaşan" listesine eklenir
 ```
 
-### Akış 5: Ders Rezervasyonu
+### Akış 5: Ders İletişimi
 ```
 Keşfet veya Dersler tab → Derse tıkla → Detay sayfası
-→ "Rezervasyon Yap" (login gerekli) → Tarih/saat seç → Onay
-→ VEYA "Mesaj Gönder" → Tesis ile mesajlaşma (S19)
-→ Ders "Aktivitelerim → Yaklaşan" listesine eklenir
+→ "📱 WhatsApp ile İletişime Geç" butonuna tıkla
+→ WhatsApp açılır, otomatik mesaj şablonu ile tesis/eğitmenin numarasına yönlendirilir
+→ Kullanıcı WhatsApp üzerinden rezervasyon detaylarını konuşur
 ```
 
 ### Akış 6: Maç Sonrası Puanlama

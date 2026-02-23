@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 const C = {
   // Yüzeyler
@@ -92,6 +92,30 @@ const Ico = {
 
 const SE = (e) => e === "Futbol" ? "⚽" : e === "Tenis" ? "🎾" : e === "Basketbol" ? "🏀" : "🏐";
 
+// ─── S28: Boş Durum Component'i (Reusable) ──────────────────────────────────
+const EmptyState = ({type, onAction}) => {
+  const states = {
+    etkinlik: {icon:"🏆",title:"Henüz etkinlik eklenmedi",desc:"Yakında yeni etkinlikler eklenecek!",btn:null},
+    aktivite: {icon:"⚽",title:"İlk aktiviteyi sen oluştur!",desc:"Spor arkadaşı bulmak için yeni bir aktivite başlat.",btn:"+ Aktivite Oluştur"},
+    mesaj: {icon:"💬",title:"Henüz mesajınız yok",desc:"Aktivitelere katılarak yeni insanlarla tanışın!",btn:null},
+    bildirim: {icon:"🔔",title:"Bildiriminiz bulunmuyor",desc:"Aktivitelere katıldığınızda bildirim alacaksınız.",btn:null},
+    arkadas: {icon:"👥",title:"Henüz arkadaşın yok",desc:"Aktivitelerde tanıştığın kişileri arkadaş olarak ekle!",btn:null},
+  };
+  const s = states[type] || states.aktivite;
+  return (
+    <div style={{padding:"60px 30px",textAlign:"center"}}>
+      <div style={{fontSize:56,marginBottom:16}}>{s.icon}</div>
+      <div style={{fontSize:16,fontWeight:700,color:"#0F172A",marginBottom:8}}>{s.title}</div>
+      <div style={{fontSize:13,color:"#475569",lineHeight:1.6,marginBottom:20}}>{s.desc}</div>
+      {s.btn && onAction && (
+        <button onClick={onAction} style={{padding:"12px 24px",borderRadius:12,border:"none",background:"#B7F000",color:"#0B0F14",fontSize:14,fontWeight:700,cursor:"pointer"}}>
+          {s.btn}
+        </button>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [pg, setPg] = useState("kesfet");
   const [tab, setTab] = useState("kesfet");
@@ -111,12 +135,12 @@ export default function App() {
   const [rStars, setRStars] = useState({});
   const [rOrgStar, setROrgStar] = useState(0);
   // Etkinlik etkileşim state
-  const [evtInt, setEvtInt] = useState({});   // {id: "interested" | "going"}
-  const [evtSaved, setEvtSaved] = useState({}); // {id: true}
+  const [evtInt, setEvtInt] = useState({});   // {id: "interested"}
   // Arkadaşlık sistemi: "none"|"sent"|"received"|"friends"
   const [friendships, setFriendships] = useState({"Ahmet K.":"friends","Elif S.":"none","Can D.":"sent","Mert Y.":"received"});
   const [arTab, setArTab] = useState("arkadaşlar"); // PageArkadaslarim tabı
   const [upTab, setUpTab] = useState("yaklaşan");   // PageKullaniciProfil aktivite tabı
+  const [verified, setVerified] = useState(false);  // Kullanıcı telefon doğrulaması durumu
 
   const nav = useCallback((p, d = null) => {
     setHist(h => [...h, { pg, det, tab }]);
@@ -309,9 +333,6 @@ export default function App() {
             <div style={{position:"absolute",top:8,right:8,background:"rgba(15,23,42,0.62)",borderRadius:6,padding:"3px 8px"}}>
               <span style={{fontSize:10,color:"#fff",fontWeight:600}}>{srcLabel(e.src)}</span>
             </div>
-            {e.verified && <div style={{position:"absolute",top:8,left:12,background:C.g,borderRadius:6,padding:"3px 8px"}}>
-              <span style={{fontSize:9,color:"#fff",fontWeight:700}}>✅ Doğrulandı</span>
-            </div>}
           </div>
           {/* Bilgi */}
           <div style={{...sty.cb,borderLeft:`4px solid ${e.catC}`}}>
@@ -320,11 +341,10 @@ export default function App() {
               <div style={sty.sub}>{Ico.cal}<span>{e.date} {e.time}</span></div>
               <div style={sty.sub}>{Ico.pin}<span>{e.dist}, {e.city}</span></div>
             </div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <span style={{fontSize:13,fontWeight:700,color:freeColor(e.price)}}>{e.price}</span>
               <span style={{fontSize:11,color:C.d2}}>{e.interested.toLocaleString()} kişi ilgileniyor</span>
             </div>
-            <div style={{fontSize:10,color:C.d2}}>Son güncelleme: {e.lastVerified}</div>
           </div>
         </div>
       ))}
@@ -334,12 +354,10 @@ export default function App() {
 
   const PageEvtDet = () => {
     const e = det;
-    const intState = evtInt[e.id];          // undefined | "interested" | "going"
-    const saved    = !!evtSaved[e.id];
+    const intState = evtInt[e.id];          // undefined | "interested"
     const toggleInt  = v => setEvtInt(p  => ({...p, [e.id]: p[e.id]===v ? undefined : v}));
-    const toggleSave = ()=> { if(!logged){reqLog();return;} setEvtSaved(p=>({...p,[e.id]:!p[e.id]})); };
-    // "Gidiyorum" seçiliyse yaklaşan aktiviteler listesine eklendi (profil sayfası myUpcoming'e bağlı)
-    const goingAvatars = ["AK","ES","MY","CD"];
+    // "İlgileniyorum" seçiliyse yaklaşan aktiviteler listesine eklendi
+    const interestedAvatars = ["AK","ES","MY","CD"];
     return (
     <><TopBar title="Etkinlik Detay" showBack/><div style={sty.cnt}>
 
@@ -381,37 +399,25 @@ export default function App() {
         <div style={{background:C.s2,borderRadius:12,height:88,display:"flex",alignItems:"center",justifyContent:"center",color:C.d,fontSize:12,marginBottom:20,border:`1px dashed ${C.b}`}}>📍 Konum Haritası</div>
 
         {/* ════════════════════════════════════
-            CTA 1 — BİRİNCİL: Katılım niyeti toggle
-            Gidiyorum → profilde Yaklaşan Etkinlikler'e eklenir
+            CTA 1 — BİRİNCİL: Katılım niyeti
+            İlgileniyorum → profilde Yaklaşan Etkinlikler'e eklenir
         ════════════════════════════════════ */}
-        <div style={{display:"flex",gap:8,marginBottom:6}}>
-          <button
-            style={{...sty.btn,flex:1,background:intState==="interested"?C.a:C.s2,color:intState==="interested"?C.bk:C.t,border:`1px solid ${intState==="interested"?C.a:C.b}`,fontWeight:700,fontSize:13}}
-            onClick={()=>toggleInt("interested")}>
-            {intState==="interested" ? "💚 İlgileniyorum" : "🤍 İlgileniyorum"}
-          </button>
-          <button
-            style={{...sty.btn,flex:1,background:intState==="going"?C.g:C.s2,color:intState==="going"?"#fff":C.t,border:`1px solid ${intState==="going"?C.g:C.b}`,fontWeight:700,fontSize:13}}
-            onClick={()=>toggleInt("going")}>
-            {intState==="going" ? "✅ Gidiyorum" : "Gidiyorum"}
-          </button>
-        </div>
+        <button
+          style={{...sty.btn,width:"100%",background:intState==="interested"?C.a:C.s2,color:intState==="interested"?C.bk:C.t,border:`1px solid ${intState==="interested"?C.a:C.b}`,fontWeight:700,fontSize:14,marginBottom:6}}
+          onClick={()=>{reqLog(()=>toggleInt("interested"));}}>
+          {intState==="interested" ? "💚 İlgileniyorum" : "🤍 İlgileniyorum"}
+        </button>
         <div style={{fontSize:11,color:C.d2,textAlign:"center",marginBottom:16}}>
-          {e.interested.toLocaleString()} ilgileniyor · {e.going} gidiyor
-          {intState==="going" && <span style={{color:C.g,fontWeight:600}}> · Profiline eklendi ✓</span>}
+          {e.interested.toLocaleString()} kişi ilgileniyor
+          {intState==="interested" && <span style={{color:C.g,fontWeight:600}}> · Profiline eklendi ✓</span>}
         </div>
 
         {/* ════════════════════════════════════
-            CTA 2 — İKİNCİL: Kaydetme
+            CTA 2 — İKİNCİL: Takvime Ekle
         ════════════════════════════════════ */}
-        <div style={{display:"flex",gap:8,marginBottom:10}}>
-          <button style={{...sty.btn,flex:1,background:saved?C.ad:C.s2,color:saved?C.at:C.t,border:`1px solid ${saved?C.a:C.b}`,fontSize:12,fontWeight:600}} onClick={toggleSave}>
-            {saved ? "🔖 Kaydedildi" : "🔖 Etkinliği Kaydet"}
-          </button>
-          <button style={{...sty.btn,flex:1,background:C.s2,color:C.t,border:`1px solid ${C.b}`,fontSize:12,fontWeight:600}} onClick={()=>reqLog()}>
-            {Ico.cal} Takvime Ekle
-          </button>
-        </div>
+        <button style={{...sty.btn,width:"100%",background:C.s2,color:C.t,border:`1px solid ${C.b}`,fontSize:13,fontWeight:600,marginBottom:10}} onClick={()=>reqLog()}>
+          {Ico.cal} Takvime Ekle
+        </button>
 
         {/* ════════════════════════════════════
             CTA 3 — BAĞLAMSAL: Kaynağa git
@@ -428,32 +434,29 @@ export default function App() {
           🔗 Paylaş
         </button>
 
-        {/* Kim gidiyor? */}
+        {/* Kim İlgileniyor? */}
         <div style={{marginBottom:16}}>
           <div style={{fontSize:14,fontWeight:700,color:C.t,marginBottom:10}}>
-            Kim Gidiyor? <span style={{fontSize:13,color:C.d,fontWeight:400}}>({e.going} kişi)</span>
+            Kim İlgileniyor? <span style={{fontSize:13,color:C.d,fontWeight:400}}>({e.interested} kişi)</span>
           </div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
-            {goingAvatars.slice(0,Math.min(4,e.going)).map((av,i)=>(
+            {interestedAvatars.slice(0,Math.min(4,e.interested)).map((av,i)=>(
               <div key={i} style={{width:38,height:38,borderRadius:"50%",background:C.ad,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:C.at,border:`2px solid ${C.a}`,cursor:"pointer",flexShrink:0}}
                 onClick={()=>nav("kullanici-profil",users[Object.keys(users)[i]])}>
                 {av}
               </div>
             ))}
-            {e.going>4 && (
+            {e.interested>4 && (
               <div style={{width:38,height:38,borderRadius:"50%",background:C.s2,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:C.d,border:`1px solid ${C.b}`}}>
-                +{e.going-4}
+                +{e.interested-4}
               </div>
             )}
           </div>
         </div>
 
         {/* ── Güven katmanı ── */}
-        <div style={{paddingTop:12,borderTop:`1px solid ${C.b}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{paddingTop:12,borderTop:`1px solid ${C.b}`,textAlign:"center"}}>
           <span style={{fontSize:11,color:C.d2}}>Son güncelleme: {e.lastVerified}</span>
-          <span style={{fontSize:11,color:C.r,cursor:"pointer",textDecoration:"underline"}} onClick={()=>nav("raporla",e)}>
-            Eskimiş, bildir
-          </span>
         </div>
       </div>
     </div></>
@@ -521,6 +524,12 @@ export default function App() {
             })}
           </div>
         </div>
+        {/* Organizatör için: Başvuruları Yönet butonu */}
+        {logged && a.mode==="approve" && a.owner==="Ahmet K." && (
+          <button style={{...sty.btn,background:C.bl,color:"#fff",marginBottom:10}} onClick={()=>nav("basvuru",a)}>
+            📋 Başvuruları Yönet (3 bekliyor)
+          </button>
+        )}
         {/* Butonlar: Katıl + Mesaj Gönder */}
         <div style={{display:"flex",gap:10}}>
           <button style={{...sty.btn,background:C.btn,color:C.bk,flex:2}} onClick={()=>reqLog(()=>setSheet("lv"))}>
@@ -646,9 +655,19 @@ export default function App() {
             <span style={{fontSize:13,color:C.d}}>Fiyat</span><span style={{fontSize:16,fontWeight:800,color:C.a}}>{l.price}</span>
           </div>
         </div>
-        <div style={{display:"flex",gap:10}}>
-          <button style={{...sty.btn,background:C.btn,color:C.bk,flex:2}} onClick={()=>reqLog()}>Rezervasyon Yap</button>
-          <button style={{...sty.btn,background:C.s2,color:C.t,border:`1px solid ${C.b}`,flex:1}} onClick={()=>reqLog(()=>nav("sohbet",{name:l.fac,av:l.fac.substring(0,2)}))}>Mesaj</button>
+        {/* WhatsApp ile İletişime Geç butonu */}
+        <button 
+          style={{...sty.btn,background:"#25D366",color:"#fff",marginBottom:10}} 
+          onClick={()=>{
+            // WhatsApp'a yönlendir (demo: örnek numara)
+            const waNumber = l.waPhone || "905551234567";
+            const waText = encodeURIComponent(`Merhaba, ${l.title} dersi hakkında bilgi almak istiyorum.`);
+            window.open(`https://wa.me/${waNumber}?text=${waText}`, "_blank");
+          }}>
+          📱 WhatsApp ile İletişime Geç
+        </button>
+        <div style={{fontSize:11,color:C.d,textAlign:"center"}}>
+          Ders ve rezervasyon detayları için doğrudan iletişime geçin
         </div>
       </div>
     </div></>
@@ -658,7 +677,10 @@ export default function App() {
     <><TopBar/><div style={sty.cnt}>
       <div style={{padding:20,display:"flex",flexDirection:"column",alignItems:"center"}}>
         <Av name="Berk K" size={80} bg={`linear-gradient(135deg,${C.a},${C.bl})`}/>
-        <div style={{fontSize:20,fontWeight:800,color:C.t,marginTop:12}}>Berk K.</div>
+        <div style={{fontSize:20,fontWeight:800,color:C.t,marginTop:12,display:"flex",alignItems:"center",gap:6}}>
+          Berk K.
+          {verified && <span style={{color:C.g,fontSize:18}}>✓</span>}
+        </div>
         <div style={{fontSize:13,color:C.d,marginBottom:12}}>İstanbul</div>
         <div style={{display:"flex",gap:24,marginBottom:14}}>
           <div style={{textAlign:"center"}}><div style={{fontSize:22,fontWeight:800,color:C.at}}>12</div><div style={{fontSize:11,color:C.d}}>Etkinlik</div></div>
@@ -791,7 +813,7 @@ export default function App() {
         <div style={{marginBottom:14}}><input style={sty.inp} placeholder="E-posta adresi"/></div>
         <div style={{marginBottom:20}}><input style={sty.inp} type="password" placeholder="Şifre"/></div>
         <button style={{...sty.btn,background:C.btn,color:C.bk,marginBottom:12}} onClick={()=>{setLogged(true);back();}}>Giriş Yap</button>
-        <div style={{textAlign:"center",marginBottom:20}}><span style={{fontSize:13,color:C.d,cursor:"pointer"}}>Şifremi Unuttum</span></div>
+        <div style={{textAlign:"center",marginBottom:20}}><span style={{fontSize:13,color:C.at,cursor:"pointer",fontWeight:500}} onClick={()=>nav("sifremi-unuttum")}>Şifremi Unuttum</span></div>
         <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
           <div style={{flex:1,height:1,background:C.b}}/><span style={{fontSize:12,color:C.d}}>veya</span><div style={{flex:1,height:1,background:C.b}}/>
         </div>
@@ -821,6 +843,9 @@ export default function App() {
   );
 
   const PageOnboard = () => {
+    const [selCity, setSelCity] = useState("İstanbul");
+    const [rulesAccepted, setRulesAccepted] = useState(false);
+    const cities = ["İstanbul","Ankara","İzmir","Antalya","Bursa","Adana"];
     const steps=[
       {t:"Seni tanıyalım",c:<>
         <div style={{marginBottom:14}}><input style={sty.inp} placeholder="İsim"/></div>
@@ -836,6 +861,33 @@ export default function App() {
       {t:"Favori sporların",c:<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
         {favSports.map(sp=><div key={sp} style={{background:C.s2,border:`1px solid ${C.b}`,borderRadius:10,padding:"12px 6px",textAlign:"center",cursor:"pointer",fontSize:11,fontWeight:500,color:C.t}}>{sp}</div>)}
       </div>},
+      {t:"Son adım",c:<>
+        <div style={{marginBottom:20}}>
+          <label style={{fontSize:12,color:C.d,marginBottom:8,display:"block"}}>Şehrini seç</label>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            {cities.map(c=>(
+              <div key={c} onClick={()=>setSelCity(c)} style={{background:selCity===c?C.ad:C.s2,border:`1px solid ${selCity===c?C.a:C.b}`,borderRadius:10,padding:"12px 10px",textAlign:"center",cursor:"pointer",fontSize:13,fontWeight:selCity===c?700:500,color:selCity===c?C.at:C.t}}>
+                📍 {c}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{background:C.s,border:`1px solid ${C.b}`,borderRadius:14,padding:16,marginBottom:16}}>
+          <div style={{fontSize:14,fontWeight:700,color:C.t,marginBottom:10}}>📋 Topluluk Kuralları</div>
+          <div style={{fontSize:12,color:C.d,lineHeight:1.6,marginBottom:12,maxHeight:120,overflowY:"auto"}}>
+            • No-show yasağı: Katılacağını belirtip gelmemek yasaktır.<br/>
+            • Saygılı iletişim: Hakaret ve taciz yasaktır.<br/>
+            • Fake profil yasağı: Sahte kimlik kullanmak yasaktır.<br/>
+            • Uygunsuz içerik yasağı: Müstehcen paylaşımlar yasaktır.
+          </div>
+          <div style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer"}} onClick={()=>setRulesAccepted(!rulesAccepted)}>
+            <div style={{width:22,height:22,borderRadius:6,border:`2px solid ${rulesAccepted?C.a:C.b}`,background:rulesAccepted?C.a:C.s,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              {rulesAccepted && <span style={{color:C.bk,fontSize:14,fontWeight:700}}>✓</span>}
+            </div>
+            <span style={{fontSize:13,color:C.t}}>Topluluk Kurallarını okudum ve kabul ediyorum</span>
+          </div>
+        </div>
+      </>},
     ];
     return (
     <><div style={sty.topB}><div/><div style={{fontSize:13,color:C.d}}>{obStep+1}/{steps.length}</div><div/></div><div style={sty.cnt}>
@@ -843,9 +895,14 @@ export default function App() {
         <div style={{display:"flex",gap:4,marginBottom:30}}>{steps.map((_,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:i<=obStep?C.a:C.b}}/>)}</div>
         <div style={{fontSize:22,fontWeight:800,color:C.t,marginBottom:24}}>{steps[obStep].t}</div>
         {steps[obStep].c}
-        <button style={{...sty.btn,background:C.btn,color:C.bk,marginTop:30}} onClick={()=>{
-          if(obStep<steps.length-1)setObStep(obStep+1);else{setObStep(0);nav("etkinlik");}
-        }}>{obStep<steps.length-1?"Devam":"Başla! 🚀"}</button>
+        <button 
+          style={{...sty.btn,background:(obStep===3 && !rulesAccepted)?C.dis:C.btn,color:(obStep===3 && !rulesAccepted)?C.d2:C.bk,marginTop:30,cursor:(obStep===3 && !rulesAccepted)?"not-allowed":"pointer"}} 
+          onClick={()=>{
+            if(obStep===3 && !rulesAccepted) return;
+            if(obStep<steps.length-1)setObStep(obStep+1);else{setObStep(0);nav("kesfet");}
+          }}>
+          {obStep<steps.length-1?"Devam":"Başla! 🚀"}
+        </button>
       </div>
     </div></>
   );};
@@ -1164,6 +1221,115 @@ export default function App() {
     </div>
   );
 
+  // ─── S27: Splash Screen ─────────────────────────────────────────────────────
+  const PageSplash = () => {
+    // Auto-navigate after 2 seconds
+    useEffect(()=>{
+      const timer = setTimeout(()=>nav("kesfet"), 2000);
+      return ()=>clearTimeout(timer);
+    }, []);
+    return (
+    <div style={{height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,${C.bg} 0%,${C.s2} 100%)`}}>
+      <div style={{marginBottom:24}}>
+        <LogoSvg/>
+      </div>
+      <div style={{fontSize:32,fontWeight:800,letterSpacing:-0.5,fontFamily:"'Plus Jakarta Sans',-apple-system,sans-serif",marginBottom:8}}>
+        <span style={{color:C.t}}>Spor</span><span style={{color:C.a}}>wave</span>
+      </div>
+      <div style={{fontSize:14,color:C.d,marginBottom:40}}>Spor arkadaşını bul, harekete geç!</div>
+      {/* Loading animation */}
+      <div style={{display:"flex",gap:6}}>
+        {[0,1,2].map(i=>(
+          <div key={i} style={{width:8,height:8,borderRadius:"50%",background:C.a,opacity:0.4+i*0.2,animation:`pulse 1.2s ease-in-out ${i*0.2}s infinite`}}/>
+        ))}
+      </div>
+      <style>{`@keyframes pulse{0%,100%{transform:scale(1);opacity:0.4}50%{transform:scale(1.2);opacity:1}}`}</style>
+    </div>
+  );};
+
+  // ─── S29: Kullanıcı Doğrulama Akışı ───────────────────────────────────────────
+  const PageDogrulama = () => {
+    const [step, setStep] = useState(0);
+    const [phone, setPhone] = useState("");
+    const [otp, setOtp] = useState("");
+    return (
+    <><TopBar title="Hesabını Doğrula" showBack/><div style={sty.cnt}>
+      <div style={{padding:20}}>
+        {/* Progress */}
+        <div style={{display:"flex",gap:4,marginBottom:24}}>
+          {[0,1].map(i=><div key={i} style={{flex:1,height:3,borderRadius:2,background:i<=step?C.a:C.b}}/>)}
+        </div>
+
+        {step===0 && <>
+          <div style={{textAlign:"center",marginBottom:24}}>
+            <div style={{fontSize:48,marginBottom:12}}>📱</div>
+            <div style={{fontSize:20,fontWeight:800,color:C.t,marginBottom:6}}>Telefon Doğrulama</div>
+            <div style={{fontSize:13,color:C.d,lineHeight:1.6}}>Güvenliğin için telefon numaranı doğrula.<br/>Profilinde "Doğrulanmış ✓" rozeti görünecek.</div>
+          </div>
+          <div style={{marginBottom:20}}>
+            <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Telefon Numarası</label>
+            <div style={{display:"flex",gap:8}}>
+              <div style={{...sty.inp,width:70,textAlign:"center",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>🇹🇷 +90</div>
+              <input style={sty.inp} placeholder="5XX XXX XX XX" value={phone} onChange={e=>setPhone(e.target.value)} type="tel"/>
+            </div>
+          </div>
+          <button 
+            style={{...sty.btn,background:phone.length>=10?C.btn:C.dis,color:phone.length>=10?C.bk:C.d2,cursor:phone.length>=10?"pointer":"not-allowed"}} 
+            onClick={()=>{if(phone.length>=10)setStep(1);}}>
+            SMS Kodu Gönder
+          </button>
+        </>}
+
+        {step===1 && <>
+          <div style={{textAlign:"center",marginBottom:24}}>
+            <div style={{fontSize:48,marginBottom:12}}>✉️</div>
+            <div style={{fontSize:20,fontWeight:800,color:C.t,marginBottom:6}}>Kodu Gir</div>
+            <div style={{fontSize:13,color:C.d,lineHeight:1.6}}>+90 {phone} numarasına gönderilen<br/>6 haneli doğrulama kodunu gir.</div>
+          </div>
+          <div style={{marginBottom:20}}>
+            <label style={{fontSize:12,color:C.d,marginBottom:6,display:"block"}}>Doğrulama Kodu</label>
+            <div style={{display:"flex",gap:8,justifyContent:"center"}}>
+              {[0,1,2,3,4,5].map(i=>(
+                <input key={i} style={{...sty.inp,width:42,height:50,textAlign:"center",fontSize:20,fontWeight:700,padding:0}} maxLength={1} 
+                  value={otp[i]||""} 
+                  onChange={e=>{
+                    const val = e.target.value;
+                    if(/^\d*$/.test(val)){
+                      const newOtp = otp.split("");
+                      newOtp[i] = val;
+                      setOtp(newOtp.join(""));
+                      if(val && i<5) e.target.nextElementSibling?.focus();
+                    }
+                  }}/>
+              ))}
+            </div>
+          </div>
+          <button 
+            style={{...sty.btn,background:otp.length===6?C.g:C.dis,color:otp.length===6?"#fff":C.d2,cursor:otp.length===6?"pointer":"not-allowed",marginBottom:12}} 
+            onClick={()=>{if(otp.length===6){setVerified(true);nav("profil");}}}>
+            ✓ Doğrula
+          </button>
+          <div style={{textAlign:"center"}}>
+            <span style={{fontSize:12,color:C.d}}>Kod gelmedi mi? </span>
+            <span style={{fontSize:12,color:C.at,fontWeight:600,cursor:"pointer"}}>Tekrar Gönder</span>
+          </div>
+        </>}
+
+        {/* Avantajlar */}
+        <div style={{marginTop:30,padding:16,background:C.s2,borderRadius:14,border:`1px solid ${C.b}`}}>
+          <div style={{fontSize:13,fontWeight:700,color:C.t,marginBottom:10}}>Doğrulanmış hesap avantajları:</div>
+          {[
+            "✅ Profilinde \"Doğrulanmış\" rozeti",
+            "🛡️ Toplulukta daha fazla güven",
+            "⭐ Aktivitelerde öne çıkma"
+          ].map(a=>(
+            <div key={a} style={{fontSize:12,color:C.d,marginBottom:6}}>{a}</div>
+          ))}
+        </div>
+      </div>
+    </div></>
+  );};
+
   const PageRating = () => {
     const activity = det||acts[0];
     const participants=[{name:"Can D.",av:"CD"},{name:"Mert Y.",av:"MY"},{name:"Zeynep A.",av:"ZA"}];
@@ -1374,6 +1540,8 @@ export default function App() {
       case "raporla": return <PageRaporla/>;
       case "topluluk-kurallari": return <PageToplulukKurallari/>;
       case "rating": return <PageRating/>;
+      case "splash": return <PageSplash/>;
+      case "dogrulama": return <PageDogrulama/>;
       default: return <PageKesfet/>;
     }
   };
@@ -1391,6 +1559,16 @@ export default function App() {
           {[{l:"Aktivitelerim",p:"aktivitelerim",e:"📅"},{l:"Arkadaşlarım",p:"arkadaslarim",e:"👥"},{l:"Arkadaşlarını Davet Et",p:"davet",e:"📨"},{l:"Topluluk Kuralları",p:"topluluk-kurallari",e:"📋"},{l:"Ayarlar",p:"ayarlar",e:"⚙️"},{l:"Yardım & SSS",p:"yardim",e:"❓"}].map(i=>
             <div key={i.p} style={sty.mi} onClick={()=>{if(i.p==="yardim"||i.p==="topluluk-kurallari"||logged){setMenu(false);nav(i.p);}else reqLog();}}>
               <span style={{fontSize:18}}>{i.e}</span><span>{i.l}</span><span style={{marginLeft:"auto",color:C.d}}>{Ico.chr}</span>
+            </div>
+          )}
+          {/* Hesabını Doğrula - sadece giriş yapılmışsa görünür */}
+          {logged && (
+            <div style={{...sty.mi,background:verified?C.ad:"transparent",cursor:verified?"default":"pointer"}} onClick={()=>{if(!verified){setMenu(false);nav("dogrulama");}}}>
+              <span style={{fontSize:18}}>{verified?"✅":"📱"}</span>
+              <span style={{color:verified?C.g:C.t,fontWeight:verified?600:500}}>
+                {verified?"Hesabın Doğrulandı":"Hesabını Doğrula"}
+              </span>
+              {!verified && <span style={{marginLeft:"auto",color:C.d}}>{Ico.chr}</span>}
             </div>
           )}
         </div>
@@ -1413,7 +1591,7 @@ export default function App() {
           {menuDrawer}
         </div>
         <div style={{textAlign:"center",marginTop:16,display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-          {[["kesfet","🔍 Keşfet"],["etkinlik","🏆 Etkinlik"],["oyna","⚽ Oyna"],["ders","🎓 Ders"],["login","🔐 Login"],["onboard","👋 Onboard"]].map(([p,l])=>
+          {[["splash","🚀 Splash"],["kesfet","🔍 Keşfet"],["etkinlik","🏆 Etkinlik"],["oyna","⚽ Oyna"],["ders","🎓 Ders"],["login","🔐 Login"],["onboard","👋 Onboard"],["rating","⭐ Rating"]].map(([p,l])=>
             <button key={p} onClick={()=>{if(p==="onboard"){setObStep(0);}if(p==="login"){setLogged(false);}nav(p);}} style={{padding:"6px 12px",borderRadius:8,border:`1px solid ${C.b}`,background:pg===p?C.ad:C.s,color:pg===p?C.a:C.d,fontSize:11,fontWeight:600,cursor:"pointer"}}>{l}</button>
           )}
         </div>
