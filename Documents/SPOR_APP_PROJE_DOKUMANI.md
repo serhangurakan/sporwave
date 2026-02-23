@@ -113,7 +113,6 @@
 ### 4.2 Keşfet — Footer Tab 1 (1 sayfa)
 
 #### S00: Keşfet Feed (Ana Sayfa — Varsayılan Ekran)
-- **Üstte:** Konum filtresi (yakındaki içerik odağı; şehir/ilçe bazlı)
 - **İçerik:** Karma dikey feed (scroll), bölümlere ayrılmış:
   - **"Yakında Maç"** bölümü: Yakındaki Oyna aktiviteleri — spor ikonu, tarih/saat, katılımcı sayısı (mevcut/max), "Katıl" CTA
   - **"Bu Hafta Etkinlikler"** bölümü: Büyük organizasyonlar — banner, tarih, şehir

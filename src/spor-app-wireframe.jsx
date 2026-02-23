@@ -241,10 +241,8 @@ export default function App() {
   // ─── S00: Keşfet Feed ───────────────────────────────────────────────────────
   const PageKesfet = () => (
     <><TopBar/><div style={sty.cnt}>
-      <Pills items={["Yakın","İstanbul","Kadıköy","Beşiktaş","Şişli"]} val={cf} set={setCf}/>
-
       {/* Yakında Maç */}
-      <div style={{padding:"4px 16px 0"}}>
+      <div style={{padding:"12px 16px 0"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
           <div style={{fontSize:16,fontWeight:800,color:C.t}}>⚽ Yakında Maç</div>
           <span style={{fontSize:12,color:C.at,fontWeight:600,cursor:"pointer"}} onClick={()=>nav("oyna")}>Tümünü Gör</span>
