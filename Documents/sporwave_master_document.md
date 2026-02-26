@@ -4,7 +4,7 @@
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
 > Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
-> Son güncelleme: 24 Şubat 2026
+> Son güncelleme: 25 Şubat 2026
 
 ---
 
@@ -16,13 +16,64 @@
 | **Tema** | Koyu (default) + Açık tema toggle (Ayarlar'dan) |
 | **Login yaklaşımı** | Gecikmeli login — uygulama login olmadan gezilir |
 | **Kayıt yöntemleri** | E-posta/şifre + Google + Apple |
-| **Mesajlaşma** | Uygulama içi 1-1 mesajlaşma + WhatsApp butonu |
+| **Mesajlaşma** | Uygulama içi 1-1 mesajlaşma + grup chat (maç sohbeti) + WhatsApp butonu |
 | **Saha rezervasyonu** | MVP'de yok — sonra eklenecek |
 | **Coğrafi kapsam** | İstanbul öncelikli |
 | **Uygulama dili** | Türkçe (i18n altyapısı hazır olacak) |
 | **Derecelendirme** | MVP'de yok — deneyim seviyesi self-select olarak kalacak |
 | **Diğer spor dalları** | UI'da gösterilmiyor, sadece onboarding'de tercih soruluyor (data toplama amaçlı) |
 | **Tab yapısı** | 3 tab: Ana Sayfa (sosyal) + Maçlar (aksiyon) + Profil (kişisel) |
+| **Attendance sistemi** | MVP'de var — %60 çoğunluk kuralı ile katılım bildirimi |
+| **Keşfet algoritması** | Etkileşim skoru: Like×1 + Comment×2 + Share×3, son 7 gün göreli sıralama |
+| **Maç sohbeti** | MVP'de var — her planlanan maçın otomatik grup chat'i |
+| **Maç editlenebilirlik** | Feed'e düştükten sonra edit yok, sadece 24 saat puanlama |
+| **Host devralma** | MVP'de var — katılımcılar oylama ile host değişikliği talep edebilir (%60 çoğunluk) |
+| **Maç başlatma koşulu** | Her iki takımda en az 1 oyuncu olmalı |
+| **Başlamamış maç süresi** | Maç saatinden 24 saat sonra başlamamışsa otomatik silinir |
+| **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür, S08'de herkese açık listelenmez |
+| **Maç state machine** | 7 state: draft → open → full → started → ended → rating → archived |
+| **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
+| **Maç sohbeti arşiv** | Maç arşivlenince mesajlar silinir (salt okunur arşiv yok), sadece metadata korunur |
+| **Attendance hesaplama** | Son 10 maç bazlı (ilk 5 maçta gösterilmez) |
+| **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
+
+---
+
+## MAÇ STATE MACHINE
+
+Bir maç şu state'lerden geçer:
+
+```
+draft → open → full → started → ended → rating → archived
+```
+
+| State | Açıklama | Görünürlük |
+|-------|----------|------------|
+| **draft** | Oluşturuldu ama yayınlanmadı | Sadece host |
+| **open** | Yayında, katılıma açık | Herkese (gizlilik ayarına göre) |
+| **full** | Kontenjan doldu | Sadece katılımcılara (dışarıdan görünmez) |
+| **started** | Maç başladı, skor takibi aktif | Sadece katılımcılara |
+| **ended** | Maç bitti, skor kilitlendi | Sadece katılımcılara (feed'e düşene kadar) |
+| **rating** | 24 saatlik MVP oylama + attendance penceresi | Katılımcılara |
+| **archived** | Profil ve feed'de geçmiş maç olarak görünür | Herkese (gizlilik ayarına göre) |
+
+**Geçiş kuralları:**
+- `draft → open`: Host "Yayınla" butonuna basar
+- `open → full`: Kontenjan dolduğunda otomatik
+- `full → open`: Bir katılımcı ayrıldığında otomatik (kontenjan açılır)
+- `open/full → started`: Host "Maçı Başlat" butonuna basar. Koşul: her iki takımda en az 1 oyuncu
+- `started → ended`: Herhangi bir katılımcı "Maçı Bitir" butonuna basar (onay dialog'u ile)
+- `ended → rating`: Maç kaydedildikten sonra otomatik (24 saat pencere başlar)
+- `rating → archived`: 24 saat dolunca otomatik
+
+**Kısıtlamalar:**
+- Skor SADECE `started` state'inde değiştirilebilir
+- `ended` sonrası skor kilitlenir
+- `archived` maçlar hiçbir şekilde düzenlenemez
+- Takım değişikliği SADECE `started` öncesi mümkün
+- `full` state'indeki maçlar katılımcı olmayan kullanıcılara görünmez
+- Dolu maçtan ayrılan eski katılımcılar da maçı göremez
+- Arkadaş olmak `full` kısıtlamasını bypass etmez
 
 ---
 
@@ -38,9 +89,9 @@
 - **💬**: Mesajlar Listesi (S17)
 - Okunmamış varsa kırmızı badge (sayı)
 
-### Alt Tab Bar (3 sekme + FAB)
+### Alt Tab Bar (3 sekme)
 ```
-[ 🏠 Ana Sayfa ]        [ ⚽ Maçlar ]        [ 👤 Profil ]
+[ 🏠 Ana Sayfa ]    [ ⚽ Maçlar ]    [ 👤 Profil ]
 ```
 - **🏠 Ana Sayfa**: Sosyal feed — dropdown ile Ana Sayfa (takip edilenler) / Keşfet (herkes)
 - **⚽ Maçlar**: Katılabileceğin açık maçlar + katıldığın maçlar + sağ altta FAB "+" (oluştur/başlat)
@@ -49,7 +100,7 @@
 
 ---
 
-## SAYFA HARİTASI — TOPLAM 35 SAYFA
+## SAYFA HARİTASI — TOPLAM 36 SAYFA
 
 ---
 
@@ -85,7 +136,7 @@
 - Başarılı gönderim mesajı (inline)
 - "Giriş Yap'a Dön" linki
 
-#### S04: Onboarding (4 adımlı — kayıt sonrası veya sosyal login sonrası)
+#### S04: Onboarding (4 adımlı — kayıt sonras�� veya sosyal login sonrası)
 - İlerleme çubuğu (üstte, 4 adım)
 
 **Adım 1 — Temel Bilgiler:**
@@ -123,7 +174,7 @@
 - **Yapı:** Hevy'nin Ana Sayfa/Keşfet dropdown yapısıyla birebir
 - **Üstte sol:** Dropdown ile sayfa adı "Ana Sayfa ▾" → iki seçenek:
   - **🏠 Ana Sayfa (Takip edilenler)** — default: takip ettiğin kullanıcıların geçmiş maç kartları
-  - **🌐 Keşfet** — tüm kullanıcıların yüksek etkileşimli geçmiş maç kartları
+  - **🌐 Keşfet** — yüksek etkileşimli geçmiş maç kartları (etkileşim skoru eşiğini geçenler)
 - **Üstte sağ:** 🔍 Arama + 🔔 Bildirimler
 
 **Keşfet modundayken — Önerilen Kullanıcılar bölümü:**
@@ -134,10 +185,42 @@
   2. Arkadaşlarının arkadaşları (takip ettiklerinin takip ettikleri)
   3. Aynı şehirden random profiller (hiç arkadaş/maç yoksa)
 
-**İçerik:** Geçmiş maç kartları dikey listesi (feed)
+**İçerik:** Geçmiş maç kartları dikey listesi (feed) — **Maç bazlı birleştirilmiş (grouped) yapı**
+
+**Grouped Feed Mantığı:**
+- Aynı maça katılan birden fazla kullanıcı feed'de ayrı ayrı post olarak görünmez.
+- **1 maç = 1 kart** prensibi uygulanır. Bir maç feed'de en fazla 1 kez görünür, asla duplike olmaz.
+- Feed sıralaması: **En son tamamlanan maç en üstte** (tamamlanma tarihine göre azalan sıra, kronolojik).
+- Bu yaklaşım feed kirliliğini önler, etkileşimleri (beğeni/yorum) tek bir yerde toplar ve sosyal proof'u güçlendirir.
+
+**Ana Sayfa (Takip Edilenler) — Görünürlük kuralı:**
+- Bir maç kartı Ana Sayfa feed'inde görünür **eğer o maçtaki katılımcılardan en az biri takip ettiğin kişiyse.**
+- 5 arkadaşın aynı maçtaysa → 1 kart. 1 arkadaşın maçtaysa → 1 kart. 0 arkadaşın maçtaysa → Ana Sayfa'da görünmez.
+
+**Ana Sayfa kart metni kuralları (sadece arkadaşlar gösterilir):**
+- 1 arkadaş varsa: "**Ali** maç tamamladı"
+- 2 arkadaş varsa: "**Ali** ve **Mehmet** maç tamamladı"
+- 3+ arkadaş varsa: "**Ali**, **Mehmet** ve **1 diğer arkadaşın** maç tamamladı"
+- Sen de oynadıysan: "**Sen** ve **Ali** maç tamamladı" veya "**Sen**, **Ali** ve **1 diğer arkadaşın** maç tamamladı"
+- **Arkadaş olmayan katılımcılar kartta hiç belirtilmez** — maç detayında (S11) zaten tam kadro var.
+
+**Keşfet — Görünürlük ve sıralama kuralı:**
+- Keşfet'te **tüm herkese açık maçlar** görünür, takip durumundan bağımsız.
+- **Etkileşim Skoru:** Like × 1 + Comment × 2 + Share × 3
+- **Sıralama:** Son 7 günün en yüksek etkileşim puanlı maçları, üstten alta sıralı.
+- **Minimum eşik:** En az 1 etkileşim (0 etkileşimli maç keşfette görünmez).
+- Keşfet'te de **1 maç = 1 kart** — iki kişi aynı maçtaysa yine tek kart.
+- **Keşfet kart metni:** "**[Organizatör adı]** ve **X kişi** maç tamamladı" — keşfette kimseyi tanımıyor olabilirsin, organizatör adı yeterli.
+- **Not:** İlk aşamada sabit eşik yerine göreli sıralama kullanılır — uygulama büyüdükçe A/B test ile katsayılar ayarlanabilir.
+
+**Çapraz duplikasyon:** Aynı maç hem Ana Sayfa'da hem Keşfet'te görünebilir. Kullanıcı aynı anda ikisinde olamaz (dropdown ile geçiş yapar), pratikte duplikasyon hissi yaşanmaz. Bir maçı Ana Sayfa'da beğendiysen, Keşfet'e geçtiğinde de beğeni durumu korunur (maç ID'si aynı).
 
 **Her maç kartı yapısı:**
-- **Üst satır:** Avatar + kullanıcı adı + tarih/saat + ⋮ menü (Raporla/Engelle)
+- **Üst satır (katılımcı özet satırı):**
+  - Katılımcı avatarları (üst üste binen daireler, sadece arkadaşlar Ana Sayfa'da, organizatör + sayı Keşfet'te)
+  - Dinamik metin (yukarıdaki kurallara göre)
+  - Tarih/saat + ⋮ menü (Raporla/Engelle)
+  - **Tüm isimler tıklanabilir → S16 Profil**
 - **Maç başlığı** (bold): örn. "Kadıköy Halısaha Maçı"
 - **Özet bilgi satırı:** Süre: 1s 20dk · Skor: 5-3 · Oyuncular: 10
 - **Katılımcı listesi** (compact): Takım 1 avatarları vs Takım 2 avatarları
@@ -148,10 +231,13 @@
   - Avatarlar + "Beğenenler: ali ve diğerleri" — **isimler tıklanabilir → S16 Profil**
 - **Maçın Yıldızı satırı** (mvp varsa):
   - ⭐ + isim — **isim tıklanabilir → S16 Profil**
+  - Eşit oy durumunda Co-MVP: birden fazla isim gösterilir (⭐ isim1, ⭐ isim2)
 - **Son yorum** (yorum varsa):
   - Avatar + kullanıcıadı + zaman + yorum metni — **kullanıcı adı tıklanabilir → S16 Profil**
 - **Yorum ekle:** "Bir yorum ekle..." input alanı (tıklayınca genişler)
-- **Tüm kart tıklanabilir** → Maç Detay (S10)
+- **Tüm kart tıklanabilir** → Maç Detay (S11)
+
+**Maç editlenebilirlik kuralı:** Feed'e düşen (arşivlenen) maçlar editlenemez. Son düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama ve attendance bildirimi yapılabilir.
 
 **Boş durum (Ana Sayfa — kimseyi takip etmiyorsan):**
 - İllüstrasyon + "Henüz kimseyi takip etmiyorsun"
@@ -184,7 +270,17 @@
 - **Görünüm:** Tüm Maçlar / Sadece Katıldıklarım / Sadece Açık Maçlar
 - "Uygula" butonu + "Sıfırla" linki
 
-**Katıldığım yaklaşan maçlar (en üstte, vurgulu bölüm):**
+**Puanlanmamış maçlar (en üstte, turuncu border):**
+- Kullanıcının henüz MVP oylaması ve/veya attendance bildirimi yapmadığı biten maçlar
+- Turuncu border ile vurgulu kart + "⭐ Bu maçı değerlendir" badge'i
+- Tıklanınca → S40 Puanlama & Attendance sayfası
+- Puanlama yapıldıktan sonra kart buradan kalkar
+
+**Devam eden maç banner'ı (varsa):**
+- "⏸️ Devam eden maçın var — Devam Et" banner'ı (accent renk)
+- Tıklanınca → S10 Adım 3 (kaldığı yerden devam)
+
+**Katıldığım yaklaşan maçlar (vurgulu bölüm):**
 - Farklı arka plan rengi veya sol kenarda accent renk border ile ayrışır
 - Her kart üzerinde "Katılıyorsun ✓" badge'i
 - Tarih sırasına göre (en yakın olan en üstte)
@@ -193,12 +289,15 @@
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
   - Kontenjan: "7/10 oyuncu" (progress bar)
+  - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
   - "Katılıyorsun ✓" badge (accent renk)
+  - Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
   - Tıklanınca → S12 Planlanan Maç Detay
 
 **Açık maçlar (altında, standart liste):**
 - **Arkadaşlarının katıldığı maçlar önce** — her kartta "🤝 [isim] katılıyor" etiketi
 - Ardından diğer açık maçlar (tarihe göre sıralı)
+- **Tarihi geçmiş başlamamış maçlar bu listede gösterilmez** — sadece katılımcılara görünür
 - **Her kart:**
   - Spor ikonu + Maç başlığı (bold)
   - Tarih/saat + Konum
@@ -206,10 +305,26 @@
   - Kontenjan: "7/10 oyuncu" (progress bar)
   - Deneyim seviyesi tercihi badge'i (varsa: "Herkes" / "Orta+")
   - Kabul modu badge'i (varsa: "Onay gerekli")
+  - Görünürlük badge'i: 👁️ (küçük, sağ üstte)
   - Arkadaş katılıyorsa: "🤝 Ali katılıyor" etiketi
+  - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
   - Tıklanınca → S12 Planlanan Maç Detay
 
-**Not:** Bu sayfada geçmiş maçlar gösterilmez. Geçmiş maçlar Ana Sayfa feed'inde (S05) ve Profil'de (S15) görünür.
+**Görünürlük badge'i:**
+- Her maç kartında küçük bir görünürlük badge'i gösterilir:
+  - 👁️ "Herkese Görünür" (yeşil) — maç S08'de açık maçlar listesinde herkese görünüyor
+  - 🔒 "Sadece Katılımcılara" (gri) — maç sadece katılımcılara ve davet linkiyle görünüyor
+- Bu badge, maçın Maç Bul sayfasında (S08) görünür olup olmadığını gösterir
+- Host bu bilgiyi görerek maçın keşfedilebilirlik durumunu anlayabilir
+
+**Tarihi geçmiş başlamamış maçlar:**
+- Maç saati geçtiği halde henüz başlamamış maçlar **S08'deki açık maçlar listesinde diğer kullanıcılara gösterilmez**
+- Bu maçlar yalnızca **maçın katılımcılarına** "Katıldığım yaklaşan maçlar" bölümünde görünür (turuncu-sarı uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
+- **Davet linki** ile maç görüntülenebilir — link sahibi maçı görebilir ama S08 listesinde görmez
+- Host maçın tarihini gelecek bir tarihe güncellerse → maç tekrar S08'de herkese görünür olur ve görünürlük badge'i "👁️ Herkese Görünür" olarak güncellenir
+- **Otomatik silme:** Maç saatinden **24 saat** geçtikten sonra hala başlamamışsa maç otomatik silinir, tüm katılımcılara bildirim gider
+
+**Not:** Bu sayfada tamamlanmış geçmiş maçlar gösterilmez. Geçmiş maçlar Ana Sayfa feed'inde (S05) ve Profil'de (S15) görünür.
 
 **Boş durum:** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
 
@@ -225,6 +340,8 @@
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
 
+**Maç başlatma koşulu:** Her iki takımda en az 1 oyuncu (uygulama kullanıcısı veya misafir) kayıtlı olmalı. Planlanan maçlarda (S31) maç saatinden sonra da başlatılabilir — 24 saat boyunca başlatma imkanı devam eder.
+
 **Adım 1 — Maç Kurulumu:**
 - Maç formatı: 5v5 / 6v6 / 7v7 / Özel
 - Konum: Otomatik GPS + manuel düzenleme
@@ -236,12 +353,13 @@
   - **Uygulama kullanıcısı:** İsim/@kullanıcıadı ile ara, seç
   - **Misafir Oyuncu:** "Misafir Ekle" butonu → sadece isim girişi (otomatik doldurma yok)
 - Takım rengi seçimi (opsiyonel)
+- **Drag & drop ile takım değişikliği:** Oyuncular iki takım arasında sürükle-bırak ile taşınabilir. Mobilde uzun basma (long press) ile drag başlar. İki kolon (Takım 1 | Takım 2) formatında.
 - **"Atla — Sonra eklerim"** linki (takım kurmadan skor takibine geç)
 - "Devam" butonu
 
 **Adım 3 — Canlı Skor Ekranı:**
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
-- **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır
+- **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)
 - Her takım için **"+ Gol"** butonu (büyük, kolay tıklanabilir, takım rengiyle)
 - **Gol eklenince:**
   - "Kim attı?" popup → oyuncu listesinden seç / "Belirtme" seçeneği
@@ -250,27 +368,39 @@
 - **Gol geçmişi listesi** (kronolojik): "12' ⚽ Berk (Asist: Ali)" formatında
   - Her gol satırında **sola kaydır (swipe) → "Sil"** aksiyonu
 - **Otomatik kaydetme:** Her gol ekleme/silme anında state local storage + backend'e kaydedilir
-- **"Maçı Bitir"** butonu (alt kısımda, onay dialog'u ile: "Maçı bitirmek istediğine emin misin?")
+- **Çoklu kullanıcı skor güncelleme:** Maçtaki **tüm katılımcılar** gol ekleyebilir/silebilir — sadece host değil. Skor real-time sync olur (backend üzerinden). Host'un telefonu ölse bile başka biri devam edebilir.
+- **Skor kuralları:**
+  - **Last write wins** — çakışma durumunda son yazılan geçerli (MVP basitliği)
+  - **Goal rate limit:** Aynı kullanıcı saniyede 1'den fazla gol eventi oluşturamaz (≥1 saniye aralık zorunlu)
+  - Her gol bir event log entry olarak kaydedilir — event log final skoru belirler
+- **"Maçı Bitir"** butonu — **tüm katılımcılarda aktif** (onay dialog'u ile: "Maçı bitirmek istediğine emin misin?")
+
+**Geri tuşu davranışı (Adım 3'te):**
+- Geri tuşuna basınca "Maçı duraklatmak mı istiyorsun?" dialog'u çıkar:
+  - **"Duraklat"** → maç duraklatılmış olarak kalır, S08'e dönülür, S08'in en üstünde "⏸️ Devam eden maçın var — Devam Et" banner'ı görünür
+  - **"Maçı İptal Et"** → onay dialog'u → maç silinir
+  - **"Geri Dön"** → dialog kapanır, maça devam
 
 **App kapanması / crash koruması:**
-- Uygulama tekrar açıldığında: "Devam eden maçın var — Devam Et?" banner'ı
-- Kronometer duraklatılmış olarak bekler, kullanıcı devam ettiğinde kaldığı yerden devam
+- Uygulama tekrar açıldığında: "Devam eden maçın var — Devam Et?" banner'ı (S08'de)
+- Kronometer duraklatılmış olarak bekler, kullanıcı devam ettiğinde kaldığı yerden devam (gerçek zamanlı saymaz arkaplanda)
 - 24 saatten fazla geçtiyse: "Bu maçı tamamlamak ister misin?" → Evet: maç özeti ekranına git / Hayır: maçı sil
 
-**Adım 4 — Maç Özeti & Kaydet (düzenleme ekranı):**
+**Adım 4 — Maç Özeti & Kaydet (düzenleme ekranı — SON EDİT NOKTASI):**
 - Skor özeti: Takım 1 [X] — [Y] Takım 2
 - Maç süresi
+- **Kadro düzenleme (ZORUNLU):** "Kaydet & Paylaş" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Adım 2'de atlandıysa burada tamamlanmalı.
+- **Drag & drop ile takım değişikliği:** Adım 2 ile aynı — oyuncular iki takım arasında sürükle-bırak ile taşınabilir.
 - **Gol listesi (düzenlenebilir):**
   - Her gol satırı tıklanabilir → "Gol atan: [değiştir]" + "Asist: [değiştir]"
   - Gol silme butonu (çarpı ikonu)
   - "Gol Ekle" butonu (maç sırasında kaçırdıysan buradan da ekleyebilirsin)
-- **Takım kadrosu düzenleme:** Oyuncu ekle/çıkar (maç sırasında atladıysan buradan tamamla)
 - **Fotoğraf Ekle** butonu (galeri veya kamera, çoklu seçim, max 4)
 - **Maç Başlığı** input (opsiyonel, placeholder: "Kadıköy Halısaha Maçı")
 - **Not/Açıklama** textarea (opsiyonel)
-- **MVP Oylaması:** "Maçın yıldızını seç" → katılımcı listesi, tek bir kişi seçilir
-- **"Kaydet & Paylaş"** butonu → profilde ve feed'de görünür → S30 Shareable kart gösterilir
-- **"Kaydet (Gizli)"** butonu → sadece profilde görünür, feed'e düşmez
+- **"Kaydet & Paylaş"** butonu → profilde ve feed'de görünür → S30 Shareable kart gösterilir → **maç arşivlenir, artık editlenemez**
+- **"Kaydet (Gizli)"** butonu → sadece profilde görünür, feed'e düşmez → **maç arşivlenir, artık editlenemez**
+- **Not:** MVP oylama ve attendance bildirimi bu sayfada yapılmaz — maç kaydedildikten sonra S40'ta 24 saat boyunca yapılır.
 
 #### S11: Maç Detay Sayfası (Geçmiş — oynanmış maç)
 - **Üst bölüm:** Spor ikonu + Maç başlığı (büyük, bold)
@@ -280,39 +410,71 @@
   - Takım 1 listesi: avatar + isim + gol/asist sayısı + MVP yıldızı (varsa) — **her oyuncu tıklanabilir → S16 Profil**
   - Takım 2 listesi: aynı format
   - Misafir oyuncular gri tonunda, profil linki yok
+  - Katılmadı olarak işaretlenen oyuncular: "❌ Katılmadı" etiketi
 - **Gol zaman çizelgesi:** Kronolojik gol listesi — **gol atan ve asist yapan isimler tıklanabilir → S16 Profil**
-- **Maçın Yıldızı:** MVP seçilen oyuncu vurgulu gösterim (altın çerçeve)
+- **Maçın Yıldızı:** MVP seçilen oyuncu vurgulu gösterim (altın çerçeve). Eşit oy durumunda Co-MVP olarak birden fazla oyuncu gösterilir.
 - **Fotoğraf galerisi** (varsa): Grid veya yatay scroll
 - **Açıklama/not** (varsa)
 - **Etkileşim:**
   - 👍 Beğeni (sayı) + 💬 Yorum (sayı) + ↗ Paylaş
   - Beğenenler satırı: avatarlar + "ali ve diğerleri"
   - Yorumlar listesi (genişletilebilir) + "Bir yorum ekle..."
+- **Not:** Geçmiş maç editlenemez. Sadece etkileşim (beğeni/yorum) yapılabilir.
 - Back butonu
 
 #### S12: Planlanan Maç Detay (Henüz oynanmamış)
 - Üst bölüm: Spor ikonu + Maç başlığı
 - Organizatör: avatar + isim (tıklanınca profil)
 - **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye tercihi
+- Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
+- **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri) — maçın S08'de herkese açık listede görünüp görünmediğini gösterir
 - **Kontenjan gösterimi:** "7/10 oyuncu" (progress bar ile)
+- **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (turuncu-sarı) + otomatik silinmeye kalan süre: "Kalan süre: Xsa Xdk"
 - **Katılımcı listesi:**
-  - Her satır: avatar + isim + deneyim seviyesi → profil tıklanabilir
-- **CTA Butonları (organizatör değilsen):**
+  - Her satır: avatar + isim + deneyim seviyesi + katılım oranı (%) → profil tıklanabilir
+  - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar" (onay dialog'u ile, kısıtlamasız — host istediğini çıkarabilir)
+- **CTA Butonları (organizatör değilsen, maç katılımcısıysan):**
+  - "💬 Maç Sohbeti" → S35 Maç Sohbeti
+  - "💬 Mesaj Gönder" ikincil → S18 Sohbet (host'a DM)
+  - "📱 WhatsApp ile Mesaj" ikincil → WhatsApp'a yönlendir
+  - **"👑 Host Devral"** butonu (ikincil) — host olmak için oylama başlatır (detaylar aşağıda)
+- **CTA Butonları (henüz katılmamışsan):**
   - "Katıl (X yer kaldı)" birincil → S14 Deneyim Seviyesi Seçimi
-  - "💬 Mesaj Gönder" ikincil → S18 Sohbet
+  - "💬 Maç Sohbeti" → S35 Maç Sohbeti
+  - "💬 Mesaj Gönder" ikincil → S18 Sohbet (host'a DM)
   - "📱 WhatsApp ile Mesaj" ikincil → WhatsApp'a yönlendir
 - **CTA Butonları (organizatörsen):**
-  - "Başvuruları Gör" → S13
-  - "Maçı Düzenle"
-  - "🎮 Maçı Başlat" (maç saati gelince aktif olur) → S10 Adım 3'e geçiş (maç bilgileri otomatik doldurulur)
-- **Paylaş butonu:** Deep link / WhatsApp / Instagram Stories share
+  - "Başvuruları Gör" → S13 (onay modundaysa)
+  - "Maçı Düzenle" (tarih/saat/konum değiştir, reschedule — tüm katılımcılara bildirim gider. **Tarihi geçmiş başlamamış maçın tarihi gelecek bir tarihe güncellenirse** maç tekrar S08'de herkese görünür olur)
+  - "Oyuncu Davet Et" → S41 Oyuncu Davet (arkadaş listesi)
+  - "Eksik Oyuncu Bul" → maçı S08'de açık maç olarak yayınla (kontenjan dolmamışsa)
+  - "🎮 Maçı Başlat" (maç saati gelince aktif olur, **maç saatinden sonra da aktif kalır** — her iki takımda en az 1 oyuncu varsa başlatılabilir) → S10 Adım 3'e geçiş (maç bilgileri otomatik doldurulur)
+- **💬 Maç Sohbeti butonu:** Maçın grup sohbetine git → S35
+- **Paylaş butonu:** Deep link kopyala + WhatsApp / Instagram Stories share
+- **📋 Davet Linkini Kopyala** butonu
 - ⋮ Menü: Raporla / Engelle
 - Back butonu
+
+**Host Devralma Mekanizması:**
+- Maçın katılımcıları (host hariç) "👑 Host Devral" butonuna basarak host olmak için oylama başlatabilir
+- Oylama başlatılınca **tüm katılımcılara** (talep eden dahil, mevcut host dahil) bildirim gider
+- Oylama süresi: **24 saat** (veya maç başlayana kadar — hangisi önce gelirse)
+- **%60 çoğunluk kuralı:** Oy veren katılımcıların %60'ı veya fazlası "Evet" derse → host değişir
+- **Minimum oy:** En az 3 kişi oy vermiş olmalı (3'ün altında oy varsa oylama geçersiz sayılır)
+- Oylama sonucunda host değişirse: eski host'a ve tüm katılımcılara bildirim gider, yeni host tüm host yetkilerini alır
+- Aynı anda sadece 1 aktif host devralma oylaması olabilir
+- Host devralma oylaması S12'de inline banner olarak gösterilir: "👑 [İsim] host olmak istiyor — Oyla!" + "Evet" / "Hayır" butonları + kalan süre
+
+**Maç başlatma koşulları:**
+- **Her iki takımda en az 1 kayıtlı oyuncu** olmalı (misafir oyuncular da sayılır)
+- Maç saati gelince "🎮 Maçı Başlat" butonu aktif olur
+- **Maç saatinden sonra da başlatılabilir** — maç geçmiş tarihe düşse bile 24 saat boyunca başlatma imkanı devam eder
+- Maç saatinden **24 saat** geçtikten sonra başlamamışsa → maç otomatik olarak silinir ve tüm katılımcılara bildirim gider
 
 #### S13: Başvuru Yönetimi (Organizatör için — Login gerekli)
 - Maç başlığı (üstte)
 - Gelen başvuru listesi:
-  - Her başvuru: avatar + isim + deneyim seviyesi
+  - Her başvuru: avatar + isim + deneyim seviyesi + katılım oranı (%)
   - "Onayla" butonu (yeşil) + "Reddet" butonu (kırmızı)
 - Onaylı katılımcılar listesi (altta)
 - Sadece "Onay ile kabul et" modundaki maçlarda görünür
@@ -335,7 +497,7 @@
 #### S31: Maç Oluştur (İleri Tarihli — Login gerekli)
 - **Amaç:** Gelecek tarihli maç planla, oyuncu topla
 - **Erişim:** S09 Bottom Sheet → "Maç Oluştur"
-- İlerleme çubuğu (3 adım)
+- İlerleme çubuğu (4 adım)
 
 **Adım 1 — Maç Detayları:**
 - Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı")
@@ -346,8 +508,10 @@
 **Adım 2 — Tarih & Konum:**
 - Tarih picker
 - Saat picker
-- Konum input + harita üzerinde seç
-- Saha adı input (opsiyonel: "Fenerbahçe Halısaha")
+- **Konum seçimi (opsiyonel):** Map picker açılır, pin atılır
+  - **Seçenek 1 — "Saha Biliyorum":** Pin atar + saha adı girer
+  - **Seçenek 2 — "Saha Önerisine Açığım":** Sadece semt/ilçe düzeyinde pin atar, saha adı boş bırakılır. Maç kartında "📍 Kadıköy — Saha belirlenecek" şeklinde görünür. Katılımcılar maç sohbetinde (S35) sahayı birlikte belirler. Host daha sonra maçı düzenleyerek kesin sahayı ekler.
+  - **Seçenek 3 — "Konumsuz Devam Et":** Konum belirtmeden maç oluştur. Maç kartında konum gösterilmez, sohbette belirlenir.
 - "Devam" butonu
 
 **Adım 3 — Katılım Ayarları:**
@@ -356,11 +520,22 @@
 - Kabul modu:
   - "Herkesi Kabul Et" — ilk gelen alır
   - "Onay ile Kabul Et" — başvuruları sen onaylarsın
-- Gizlilik ayarı:
+- Gizlilik ayarı (saha bilgisinden bağımsız, her durumda seçilebilir):
   - "Herkese açık" — Maçlar sekmesinde görünür
   - "Sadece takipçilere" — sadece takipçilerin görebilir
   - "Sadece davet ile" — link paylaşarak katılım
-- **"Yayınla 📢"** butonu
+- "Devam" butonu
+
+**Adım 4 — Davet (opsiyonel):**
+- "Arkadaşlarını Davet Et" — arkadaş listesi (takip edilenler), her profil yanında "Davet Et" butonu
+- Davet gönderilince buton "Gönderildi ✓" olur
+- **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez, diğer kişilere cooldown'sız davet atılabilir
+- "Atla" linki veya **"Yayınla 📢"** butonu
+
+**Yayınla sonrası:**
+- Maç sohbeti (S35) otomatik oluşturulur
+- Deep link üretilir (sporwave.app/mac/XXXX) — WhatsApp, Instagram, SMS ile paylaşılabilir
+- Davet edilen kişilere bildirim + 1-1 sohbette davet kartı gider
 
 ---
 
@@ -375,6 +550,7 @@
 - "Doğrulanmış ✓" rozeti (varsa)
 - İstatistik satırı: **Maç** (sayı) · **Takipçi** (sayı) · **Takip** (sayı)
   - Takipçi/takip sayılarına tıklanınca liste açılır (S22)
+- **Katılım Oranı:** "%94 Katılım" badge'i (ilk 5 maçta gösterilmez — yeni kullanıcı koruması)
 
 **Sağ üst ikonlar:** ✏️ Profil düzenle + ↗ Paylaş + ⚙️ Ayarlar
 
@@ -390,8 +566,13 @@
 - 📊 **İstatistikler** → İstatistik detay sayfasına git (inline genişleme veya modal):
   - Toplam maç / Galibiyet / Mağlubiyet / Beraberlik / Kazanma oranı (%)
   - Toplam gol / Toplam asist / MVP seçilme sayısı
+  - **Win/loss hesaplama:** Sadece "ended" state'inde olan VE final skoru kaydedilen maçlarda, kullanıcının maç bitişinde Takım A veya Takım B'de olmasına göre hesaplanır
 - 🏆 **Başarılar** → Kazanılan rozetler ve ilerleme
-- 📅 **Takvim** → Takvim görünümünde maç günleri (accent renk noktalar)
+- 📅 **Takvim** → Detaylı takvim görünümü:
+  - Maç günleri accent renk noktalar ile gösterilir
+  - **Bir güne tıklayınca** o günün maçları listelenir: maç başlığı, saat, konum, durum
+  - Buradan maç detayına gidilebilir (S11 veya S12)
+  - "Düzenle" / "Reschedule" aksiyonu alınabilir (planlanan maçlar için)
 
 **Seri Gösterimi** (varsa, vurgulu):
 - "🔥 X haftalık serin!" (aktif seri)
@@ -411,6 +592,7 @@
 - **Pano bölümü gösterilmez** — sadece kendi profilinde görünür
 
 **Üst bölüm:** Fotoğraf + isim + @kullanıcıadı + doğrulanmış rozeti + istatistik satırı
+- **Katılım Oranı:** "%94 Katılım" badge'i (ilk 5 maçta gösterilmez)
 
 **Grafik + Rozetler + Seri:** S15 ile aynı (salt okunur, Pano hariç)
 
@@ -452,16 +634,17 @@
 
 ---
 
-### BÖLÜM 6: MESAJLAŞMA (2 sayfa)
+### BÖLÜM 6: MESAJLAŞMA (3 sayfa)
 
 #### S17: Mesajlar Listesi (Inbox — Login gerekli)
 - Üst navbar'daki 💬 ikonundan erişilir
 - Arama çubuğu (konuşma ara)
-- Konuşma listesi:
-  - Her satır: avatar + isim + son mesaj önizleme + tarih/saat
+- Konuşma listesi (1-1 ve grup sohbetleri karışık, son mesaj tarihine göre sıralı):
+  - **1-1 sohbet:** avatar + isim + son mesaj önizleme + tarih/saat
+  - **Maç sohbeti:** ⚽ maç ikonu + maç başlığı + son mesaj önizleme + tarih/saat
   - Okunmamış: accent badge (sayı)
-  - Avatar tıklanınca → S16 Profil
-  - Satır tıklanınca → S18 Sohbet
+  - Avatar/ikon tıklanınca → S16 Profil (1-1) veya S12 Maç Detay (maç sohbeti)
+  - Satır tıklanınca → S18 Sohbet (1-1) veya S35 Maç Sohbeti (grup)
 - Boş durum: "Henüz mesajın yok" + illüstrasyon
 
 #### S18: Sohbet Sayfası (1-1 — Login gerekli)
@@ -470,9 +653,31 @@
   - Gönderilen: sağ, accent renk
   - Alınan: sol, koyu gri
   - Her balonda: metin + saat + okundu tiki
+- **Maç davet kartları:** Davet gönderildiğinde otomatik olarak sohbette görünen özel kart:
+  - "📩 Berk seni **Cumartesi Halısaha Maçı**'na davet etti"
+  - "Detayları Gör" butonu → S12 Planlanan Maç Detay
 - Alt kısım: Mesaj input + 📎 ek (fotoğraf) + Gönder butonu
 - **WhatsApp butonu:** Üst bar'da veya ⋮ menüde "📱 WhatsApp'a Geç" → karşı tarafın numarasına yönlendir (numara paylaşıldıysa)
 - ⋮ Menü: WhatsApp'a Geç / Engelle / Raporla
+
+#### S35: Maç Sohbeti (Grup Chat — Login gerekli)
+- **Amaç:** Planlanan maçın katılımcıları arasında koordinasyon sağlamak
+- **Oluşturulma:** Maç oluşturulduğunda (S31) otomatik oluşur
+- **Erişim:** S12'deki "💬 Maç Sohbeti" butonu veya S17'deki mesaj listesinden
+
+**Üst bar:** ⚽ + Maç başlığı + katılımcı sayısı + ⋮ menü
+- Maç başlığına tıklayınca → S12 Planlanan Maç Detay
+
+**Chat UI:** S18 ile aynı balonlu yapı ama çoklu kullanıcı:
+- Her mesaj balonunda: avatar (küçük) + kullanıcı adı + metin + saat
+- Gönderilen mesajlar sağda (avatar yok), alınan mesajlar solda (avatar var)
+- Alt kısım: Mesaj input + 📎 ek + Gönder butonu
+
+**Yaşam döngüsü:**
+- Maç oluşturulunca → sohbet aktif
+- Maça katılan herkes sohbete otomatik eklenir
+- Maçtan çıkarılan/ayrılan kişi sohbetten de çıkar
+- **Maç arşivlendiğinde:** Sohbet mesajları silinir (salt okunur arşiv yok). Sadece hafif metadata korunur: thread_id, match_id, message_count, last_message_at
 
 ---
 
@@ -495,6 +700,15 @@
 - 🔥 "4 haftalık serin devam ediyor!" → S15 Profil
 - 💬 "Ali sana mesaj gönderdi" → S18 Sohbet
 - ⚽ "Yarınki maçın yaklaşıyor!" → S12 Planlanan Maç (hatırlatıcı)
+- 📩 "Berk seni Cumartesi Halısaha Maçı'na davet etti" → S12 Planlanan Maç
+- 📅 "Maç Pazar'a alındı" → S12 (reschedule bildirimi)
+- 🚫 "Cumartesi Halısaha Maçı iptal edildi" → bildirim sayfasında kalır
+- ⭐ "Maçını değerlendir!" → S40 Puanlama (24 saat hatırlatıcı)
+- ❌ "Ali seni Cumartesi Halısaha Maçı'ndan çıkardı" → bildirim sayfasında kalır
+- 👑 "Berk, Cumartesi Halısaha Maçı'nda host olmak istiyor — Oyla!" → S12 Planlanan Maç
+- 👑 "Berk artık Cumartesi Halısaha Maçı'nın yeni host'u!" → S12 Planlanan Maç
+- 👑 "Host devralma oylaması sonuçlandı — yeterli çoğunluk sağlanamadı" → S12 Planlanan Maç
+- 🗑️ "Cumartesi Halısaha Maçı başlatılmadığı için silindi" → bildirim sayfasında kalır
 
 ---
 
@@ -520,7 +734,7 @@
   - Telefon Numarası
 - **Bildirimler:**
   - Push bildirim on/off
-  - Bildirim türleri (her biri ayrı toggle): Beğeniler, Yorumlar, Yeni takipçi, Maç hatırlatıcı
+  - Bildirim türleri (her biri ayrı toggle): Beğeniler, Yorumlar, Yeni takipçi, Maç hatırlatıcı, Maç daveti, Host devralma oylamaları
 - **Gizlilik:**
   - Profil gizliliği: Herkese açık / Sadece takipçilere
   - Maç geçmişi gizliliği: Herkese açık / Sadece takipçilere / Gizli
@@ -557,7 +771,7 @@
 
 #### S26: Yardım & SSS
 - Accordion SSS listesi
-- Sorular: "Nasıl maç oluşturabilirim?", "Skor takibi nasıl çalışır?", "Hesabımı nasıl silebilirim?" vb.
+- Sorular: "Nasıl maç oluşturabilirim?", "Skor takibi nasıl çalışır?", "Hesabımı nasıl silebilirim?", "Maça nasıl katılabilirim?" vb.
 - İletişim: Destek e-posta + uygulama içi form
 
 ---
@@ -596,7 +810,66 @@
 
 ---
 
-### BÖLÜM 10: EK SAYFALAR (3 sayfa)
+### BÖLÜM 10: PUANLAMA & ATTENDANCE (1 sayfa)
+
+#### S40: Puanlama & Attendance (Maç Sonrası — Login gerekli)
+- **Amaç:** Maç sonrası MVP oylama ve katılım bildirimi
+- **Erişim:** S08'deki puanlanmamış maç kartı (turuncu border) veya bildirim
+- **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
+
+**Üst bölüm:** Maç başlığı + skor + tarih (salt okunur özet)
+
+**Bölüm 1 — MVP Oylaması:**
+- "Maçın yıldızını seç" başlığı
+- Katılımcı listesi — her biri tıklanabilir, tek bir kişi seçilir
+- Her kullanıcı 1 oy verir, en çok oy alan MVP olur
+- **Co-MVP:** Eşit oy durumunda (beraberlik) birden fazla oyuncu MVP olarak gösterilir
+- Oy vermeyenler hakkını kaybeder (ceza yok)
+- MVP oylaması 24 saat sonra otomatik kapanır
+
+**Bölüm 2 — Attendance (Katılım Bildirimi):**
+- "Katılım durumunu bildir" başlığı
+- Katılımcı listesi — her kişinin yanında "✅ Geldi" ve "❌ Gelmedi" butonları
+- Her kullanıcı diğer tüm katılımcılar için oy verir
+- **%60 çoğunluk kuralı:**
+  - Oy verenlerin %60'ı veya fazlası "Gelmedi" derse → kişi **katılmadı** olarak işaretlenir
+  - %60'ın altındaysa → katıldı sayılır (şüpheden sanık yararlanır)
+  - **Minimum oy sayısı:** Karar için en az 3 kişi oy vermiş olmalı. 3'ün altında oy varsa karar verilmez.
+- "Gelmedi" oyu 24 saat içinde geri alınabilir
+- Örnek: 10 kişilik maçta 8 kişi oy verdi. Ali için 5 kişi "gelmedi" dedi (5/8 = %62.5) → Ali katılmadı. Mehmet için 3 kişi "gelmedi" dedi (3/8 = %37.5) → Mehmet katıldı.
+
+**"Gönder" butonu** → puanlama tamamlandı, S08'deki turuncu kart kalkar
+
+**Profilde Katılım Puanı:**
+- Hesaplama: **Son 10 maç** bazlı — (Son 10 maçta katıldığı maç sayısı / Son 10 maçta katılacağını söylediği maç sayısı) × 100
+- Sadece "geliyorum" deyip gelmediği maçlar düşürür. Hiç cevap vermediği maçlar hesaba katılmaz.
+- **İlk 5 maçta katılım puanı gösterilmez** (yeni kullanıcı koruması)
+- 10'dan az maçı olan kullanıcılarda mevcut tüm maçlar kullanılır
+- Bu puan S12'de katılımcı listesinde ve S13'te başvuru listesinde de küçük gösterge olarak görünür
+- Katılım puanı profilde herkese açık gösterilir
+
+---
+
+### BÖLÜM 11: OYUNCU DAVET (1 sayfa)
+
+#### S41: Oyuncu Davet (Bottom Sheet — Login gerekli)
+- **Erişim:** S12'deki "Oyuncu Davet Et" butonu veya S31 Adım 4
+- Arkadaş listesi (takip edilenler + karşılıklı takipler):
+  - Her satır: Avatar + isim + @kullanıcıadı + katılım oranı (%)
+  - "Davet Et" butonu (sağda)
+- "Davet Et"e basınca buton "Gönderildi ✓" olur
+- **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez. Diğer kişilere cooldown'sız davet atılabilir.
+- Davet gönderilince:
+  - Davet edilen kişiye **bildirim** gider
+  - Davet eden ve davet edilen kişinin **1-1 sohbetine** (S18) otomatik davet kartı düşer: "📩 Berk seni **Cumartesi Halısaha Maçı**'na davet etti — [Detayları Gör]"
+  - Davet edilen kişi S12'den normal şekilde "Katıl" butonuyla katılır
+- **Not:** S12'de veya katılımcı listesinde "Davetli" statüsü gösterilmez — ya katılmıştır ya katılmamıştır.
+- Arama çubuğu (isim/@kullanıcıadı ile filtrele)
+- Back butonu
+
+---
+
+### BÖLÜM 12: EK SAYFALAR (3 sayfa)
 
 #### S32: Splash Screen
 - Uygulama logosu (ortalı, animasyonlu)
@@ -627,12 +900,14 @@
 | Maçlar (Aksiyon) | 7 | S08-S14 |
 | Maç Oluştur | 1 | S31 |
 | Profil | 3 | S15, S16, S23 |
-| Mesajlaşma | 2 | S17, S18 |
+| Mesajlaşma | 3 | S17, S18, S35 |
 | Bildirimler | 1 | S19 |
 | Menü & Ayarlar | 6 | S20-S22, S24-S26 |
 | Güvenlik & Moderasyon | 4 | S27-S30 |
+| Puanlama & Attendance | 1 | S40 |
+| Oyuncu Davet | 1 | S41 |
 | Ek Sayfalar | 3 | S32-S34 |
-| **TOPLAM** | **33** |
+| **TOPLAM** | **36** |
 
 ---
 
@@ -648,23 +923,32 @@ Splash → Ana Sayfa/Keşfet (login gerekmez) → Maç kartlarına göz at
 ### Akış 2: Maç Başlat (Canlı Skor Takibi)
 ```
 Maçlar tab → FAB "+" → "Maç Başlat" → Format seç + konum
-→ Takım kur (opsiyonel) → Canlı skor ekranı → Gol ekle (geri alınabilir)
-→ Maçı bitir → Özet düzenle + fotoğraf + MVP oyla
-→ Kaydet & Paylaş → Shareable kart → Feed'de görünür
+→ Takım kur (opsiyonel, drag & drop) → Canlı skor ekranı → Gol ekle (geri alınabilir)
+→ Herhangi bir katılımcı skor güncelleyebilir (çoklu cihaz sync)
+→ Maçı bitir (herkes bitirebilir) → Kadro düzenle (zorunlu, min 2 oyuncu) + fotoğraf
+→ Kaydet & Paylaş → Shareable kart → Feed'de görünür (artık editlenemez)
+→ 24 saat içinde S40'ta MVP oyla + attendance bildir
 ```
 
 ### Akış 3: Maç Oluştur (Planlama)
 ```
 Maçlar tab → FAB "+" → "Maç Oluştur" → Detaylar gir
-→ Tarih/konum seç → Katılım ayarları → Yayınla
-→ Maçlar sekmesinde görünür → Başvurular gelir
+→ Konum seç (opsiyonel — saha bilmiyorsan "önerisine açığım" veya konumsuz devam et)
+→ Katılım ayarları → Arkadaşları davet et (opsiyonel)
+→ Yayınla → Deep link üretilir + Maç sohbeti otomatik oluşur
+→ Maçlar sekmesinde görünür (👁️ badge) → Başvurular/katılımlar gelir
 → Maç saati → "Maçı Başlat" → Canlı skor akışına geç
+→ Maç saati geçtiyse: Maç hala başlatılabilir (24 saat boyunca)
+→ S08'de diğer kullanıcılara görünmez olur (🔒 badge), sadece katılımcılara görünür
+→ Host tarihi güncellerse → tekrar herkese görünür (👁️ badge)
+→ 24 saat geçerse başlamamışsa → otomatik silinir, bildirim gider
 ```
 
 ### Akış 4: Maça Katılma
 ```
 Maçlar tab'da açık maçı gör → Detaya git → "Katıl"
 → Seviye seç → Onay bekle veya doğrudan katıl
+→ Maç sohbetine (S35) otomatik eklenir
 → Maç gününe kadar hatırlatıcı bildirimler
 → Maç günü → katıldığın maç vurgulu bölümde en üstte
 ```
@@ -684,26 +968,56 @@ Maç kaydedilir → Shareable kart otomatik oluşur
 → Kendi maçlarını başlatır → Döngü tekrarlanır
 ```
 
-### Akış 7: App Crash Kurtarma
+### Akış 7: Maç Duraklat / Kurtarma
 ```
+Maç sırasında geri tuşu → "Duraklat / İptal / Geri Dön" dialog
+→ Duraklat → S08'de banner → Devam Et → Kaldığı yerden devam
+VEYA
 Maç sırasında app kapanır → State otomatik kaydedilmiş
-→ App tekrar açılır → "Devam eden maçın var" banner
+→ App tekrar açılır → S08'de "Devam eden maçın var" banner
 → "Devam Et" → Kaldığı yerden devam (kronometer duraklatılmış)
+→ 24 saatten fazla geçtiyse: "Tamamla mı iptal mi?"
 ```
 
----
+### Akış 8: Maç Sonrası Puanlama
+```
+Maç biter → Kaydet → S08'de turuncu border'lı kart çıkar
+→ Tıkla → S40 Puanlama sayfası
+→ MVP oylaması + Attendance bildirimi (%60 çoğunluk)
+→ Gönder → Kart S08'den kalkar
+→ 24 saat geçerse puanlama kapanır
+```
 
-## ÖNCEKİ SPORWAVE'DEN ÇIKARILAN MODÜLLER
+### Akış 9: Uygulama İçi Maç Daveti
+```
+S12 veya S31 → "Oyuncu Davet Et" → S41
+→ Arkadaş listesinden "Davet Et" butonuna bas
+→ 1-1 sohbette davet kartı düşer + bildirim gider
+→ Davet edilen "Detayları Gör" → S12 → "Katıl"
+→ Aynı kişiye 15 sn cooldown, diğerlerine serbest
+```
 
-| Modül | Durum | Not |
-|-------|-------|-----|
-| Etkinlik (maraton, HYROX vb.) | MVP'de yok | v2.0'da eklenebilir |
-| Dersler (eğitmen ilanları) | MVP'de yok | v2.0'da eklenebilir |
-| Saha Rezervasyonu | MVP'de yok | v1.5 veya v2.0'da eklenebilir |
-| Akıllı Saat entegrasyonu | MVP'de yok | v1.5'te companion app |
-| Derecelendirme sistemi | MVP'de yok | Kullanıcı davranış datası toplandıktan sonra eklenir |
-| Diğer spor dalları (tenis, basketbol vb.) | MVP'de yok | Halısahada pazar liderliği sonrası aşamalı ekleme |
+### Akış 10: Host Devralma
+```
+S12'de katılımcı → "👑 Host Devral" butonuna bas
+→ Oylama başlatılır → Tüm katılımcılara bildirim gider
+→ Katılımcılar S12'deki inline banner'dan "Evet" / "Hayır" oy verir
+→ 24 saat veya maç başlayana kadar oylama açık
+→ %60 çoğunluk sağlanırsa (min 3 oy) → Host değişir, bildirim gider
+→ Sağlanamazsa → Oylama geçersiz, bildirim gider
+→ Yeni host tüm host yetkilerini alır (düzenle, başlat, çıkar vb.)
+```
 
+### Akış 11: Geçmiş Tarihli Başlamamış Maç
+```
+Maç saati geçer → Maç hala başlamamış
+→ S08'de diğer kullanıcılara görünmez olur (🔒 badge)
+→ Katılımcılar hala S12'den maçı görebilir + başlatabilir
+→ Davet linki ile de erişilebilir
+→ Host tarihi gelecek bir tarihe güncellerse → tekrar herkese görünür (👁️ badge)
+→ 24 saat geçerse başlamamışsa → maç otomatik silinir
+→ Tüm katılımcılara "🗑️ Maç başlatılmadığı için silindi" bildirimi
+```
 ---
 
 ## DESIGN SİSTEM NOTLARI
@@ -719,14 +1033,91 @@ Maç sırasında app kapanır → State otomatik kaydedilmiş
 
 **Kart tasarımı:** Hevy antrenman kartlarından ilham — koyu arka plan, rounded corners, hafif border, büyük skor gösterimi, beğeni/yorum yapısı
 
-**Navigasyon:** 3 tab bar, ortada tab yok (FAB Maçlar tab'ı içinde sağ altta), üst navbar'da arama + bildirim + mesaj
+**Navigasyon:** 3 tab bar, FAB Maçlar tab'ı içinde sağ altta, üst navbar'da arama + bildirim + mesaj
 
 **Navigasyon davranışı (history stack):**
 - Geri butonu her zaman bir önceki görüntülenen sayfaya döner (stack-based navigation)
 - Örnek: Ana Sayfa → Maç Detay → Oyuncu Profili → Geri = Maç Detay → Geri = Ana Sayfa
 - Tab'a basınca stack sıfırlanır ve o tab'ın ana sayfasına gidilir
 - Sayfa içindeki tüm isim/avatar tıklamaları stack'e yeni sayfa ekler
+- **İstisna:** Canlı skor ekranında (S10 Adım 3) geri tuşu → duraklat/iptal dialog'u
+
+**Özel renk kuralları:**
+- Puanlanmamış maç kartı: turuncu border
+- Devam eden maç banner'ı: accent renk arka plan
+- Katılım oranı düşükse (<%70): kırmızı renk uyarı
 
 ---
 
-> **Bu doküman onaylanınca Faz 2'ye — tıklanabilir React wireframe'e — geçilecektir.**
+## HOST DEVRALMA & MAÇ YAŞAM DÖNGÜSÜ DETAYLARI
+
+### Host Devralma Sistemi
+
+**Amaç:** Maç organizatörü (host) müsait olmadığında veya sorumluluk almadığında, katılımcıların demokratik oylama ile host'u değiştirmesini sağlamak.
+
+**Kimler oylama başlatabilir:**
+- Maçın **mevcut katılımcıları** (host hariç — host kendi pozisyonu için oylama başlatamaz)
+- Login gerekli
+
+**Oylama süreci:**
+1. Katılımcı S12'de "👑 Host Devral" butonuna basar
+2. Onay dialog'u: "Host olmak için oylama başlatmak istiyor musun? Diğer katılımcılar oy verecek."
+3. "Evet, Oylama Başlat" → oylama aktif olur
+4. Tüm katılımcılara (talep eden dahil, mevcut host dahil) bildirim gider
+5. S12'de inline banner gösterilir: "👑 [İsim] host olmak istiyor — Oyla!" + "Evet ✓" / "Hayır ✗" butonları + kalan süre göstergesi
+6. Maç sohbetinde (S35) otomatik sistem mesajı: "👑 [İsim] host olmak için oylama başlattı"
+
+**Oylama kuralları:**
+- Süre: **24 saat** veya maç başlayana kadar (hangisi önce gelirse)
+- **%60 çoğunluk:** Oy veren katılımcıların %60'ı veya fazlası "Evet" derse host değişir
+- **Minimum oy:** En az 3 kişi oy vermiş olmalı — 3'ün altında oy varsa oylama geçersiz
+- Talep eden kişi kendi oylamasında otomatik "Evet" oyu verir (oyunu değiştiremez)
+- Mevcut host da oy verebilir (kabul ederse geçiş sorunsuz olur)
+- Aynı anda sadece **1 aktif oylama** olabilir — mevcut oylama bitene kadar yeni başlatılamaz
+- Oy geri alınabilir ve değiştirilebilir (süre dolana kadar)
+
+**Oylama sonuçları:**
+- **Başarılı (host değişir):**
+  - Yeni host tüm host yetkilerini alır: maçı düzenle, başlat, oyuncu çıkar, başvuru yönet
+  - Eski host normal katılımcı olur (maçtan çıkarılmaz)
+  - Tüm katılımcılara bildirim: "👑 [Yeni Host] artık maçın yeni host'u!"
+  - Maç sohbetinde sistem mesajı
+- **Başarısız (host değişmez):**
+  - Mevcut host devam eder
+  - Tüm katılımcılara bildirim: "Host devralma oylaması sonuçlandı — yeterli çoğunluk sağlanamadı"
+  - Aynı kişi aynı maçta **24 saat boyunca** tekrar oylama başlatamaz (spam koruması)
+
+### Başlamamış Maçların Yaşam Döngüsü
+
+**Maç saati geçmeden önce (normal durum):**
+- Maç S08'de "Açık maçlar" bölümünde herkese görünür (gizlilik ayarına göre)
+- Görünürlük badge'i: 👁️ "Herkese Görünür" (veya gizlilik ayarına göre ilgili badge)
+- Host ve katılımcılar maçı düzenleyebilir, başlatabilir
+
+**Maç saati geçtikten sonra (başlamamış maç):**
+- Maç S08'deki açık maçlar listesinden **otomatik olarak kaldırılır** — diğer kullanıcılara gösterilmez
+- Görünürlük badge'i 🔒 "Sadece Katılımcılara" olarak güncellenir
+- Maç **sadece şu yollarla erişilebilir:**
+  1. Maçın katılımcıları → S08'de "Katıldığım maçlar" bölümünde turuncu-sarı uyarı border ile görünür
+  2. Davet linki (deep link) ile — link sahibi maçı görüntüleyebilir
+- S12'de "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı gösterilir
+- Otomatik silinmeye kalan süre gösterilir: "Kalan süre: Xsa Xdk"
+- **Maç hala başlatılabilir** — "🎮 Maçı Başlat" butonu aktif kalır (her iki takımda min 1 oyuncu koşuluyla)
+
+**Host tarihi güncellerse:**
+- Host "Maçı Düzenle" ile tarihi **gelecek bir tarihe** güncellerse:
+  - Maç tekrar S08'de herkese görünür olur
+  - Görünürlük badge'i 👁️ "Herkese Görünür" olarak güncellenir
+  - "⏰ Maç saati geçti" banner'ı kalkar
+  - Tüm katılımcılara reschedule bildirimi gider (mevcut davranış)
+
+**Otomatik silme (24 saat kuralı):**
+- Maç saatinden **tam 24 saat** geçtikten sonra hala başlamamışsa:
+  - Maç otomatik olarak **kalıcı silinir**
+  - Tüm katılımcılara bildirim gider: "🗑️ [Maç adı] başlatılmadığı için silindi"
+  - Maç sohbeti (S35) de kapatılır (salt okunur olarak arşivlenir)
+  - Silinen maç geri alınamaz
+
+---
+
+> **Bu doküman, SporWave MVP'sinin tüm sayfa yapısını, akışlarını ve iş kurallarını tanımlar. Güncellemeler bu dokümanda yapılır, ardından React wireframe buna göre güncellenir.**
