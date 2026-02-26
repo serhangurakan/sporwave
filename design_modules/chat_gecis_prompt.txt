@@ -1,0 +1,28 @@
+SporWave interactive prototype geliştiriyoruz. Modül bazlı ayrı artifact'ler yapıyoruz.
+
+TAMAMLANAN MODÜLLER:
+- Modül 1: Auth & Onboarding (S01-S04, S32) ✅
+- Modül 2: Feed & Arama (S05, S07, S33, S42, S43) ✅
+
+SIRADAKI MODÜL: [X numaralı modül]
+
+MODÜL PLANI:
+1. Auth & Onboarding → S01-S04, S32 ✅
+2. Feed & Arama → S05, S07, S33, S42, S43 ✅
+3. Maçlar Core → S08, S09, S10, S14, S31
+4. Maç Detay → S11, S12, S13, S40, S41, S30
+5. Profil → S15, S16, S22, S23
+6. Mesajlaşma & Bildirimler → S17-S19, S35
+7. Ayarlar & Güvenlik → S20, S21, S24-S29, S34
+
+DESIGN KURALLARI:
+- Dark theme: bg #0B0F14, accent #B7F000, card #141A22
+- Font: Başlıklar 'Plus Jakarta Sans', body 'SF Pro'
+- SVG ikonlar (emoji kullanma)
+- Google/Apple marka logoları
+- Focus border = tam accent renk (#B7F000)
+- Gradient kullanma, sade/premium tarz
+- Her artifact bağımsız çalışır (shared components dahil)
+- Dev ribbon üstte (sayfalar arası hızlı geçiş)
+
+Ekteki master dökümanı referans al, [3] modülünü yap.

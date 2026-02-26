@@ -79,14 +79,15 @@ draft → open → full → started → ended → rating → archived
 
 ## NAVİGASYON YAPISI
 
-### Üst Navbar (her sayfada)
+### Üst Navbar (sadece Ana Sayfa tab'ında, sticky)
 ```
-[ SW logo ]                        [ 🔍 ]  [ 🔔 ]  [ 💬 ]
+Ana Sayfa tab'ında:
+[ Ana Sayfa ▾ / Keşfet ▾ ]         [ 🔍 ]  [ 🔔 ]  [ 💬 ]
 ```
-- **SW logo**: Tıklanınca Ana Sayfa'ya döner
-- **🔍**: Kullanıcı arama (S07)
-- **🔔**: Bildirimler (S19)
-- **💬**: Mesajlar Listesi (S17)
+- **Ana Sayfa ▾ / Keşfet ▾**: Sol üstte dropdown, tab adını gösterir (Hevy tarzı). Logo yok — dropdown onun yerini alır.
+- **🔍 / 🔔 / 💬**: Arama, bildirimler, mesajlar ikonları sağda.
+- **Sadece Ana Sayfa tab'ında görünür.** Maçlar, Profil ve diğer alt sayfalarda (S07, S42, S43 vb.) üst navbar gösterilmez.
+- **Sticky**: Scroll'da üstte sabit kalır (backdrop blur efekti)
 - Okunmamış varsa kırmızı badge (sayı)
 
 ### Alt Tab Bar (3 sekme)
@@ -100,7 +101,7 @@ draft → open → full → started → ended → rating → archived
 
 ---
 
-## SAYFA HARİTASI — TOPLAM 36 SAYFA
+## SAYFA HARİTASI — TOPLAM 38 SAYFA
 
 ---
 
@@ -222,19 +223,20 @@ draft → open → full → started → ended → rating → archived
   - Tarih/saat + ⋮ menü (Raporla/Engelle)
   - **Tüm isimler tıklanabilir → S16 Profil**
 - **Maç başlığı** (bold): örn. "Kadıköy Halısaha Maçı"
-- **Özet bilgi satırı:** Süre: 1s 20dk · Skor: 5-3 · Oyuncular: 10
-- **Katılımcı listesi** (compact): Takım 1 avatarları vs Takım 2 avatarları
-- **Fotoğraf galerisi** (varsa): Yatay scroll, max 4 fotoğraf, tıklayınca büyüt
-- **Etkileşim satırı:**
-  - 👍 Beğeni (sayı) + 💬 Yorum (sayı) + ↗ Paylaş
-- **Beğenenler satırı** (beğeni varsa):
-  - Avatarlar + "Beğenenler: ali ve diğerleri" — **isimler tıklanabilir → S16 Profil**
-- **Maçın Yıldızı satırı** (mvp varsa):
+- **Özet bilgi satırı:** Süre · Konum · Oyuncular · Format badge
+- **Skor gösterimi:** Takım A **[X]** — **[Y]** Takım B (büyük, merkezi, takım avatarları YOK — sadece skor ve takım isimleri)
+- **Maçın Yıldızı** (mvp varsa — skorun hemen altında, ortalı):
   - ⭐ + isim — **isim tıklanabilir → S16 Profil**
   - Eşit oy durumunda Co-MVP: birden fazla isim gösterilir (⭐ isim1, ⭐ isim2)
-- **Son yorum** (yorum varsa):
-  - Avatar + kullanıcıadı + zaman + yorum metni — **kullanıcı adı tıklanabilir → S16 Profil**
-- **Yorum ekle:** "Bir yorum ekle..." input alanı (tıklayınca genişler)
+- **Fotoğraf galerisi** (varsa): Yatay scroll, max 4 fotoğraf, tıklayınca büyüt
+- **Etkileşim satırı:**
+  - 👍 Beğeni (sayı) + 💬 Yorum (sayı, tıklayınca → S42 Yorumlar sayfası) + ↗ Paylaş ikonu (yazısız, sadece ikon)
+- **Beğenenler satırı** (beğeni varsa):
+  - Avatarlar + "**İlk beğenen isim** ve X diğerleri" — **ilk isim tıklanabilir → S16 Profil**, "X diğerleri" tıklanınca → S43 Beğeniler sayfası
+- **Yorumlar** (max 2 yorum görünür):
+  - Her yorum: Avatar + kullanıcıadı + zaman + yorum metni — **kullanıcı adı tıklanabilir → S16 Profil**
+  - 2'den fazla yorum varsa sadece ilk 2 gösterilir. Tüm yorumlara erişim etkileşim satırındaki yorum ikonundan sağlanır (→ S42)
+- **Yorum ekle:** "Bir yorum ekle..." input alanı (tıklayınca → S42 Yorumlar sayfası)
 - **Tüm kart tıklanabilir** → Maç Detay (S11)
 
 **Maç editlenebilirlik kuralı:** Feed'e düşen (arşivlenen) maçlar editlenemez. Son düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama ve attendance bildirimi yapılabilir.
@@ -246,7 +248,10 @@ draft → open → full → started → ended → rating → archived
 #### S07: Kullanıcı Arama Sonuçları
 - Üst navbar'daki 🔍 ikonundan erişilir
 - Arama çubuğu (üstte, aktif, otofokus)
-- Sonuç listesi:
+- **Önerilen Kullanıcılar (arama boşken):** Keşfet'teki öneri algoritmasıyla aynı kullanıcılar dikey liste halinde gösterilir.
+  - Her satır: Avatar + isim + @kullanıcıadı + maç sayısı + "Takip Et" butonu (sağda)
+  - Tıklanınca → Kullanıcı Profili (S16)
+- **Arama sonuçları (yazı yazılınca):**
   - Her satır: Avatar + isim + @kullanıcıadı + maç sayısı
   - "Takip Et" / "Takip Ediliyor" butonu (sağda)
 - Tıklanınca → Kullanıcı Profili (S16)
@@ -889,6 +894,28 @@ draft → open → full → started → ended → rating → archived
 - "Tekrar Dene" butonu
 - "Ana Sayfaya Dön" linki
 
+#### S42: Yorumlar Sayfası (Reusable — Maç Kartı Yorum Detayı)
+- **Erişim:** Maç kartı her nerede görünürse (S05 Feed, S15 Profil, S16 Başka Profil, S11 Maç Detay) yorum ikonuna veya "Bir yorum ekle..." alanına tıklayınca açılır
+- **Üst bar:** ← geri + "Yorumlar" başlığı
+- **Maç özet kartı (üstte, compact):**
+  - Organizatör avatar + kullanıcıadı + tarih
+  - Maç başlığı + skor
+  - Beğeni ikonu + avatarlar + "X beğeni" (tıklanınca → S43 Beğeniler) + "X yorum" (sağda)
+- **Yorum listesi:**
+  - Her yorum: Avatar + kullanıcıadı + zaman + yorum metni
+  - **Kullanıcı adı tıklanabilir → S16 Profil**
+  - MVP'de yorum beğenme ve yoruma yanıt verme özelliği yok
+- **Alt bar (fixed):**
+  - Avatar + "Bir yorum ekle..." input alanı + send ikonu (kağıt uçak SVG)
+
+#### S43: Beğeniler Sayfası (Reusable — Maç Kartı Beğeni Listesi)
+- **Erişim:** Maç kartı her nerede görünürse beğenenler satırında "X diğerleri"ne veya S42 Yorumlar sayfasında "X beğeni"ye tıklayınca açılır
+- **Üst bar:** ← geri + "Beğeniler" başlığı
+- **Arama çubuğu:** "Kullanıcı adı ara" (filtre)
+- **Beğeni listesi:**
+  - Her satır: Avatar + kullanıcıadı + isim + "Takip Et" / "Takip Ediliyor" butonu (sağda)
+  - Tıklanınca → S16 Profil
+
 ---
 
 ## SAYFA SAYISI ÖZETİ
@@ -906,8 +933,8 @@ draft → open → full → started → ended → rating → archived
 | Güvenlik & Moderasyon | 4 | S27-S30 |
 | Puanlama & Attendance | 1 | S40 |
 | Oyuncu Davet | 1 | S41 |
-| Ek Sayfalar | 3 | S32-S34 |
-| **TOPLAM** | **36** |
+| Ek Sayfalar | 5 | S32-S34, S42, S43 |
+| **TOPLAM** | **38** |
 
 ---
 
