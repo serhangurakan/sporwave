@@ -4,7 +4,7 @@
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
 > Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
-> Son güncelleme: 27 Şubat 2026
+> Son güncelleme: 28 Şubat 2026 (oturum 2)
 
 ---
 
@@ -90,6 +90,9 @@ Ana Sayfa tab'ında:
 [ Ana Sayfa ▾ / Keşfet ▾ ]         [ 🔍 ]  [ 🔔 ]  [ 💬 ]
 ```
 - **Ana Sayfa ▾ / Keşfet ▾**: Sol üstte dropdown, tab adını gösterir (Hevy tarzı). Logo yok — dropdown onun yerini alır.
+  - **Tipografi:** 20px / weight 800 / Plus Jakarta Sans (post başlıklarından büyük — 16px/700 — hiyerarşi sağlar)
+  - **İkon:** Home/compass ikonu yalnızca dropdown içinde gösterilir; header'da başlık metni + sağında ▾ chevron ikonu (açıkken 180° döner)
+  - **Hizalama:** Başlık metni 16px sol kenardan başlar — kart başlıklarıyla aynı dikey hizaya oturur
 - **🔍 / 🔔 / 💬**: Arama, bildirimler, mesajlar ikonları sağda.
 - **Sadece Ana Sayfa tab'ında görünür.** Maçlar, Profil ve diğer alt sayfalarda (S07, S42, S43 vb.) üst navbar gösterilmez.
 - **Sticky**: Scroll'da üstte sabit kalır (backdrop blur efekti)
@@ -194,8 +197,9 @@ Ana Sayfa tab'ında:
 - **Üstte sağ:** 🔍 Arama + 🔔 Bildirimler
 
 **Keşfet modundayken — Önerilen Kullanıcılar bölümü:**
-- Feed'in en üstünde yatay scroll önerilen kullanıcı kartları
-- Her kart: Avatar + isim + "Takip Et" butonu
+- Feed'in **ilk postundan sonra** yatay scroll önerilen kullanıcı kartları (feed'in en üstünde değil — ilk post görünür, ardından öneri kartları gelir)
+- Her kart: Avatar (52px) + isim (ilk isim) + @kullanıcıadı + "Takip Et" butonu (accent renk, plus ikonu ile)
+- Kart tasarımı: T.card arka plan + border + 16px border-radius, yatay scroll, gizli scrollbar (swipe/drag ile gezilir)
 - **Öneri algoritması (öncelik sırası):**
   1. Daha önce birlikte maç yaptığın ama takip etmediğin kullanıcılar
   2. Arkadaşlarının arkadaşları (takip ettiklerinin takip ettikleri)
@@ -246,12 +250,14 @@ Ana Sayfa tab'ında:
   - **İsim tıklanabilir → S16 Profil**
 - **Maç başlığı** (bold): post sahibinin kişisel başlığı (varsayılan: maç başlığı)
 - **Kişisel not** (varsa): post sahibinin açıklaması
-- **Özet bilgi satırı:** Süre · Konum · Oyuncular · Format badge
-- **Skor gösterimi:** Takım A **[X]** — **[Y]** Takım B (büyük, merkezi)
-- **Maçın Yıldızı** (mvp varsa — skorun hemen altında, ortalı):
-  - ⭐ + isim — **isim tıklanabilir → S16 Profil**
-  - Eşit oy durumunda Co-MVP: birden fazla isim gösterilir (⭐ isim1, ⭐ isim2)
-- **Kişisel fotoğraf galerisi** (varsa): Yatay scroll, max 4 fotoğraf, tıklayınca büyüt
+- **Özet bilgi satırı:** Süre · Konum · Format badge · Oyuncular
+- **Medya / Skor alanı (MediaSlider):**
+  - **Fotoğraf yoksa:** 430px sabit yükseklikte skor board — Takım A **[X]** — **[Y]** Takım B (büyük, merkezi) + MVP. Tıklanınca → S11.
+  - **Fotoğraf varsa:** Tam genişlikte slide gösterimi — her fotoğraf ayrı slide (max 4), son slide = skor board. Sol/sağ dokunma ile geçiş; alt-orta dot indikatörü (skor slide'ı accent renk ile vurgulanır); sağ üstte sayfa sayacı ("1/2" veya 📊).
+  - **Skor:** Kazanan takımın skoru accent renk (`#B7F000`) ile, kaybeden takımın skoru beyaz ile gösterilir. Berabere ise ikisi de beyaz.
+  - **Maçın Yıldızı** (mvp varsa — skorun hemen altında, ortalı):
+    - ⭐ + isim — **isim tıklanabilir → S16 Profil**
+    - Eşit oy durumunda Co-MVP: birden fazla isim gösterilir (⭐ isim1, ⭐ isim2)
 - **Aynı maç bağlantısı** (varsa): "👥 Ali ve Emre de bu maçta oynadı"
 - **Etkileşim satırı:**
   - 👍 Beğeni (sayı) + 💬 Yorum (sayı, tıklayınca → S42 Yorumlar sayfası) + ↗ Paylaş ikonu (yazısız, sadece ikon)
@@ -1097,7 +1103,7 @@ Maç saati geçer → Maç hala başlamamış
 
 **Tipografi:** Sistem fontları + marka fontu başlıklarda
 
-**Kart tasarımı:** Hevy antrenman kartlarından ilham — koyu arka plan, rounded corners, hafif border, büyük skor gösterimi, beğeni/yorum yapısı. Her kart bir **post**tur (maç değil) — post sahibinin kişisel versiyonunu gösterir.
+**Kart tasarımı:** Hevy antrenman kartlarından ilham — tam genişlikte düz kart (borderRadius:0, border yok, background transparent), büyük skor gösterimi, beğeni/yorum yapısı. Postlar arasında `#141A22` (card rengi) 8px divider kullanılır. Her kart bir **post**tur (maç değil) — post sahibinin kişisel versiyonunu gösterir.
 
 **Navigasyon:** 3 tab bar, FAB Maçlar tab'ı içinde sağ altta, üst navbar'da arama + bildirim + mesaj
 

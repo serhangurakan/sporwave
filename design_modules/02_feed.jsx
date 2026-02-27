@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // ============================================================
 // SPORWAVE MODULE 2 v3 — Feed & Search (S05, S07, S42, S43)
@@ -38,13 +38,6 @@ const mf = id => M.find(m => m.id === id);
 
 // Katman 2: Posts (per-player, personal)
 const P = [
-  { id:101, matchId:1, userId:1, caption:"Ev sahibi olarak güzel bir maçtı!", photos:2, status:"visible", date:"25 Şub", likes:8, coms:3, likedByMe:false,
-    likers:[2,4,3,5,6,7,8],
-    comments:[
-      {uid:2, text:"Harika maçtı, tekrarlayalım! 🔥", t:"2sa"},
-      {uid:5, text:"Emre yine fark yarattı", t:"1sa"},
-      {uid:4, text:"Teşekkürler herkese 💪", t:"15dk"},
-    ]},
   { id:102, matchId:1, userId:4, caption:"MVP seçilmek güzel hissettirdi", photos:0, status:"visible", date:"25 Şub", likes:12, coms:4, likedByMe:false,
     likers:[1,2,3,5,6,7,8,4],
     comments:[
@@ -52,6 +45,13 @@ const P = [
       {uid:3, text:"Skor gerçekçi değil 😂", t:"45dk"},
       {uid:6, text:"Bir daha ne zaman?", t:"30dk"},
       {uid:2, text:"Süper oynadın", t:"20dk"},
+    ]},
+  { id:101, matchId:1, userId:1, caption:"Ev sahibi olarak güzel bir maçtı!", photos:2, status:"visible", date:"25 Şub", likes:8, coms:3, likedByMe:false,
+    likers:[2,4,3,5,6,7,8],
+    comments:[
+      {uid:2, text:"Harika maçtı, tekrarlayalım! 🔥", t:"2sa"},
+      {uid:5, text:"Emre yine fark yarattı", t:"1sa"},
+      {uid:4, text:"Teşekkürler herkese 💪", t:"15dk"},
     ]},
   { id:103, matchId:1, userId:2, caption:null, photos:0, status:"visible", date:"25 Şub", likes:4, coms:1, likedByMe:true,
     likers:[1,4,5,6],
@@ -87,7 +87,6 @@ const P = [
       {uid:8, text:"Sıradaki maç ne zaman?", t:"1g"},
     ]},
 ];
-const pf = id => P.find(p => p.id === id);
 
 // — SVG ICONS —
 const I = {
@@ -139,15 +138,16 @@ function InpField({ placeholder, icon, value, onChange, autoFocus }) {
   return <div style={{ display:"flex", alignItems:"center", gap:12, background:T.card, border:`1.5px solid ${f?T.accent:T.cardBorder}`, borderRadius:12, padding:"12px 16px", transition:"all .2s", boxShadow:f?`0 0 0 3px ${T.accent}18`:"none" }}>{icon&&<span style={{ flexShrink:0, display:"flex" }}>{typeof icon==="function"?icon(f?T.accent:T.textDim):icon}</span>}<input placeholder={placeholder} value={value} onChange={onChange} autoFocus={autoFocus} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{ background:"none", border:"none", color:T.text, fontSize:14, width:"100%", outline:"none", fontWeight:500 }}/></div>;
 }
 function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
+  const [flash, setFlash] = useState(false);
+  const handleClick = () => { setFlash(true); setTimeout(()=>setFlash(false), 180); setDropOpen(!dropOpen); };
   return <div style={{ position:"sticky", top:32, zIndex:50, padding:"8px 16px", background:`${T.bg}ee`, backdropFilter:"blur(12px)", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:`1px solid ${T.cardBorder}22` }}>
     <div style={{ position:"relative" }}>
-      <div onClick={()=>setDropOpen(!dropOpen)} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:8, padding:"8px 12px", borderRadius:10, background:dropOpen?T.card:"transparent", transition:"background .15s" }}>
-        <span style={{ display:"flex" }}>{mode==="home"?I.home(T.accent):I.compass(T.accent)}</span>
-        <span style={{ fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{mode==="home"?"Ana Sayfa":"Keşfet"}</span>
+      <div onClick={handleClick} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:8, padding:"8px 0", borderRadius:10, background:"transparent", opacity:flash?0.4:1, transition:"opacity .1s" }}>
+        <span style={{ fontWeight:800, fontSize:20, color:T.text, fontFamily:FONT_H }}>{mode==="home"?"Ana Sayfa":"Keşfet"}</span>
         <span style={{ display:"flex", transform:dropOpen?"rotate(180deg)":"none", transition:"transform .2s" }}>{I.chevDown(T.textDim)}</span>
       </div>
       {dropOpen && <div style={{ position:"absolute", top:44, left:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 8px 32px rgba(0,0,0,.5)", minWidth:180 }}>
-        {[{id:"home",ic:I.home,l:"Ana Sayfa"},{id:"explore",ic:I.compass,l:"Keşfet"}].map(o=><div key={o.id} onClick={()=>{setMode(o.id);setDropOpen(false);}} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12, background:mode===o.id?`${T.accent}10`:"transparent" }}><span style={{ display:"flex" }}>{o.ic(mode===o.id?T.accent:T.textDim)}</span><span style={{ fontSize:14, fontWeight:mode===o.id?700:500, color:mode===o.id?T.accent:T.text }}>{o.l}</span></div>)}
+        {[{id:"home",ic:I.home,l:"Ana Sayfa"},{id:"explore",ic:I.compass,l:"Keşfet"}].map(o=><div key={o.id} onClick={()=>{setMode(o.id);setDropOpen(false);}} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12, background:"transparent" }}><span style={{ display:"flex" }}>{o.ic(mode===o.id?T.accent:T.textDim)}</span><span style={{ fontSize:14, fontWeight:mode===o.id?700:500, color:mode===o.id?T.accent:T.text, flex:1 }}>{o.l}</span>{mode===o.id&&<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20,6 9,17 4,12"/></svg>}</div>)}
       </div>}
     </div>
     {showActions && <div style={{ display:"flex", gap:16, alignItems:"center" }}>
@@ -161,6 +161,44 @@ function TabBar({ active, onNav }) {
   const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];
   return <div style={{ position:"fixed", bottom:0, left:0, right:0, height:56, background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, display:"flex", justifyContent:"space-around", alignItems:"center", zIndex:100, maxWidth:430, margin:"0 auto" }}>
     {tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, cursor:"pointer", padding:"8px 20px" }}><span style={{ display:"flex" }}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{ fontSize:10, fontWeight:active===t.id?700:500, color:active===t.id?T.accent:T.textMuted }}>{t.l}</span></div>)}
+  </div>;
+}
+
+// — MEDIA SLIDER (foto sayfaları + son sayfa scoreboard) —
+function MediaSlider({ photoCount, scoreContent, onMatchNav }) {
+  const total = photoCount + 1; // her fotoğraf 1 sayfa, son sayfa scoreboard
+  const [cur, setCur] = useState(0);
+  const prev = () => setCur(c => Math.max(0, c - 1));
+  const next = () => setCur(c => Math.min(total - 1, c + 1));
+  const isScore = cur === total - 1;
+
+  return <div style={{ position:"relative", overflow:"hidden", height:430 }}>
+    {/* Slides */}
+    <div style={{ display:"flex", height:"100%", transform:`translateX(-${cur * 100}%)`, transition:"transform .28s ease" }}>
+      {Array.from({length:photoCount}, (_, i) => (
+        <div key={i} style={{ minWidth:"100%", height:430, background:T.bgAlt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontSize:40, color:T.textMuted }}>📷</div>
+      ))}
+      {/* Scoreboard slide */}
+      <div onClick={onMatchNav} style={{ minWidth:"100%", height:430, background:T.card, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:"pointer" }}>
+        {scoreContent}
+      </div>
+    </div>
+
+    {/* Sol / Sağ tap alanları */}
+    {cur > 0 && <div onClick={prev} style={{ position:"absolute", left:0, top:0, bottom:32, width:"35%", cursor:"pointer" }}/>}
+    {cur < total - 1 && <div onClick={next} style={{ position:"absolute", right:0, top:0, bottom:32, width:"35%", cursor:"pointer" }}/>}
+
+    {/* Sayaç */}
+    <div style={{ position:"absolute", top:10, right:10, background:"rgba(0,0,0,.6)", borderRadius:20, padding:"3px 9px", fontSize:11, color:"#fff", fontWeight:600 }}>
+      {isScore ? "📊" : `${cur+1}/${photoCount}`}
+    </div>
+
+    {/* Dot indicator */}
+    <div style={{ position:"absolute", bottom:10, left:0, right:0, display:"flex", justifyContent:"center", gap:5 }}>
+      {Array.from({length:total}, (_, i) => (
+        <div key={i} onClick={() => setCur(i)} style={{ width:i===cur?16:6, height:6, borderRadius:3, background:i===cur?T.accent:i===total-1?`${T.accent}55`:`${T.text}33`, transition:"all .2s", cursor:"pointer" }}/>
+      ))}
+    </div>
   </div>;
 }
 
@@ -180,7 +218,22 @@ function PostCard({ post: p, onNav }) {
 
   const toggleLike=e=>{e.stopPropagation();setLiked(!liked);setLc(c=>liked?c-1:c+1);};
 
-  return <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.cardBorder}`, marginBottom:16, overflow:"hidden", position:"relative" }}>
+  const scoreOnly = m?.sc ? <div style={{ textAlign:"center" }}>
+    <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <span style={{ fontSize:11, color:T.textDim, marginRight:12 }}>Takım A</span>
+      <span style={{ fontSize:38, fontWeight:900, letterSpacing:"-2px", fontFamily:FONT_H }}>
+        <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
+        <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
+        <span style={{ color:m.sc[1]>m.sc[0]?T.accent:T.text }}>{m.sc[1]}</span>
+      </span>
+      <span style={{ fontSize:11, color:T.textDim, marginLeft:12 }}>Takım B</span>
+    </div>
+    {mvp && <div onClick={e=>{e.stopPropagation();onNav("S16",mvp.id);}} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:8, cursor:"pointer" }}>
+      {I.star()} <span style={{ fontSize:12, color:T.gold, fontWeight:600 }}>{mvp.name}</span>
+    </div>}
+  </div> : null;
+
+  return <div style={{ background:"none", borderRadius:0, overflow:"hidden", position:"relative" }}>
     {/* Header — single post owner */}
     <div style={{ padding:"16px 16px 0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
       <div style={{ display:"flex", alignItems:"center", gap:12, flex:1 }}>
@@ -208,40 +261,29 @@ function PostCard({ post: p, onNav }) {
       </div>
     </div>
 
+    {/* Title */}
+    {m && <div style={{ padding:"12px 16px 0", fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{m.title}</div>}
+
     {/* Caption */}
-    {p.caption && <div style={{ padding:"8px 16px 0", fontSize:14, color:T.textDim, lineHeight:1.5 }}>{p.caption}</div>}
+    {p.caption && <div style={{ padding:"6px 16px 0", fontSize:14, color:T.textDim, lineHeight:1.5 }}>{p.caption}</div>}
 
-    {/* Match body — clickable */}
-    {m && <div onClick={()=>onNav("S11",m.id)} style={{ cursor:"pointer", padding:"12px 16px 0" }}>
-      <div style={{ fontWeight:700, fontSize:16, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>
-      <div style={{ display:"flex", gap:12, fontSize:12, color:T.textDim, marginBottom:12, alignItems:"center", flexWrap:"wrap" }}>
-        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.clock()} {m.dur}</span>
-        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
-        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.users()} {all.length}</span>
-        <Badge c={T.textDim}>{m.fmt}</Badge>
-      </div>
-
-      {/* Score */}
-      {m.sc && <div style={{ textAlign:"center", marginBottom:4 }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <span style={{ fontSize:11, color:T.textDim, marginRight:12 }}>Takım A</span>
-          <span style={{ fontSize:38, fontWeight:900, letterSpacing:"-2px", fontFamily:FONT_H }}>
-            <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
-            <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
-            <span style={{ color:m.sc[1]>m.sc[0]?T.accent:T.text }}>{m.sc[1]}</span>
-          </span>
-          <span style={{ fontSize:11, color:T.textDim, marginLeft:12 }}>Takım B</span>
-        </div>
-        {mvp && <div onClick={e=>{e.stopPropagation();onNav("S16",mvp.id);}} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:4, cursor:"pointer" }}>
-          {I.star()} <span style={{ fontSize:12, color:T.gold, fontWeight:600 }}>{mvp.name}</span>
-        </div>}
-      </div>}
+    {/* Meta */}
+    {m && <div style={{ padding:"8px 16px 0", display:"flex", gap:12, fontSize:12, color:T.textDim, alignItems:"center", flexWrap:"wrap" }}>
+      <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.clock()} {m.dur}</span>
+      <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
+      <Badge c={T.textDim}>{m.fmt}</Badge>
+      <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.users()} {all.length}</span>
     </div>}
 
-    {/* Photos (from post, not match) */}
-    {p.photos>0 && <div style={{ display:"flex", gap:8, padding:"8px 16px 4px", overflowX:"auto" }}>
-      {Array.from({length:Math.min(p.photos,4)},(_,i)=><div key={i} style={{ minWidth:100, height:72, borderRadius:12, background:T.cardBorder, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:T.textMuted, flexShrink:0 }}>📷</div>)}
-    </div>}
+    {/* Scoreboard / Photo area */}
+    <div style={{ marginTop:12 }}>
+      {p.photos>0
+        ? <MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>m&&onNav("S11",m.id)}/>
+        : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", height:430, background:T.card, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            {scoreOnly}
+          </div>
+      }
+    </div>
 
     {/* Others in this match */}
     {others.length>0 && <div style={{ padding:"8px 16px 0", display:"flex", alignItems:"center", gap:8 }}>
@@ -279,10 +321,10 @@ function PostCard({ post: p, onNav }) {
     {visComments.length>0 && <div style={{ padding:"8px 16px 0" }}>
       {visComments.map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:8 }}>
         <Av i={cu.av} s={24} onClick={()=>onNav("S16",cu.id)}/>
-        <div style={{ fontSize:13 }}>
+        <div style={{ fontSize:14 }}>
           <span onClick={()=>onNav("S16",cu.id)} style={{ fontWeight:600, color:T.text, cursor:"pointer" }}>{cu.un}</span>
           <span style={{ color:T.textMuted, marginLeft:8 }}>{c.t}</span>
-          <div style={{ color:T.textDim, marginTop:2 }}>{c.text}</div>
+          <div style={{ color:T.textDim, marginTop:2, lineHeight:1.5 }}>{c.text}</div>
         </div>
       </div>;})}
     </div>}
@@ -308,25 +350,40 @@ function Empty({ icon, title, desc, action, onAction }) {
 // — PAGES —
 
 // S05: Feed (post-based)
-function S05({ onNav, mode, setMode, dropOpen, setDropOpen }) {
+function S05({ onNav, mode, setMode }) {
   const feed = mode==="home"
     ? P.filter(p=>p.status==="visible"&&uf(p.userId)?.follow)
     : [...P].filter(p=>p.status==="visible").sort((a,b)=>(b.likes+b.coms*2)-(a.likes+a.coms*2));
+  const hRef=useRef(null);
+  const drag=useRef({on:false,x:0,sl:0});
+  const onMD=e=>{drag.current={on:true,x:e.pageX-hRef.current.offsetLeft,sl:hRef.current.scrollLeft};hRef.current.style.cursor="grabbing";};
+  const onMU=()=>{drag.current.on=false;if(hRef.current)hRef.current.style.cursor="grab";};
+  const onMM=e=>{if(!drag.current.on)return;e.preventDefault();hRef.current.scrollLeft=drag.current.sl-(e.pageX-hRef.current.offsetLeft-drag.current.x);};
 
   return <div style={{ paddingBottom:80 }}>
-    {mode==="explore" && <div style={{ padding:"0 16px 16px" }}>
-      <div style={{ fontSize:11, fontWeight:700, color:T.textMuted, marginBottom:12, textTransform:"uppercase", letterSpacing:.5 }}>Önerilen Kullanıcılar</div>
-      <div style={{ display:"flex", gap:12, overflowX:"auto", paddingBottom:4 }}>
-        {U.filter(u=>!u.follow&&u.id!==1).slice(0,5).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ minWidth:100, background:T.card, borderRadius:16, padding:"16px 12px", textAlign:"center", border:`1px solid ${T.cardBorder}`, cursor:"pointer", flexShrink:0 }}>
-          <Av i={u.av} s={40} st={{ margin:"0 auto" }}/>
-          <div style={{ fontSize:12, fontWeight:600, color:T.text, marginTop:8 }}>{u.name.split(" ")[0]}</div>
-          <div style={{ fontSize:10, color:T.textDim, marginTop:4 }}>@{u.un}</div>
-          <div style={{ marginTop:8, fontSize:11, fontWeight:700, color:T.accent, display:"flex", alignItems:"center", justifyContent:"center", gap:4 }}>{I.plus(T.accent)} Takip Et</div>
-        </div>)}
-      </div>
-    </div>}
-    <div style={{ padding:"0 16px" }}>
-      {feed.length>0 ? feed.map(p=><PostCard key={p.id} post={p} onNav={onNav}/>) :
+    <div>
+      {feed.length>0 ? <>
+        {/* İlk post */}
+        <PostCard post={feed[0]} onNav={onNav}/>
+        {(mode==="explore"||feed.length>1)&&<div style={{height:8,background:T.card}}/>}
+        {/* Önerilen Kullanıcılar — ilk posttan sonra, sadece Keşfet modunda */}
+        {mode==="explore"&&<div style={{padding:"16px 16px 16px"}}>
+          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:12,textTransform:"uppercase",letterSpacing:.5}}>Önerilen Kullanıcılar</div>
+          <div ref={hRef} className="sw-hscroll" onMouseDown={onMD} onMouseUp={onMU} onMouseLeave={onMU} onMouseMove={onMM} style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:4,cursor:"grab",userSelect:"none"}}>
+            {U.filter(u=>!u.follow&&u.id!==1).slice(0,5).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{minWidth:104,background:T.card,borderRadius:16,padding:"16px 14px",textAlign:"center",border:`1px solid ${T.cardBorder}`,cursor:"pointer",flexShrink:0}}>
+              <Av i={u.av} s={52} st={{margin:"0 auto"}}/>
+              <div style={{fontSize:13,fontWeight:600,color:T.text,marginTop:10}}>{u.name.split(" ")[0]}</div>
+              <div style={{fontSize:11,color:T.textDim,marginTop:2}}>@{u.un}</div>
+              <div style={{marginTop:10,fontSize:11,fontWeight:700,color:T.accent,display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{I.plus(T.accent)} Takip Et</div>
+            </div>)}
+          </div>
+        </div>}
+        {/* Kalan postlar */}
+        {feed.slice(1).map(p=><>
+          <div key={`div-${p.id}`} style={{height:8,background:T.card}}/>
+          <PostCard key={p.id} post={p} onNav={onNav}/>
+        </>)}
+      </> :
         <Empty icon={I.empty()} title="Henüz kimseyi takip etmiyorsun" desc="Takip ettiğin kişilerin postları burada görünecek" action="Keşfet'e Git" onAction={()=>setMode("explore")}/>}
     </div>
   </div>;
@@ -376,11 +433,11 @@ function S42({ onNav, postId }) {
         <Av i={owner.av} s={32} onClick={()=>onNav("S16",owner.id)}/>
         <div><div style={{ fontWeight:600, fontSize:13, color:T.text }}>{owner.name}</div><div style={{ fontSize:11, color:T.textMuted }}>@{owner.un} · {p.date}</div></div>
       </div>
-      {p.caption && <div style={{ fontSize:14, color:T.textDim, marginBottom:8, lineHeight:1.4 }}>{p.caption}</div>}
-      {m && <div style={{ fontWeight:700, fontSize:15, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>}
-      {m?.sc&&<div style={{ fontSize:24, fontWeight:900, fontFamily:FONT_H, marginBottom:8 }}>
+      {p.caption && <div style={{ fontSize:14, color:T.textDim, marginBottom:8, lineHeight:1.5 }}>{p.caption}</div>}
+      {m && <div style={{ fontWeight:700, fontSize:16, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>}
+      {m?.sc&&<div style={{ fontSize:38, fontWeight:900, fontFamily:FONT_H, marginBottom:8 }}>
         <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
-        <span style={{ color:T.textMuted, margin:"0 8px", fontSize:16 }}>–</span>
+        <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
         <span style={{ color:m.sc[1]>m.sc[0]?T.accent:T.text }}>{m.sc[1]}</span>
       </div>}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
@@ -402,7 +459,7 @@ function S42({ onNav, postId }) {
             <span onClick={()=>onNav("S16",cu.id)} style={{ fontWeight:600, fontSize:14, color:T.text, cursor:"pointer" }}>{cu.un}</span>
             <span style={{ fontSize:12, color:T.textMuted }}>{c.t}</span>
           </div>
-          <div style={{ fontSize:14, color:T.textDim, marginTop:4, lineHeight:1.4 }}>{c.text}</div>
+          <div style={{ fontSize:14, color:T.textDim, marginTop:4, lineHeight:1.5 }}>{c.text}</div>
         </div>
       </div>;})}
     </div>
@@ -453,7 +510,10 @@ export default function SporWaveFeed() {
   const [mode,setMode]=useState("home");
   const [drop,setDrop]=useState(false);
 
-  useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
+  useEffect(()=>{
+    if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}
+    if(!document.querySelector('#sw-scroll-style')){const s=document.createElement("style");s.id="sw-scroll-style";s.textContent=`.sw-hscroll::-webkit-scrollbar{display:none}.sw-hscroll{scrollbar-width:none;-ms-overflow-style:none}`;document.head.appendChild(s);}
+  },[]);
 
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);setDrop(false);},120);};
 
