@@ -279,7 +279,7 @@ function PostCard({ post: p, onNav }) {
     <div style={{ marginTop:12 }}>
       {p.photos>0
         ? <MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>m&&onNav("S11",m.id)}/>
-        : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", height:430, background:T.card, display:"flex", alignItems:"center", justifyContent:"center" }}>
+        : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", background:T.card, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px 16px" }}>
             {scoreOnly}
           </div>
       }

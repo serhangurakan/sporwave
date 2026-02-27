@@ -252,7 +252,7 @@ Ana Sayfa tab'ında:
 - **Kişisel not** (varsa): post sahibinin açıklaması
 - **Özet bilgi satırı:** Süre · Konum · Format badge · Oyuncular
 - **Medya / Skor alanı (MediaSlider):**
-  - **Fotoğraf yoksa:** 430px sabit yükseklikte skor board — Takım A **[X]** — **[Y]** Takım B (büyük, merkezi) + MVP. Tıklanınca → S11.
+  - **Fotoğraf yoksa:** Skor board sabit yükseklik kullanmaz, içerik kadar (hug content) yükseklik alır; Takım A **[X]** — **[Y]** Takım B (büyük, merkezi) + MVP. Tıklanınca → S11.
   - **Fotoğraf varsa:** Tam genişlikte slide gösterimi — her fotoğraf ayrı slide (max 4), son slide = skor board. Sol/sağ dokunma ile geçiş; alt-orta dot indikatörü (skor slide'ı accent renk ile vurgulanır); sağ üstte sayfa sayacı ("1/2" veya 📊).
   - **Skor:** Kazanan takımın skoru accent renk (`#B7F000`) ile, kaybeden takımın skoru beyaz ile gösterilir. Berabere ise ikisi de beyaz.
   - **Maçın Yıldızı** (mvp varsa — skorun hemen altında, ortalı):
