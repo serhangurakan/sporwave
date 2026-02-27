@@ -125,9 +125,9 @@ function InputField({ placeholder, type = "text", icon, value, onChange, error }
   return (
     <div style={{ marginBottom: error ? 4 : 12 }}>
       <div style={{
-        display: "flex", alignItems: "center", gap: 10, background: T.card,
+        display: "flex", alignItems: "center", gap: 12, background: T.card,
         border: `1.5px solid ${error ? T.red : focused ? T.accent : T.cardBorder}`,
-        borderRadius: 12, padding: "12px 14px",
+        borderRadius: 12, padding: "12px 16px",
         transition: "border-color .2s, box-shadow .2s",
         boxShadow: focused ? `0 0 0 3px ${T.accent}18` : "none",
       }}>
@@ -149,7 +149,7 @@ function InputField({ placeholder, type = "text", icon, value, onChange, error }
           }}
         />
       </div>
-      {error && <div style={{ fontSize: 11, color: T.red, padding: "4px 14px 8px", fontWeight: 500 }}>{error}</div>}
+      {error && <div style={{ fontSize: 11, color: T.red, padding: "4px 16px 8px", fontWeight: 500 }}>{error}</div>}
     </div>
   );
 }
@@ -166,7 +166,7 @@ function Button({ children, primary, danger, ghost, full, small, onClick, disabl
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        padding: small ? "8px 16px" : "13px 24px",
+        padding: small ? "8px 16px" : "12px 24px",
         borderRadius: 12, border,
         background: disabled ? `${T.textDim}22` : bg,
         color: disabled ? T.textDim : c,
@@ -192,13 +192,13 @@ function SocialButton({ icon, label, onClick }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        width: "100%", padding: "13px 20px", borderRadius: 12,
+        width: "100%", padding: "12px 20px", borderRadius: 12,
         border: `1.5px solid ${hover ? T.textDim + "66" : T.cardBorder}`,
         background: hover ? T.card : "transparent",
         color: T.text, fontSize: 14, fontWeight: 600,
         cursor: "pointer", transition: "all .2s",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 12,
-        marginBottom: 10,
+        marginBottom: 12,
       }}
     >
       <span style={{ display: "flex", alignItems: "center" }}>{icon}</span>
@@ -209,7 +209,7 @@ function SocialButton({ icon, label, onClick }) {
 
 function ProgressBar({ current, total }) {
   return (
-    <div style={{ display: "flex", gap: 6, marginBottom: 28, padding: "0 4px" }}>
+    <div style={{ display: "flex", gap: 8, marginBottom: 28, padding: "0 4px" }}>
       {Array.from({ length: total }, (_, i) => (
         <div key={i} style={{
           flex: 1, height: 4, borderRadius: 4,
@@ -234,7 +234,7 @@ function Divider({ text }) {
 function Checkbox({ checked, onToggle, children }) {
   return (
     <label style={{
-      display: "flex", gap: 10, fontSize: 13, color: T.textDim,
+      display: "flex", gap: 12, fontSize: 13, color: T.textDim,
       alignItems: "flex-start", cursor: "pointer", lineHeight: 1.5,
     }} onClick={onToggle}>
       <div style={{
@@ -285,8 +285,8 @@ function PasswordStrength({ password }) {
   const labels = ["Zayıf", "Orta", "İyi", "Güçlü"];
   const colors = [T.red, T.orange, T.accent, T.green];
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: -6, marginBottom: 12, padding: "0 2px" }}>
-      <div style={{ display: "flex", gap: 3, flex: 1 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, padding: "0 4px" }}>
+      <div style={{ display: "flex", gap: 4, flex: 1 }}>
         {[0, 1, 2, 3].map(i => (
           <div key={i} style={{
             flex: 1, height: 3, borderRadius: 2,
@@ -430,11 +430,30 @@ function S02({ onNavigate }) {
 // S03: Forgot Password
 function S03({ onNavigate }) {
   const [sent, setSent] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  const handleSend = () => {
+    setSent(true);
+    setCountdown(60);
+  };
+
+  const handleResend = () => {
+    setCountdown(60);
+  };
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   return (
     <PageShell center>
-      <div style={{ textAlign: "center" }}>
+      <BackLink onClick={() => onNavigate("S01")} />
+
+      <div>
         <div style={{ fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, fontFamily: FONT_HEADING }}>Şifremi Unuttum</div>
-        <div style={{ fontSize: 14, color: T.textDim, marginBottom: 28, lineHeight: 1.5, maxWidth: 280, margin: "0 auto 28px" }}>
+        <div style={{ fontSize: 14, color: T.textDim, marginBottom: 28, lineHeight: 1.5 }}>
           E-posta adresini gir, sıfırlama linki gönderelim
         </div>
       </div>
@@ -442,28 +461,42 @@ function S03({ onNavigate }) {
       {!sent ? (
         <>
           <InputField placeholder="E-posta adresin" icon={Icons.mail} />
-          <Button primary full onClick={() => setSent(true)}>Sıfırlama Linki Gönder</Button>
+          <Button primary full onClick={handleSend} style={{ marginTop: 8 }}>Sıfırlama Linki Gönder</Button>
         </>
       ) : (
-        <div style={{
-          background: `${T.green}12`, border: `1.5px solid ${T.green}28`,
-          borderRadius: 14, padding: 20, textAlign: "center",
-        }}>
-          <div style={{ marginBottom: 10, display: "flex", justifyContent: "center" }}>{Icons.successCheck()}</div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: T.green, marginBottom: 6 }}>Link gönderildi!</div>
-          <div style={{ fontSize: 13, color: T.textDim, lineHeight: 1.5 }}>
-            E-postanı kontrol et. Spam klasörüne de bakmanı öneririz.
+        <>
+          <div style={{
+            background: `${T.green}12`, border: `1.5px solid ${T.green}28`,
+            borderRadius: 14, padding: 20, textAlign: "center",
+          }}>
+            <div style={{ marginBottom: 12, display: "flex", justifyContent: "center" }}>{Icons.successCheck()}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T.green, marginBottom: 8 }}>Link gönderildi!</div>
+            <div style={{ fontSize: 13, color: T.textDim, lineHeight: 1.5 }}>
+              E-postanı kontrol et. Spam klasörüne de bakmanı öneririz.
+            </div>
           </div>
-        </div>
-      )}
 
-      <div onClick={() => onNavigate("S01")} style={{
-        textAlign: "center", marginTop: 24,
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-        fontSize: 14, color: T.accent, cursor: "pointer", fontWeight: 600,
-      }}>
-        {Icons.arrowLeft(T.accent)} Giriş Yap'a Dön
-      </div>
+          <div style={{ textAlign: "center", marginTop: 16 }}>
+            {countdown > 0 ? (
+              <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 500 }}>
+                {countdown}sn sonra tekrar gönderebilirsin
+              </span>
+            ) : (
+              <span onClick={handleResend} style={{ fontSize: 14, color: T.accent, cursor: "pointer", fontWeight: 600 }}>
+                Tekrar Gönder
+              </span>
+            )}
+          </div>
+
+          <div onClick={() => onNavigate("S01")} style={{
+            textAlign: "center", marginTop: 20,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            fontSize: 14, color: T.accent, cursor: "pointer", fontWeight: 600,
+          }}>
+            {Icons.arrowLeft(T.accent)} Giriş Yap'a Dön
+          </div>
+        </>
+      )}
     </PageShell>
   );
 }
@@ -475,6 +508,8 @@ function S04({ onNavigate }) {
   const [sports, setSports] = useState(["Futbol"]);
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [birthDate, setBirthDate] = useState("");
+  const [photoSheet, setPhotoSheet] = useState(false);
+  const [photoUploaded, setPhotoUploaded] = useState(false);
 
   const sportsList = [
     { label: "Futbol", icon: "⚽" }, { label: "Basketbol", icon: "🏀" },
@@ -497,8 +532,11 @@ function S04({ onNavigate }) {
       <div style={{ marginTop: 16 }}>
         <ProgressBar current={step} total={4} />
       </div>
+      {step > 0 && (
+        <BackLink onClick={() => setStep(s => s - 1)} />
+      )}
 
-      <div style={{ marginBottom: 6 }}>
+      <div style={{ marginBottom: 8 }}>
         <span style={{ fontSize: 12, color: T.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px" }}>
           Adım {step + 1}/4
         </span>
@@ -514,11 +552,11 @@ function S04({ onNavigate }) {
           <InputField placeholder="Soyisim" icon={Icons.user} />
           <InputField placeholder="Doğum Tarihi" icon={Icons.calendar} type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} />
 
-          <div style={{ fontSize: 13, color: T.textDim, marginBottom: 10, fontWeight: 600 }}>Cinsiyet</div>
+          <div style={{ fontSize: 13, color: T.textDim, marginBottom: 12, fontWeight: 600 }}>Cinsiyet</div>
           <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
             {genders.map(g => (
               <div key={g.id} onClick={() => setGender(g.id)} style={{
-                flex: 1, padding: "14px 8px", borderRadius: 12,
+                flex: 1, padding: "16px 8px", borderRadius: 12,
                 background: gender === g.id ? `${T.accent}12` : T.card,
                 border: `1.5px solid ${gender === g.id ? T.accent : T.cardBorder}`,
                 textAlign: "center", cursor: "pointer", transition: "all .2s",
@@ -535,20 +573,119 @@ function S04({ onNavigate }) {
       {/* Step 2 */}
       {step === 1 && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{
-            width: 140, height: 140, borderRadius: "50%",
-            background: T.card, border: `2px dashed ${T.cardBorder}`,
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            marginBottom: 24, cursor: "pointer",
-          }}>
-            {Icons.camera(T.textMuted)}
-            <span style={{ fontSize: 12, color: T.textMuted, marginTop: 8, fontWeight: 500 }}>Fotoğraf Ekle</span>
+          <div style={{ position: "relative", marginBottom: 24 }}>
+            <div
+              onClick={() => !photoUploaded && setPhotoSheet(true)}
+              style={{
+                width: 140, height: 140, borderRadius: "50%",
+                background: photoUploaded ? "none" : T.card,
+                border: photoUploaded ? `2px solid ${T.accent}` : `2px dashed ${T.cardBorder}`,
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", overflow: "hidden",
+              }}
+            >
+              {photoUploaded ? (
+                <div style={{
+                  width: "100%", height: "100%",
+                  background: "linear-gradient(135deg, #1a2a3a 0%, #2a3a4a 50%, #1a2a3a 100%)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <span style={{ fontSize: 48 }}>🧑</span>
+                </div>
+              ) : (
+                <>
+                  {Icons.camera(T.textMuted)}
+                  <span style={{ fontSize: 12, color: T.textMuted, marginTop: 8, fontWeight: 500 }}>Fotoğraf Ekle</span>
+                </>
+              )}
+            </div>
+            {photoUploaded && (
+              <div onClick={() => setPhotoUploaded(false)} style={{
+                position: "absolute", top: 4, right: 4,
+                width: 28, height: 28, borderRadius: "50%",
+                background: T.card, border: `1px solid ${T.cardBorder}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer",
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18" /><path d="M6 6l12 12" />
+                </svg>
+              </div>
+            )}
           </div>
           <div style={{ width: "100%" }}>
-            <Button primary full onClick={() => setStep(2)}>Fotoğraf Yükle</Button>
+            <Button primary full onClick={() => setStep(2)}>
+              {photoUploaded ? "Devam" : "Fotoğraf Yükle"}
+            </Button>
           </div>
-          <div onClick={() => setStep(2)} style={{ textAlign: "center", marginTop: 16, fontSize: 14, color: T.textDim, cursor: "pointer", fontWeight: 500 }}>
-            Sonra Ekle →
+          {!photoUploaded && (
+            <div onClick={() => setStep(2)} style={{ textAlign: "center", marginTop: 16, fontSize: 14, color: T.textDim, cursor: "pointer", fontWeight: 500 }}>
+              Sonra Ekle →
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Photo Bottom Sheet */}
+      {photoSheet && (
+        <div
+          onClick={() => setPhotoSheet(false)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
+            zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%", maxWidth: 430, background: T.card,
+              borderRadius: "20px 20px 0 0", padding: "20px 20px 32px",
+            }}
+          >
+            <div style={{
+              width: 40, height: 4, borderRadius: 2, background: T.cardBorder,
+              margin: "0 auto 20px",
+            }} />
+            <div style={{ fontSize: 16, fontWeight: 700, color: T.text, marginBottom: 16, fontFamily: FONT_HEADING }}>
+              Fotoğraf Seç
+            </div>
+            <div
+              onClick={() => { setPhotoUploaded(true); setPhotoSheet(false); }}
+              style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "16px 0", borderBottom: `1px solid ${T.cardBorder}`,
+                cursor: "pointer",
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              <span style={{ fontSize: 15, color: T.text, fontWeight: 500 }}>Fotoğraf Çek</span>
+            </div>
+            <div
+              onClick={() => { setPhotoUploaded(true); setPhotoSheet(false); }}
+              style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "16px 0", cursor: "pointer",
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <path d="M21 15l-5-5L5 21" />
+              </svg>
+              <span style={{ fontSize: 15, color: T.text, fontWeight: 500 }}>Galeriden Seç</span>
+            </div>
+            <div
+              onClick={() => setPhotoSheet(false)}
+              style={{
+                textAlign: "center", marginTop: 16,
+                fontSize: 14, color: T.textDim, cursor: "pointer", fontWeight: 500,
+              }}
+            >
+              Vazgeç
+            </div>
           </div>
         </div>
       )}
@@ -559,7 +696,7 @@ function S04({ onNavigate }) {
           <div style={{ fontSize: 13, color: T.textDim, marginBottom: 20, lineHeight: 1.5 }}>
             Gelecek planlarımız için bize yardımcı olur. Birden fazla seçebilirsin.
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
             {sportsList.map(s => {
               const selected = sports.includes(s.label);
               return (
@@ -569,7 +706,7 @@ function S04({ onNavigate }) {
                   border: `1.5px solid ${selected ? T.accent : T.cardBorder}`,
                   textAlign: "center", cursor: "pointer", transition: "all .2s",
                 }}>
-                  <div style={{ fontSize: 22, marginBottom: 6 }}>{s.icon}</div>
+                  <div style={{ fontSize: 22, marginBottom: 8 }}>{s.icon}</div>
                   <div style={{ fontSize: 13, fontWeight: selected ? 700 : 500, color: selected ? T.accent : T.text }}>{s.label}</div>
                 </div>
               );
@@ -593,7 +730,7 @@ function S04({ onNavigate }) {
           <div style={{
             background: T.card, borderRadius: 14,
             border: `1px solid ${T.cardBorder}`,
-            padding: "16px 18px", marginBottom: 16, marginTop: 4,
+            padding: "16px 20px", marginBottom: 16, marginTop: 4,
           }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ display: "flex" }}>{Icons.rules(T.accent)}</span>
@@ -602,7 +739,7 @@ function S04({ onNavigate }) {
             <div style={{ fontSize: 13, color: T.textDim, lineHeight: 1.6 }}>
               SporWave topluluğumuzda saygılı iletişim, no-show yasağı ve adil oyun temel kurallarımızdır.
             </div>
-            <div style={{ fontSize: 13, color: T.accent, marginTop: 10, cursor: "pointer", fontWeight: 600 }}>
+            <div style={{ fontSize: 13, color: T.accent, marginTop: 12, cursor: "pointer", fontWeight: 600 }}>
               Detayları Gör →
             </div>
           </div>
@@ -617,15 +754,6 @@ function S04({ onNavigate }) {
         </>
       )}
 
-      {step > 0 && (
-        <div onClick={() => setStep(s => s - 1)} style={{
-          textAlign: "center", marginTop: 16,
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
-          fontSize: 14, color: T.textDim, cursor: "pointer", fontWeight: 500,
-        }}>
-          {Icons.arrowLeft(T.textDim)} Geri
-        </div>
-      )}
     </PageShell>
   );
 }
@@ -688,7 +816,7 @@ export default function SporWaveAuth() {
       {/* Dev nav ribbon */}
       <div style={{
         position: "sticky", top: 0, zIndex: 200, background: T.bgAlt,
-        borderBottom: `1px solid ${T.cardBorder}`, padding: "6px 8px",
+        borderBottom: `1px solid ${T.cardBorder}`, padding: "8px 8px",
         display: "flex", gap: 4, overflowX: "auto", flexWrap: "nowrap",
       }}>
         {[
@@ -697,7 +825,7 @@ export default function SporWaveAuth() {
           { p: "S04", l: "Onboarding" },
         ].map(n => (
           <span key={n.p} onClick={() => navigate(n.p)} style={{
-            padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600,
+            padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600,
             whiteSpace: "nowrap",
             background: current === n.p ? T.accent : `${T.textDim}22`,
             color: current === n.p ? T.bg : T.textDim,

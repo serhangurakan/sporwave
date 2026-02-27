@@ -132,13 +132,18 @@ Ana Sayfa tab'ında:
 - Başarılı kayıt → Onboarding başlar
 
 #### S03: Şifremi Unuttum
+- ← Geri butonu (sol üst, BackLink bileşeni — S01'e döner)
+- Başlık ve açıklama metinleri sola hizalı
 - E-posta input
 - "Sıfırlama Linki Gönder" butonu
-- Başarılı gönderim mesajı (inline)
-- "Giriş Yap'a Dön" linki
+- **Başarılı gönderim durumu (inline):**
+  - Yeşil kutu: başarı ikonu + "Link gönderildi!" + spam uyarısı
+  - 60sn countdown timer: "Xsn sonra tekrar gönderebilirsin" → süre dolunca "Tekrar Gönder" linki aktif olur
+  - "← Giriş Yap'a Dön" linki (sadece başarı ekranında görünür)
 
-#### S04: Onboarding (4 adımlı — kayıt sonras�� veya sosyal login sonrası)
-- İlerleme çubuğu (üstte, 4 adım)
+#### S04: Onboarding (4 adımlı — kayıt sonrası veya sosyal login sonrası)
+- İlerleme çubuğu (en üstte, 4 adım)
+- ← Geri butonu (ilerleme çubuğunun altında, adım 2-4'te görünür — BackLink bileşeni)
 
 **Adım 1 — Temel Bilgiler:**
 - İsim input
@@ -148,10 +153,15 @@ Ana Sayfa tab'ında:
 - "Devam" butonu
 
 **Adım 2 — Profil Fotoğrafı:**
-- Büyük yuvarlak fotoğraf alanı + kamera ikonu
-- "Fotoğraf Yükle" butonu (galeri veya kamera)
-- "Sonra Ekle" linki (atlanabilir)
-- "Devam" butonu
+- Büyük yuvarlak fotoğraf alanı + kamera ikonu (tıklanabilir)
+- Fotoğraf alanına tıklayınca alttan bottom sheet açılır:
+  - "Fotoğraf Çek" seçeneği (kamera ikonu)
+  - "Galeriden Seç" seçeneği (galeri ikonu)
+  - "Vazgeç" linki (sheet'i kapatır)
+- Seçim yapılınca dummy fotoğraf yüklenir, border accent renge döner
+- Yüklenen fotoğrafın sağ üstünde X butonu (accent renkli, tıklayınca fotoğrafı kaldırır)
+- "Fotoğraf Yükle" butonu (fotoğraf yüklenince "Devam" olarak değişir)
+- "Sonra Ekle" linki (atlanabilir — fotoğraf yüklenince gizlenir)
 
 **Adım 3 — Spor Tercihleri (data toplama amaçlı):**
 - Başlık: "Hangi sporları yapıyorsun?"
