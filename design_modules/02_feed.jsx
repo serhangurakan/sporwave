@@ -159,8 +159,15 @@ function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
 }
 function TabBar({ active, onNav }) {
   const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];
+  const handleTabClick = (tabId) => {
+    if (tabId === "S08") {
+      window.location.assign("/03_matches");
+      return;
+    }
+    onNav(tabId);
+  };
   return <div style={{ position:"fixed", bottom:0, left:0, right:0, height:56, background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, display:"flex", justifyContent:"space-around", alignItems:"center", zIndex:100, maxWidth:430, margin:"0 auto" }}>
-    {tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, cursor:"pointer", padding:"8px 20px" }}><span style={{ display:"flex" }}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{ fontSize:10, fontWeight:active===t.id?700:500, color:active===t.id?T.accent:T.textMuted }}>{t.l}</span></div>)}
+    {tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, cursor:"pointer", padding:"8px 20px" }}><span style={{ display:"flex" }}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{ fontSize:10, fontWeight:active===t.id?700:500, color:active===t.id?T.accent:T.textMuted }}>{t.l}</span></div>)}
   </div>;
 }
 
