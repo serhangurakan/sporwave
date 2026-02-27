@@ -294,7 +294,7 @@ function S10({onNav}){
       <div style={{textAlign:"center",marginBottom:20}}>
         <div style={{fontSize:48,fontWeight:900,fontFamily:FH}}>
           <span style={{color:score[0]>score[1]?T.accent:T.text}}>{score[0]}</span>
-          <span style={{color:T.textMuted,margin:"0 10px",fontSize:24}}>–</span>
+          <span style={{color:T.textMuted,margin:"0 12px",fontSize:24}}>–</span>
           <span style={{color:score[1]>score[0]?T.accent:T.text}}>{score[1]}</span>
         </div>
         <div style={{fontSize:13,color:T.textDim,marginTop:4}}>Süre: {fmtTime(seconds)} · {fmt}</div>
@@ -305,15 +305,12 @@ function S10({onNav}){
         <input placeholder="Kadıköy Halısaha Maçı" value={title} onChange={e=>setTitle(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
       </div>
 
-      <div style={{display:"flex",gap:8,marginBottom:16}}>
-        <div style={{flex:1,background:T.card,borderRadius:14,border:`1.5px dashed ${T.cardBorder}`,padding:"24px 12px",textAlign:"center",cursor:"pointer"}}>
-          {I.camera(T.textMuted)}
-          <div style={{fontSize:11,color:T.textMuted,marginTop:6}}>Fotoğraf Ekle</div>
-        </div>
+      <div style={{background:`${T.accent}10`,borderRadius:12,padding:"12px 16px",marginBottom:16,border:`1px solid ${T.accent}22`}}>
+        <div style={{fontSize:12,color:T.accent,fontWeight:600,marginBottom:4}}>Maç kaydedildiğinde:</div>
+        <div style={{fontSize:12,color:T.textDim,lineHeight:1.5}}>Tüm katılımcılar için kişisel post oluşturulur. Fotoğraf ve not eklemek post üzerinden yapılır.</div>
       </div>
 
-      <Btn primary full onClick={()=>onNav("S08")} st={{marginBottom:10}}>Kaydet & Paylaş</Btn>
-      <Btn full ghost onClick={()=>onNav("S08")}>Kaydet (Gizli)</Btn>
+      <Btn primary full onClick={()=>onNav("S08")}>Kaydet & Paylaş</Btn>
     </div>}
   </div>;
 }

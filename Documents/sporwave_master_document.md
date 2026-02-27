@@ -4,7 +4,7 @@
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
 > Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
-> Son güncelleme: 25 Şubat 2026
+> Son güncelleme: 27 Şubat 2026
 
 ---
 
@@ -36,6 +36,11 @@
 | **Maç sohbeti arşiv** | Maç arşivlenince mesajlar silinir (salt okunur arşiv yok), sadece metadata korunur |
 | **Attendance hesaplama** | Son 10 maç bazlı (ilk 5 maçta gösterilmez) |
 | **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
+| **Feed modeli** | Duplicated feed — her katılımcının kendi maç postu var, feed'de ayrı ayrı görünür |
+| **Maç verisi vs Post** | Maç verisi (skor, takımlar, MVP) paylaşımlı ve immutable. Her katılımcının kişisel postu (başlık, not, fotoğraf) ayrı |
+| **Etkileşim (like/yorum)** | Post bazlı — beğeni ve yorumlar maça değil, kişinin postuna yapılır |
+| **Post gizle/sil** | İkisi de var: "Gizle" geri alınabilir, "Sil" kalıcı. İkisi de sadece kendi postunu etkiler, maç verisi ve diğer oyuncuların postları etkilenmez |
+| **Maç fotoğrafları** | Maç verisinde (Katman 1) fotoğraf yok — fotoğraflar kişisel post katmanında (Katman 2) |
 
 ---
 
@@ -196,49 +201,58 @@ Ana Sayfa tab'ında:
   2. Arkadaşlarının arkadaşları (takip ettiklerinin takip ettikleri)
   3. Aynı şehirden random profiller (hiç arkadaş/maç yoksa)
 
-**İçerik:** Geçmiş maç kartları dikey listesi (feed) — **Maç bazlı birleştirilmiş (grouped) yapı**
+**İçerik:** Maç postları dikey listesi (feed) — **Duplicated feed modeli (post bazlı)**
 
-**Grouped Feed Mantığı:**
-- Aynı maça katılan birden fazla kullanıcı feed'de ayrı ayrı post olarak görünmez.
-- **1 maç = 1 kart** prensibi uygulanır. Bir maç feed'de en fazla 1 kez görünür, asla duplike olmaz.
-- Feed sıralaması: **En son tamamlanan maç en üstte** (tamamlanma tarihine göre azalan sıra, kronolojik).
-- Bu yaklaşım feed kirliliğini önler, etkileşimleri (beğeni/yorum) tek bir yerde toplar ve sosyal proof'u güçlendirir.
+**Duplicated Feed & Post Modeli:**
+- Bir maç tamamlandığında her katılımcı için otomatik olarak bir **kişisel post** oluşturulur.
+- **1 katılımcı = 1 post.** Aynı maçtan birden fazla post feed'de ayrı ayrı görünebilir.
+- Her post, post sahibinin kişisel versiyonudur: kendi başlığı, notu, fotoğrafları olabilir.
+- Beğeni ve yorumlar **posta yapılır, maça değil.** Her postun kendi etkileşimi vardır.
+- Feed sıralaması: **Postun oluşturulma/düzenlenme tarihine göre** azalan sıra (kronolojik).
+
+**İki Katmanlı Veri Modeli:**
+- **Katman 1 — Maç Verisi (paylaşımlı, immutable):** Skor, takımlar, süre, konum, tarih, MVP, gol timeline. Maç arşivlendikten sonra değiştirilemez. Tüm katılımcıların postlarında aynı maç verisi görünür.
+- **Katman 2 — Kişisel Post (per player):** Her katılımcı kendi postunu düzenleyebilir:
+  - **Maç başlığı:** Varsayılan olarak maç başlığını alır, kişi değiştirebilir
+  - **Kişisel not:** Opsiyonel açıklama (örn: "2 gol attım 🔥")
+  - **Kişisel fotoğraflar:** Kendi çektiği fotoğraflar (max 4)
+  - **Görünürlük:** visible (varsayılan) / hidden (gizli, geri alınabilir) / deleted (kalıcı silme)
 
 **Ana Sayfa (Takip Edilenler) — Görünürlük kuralı:**
-- Bir maç kartı Ana Sayfa feed'inde görünür **eğer o maçtaki katılımcılardan en az biri takip ettiğin kişiyse.**
-- 5 arkadaşın aynı maçtaysa → 1 kart. 1 arkadaşın maçtaysa → 1 kart. 0 arkadaşın maçtaysa → Ana Sayfa'da görünmez.
+- Takip ettiğin kişilerin **postları** görünür.
+- 3 arkadaşın aynı maçtaysa → 3 ayrı post (her biri kendi kişisel versiyonuyla).
+- Post sahibi postunu gizlemiş/silmişse → o post feed'de görünmez, diğerlerininki etkilenmez.
 
-**Ana Sayfa kart metni kuralları (sadece arkadaşlar gösterilir):**
-- 1 arkadaş varsa: "**Ali** maç tamamladı"
-- 2 arkadaş varsa: "**Ali** ve **Mehmet** maç tamamladı"
-- 3+ arkadaş varsa: "**Ali**, **Mehmet** ve **1 diğer arkadaşın** maç tamamladı"
-- Sen de oynadıysan: "**Sen** ve **Ali** maç tamamladı" veya "**Sen**, **Ali** ve **1 diğer arkadaşın** maç tamamladı"
-- **Arkadaş olmayan katılımcılar kartta hiç belirtilmez** — maç detayında (S11) zaten tam kadro var.
+**Ana Sayfa post kartı üst satırı:**
+- Post sahibinin avatarı + ismi + tarih/saat + ⋮ menü
+- **İsim tıklanabilir → S16 Profil**
 
 **Keşfet — Görünürlük ve sıralama kuralı:**
-- Keşfet'te **tüm herkese açık maçlar** görünür, takip durumundan bağımsız.
-- **Etkileşim Skoru:** Like × 1 + Comment × 2 + Share × 3
-- **Sıralama:** Son 7 günün en yüksek etkileşim puanlı maçları, üstten alta sıralı.
-- **Minimum eşik:** En az 1 etkileşim (0 etkileşimli maç keşfette görünmez).
-- Keşfet'te de **1 maç = 1 kart** — iki kişi aynı maçtaysa yine tek kart.
-- **Keşfet kart metni:** "**[Organizatör adı]** ve **X kişi** maç tamamladı" — keşfette kimseyi tanımıyor olabilirsin, organizatör adı yeterli.
+- Belli bir etkileşim eşiğinin üzerindeki kullanıcıların **postları** görünür, takip durumundan bağımsız.
+- **Etkileşim Skoru (post bazlı):** Like × 1 + Comment × 2 + Share × 3
+- **Sıralama:** Son 7 günün en yüksek etkileşim puanlı **postları**, üstten alta sıralı.
+- **Minimum eşik:** En az 1 etkileşim (0 etkileşimli post keşfette görünmez).
+- Aynı maçtan birden fazla post keşfette görünebilir — hangisi daha çok etkileşim aldıysa o üstte.
 - **Not:** İlk aşamada sabit eşik yerine göreli sıralama kullanılır — uygulama büyüdükçe A/B test ile katsayılar ayarlanabilir.
 
-**Çapraz duplikasyon:** Aynı maç hem Ana Sayfa'da hem Keşfet'te görünebilir. Kullanıcı aynı anda ikisinde olamaz (dropdown ile geçiş yapar), pratikte duplikasyon hissi yaşanmaz. Bir maçı Ana Sayfa'da beğendiysen, Keşfet'e geçtiğinde de beğeni durumu korunur (maç ID'si aynı).
+**Aynı maç bağlantısı:**
+- Aynı maça ait postlarda "👥 Ali ve Emre de bu maçta oynadı" bağlantı satırı gösterilir (tıklanınca o kişilerin postlarına gidilebilir).
+- Bu satır sadece takip ettiğin kişilerden birinin aynı maçta olması durumunda görünür.
 
-**Her maç kartı yapısı:**
-- **Üst satır (katılımcı özet satırı):**
-  - Katılımcı avatarları (üst üste binen daireler, sadece arkadaşlar Ana Sayfa'da, organizatör + sayı Keşfet'te)
-  - Dinamik metin (yukarıdaki kurallara göre)
-  - Tarih/saat + ⋮ menü (Raporla/Engelle)
-  - **Tüm isimler tıklanabilir → S16 Profil**
-- **Maç başlığı** (bold): örn. "Kadıköy Halısaha Maçı"
+**Her post kartı yapısı:**
+- **Üst satır:**
+  - Post sahibi avatarı + isim
+  - Tarih/saat + ⋮ menü (Raporla / Engelle — kendi postunsa: Düzenle / Gizle / Sil)
+  - **İsim tıklanabilir → S16 Profil**
+- **Maç başlığı** (bold): post sahibinin kişisel başlığı (varsayılan: maç başlığı)
+- **Kişisel not** (varsa): post sahibinin açıklaması
 - **Özet bilgi satırı:** Süre · Konum · Oyuncular · Format badge
-- **Skor gösterimi:** Takım A **[X]** — **[Y]** Takım B (büyük, merkezi, takım avatarları YOK — sadece skor ve takım isimleri)
+- **Skor gösterimi:** Takım A **[X]** — **[Y]** Takım B (büyük, merkezi)
 - **Maçın Yıldızı** (mvp varsa — skorun hemen altında, ortalı):
   - ⭐ + isim — **isim tıklanabilir → S16 Profil**
   - Eşit oy durumunda Co-MVP: birden fazla isim gösterilir (⭐ isim1, ⭐ isim2)
-- **Fotoğraf galerisi** (varsa): Yatay scroll, max 4 fotoğraf, tıklayınca büyüt
+- **Kişisel fotoğraf galerisi** (varsa): Yatay scroll, max 4 fotoğraf, tıklayınca büyüt
+- **Aynı maç bağlantısı** (varsa): "👥 Ali ve Emre de bu maçta oynadı"
 - **Etkileşim satırı:**
   - 👍 Beğeni (sayı) + 💬 Yorum (sayı, tıklayınca → S42 Yorumlar sayfası) + ↗ Paylaş ikonu (yazısız, sadece ikon)
 - **Beğenenler satırı** (beğeni varsa):
@@ -249,7 +263,19 @@ Ana Sayfa tab'ında:
 - **Yorum ekle:** "Bir yorum ekle..." input alanı (tıklayınca → S42 Yorumlar sayfası)
 - **Tüm kart tıklanabilir** → Maç Detay (S11)
 
-**Maç editlenebilirlik kuralı:** Feed'e düşen (arşivlenen) maçlar editlenemez. Son düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama ve attendance bildirimi yapılabilir.
+**Post yönetimi (⋮ menüsünden — kendi postun için):**
+- **Düzenle** → başlık, not, fotoğraf düzenleme ekranı
+- **Profilimden Gizle** → post feed ve profilden kaybolur, geri getirilebilir
+- **Postu Sil** → onay dialog'u: "Bu maçın senin profilindeki postu kalıcı olarak silinir. Maç verisi ve diğer oyuncuların postları etkilenmez." Silinen postun beğeni ve yorumları da silinir.
+
+**Post durumları:**
+| Durum | Profilde | Feed'de | Geri alınabilir |
+|-------|---------|---------|----------------|
+| **visible** (varsayılan) | Görünür | Görünür | — |
+| **hidden** (gizli) | Görünmez | Görünmez | Evet |
+| **deleted** (silinmiş) | Görünmez | Görünmez | Hayır |
+
+**Maç verisi editlenebilirlik kuralı:** Maç verisi (Katman 1) arşivlendikten sonra editlenemez. Kişisel post (Katman 2) her zaman düzenlenebilir (başlık, not, fotoğraf). Son maç verisi düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama ve attendance bildirimi yapılabilir.
 
 **Boş durum (Ana Sayfa — kimseyi takip etmiyorsan):**
 - İllüstrasyon + "Henüz kimseyi takip etmiyorsun"
@@ -401,20 +427,18 @@ Ana Sayfa tab'ında:
 - Kronometer duraklatılmış olarak bekler, kullanıcı devam ettiğinde kaldığı yerden devam (gerçek zamanlı saymaz arkaplanda)
 - 24 saatten fazla geçtiyse: "Bu maçı tamamlamak ister misin?" → Evet: maç özeti ekranına git / Hayır: maçı sil
 
-**Adım 4 — Maç Özeti & Kaydet (düzenleme ekranı — SON EDİT NOKTASI):**
+**Adım 4 — Maç Özeti & Kaydet (düzenleme ekranı — SON MAÇ VERİSİ EDİT NOKTASI):**
 - Skor özeti: Takım 1 [X] — [Y] Takım 2
 - Maç süresi
-- **Kadro düzenleme (ZORUNLU):** "Kaydet & Paylaş" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Adım 2'de atlandıysa burada tamamlanmalı.
+- **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Adım 2'de atlandıysa burada tamamlanmalı.
 - **Drag & drop ile takım değişikliği:** Adım 2 ile aynı — oyuncular iki takım arasında sürükle-bırak ile taşınabilir.
 - **Gol listesi (düzenlenebilir):**
   - Her gol satırı tıklanabilir → "Gol atan: [değiştir]" + "Asist: [değiştir]"
   - Gol silme butonu (çarpı ikonu)
   - "Gol Ekle" butonu (maç sırasında kaçırdıysan buradan da ekleyebilirsin)
-- **Fotoğraf Ekle** butonu (galeri veya kamera, çoklu seçim, max 4)
-- **Maç Başlığı** input (opsiyonel, placeholder: "Kadıköy Halısaha Maçı")
-- **Not/Açıklama** textarea (opsiyonel)
-- **"Kaydet & Paylaş"** butonu → profilde ve feed'de görünür → S30 Shareable kart gösterilir → **maç arşivlenir, artık editlenemez**
-- **"Kaydet (Gizli)"** butonu → sadece profilde görünür, feed'e düşmez → **maç arşivlenir, artık editlenemez**
+- **Maç Başlığı** input (opsiyonel, placeholder: "Kadıköy Halısaha Maçı") — maç verisinin başlığı, tüm postların varsayılan başlığı olur
+- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → S30 Shareable kart gösterilir
+- **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
 - **Not:** MVP oylama ve attendance bildirimi bu sayfada yapılmaz — maç kaydedildikten sonra S40'ta 24 saat boyunca yapılır.
 
 #### S11: Maç Detay Sayfası (Geçmiş — oynanmış maç)
@@ -428,13 +452,10 @@ Ana Sayfa tab'ında:
   - Katılmadı olarak işaretlenen oyuncular: "❌ Katılmadı" etiketi
 - **Gol zaman çizelgesi:** Kronolojik gol listesi — **gol atan ve asist yapan isimler tıklanabilir → S16 Profil**
 - **Maçın Yıldızı:** MVP seçilen oyuncu vurgulu gösterim (altın çerçeve). Eşit oy durumunda Co-MVP olarak birden fazla oyuncu gösterilir.
-- **Fotoğraf galerisi** (varsa): Grid veya yatay scroll
-- **Açıklama/not** (varsa)
-- **Etkileşim:**
-  - 👍 Beğeni (sayı) + 💬 Yorum (sayı) + ↗ Paylaş
-  - Beğenenler satırı: avatarlar + "ali ve diğerleri"
-  - Yorumlar listesi (genişletilebilir) + "Bir yorum ekle..."
-- **Not:** Geçmiş maç editlenemez. Sadece etkileşim (beğeni/yorum) yapılabilir.
+- **Not:** S11 maç verisini (Katman 1) gösterir — fotoğraf ve kişisel notlar burada yoktur, bunlar post kartlarında görünür.
+- **Etkileşim:** S11'de beğeni/yorum yapılmaz — etkileşim post bazlıdır. S11 salt okunur maç detayıdır.
+- **Katılımcıların postlarına erişim:** "Bu maçın postları" bölümü (altta): katılımcıların post kartları listesi (tıklanınca ilgili postun feed görünümüne gider).
+- **Not:** Geçmiş maç verisi (Katman 1) editlenemez. Kişisel postlar (Katman 2) her zaman düzenlenebilir.
 - Back butonu
 
 #### S12: Planlanan Maç Detay (Henüz oynanmamış)
@@ -596,11 +617,16 @@ Ana Sayfa tab'ında:
 **Rozetler** (kazanılanlar yatay scroll):
 - 🏅 50 Maç Kulübü / ✅ %100 Katılım / 🎙️ Süper Organizatör / 🆕 Yeni Üye vb.
 
-**Maç feed'i:**
-- Profil sayfasının alt yarısı = kullanıcının maç kartları (S05 formatında)
-- **Her maç kartı tıklanabilir → S11 Maç Detay sayfasına gider**
-- Herkese açık maçlar normal görünür
-- Gizli maçlar sadece sana görünür (kilit ikonu ile)
+**Maç post feed'i:**
+- Profil sayfasının alt yarısı = kullanıcının **kişisel maç postları** (S05 post kartı formatında)
+- Her post kartı tıklanabilir → S11 Maç Detay sayfasına gider
+- Post sahibinin kişisel başlığı, notu ve fotoğrafları görünür
+- **Post yönetimi (her karttaki ⋮ menüsünden):**
+  - **Düzenle** → başlık, not, fotoğraf düzenleme
+  - **Profilimden Gizle** → geri alınabilir
+  - **Postu Sil** → kalıcı silme (onay dialog'u ile)
+- **Gizli postlar:** Sadece sana görünür (kilit ikonu + "Gizli" etiketi), başkaları göremez
+- **Silinen postlar:** Listeden tamamen kalkar, geri alınamaz
 
 #### S16: Başka Kullanıcının Profili
 - **Yapı:** S15 ile benzer layout, düzenleme/ayar butonları yok
@@ -611,7 +637,7 @@ Ana Sayfa tab'ında:
 
 **Grafik + Rozetler + Seri:** S15 ile aynı (salt okunur, Pano hariç)
 
-**Maç feed'i:** Kullanıcının herkese açık maç kartları (tıklanınca Maç Detay S11'e gider)
+**Maç post feed'i:** Kullanıcının herkese açık **kişisel maç postları** — kendi başlıkları, notları ve fotoğraflarıyla (tıklanınca Maç Detay S11'e gider). Gizli/silinmiş postlar başkalarına görünmez.
 
 **Takip butonu:**
 | Durum | Görünüm |
@@ -705,8 +731,8 @@ Ana Sayfa tab'ında:
   - **Tıklanınca ilgili sayfaya yönlendir**
 
 **Bildirim türleri:**
-- 👍 "Ali maçını beğendi" → S11 Maç Detay
-- 💬 "Ali maçına yorum yaptı" → S11 Maç Detay
+- 👍 "Ali postunu beğendi" → ilgili post kartına git
+- 💬 "Ali postuna yorum yaptı" → S42 Yorumlar (ilgili postun yorumları)
 - 👥 "Ali seni takip etmeye başladı" → S16 Profil
 - ✅ "Maç başvurun onaylandı" → S12 Planlanan Maç
 - ❌ "Maç başvurun reddedildi" → S12 Planlanan Maç
@@ -814,11 +840,11 @@ Ana Sayfa tab'ında:
 - "Engelle" (kırmızı) + "İptal" butonları
 
 #### S30: Maç Sonrası Shareable Kartı (Otomatik Oluşturulur)
-- **Tetikleyici:** Maç kaydedildikten sonra otomatik gösterilir
+- **Tetikleyici:** Maç kaydedildikten sonra host'a otomatik gösterilir. Diğer katılımcılar kendi postlarının ⋮ menüsünden "Paylaş" ile erişebilir.
 - **İçerik:** Instagram Stories / WhatsApp formatında paylaşılabilir görsel kart
-  - Skor bilgisi
+  - Skor bilgisi (maç verisinden)
   - MVP oyuncusu
-  - Kişisel istatistikler (gol, asist)
+  - Kişisel istatistikler (gol, asist — o kullanıcıya özel)
   - SporWave branding + QR kod
 - "Instagram'da Paylaş" + "WhatsApp'ta Paylaş" + "Kaydet" butonları
 - "Atla" linki
@@ -904,12 +930,12 @@ Ana Sayfa tab'ında:
 - "Tekrar Dene" butonu
 - "Ana Sayfaya Dön" linki
 
-#### S42: Yorumlar Sayfası (Reusable — Maç Kartı Yorum Detayı)
-- **Erişim:** Maç kartı her nerede görünürse (S05 Feed, S15 Profil, S16 Başka Profil, S11 Maç Detay) yorum ikonuna veya "Bir yorum ekle..." alanına tıklayınca açılır
+#### S42: Yorumlar Sayfası (Reusable — Post Yorum Detayı)
+- **Erişim:** Post kartı her nerede görünürse (S05 Feed, S15 Profil, S16 Başka Profil) yorum ikonuna veya "Bir yorum ekle..." alanına tıklayınca açılır
 - **Üst bar:** ← geri + "Yorumlar" başlığı
-- **Maç özet kartı (üstte, compact):**
-  - Organizatör avatar + kullanıcıadı + tarih
-  - Maç başlığı + skor
+- **Post özet kartı (üstte, compact):**
+  - Post sahibi avatar + kullanıcıadı + tarih
+  - Post başlığı + skor
   - Beğeni ikonu + avatarlar + "X beğeni" (tıklanınca → S43 Beğeniler) + "X yorum" (sağda)
 - **Yorum listesi:**
   - Her yorum: Avatar + kullanıcıadı + zaman + yorum metni
@@ -918,8 +944,8 @@ Ana Sayfa tab'ında:
 - **Alt bar (fixed):**
   - Avatar + "Bir yorum ekle..." input alanı + send ikonu (kağıt uçak SVG)
 
-#### S43: Beğeniler Sayfası (Reusable — Maç Kartı Beğeni Listesi)
-- **Erişim:** Maç kartı her nerede görünürse beğenenler satırında "X diğerleri"ne veya S42 Yorumlar sayfasında "X beğeni"ye tıklayınca açılır
+#### S43: Beğeniler Sayfası (Reusable — Post Beğeni Listesi)
+- **Erişim:** Post kartı her nerede görünürse beğenenler satırında "X diğerleri"ne veya S42 Yorumlar sayfasında "X beğeni"ye tıklayınca açılır
 - **Üst bar:** ← geri + "Beğeniler" başlığı
 - **Arama çubuğu:** "Kullanıcı adı ara" (filtre)
 - **Beğeni listesi:**
@@ -962,8 +988,10 @@ Splash → Ana Sayfa/Keşfet (login gerekmez) → Maç kartlarına göz at
 Maçlar tab → FAB "+" → "Maç Başlat" → Format seç + konum
 → Takım kur (opsiyonel, drag & drop) → Canlı skor ekranı → Gol ekle (geri alınabilir)
 → Herhangi bir katılımcı skor güncelleyebilir (çoklu cihaz sync)
-→ Maçı bitir (herkes bitirebilir) → Kadro düzenle (zorunlu, min 2 oyuncu) + fotoğraf
-→ Kaydet & Paylaş → Shareable kart → Feed'de görünür (artık editlenemez)
+→ Maçı bitir (herkes bitirebilir) → Kadro düzenle (zorunlu, min 2 oyuncu)
+→ Kaydet & Paylaş → Maç verisi kilitlenir + tüm katılımcılar için post oluşur
+→ Shareable kart → Her katılımcının kendi postu feed'de ve profilinde görünür
+→ Her katılımcı kendi postunu profilinden düzenleyebilir (başlık, not, fotoğraf)
 → 24 saat içinde S40'ta MVP oyla + attendance bildir
 ```
 
@@ -992,14 +1020,15 @@ Maçlar tab'da açık maçı gör → Detaya git → "Katıl"
 
 ### Akış 5: Sosyal Etkileşim
 ```
-Ana Sayfa feed'de maç kartı gör → Beğen / Yorum yap
-→ Kullanıcı profiline git → Takip et
+Ana Sayfa feed'de post kartı gör → Beğen / Yorum yap (post bazlı)
+→ Post sahibinin profiline git → Takip et
 → Karşılıklı takip = "Arkadaş" → Mesaj gönder / WhatsApp'a geç
+→ Aynı maçtan başka arkadaşının postu da feed'de → farklı perspektif, ayrı etkileşim
 ```
 
 ### Akış 6: Viral Paylaşım Döngüsü
 ```
-Maç kaydedilir → Shareable kart otomatik oluşur
+Maç kaydedilir → Her katılımcı için post oluşur → Shareable kart otomatik oluşur
 → Instagram Stories'e paylaş (SporWave branding + QR)
 → Arkadaşlar QR'ı tarar / linke tıklar → Uygulamayı indirir
 → Kendi maçlarını başlatır → Döngü tekrarlanır
@@ -1068,7 +1097,7 @@ Maç saati geçer → Maç hala başlamamış
 
 **Tipografi:** Sistem fontları + marka fontu başlıklarda
 
-**Kart tasarımı:** Hevy antrenman kartlarından ilham — koyu arka plan, rounded corners, hafif border, büyük skor gösterimi, beğeni/yorum yapısı
+**Kart tasarımı:** Hevy antrenman kartlarından ilham — koyu arka plan, rounded corners, hafif border, büyük skor gösterimi, beğeni/yorum yapısı. Her kart bir **post**tur (maç değil) — post sahibinin kişisel versiyonunu gösterir.
 
 **Navigasyon:** 3 tab bar, FAB Maçlar tab'ı içinde sağ altta, üst navbar'da arama + bildirim + mesaj
 
@@ -1154,6 +1183,85 @@ Maç saati geçer → Maç hala başlamamış
   - Tüm katılımcılara bildirim gider: "🗑️ [Maç adı] başlatılmadığı için silindi"
   - Maç sohbeti (S35) de kapatılır (salt okunur olarak arşivlenir)
   - Silinen maç geri alınamaz
+
+---
+
+## POST YÖNETİMİ & İKİ KATMANLI VERİ MODELİ
+
+### Genel Bakış
+
+SporWave'de bir maç tamamlandığında iki katmanlı veri yapısı oluşur:
+
+**Katman 1 — Maç Verisi (Shared, Immutable):**
+- Skor, takımlar, süre, konum, tarih, MVP, gol timeline
+- Host ve katılımcıların ortaklaşa ürettiği veri
+- Maç arşivlendikten sonra (state: archived) değiştirilemez
+- Tüm katılımcıların postlarında aynı maç verisi referans edilir
+
+**Katman 2 — Kişisel Post (Per Player):**
+- Maç arşivlendiğinde her katılımcı için otomatik oluşturulur
+- Her katılımcı sadece kendi postunu kontrol eder:
+  - **Başlık:** Varsayılan olarak maç başlığı, kişi değiştirebilir
+  - **Not:** Opsiyonel açıklama
+  - **Fotoğraflar:** Kişisel fotoğraflar (max 4)
+  - **Görünürlük:** visible / hidden / deleted
+
+### Post Durumları
+
+| Durum | Feed | Profil | Beğeni/Yorum | Geri Alınabilir |
+|-------|------|--------|-------------|----------------|
+| **visible** | Görünür | Görünür | Aktif | — |
+| **hidden** | Görünmez | Sadece sana görünür (🔒) | Korunur | Evet |
+| **deleted** | Görünmez | Görünmez | Silinir | Hayır |
+
+### Post Silme vs Gizleme
+
+**Gizle (hidden):**
+- Post feed ve profilden kaybolur (başkalarına)
+- Kişisel veriler (not, fotoğraf) korunur
+- "Gizli Postlar" bölümünden geri getirilebilir
+- Maç verisinde katılımcı olarak kalırsın
+- Diğer oyuncuların postlarında "Ali de bu maçta oynadı" satırında görünmeye devam edersin
+
+**Sil (deleted):**
+- Post kalıcı olarak silinir
+- Kişisel veriler (not, fotoğraf, başlık) silinir
+- O posta yapılan beğeni ve yorumlar da silinir
+- Geri alınamaz
+- Maç verisinde katılımcı olarak kalırsın (Katman 1 etkilenmez)
+- Diğer oyuncuların postlarında ismin hâlâ görünür (maç kadrosunda)
+- **Kullanım senaryosu:** Deneme/test maçları, dummy veriler
+
+### Etkileşim Modeli
+
+**Beğeni ve yorumlar POST bazlıdır:**
+- Berk'in postunu beğeniyorsun → Berk'e bildirim gider
+- Ali'nin aynı maçtaki postunu ayrıca beğenebilirsin → Ali'ye bildirim gider
+- İki post aynı maç verisini paylaşır ama etkileşimleri tamamen bağımsızdır
+- Post silinirse o postun beğeni ve yorumları da silinir — diğer postlar etkilenmez
+
+### Teknik Veri Yapısı
+
+```
+matches (Katman 1 — paylaşımlı, immutable)
+├── id, score_a, score_b, teams, duration, location, date
+├── host_id, state, format, created_at
+└── goals[] (timeline)
+
+match_posts (Katman 2 — kişisel, düzenlenebilir)
+├── id, match_id, user_id
+├── title (default: match.title)
+├── caption (nullable)
+├── photos[] (nullable, max 4)
+├── status: visible | hidden | deleted
+└── created_at, updated_at
+
+post_likes
+├── post_id, user_id, created_at
+
+post_comments
+├── post_id, user_id, text, created_at
+```
 
 ---
 

@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 
 // ============================================================
-// SPORWAVE MODULE 2 v2 — Feed & Search (S05, S07, S33, S42, S43)
-// TopNav: no logo, dropdown left, icons only on home, sticky
-// Match card: no team avatars on score, MVP under score, max 2 comments
-// New pages: S42 Comments, S43 Likes
+// SPORWAVE MODULE 2 v3 — Feed & Search (S05, S07, S42, S43)
+// Two-layer model: M (matches, shared) + P (posts, per-player)
+// PostCard replaces MatchCard — single owner, post-based engagement
 // ============================================================
 
 const T = {
@@ -29,35 +28,66 @@ const U = [
 ];
 const uf = id => U.find(u => u.id === id);
 
+// Katman 1: Match data (shared, immutable)
 const M = [
-  { id:1, title:"Kadıköy Halısaha Maçı", date:"25 Şub", time:"20:00", loc:"Kadıköy Spor", fmt:"6v6", sc:[5,3], dur:"1s 20dk", host:1, tA:[1,2,4], tB:[3,5,6], mvp:4, likes:12, coms:5, shares:2, photos:2, likedByMe:false,
-    likers:[2,3,5,6,7,8,4,1],
+  { id:1, title:"Kadıköy Halısaha Maçı", date:"25 Şub", time:"20:00", loc:"Kadıköy Spor", fmt:"6v6", sc:[5,3], dur:"1s 20dk", host:1, tA:[1,2,4], tB:[3,5,6], mvp:4 },
+  { id:3, title:"Beşiktaş Sahil Maçı", date:"28 Şub", time:"19:00", loc:"Beşiktaş Halısaha", fmt:"7v7", sc:[2,2], dur:"1s 10dk", host:6, tA:[6,3,7], tB:[1,5,8], mvp:6 },
+  { id:6, title:"Ataşehir Gece Maçı", date:"22 Şub", time:"21:30", loc:"Ataşehir Arena", fmt:"5v5", sc:[4,1], dur:"55dk", host:3, tA:[3,7,8], tB:[5,6], mvp:3 },
+];
+const mf = id => M.find(m => m.id === id);
+
+// Katman 2: Posts (per-player, personal)
+const P = [
+  { id:101, matchId:1, userId:1, caption:"Ev sahibi olarak güzel bir maçtı!", photos:2, status:"visible", date:"25 Şub", likes:8, coms:3, likedByMe:false,
+    likers:[2,4,3,5,6,7,8],
     comments:[
       {uid:2, text:"Harika maçtı, tekrarlayalım! 🔥", t:"2sa"},
       {uid:5, text:"Emre yine fark yarattı", t:"1sa"},
-      {uid:3, text:"Skor gerçekçi değil 😂", t:"45dk"},
-      {uid:6, text:"Bir daha ne zaman?", t:"30dk"},
       {uid:4, text:"Teşekkürler herkese 💪", t:"15dk"},
     ]},
-  { id:3, title:"Beşiktaş Sahil Maçı", date:"28 Şub", time:"19:00", loc:"Beşiktaş Halısaha", fmt:"7v7", sc:[2,2], dur:"1s 10dk", host:6, tA:[6,3,7], tB:[1,5,8], mvp:6, likes:8, coms:3, shares:1, photos:0, likedByMe:true,
-    likers:[1,6,3,7,5,8,2,4],
+  { id:102, matchId:1, userId:4, caption:"MVP seçilmek güzel hissettirdi", photos:0, status:"visible", date:"25 Şub", likes:12, coms:4, likedByMe:false,
+    likers:[1,2,3,5,6,7,8,4],
     comments:[
-      {uid:6, text:"Berabere ama güzel oyundu", t:"5sa"},
+      {uid:1, text:"Hak ettin MVP'yi 👏", t:"2sa"},
+      {uid:3, text:"Skor gerçekçi değil 😂", t:"45dk"},
+      {uid:6, text:"Bir daha ne zaman?", t:"30dk"},
+      {uid:2, text:"Süper oynadın", t:"20dk"},
+    ]},
+  { id:103, matchId:1, userId:2, caption:null, photos:0, status:"visible", date:"25 Şub", likes:4, coms:1, likedByMe:true,
+    likers:[1,4,5,6],
+    comments:[
+      {uid:4, text:"Güzel pas kombinasyonları vardı", t:"3sa"},
+    ]},
+  { id:201, matchId:3, userId:6, caption:"Berabere ama güzel oyundu, ev sahibi olarak memnunum", photos:0, status:"visible", date:"28 Şub", likes:8, coms:3, likedByMe:true,
+    likers:[1,3,7,5,8,2,4,6],
+    comments:[
       {uid:1, text:"Tekrarı olsun 🙏", t:"4sa"},
       {uid:7, text:"Savunma sağlamdı", t:"3sa"},
+      {uid:3, text:"Güzel sahada oynamak farklı", t:"2sa"},
     ]},
-  { id:6, title:"Ataşehir Gece Maçı", date:"22 Şub", time:"21:30", loc:"Ataşehir Arena", fmt:"5v5", sc:[4,1], dur:"55dk", host:3, tA:[3,7,8], tB:[5,6], mvp:3, likes:15, coms:7, shares:4, photos:3, likedByMe:false,
-    likers:[3,7,8,5,6,1,2,4],
+  { id:202, matchId:3, userId:1, caption:"Beşiktaş sahası çok iyiydi", photos:1, status:"visible", date:"28 Şub", likes:5, coms:2, likedByMe:false,
+    likers:[6,3,7,2,4],
+    comments:[
+      {uid:6, text:"Yine bekleriz!", t:"5sa"},
+      {uid:2, text:"Sahayı beğendim ben de", t:"4sa"},
+    ]},
+  { id:301, matchId:6, userId:3, caption:"Host olarak teşekkür ederim herkese, Ataşehir Arena her zamanki gibi mükemmeldi", photos:3, status:"visible", date:"22 Şub", likes:15, coms:5, likedByMe:false,
+    likers:[7,8,5,6,1,2,4,3],
     comments:[
       {uid:7, text:"Mehmet abinin maçı 💪", t:"3g"},
       {uid:8, text:"Ataşehir sahası çok iyi", t:"2g"},
       {uid:5, text:"Revanche istiyorum", t:"1g"},
       {uid:6, text:"Güzel maçtı", t:"20sa"},
-      {uid:3, text:"Host olarak teşekkür ederim herkese", t:"18sa"},
       {uid:1, text:"Ben de katılmak isterdim", t:"15sa"},
-      {uid:2, text:"Sıradaki maç ne zaman?", t:"10sa"},
+    ]},
+  { id:302, matchId:6, userId:7, caption:null, photos:0, status:"visible", date:"22 Şub", likes:6, coms:2, likedByMe:false,
+    likers:[3,8,5,6,1,2],
+    comments:[
+      {uid:3, text:"İyi oynadın", t:"2g"},
+      {uid:8, text:"Sıradaki maç ne zaman?", t:"1g"},
     ]},
 ];
+const pf = id => P.find(p => p.id === id);
 
 // — SVG ICONS —
 const I = {
@@ -83,6 +113,10 @@ const I = {
   users: c => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,
   empty: c => <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="1" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 15h8"/><circle cx="9" cy="9" r="1" fill={c||T.textMuted}/><circle cx="15" cy="9" r="1" fill={c||T.textMuted}/></svg>,
   noResult: c => <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="1.2" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>,
+  edit: c => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  eyeOff: c => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>,
+  trash: c => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.red} strokeWidth="2" strokeLinecap="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>,
+  flag: c => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>,
 };
 
 // — COMPONENTS —
@@ -94,92 +128,102 @@ function StackAv({ ids, max=3, s=24 }) {
   return <div style={{ display:"flex" }}>{vis.map((uid,i) => { const u=uf(uid); return u && <div key={uid} style={{ marginLeft:i>0?-8:0, zIndex:max-i, position:"relative" }}><Av i={u.av} s={s}/></div>; })}{ids.length>max && <span style={{ fontSize:10, color:T.textDim, marginLeft:4, fontWeight:600 }}>+{ids.length-max}</span>}</div>;
 }
 function Badge({ children, c=T.accent }) {
-  return <span style={{ display:"inline-flex", alignItems:"center", gap:3, padding:"2px 8px", borderRadius:20, fontSize:11, fontWeight:600, color:c, background:`${c}15`, whiteSpace:"nowrap" }}>{children}</span>;
+  return <span style={{ display:"inline-flex", alignItems:"center", gap:4, padding:"2px 8px", borderRadius:20, fontSize:11, fontWeight:600, color:c, background:`${c}15`, whiteSpace:"nowrap" }}>{children}</span>;
 }
 function Btn({ children, primary, small, full, onClick, st }) {
   const [h,setH]=useState(false);
-  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:small?"6px 14px":"12px 20px", borderRadius:10, border:primary?"none":`1.5px solid ${T.cardBorder}`, background:primary?T.accent:"transparent", color:primary?T.bg:T.text, fontSize:small?12:14, fontWeight:600, cursor:"pointer", width:full?"100%":"auto", transition:"all .2s", transform:h?"translateY(-1px)":"none", display:"flex", alignItems:"center", justifyContent:"center", gap:6, ...st }}>{children}</button>;
+  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:small?"6px 16px":"12px 20px", borderRadius:10, border:primary?"none":`1.5px solid ${T.cardBorder}`, background:primary?T.accent:"transparent", color:primary?T.bg:T.text, fontSize:small?12:14, fontWeight:600, cursor:"pointer", width:full?"100%":"auto", transition:"all .2s", transform:h?"translateY(-1px)":"none", display:"flex", alignItems:"center", justifyContent:"center", gap:8, ...st }}>{children}</button>;
 }
 function InpField({ placeholder, icon, value, onChange, autoFocus }) {
   const [f,setF]=useState(false);
-  return <div style={{ display:"flex", alignItems:"center", gap:10, background:T.card, border:`1.5px solid ${f?T.accent:T.cardBorder}`, borderRadius:12, padding:"10px 14px", transition:"all .2s", boxShadow:f?`0 0 0 3px ${T.accent}18`:"none" }}>{icon&&<span style={{ flexShrink:0, display:"flex" }}>{typeof icon==="function"?icon(f?T.accent:T.textDim):icon}</span>}<input placeholder={placeholder} value={value} onChange={onChange} autoFocus={autoFocus} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{ background:"none", border:"none", color:T.text, fontSize:14, width:"100%", outline:"none", fontWeight:500 }}/></div>;
+  return <div style={{ display:"flex", alignItems:"center", gap:12, background:T.card, border:`1.5px solid ${f?T.accent:T.cardBorder}`, borderRadius:12, padding:"12px 16px", transition:"all .2s", boxShadow:f?`0 0 0 3px ${T.accent}18`:"none" }}>{icon&&<span style={{ flexShrink:0, display:"flex" }}>{typeof icon==="function"?icon(f?T.accent:T.textDim):icon}</span>}<input placeholder={placeholder} value={value} onChange={onChange} autoFocus={autoFocus} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{ background:"none", border:"none", color:T.text, fontSize:14, width:"100%", outline:"none", fontWeight:500 }}/></div>;
 }
 function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
   return <div style={{ position:"sticky", top:32, zIndex:50, padding:"8px 16px", background:`${T.bg}ee`, backdropFilter:"blur(12px)", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:`1px solid ${T.cardBorder}22` }}>
     <div style={{ position:"relative" }}>
-      <div onClick={()=>setDropOpen(!dropOpen)} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:6, padding:"6px 10px", borderRadius:10, background:dropOpen?T.card:"transparent", transition:"background .15s" }}>
+      <div onClick={()=>setDropOpen(!dropOpen)} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:8, padding:"8px 12px", borderRadius:10, background:dropOpen?T.card:"transparent", transition:"background .15s" }}>
         <span style={{ display:"flex" }}>{mode==="home"?I.home(T.accent):I.compass(T.accent)}</span>
         <span style={{ fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{mode==="home"?"Ana Sayfa":"Keşfet"}</span>
         <span style={{ display:"flex", transform:dropOpen?"rotate(180deg)":"none", transition:"transform .2s" }}>{I.chevDown(T.textDim)}</span>
       </div>
-      {dropOpen && <div style={{ position:"absolute", top:44, left:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:6, zIndex:60, boxShadow:"0 8px 32px rgba(0,0,0,.5)", minWidth:180 }}>
-        {[{id:"home",ic:I.home,l:"Ana Sayfa"},{id:"explore",ic:I.compass,l:"Keşfet"}].map(o=><div key={o.id} onClick={()=>{setMode(o.id);setDropOpen(false);}} style={{ padding:"10px 14px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:10, background:mode===o.id?`${T.accent}10`:"transparent" }}><span style={{ display:"flex" }}>{o.ic(mode===o.id?T.accent:T.textDim)}</span><span style={{ fontSize:14, fontWeight:mode===o.id?700:500, color:mode===o.id?T.accent:T.text }}>{o.l}</span></div>)}
+      {dropOpen && <div style={{ position:"absolute", top:44, left:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 8px 32px rgba(0,0,0,.5)", minWidth:180 }}>
+        {[{id:"home",ic:I.home,l:"Ana Sayfa"},{id:"explore",ic:I.compass,l:"Keşfet"}].map(o=><div key={o.id} onClick={()=>{setMode(o.id);setDropOpen(false);}} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12, background:mode===o.id?`${T.accent}10`:"transparent" }}><span style={{ display:"flex" }}>{o.ic(mode===o.id?T.accent:T.textDim)}</span><span style={{ fontSize:14, fontWeight:mode===o.id?700:500, color:mode===o.id?T.accent:T.text }}>{o.l}</span></div>)}
       </div>}
     </div>
-    {showActions && <div style={{ display:"flex", gap:14, alignItems:"center" }}>
+    {showActions && <div style={{ display:"flex", gap:16, alignItems:"center" }}>
       <span onClick={()=>onNav("S07")} style={{ cursor:"pointer", display:"flex" }}>{I.search()}</span>
-      <span onClick={()=>onNav("S19")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.bell()}<span style={{ position:"absolute", top:-2, right:-3, width:7, height:7, borderRadius:4, background:T.red }}/></span>
-      <span onClick={()=>onNav("S17")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.chat()}<span style={{ position:"absolute", top:-2, right:-3, width:7, height:7, borderRadius:4, background:T.accent }}/></span>
+      <span onClick={()=>onNav("S19")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.bell()}<span style={{ position:"absolute", top:-2, right:-4, width:8, height:8, borderRadius:4, background:T.red }}/></span>
+      <span onClick={()=>onNav("S17")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.chat()}<span style={{ position:"absolute", top:-2, right:-4, width:8, height:8, borderRadius:4, background:T.accent }}/></span>
     </div>}
   </div>;
 }
 function TabBar({ active, onNav }) {
   const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];
   return <div style={{ position:"fixed", bottom:0, left:0, right:0, height:56, background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, display:"flex", justifyContent:"space-around", alignItems:"center", zIndex:100, maxWidth:430, margin:"0 auto" }}>
-    {tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:2, cursor:"pointer", padding:"6px 20px" }}><span style={{ display:"flex" }}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{ fontSize:10, fontWeight:active===t.id?700:500, color:active===t.id?T.accent:T.textMuted }}>{t.l}</span></div>)}
+    {tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, cursor:"pointer", padding:"8px 20px" }}><span style={{ display:"flex" }}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{ fontSize:10, fontWeight:active===t.id?700:500, color:active===t.id?T.accent:T.textMuted }}>{t.l}</span></div>)}
   </div>;
 }
 
-// — MATCH CARD —
-function MatchCard({ match: m, onNav, mode="home" }) {
-  const [liked,setLiked]=useState(m.likedByMe);
-  const [lc,setLc]=useState(m.likes);
-  const host=uf(m.host);
-  const all=[...(m.tA||[]),...(m.tB||[])];
-  const friends=all.filter(uid=>uf(uid)?.follow);
-  const mvp=uf(m.mvp);
-  const firstLiker=m.likers?.[0]?uf(m.likers[0]):null;
-  const visComments=(m.comments||[]).slice(0,2);
-
-  const hdr=()=>{
-    if(mode==="explore") return <><b onClick={()=>onNav("S16",host.id)} style={{cursor:"pointer",color:T.text}}>{host.name}</b>{" ve "}<span style={{color:T.textDim}}>{all.length-1} kişi</span>{" maç tamamladı"}</>;
-    const me=friends.find(uid=>uid===1);
-    const of=friends.filter(uid=>uid!==1);
-    if(me&&of.length===0) return <><b style={{color:T.accent}}>Sen</b>{" maç tamamladın"}</>;
-    if(me&&of.length>=1){const f=uf(of[0]);return <><b style={{color:T.accent}}>Sen</b>{" ve "}<b onClick={()=>onNav("S16",f.id)} style={{cursor:"pointer",color:T.text}}>{f.name.split(" ")[0]}</b>{of.length>1?<span style={{color:T.textDim}}>{" ve "}{of.length-1} diğer arkadaşın</span>:""}{" maç tamamladı"}</>;}
-    if(of.length===1){const f=uf(of[0]);return <><b onClick={()=>onNav("S16",f.id)} style={{cursor:"pointer",color:T.text}}>{f.name}</b>{" maç tamamladı"}</>;}
-    if(of.length>=2){const f=uf(of[0]);return <><b onClick={()=>onNav("S16",f.id)} style={{cursor:"pointer",color:T.text}}>{f.name.split(" ")[0]}</b><span style={{color:T.textDim}}>{" ve "}{of.length-1} diğer arkadaşın</span>{" maç tamamladı"}</>;}
-    return <><b onClick={()=>onNav("S16",host.id)} style={{cursor:"pointer",color:T.text}}>{host.name}</b>{" maç tamamladı"}</>;
-  };
+// — POST CARD (replaces MatchCard) —
+function PostCard({ post: p, onNav }) {
+  const [liked,setLiked]=useState(p.likedByMe);
+  const [lc,setLc]=useState(p.likes);
+  const [menuOpen,setMenuOpen]=useState(false);
+  const owner=uf(p.userId);
+  const m=mf(p.matchId);
+  const all=[...(m?.tA||[]),...(m?.tB||[])];
+  const others=all.filter(uid=>uid!==p.userId);
+  const mvp=m?uf(m.mvp):null;
+  const firstLiker=p.likers?.[0]?uf(p.likers[0]):null;
+  const visComments=(p.comments||[]).slice(0,2);
+  const isOwn=p.userId===1;
 
   const toggleLike=e=>{e.stopPropagation();setLiked(!liked);setLc(c=>liked?c-1:c+1);};
 
-  return <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.cardBorder}`, marginBottom:16, overflow:"hidden" }}>
-    {/* Header */}
-    <div style={{ padding:"14px 16px 0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-      <div style={{ display:"flex", alignItems:"center", gap:10, flex:1 }}>
-        <StackAv ids={mode==="explore"?[m.host]:friends.length>0?friends:[m.host]} s={26}/>
-        <div style={{ fontSize:13, color:T.textDim, lineHeight:1.3 }}>{hdr()}</div>
+  return <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.cardBorder}`, marginBottom:16, overflow:"hidden", position:"relative" }}>
+    {/* Header — single post owner */}
+    <div style={{ padding:"16px 16px 0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+      <div style={{ display:"flex", alignItems:"center", gap:12, flex:1 }}>
+        <Av i={owner.av} s={36} onClick={()=>onNav("S16",owner.id)}/>
+        <div>
+          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+            <span onClick={()=>onNav("S16",owner.id)} style={{ fontWeight:700, fontSize:14, color:T.text, cursor:"pointer" }}>{owner.name}</span>
+            {isOwn && <Badge c={T.accent}>Sen</Badge>}
+          </div>
+          <div style={{ fontSize:12, color:T.textMuted, marginTop:2 }}>@{owner.un} · {p.date}</div>
+        </div>
       </div>
-      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-        <span style={{ fontSize:11, color:T.textMuted }}>{m.date}</span>
-        <span style={{ cursor:"pointer", display:"flex" }}>{I.more()}</span>
+      <div style={{ position:"relative" }}>
+        <span onClick={()=>setMenuOpen(!menuOpen)} style={{ cursor:"pointer", display:"flex", padding:4 }}>{I.more()}</span>
+        {menuOpen && <div style={{ position:"absolute", top:28, right:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 8px 32px rgba(0,0,0,.5)", minWidth:160 }}>
+          {isOwn ? <>
+            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.edit()}</span><span style={{ fontSize:13, color:T.text }}>Düzenle</span></div>
+            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Gizle</span></div>
+            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.trash()}</span><span style={{ fontSize:13, color:T.red }}>Sil</span></div>
+          </> : <>
+            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.flag()}</span><span style={{ fontSize:13, color:T.text }}>Raporla</span></div>
+            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Engelle</span></div>
+          </>}
+        </div>}
       </div>
     </div>
 
-    {/* Body — clickable */}
-    <div onClick={()=>onNav("S11",m.id)} style={{ cursor:"pointer", padding:"10px 16px 0" }}>
+    {/* Caption */}
+    {p.caption && <div style={{ padding:"8px 16px 0", fontSize:14, color:T.textDim, lineHeight:1.5 }}>{p.caption}</div>}
+
+    {/* Match body — clickable */}
+    {m && <div onClick={()=>onNav("S11",m.id)} style={{ cursor:"pointer", padding:"12px 16px 0" }}>
       <div style={{ fontWeight:700, fontSize:16, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>
       <div style={{ display:"flex", gap:12, fontSize:12, color:T.textDim, marginBottom:12, alignItems:"center", flexWrap:"wrap" }}>
-        <span style={{ display:"flex", alignItems:"center", gap:3 }}>{I.clock()} {m.dur}</span>
-        <span style={{ display:"flex", alignItems:"center", gap:3 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
-        <span style={{ display:"flex", alignItems:"center", gap:3 }}>{I.users()} {all.length}</span>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.clock()} {m.dur}</span>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.users()} {all.length}</span>
         <Badge c={T.textDim}>{m.fmt}</Badge>
       </div>
 
-      {/* Score — NO team avatars */}
+      {/* Score */}
       {m.sc && <div style={{ textAlign:"center", marginBottom:4 }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:0 }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
           <span style={{ fontSize:11, color:T.textDim, marginRight:12 }}>Takım A</span>
           <span style={{ fontSize:38, fontWeight:900, letterSpacing:"-2px", fontFamily:FONT_H }}>
             <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
@@ -188,25 +232,34 @@ function MatchCard({ match: m, onNav, mode="home" }) {
           </span>
           <span style={{ fontSize:11, color:T.textDim, marginLeft:12 }}>Takım B</span>
         </div>
-        {/* MVP — right under score, centered */}
-        {mvp && <div onClick={e=>{e.stopPropagation();onNav("S16",mvp.id);}} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:5, marginTop:4, cursor:"pointer" }}>
+        {mvp && <div onClick={e=>{e.stopPropagation();onNav("S16",mvp.id);}} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:4, cursor:"pointer" }}>
           {I.star()} <span style={{ fontSize:12, color:T.gold, fontWeight:600 }}>{mvp.name}</span>
         </div>}
       </div>}
+    </div>}
 
-      {/* Photos */}
-      {m.photos>0 && <div style={{ display:"flex", gap:6, marginTop:8, marginBottom:4, overflowX:"auto" }}>
-        {Array.from({length:Math.min(m.photos,4)},(_,i)=><div key={i} style={{ minWidth:100, height:70, borderRadius:10, background:T.cardBorder, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:T.textMuted, flexShrink:0 }}>📷</div>)}
-      </div>}
-    </div>
+    {/* Photos (from post, not match) */}
+    {p.photos>0 && <div style={{ display:"flex", gap:8, padding:"8px 16px 4px", overflowX:"auto" }}>
+      {Array.from({length:Math.min(p.photos,4)},(_,i)=><div key={i} style={{ minWidth:100, height:72, borderRadius:12, background:T.cardBorder, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:T.textMuted, flexShrink:0 }}>📷</div>)}
+    </div>}
+
+    {/* Others in this match */}
+    {others.length>0 && <div style={{ padding:"8px 16px 0", display:"flex", alignItems:"center", gap:8 }}>
+      <StackAv ids={others.slice(0,3)} s={20}/>
+      <span style={{ fontSize:12, color:T.textDim }}>
+        <b style={{ color:T.text }}>{uf(others[0])?.name.split(" ")[0]}</b>
+        {others.length>1 && <span> ve {others.length-1} kişi daha</span>}
+        {" bu maçta oynadı"}
+      </span>
+    </div>}
 
     {/* Interaction row */}
-    <div style={{ padding:"10px 16px 0", display:"flex", gap:20, alignItems:"center", borderTop:`1px solid ${T.cardBorder}44` }}>
-      <div onClick={toggleLike} style={{ display:"flex", alignItems:"center", gap:5, cursor:"pointer", fontSize:13, color:liked?T.red:T.textDim, fontWeight:liked?600:400 }}>
+    <div style={{ padding:"12px 16px 0", display:"flex", gap:20, alignItems:"center", borderTop:`1px solid ${T.cardBorder}44`, marginTop:8 }}>
+      <div onClick={toggleLike} style={{ display:"flex", alignItems:"center", gap:4, cursor:"pointer", fontSize:13, color:liked?T.red:T.textDim, fontWeight:liked?600:400 }}>
         {liked?I.heartFill():I.heart()} {lc}
       </div>
-      <div onClick={e=>{e.stopPropagation();onNav("S42",m.id);}} style={{ display:"flex", alignItems:"center", gap:5, cursor:"pointer", fontSize:13, color:T.textDim }}>
-        {I.comment()} {m.coms}
+      <div onClick={e=>{e.stopPropagation();onNav("S42",p.id);}} style={{ display:"flex", alignItems:"center", gap:4, cursor:"pointer", fontSize:13, color:T.textDim }}>
+        {I.comment()} {p.coms}
       </div>
       <div style={{ display:"flex", alignItems:"center", cursor:"pointer" }}>
         {I.share()}
@@ -214,29 +267,29 @@ function MatchCard({ match: m, onNav, mode="home" }) {
     </div>
 
     {/* Likers */}
-    {lc>0 && <div style={{ padding:"8px 16px 0", fontSize:12, color:T.textDim, display:"flex", alignItems:"center", gap:6 }}>
-      <StackAv ids={(m.likers||[]).slice(0,3)} s={18}/>
+    {lc>0 && <div style={{ padding:"8px 16px 0", fontSize:12, color:T.textDim, display:"flex", alignItems:"center", gap:8 }}>
+      <StackAv ids={(p.likers||[]).slice(0,3)} s={20}/>
       <span>
         <b onClick={()=>onNav("S16",firstLiker?.id)} style={{ color:T.text, cursor:"pointer" }}>{liked?"Sen":firstLiker?.name?.split(" ")[0]}</b>
-        {lc>1 && <span onClick={()=>onNav("S43",m.id)} style={{ cursor:"pointer" }}> ve <b style={{ color:T.text }}>{lc-1} diğerleri</b></span>}
+        {lc>1 && <span onClick={()=>onNav("S43",p.id)} style={{ cursor:"pointer" }}> ve <b style={{ color:T.text }}>{lc-1} diğerleri</b></span>}
       </span>
     </div>}
 
     {/* Comments — max 2 */}
     {visComments.length>0 && <div style={{ padding:"8px 16px 0" }}>
-      {visComments.map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:6 }}>
-        <Av i={cu.av} s={22} onClick={()=>onNav("S16",cu.id)}/>
+      {visComments.map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:8 }}>
+        <Av i={cu.av} s={24} onClick={()=>onNav("S16",cu.id)}/>
         <div style={{ fontSize:13 }}>
           <span onClick={()=>onNav("S16",cu.id)} style={{ fontWeight:600, color:T.text, cursor:"pointer" }}>{cu.un}</span>
-          <span style={{ color:T.textMuted, marginLeft:6 }}>{c.t}</span>
-          <div style={{ color:T.textDim, marginTop:1 }}>{c.text}</div>
+          <span style={{ color:T.textMuted, marginLeft:8 }}>{c.t}</span>
+          <div style={{ color:T.textDim, marginTop:2 }}>{c.text}</div>
         </div>
       </div>;})}
     </div>}
 
     {/* Add comment */}
-    <div onClick={()=>onNav("S42",m.id)} style={{ padding:"10px 16px 14px", display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
-      <Av i="BY" s={22}/>
+    <div onClick={()=>onNav("S42",p.id)} style={{ padding:"12px 16px 16px", display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
+      <Av i="BY" s={24}/>
       <span style={{ fontSize:13, color:T.textMuted }}>Bir yorum ekle...</span>
     </div>
   </div>;
@@ -246,7 +299,7 @@ function MatchCard({ match: m, onNav, mode="home" }) {
 function Empty({ icon, title, desc, action, onAction }) {
   return <div style={{ textAlign:"center", padding:"48px 24px" }}>
     <div style={{ marginBottom:16, display:"flex", justifyContent:"center", opacity:.6 }}>{icon}</div>
-    <div style={{ fontSize:16, fontWeight:700, color:T.text, marginBottom:6, fontFamily:FONT_H }}>{title}</div>
+    <div style={{ fontSize:16, fontWeight:700, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{title}</div>
     <div style={{ fontSize:13, color:T.textDim, marginBottom:20, lineHeight:1.5, maxWidth:260, margin:"0 auto 20px" }}>{desc}</div>
     {action&&<Btn primary onClick={onAction}>{action}</Btn>}
   </div>;
@@ -254,27 +307,27 @@ function Empty({ icon, title, desc, action, onAction }) {
 
 // — PAGES —
 
-// S05: Feed
+// S05: Feed (post-based)
 function S05({ onNav, mode, setMode, dropOpen, setDropOpen }) {
   const feed = mode==="home"
-    ? M.filter(m=>[...(m.tA||[]),...(m.tB||[])].some(uid=>uf(uid)?.follow))
-    : [...M].sort((a,b)=>(b.likes+b.coms*2+b.shares*3)-(a.likes+a.coms*2+a.shares*3)).filter(m=>m.likes+m.coms*2+m.shares*3>0);
+    ? P.filter(p=>p.status==="visible"&&uf(p.userId)?.follow)
+    : [...P].filter(p=>p.status==="visible").sort((a,b)=>(b.likes+b.coms*2)-(a.likes+a.coms*2));
 
   return <div style={{ paddingBottom:80 }}>
     {mode==="explore" && <div style={{ padding:"0 16px 16px" }}>
-      <div style={{ fontSize:11, fontWeight:700, color:T.textMuted, marginBottom:10, textTransform:"uppercase", letterSpacing:.5 }}>Önerilen Kullanıcılar</div>
-      <div style={{ display:"flex", gap:10, overflowX:"auto", paddingBottom:4 }}>
-        {U.filter(u=>!u.follow&&u.id!==1).slice(0,5).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ minWidth:100, background:T.card, borderRadius:14, padding:"14px 10px", textAlign:"center", border:`1px solid ${T.cardBorder}`, cursor:"pointer", flexShrink:0 }}>
+      <div style={{ fontSize:11, fontWeight:700, color:T.textMuted, marginBottom:12, textTransform:"uppercase", letterSpacing:.5 }}>Önerilen Kullanıcılar</div>
+      <div style={{ display:"flex", gap:12, overflowX:"auto", paddingBottom:4 }}>
+        {U.filter(u=>!u.follow&&u.id!==1).slice(0,5).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ minWidth:100, background:T.card, borderRadius:16, padding:"16px 12px", textAlign:"center", border:`1px solid ${T.cardBorder}`, cursor:"pointer", flexShrink:0 }}>
           <Av i={u.av} s={40} st={{ margin:"0 auto" }}/>
           <div style={{ fontSize:12, fontWeight:600, color:T.text, marginTop:8 }}>{u.name.split(" ")[0]}</div>
-          <div style={{ fontSize:10, color:T.textDim, marginTop:2 }}>@{u.un}</div>
-          <div style={{ marginTop:8, fontSize:11, fontWeight:700, color:T.accent, display:"flex", alignItems:"center", justifyContent:"center", gap:3 }}>{I.plus(T.accent)} Takip Et</div>
+          <div style={{ fontSize:10, color:T.textDim, marginTop:4 }}>@{u.un}</div>
+          <div style={{ marginTop:8, fontSize:11, fontWeight:700, color:T.accent, display:"flex", alignItems:"center", justifyContent:"center", gap:4 }}>{I.plus(T.accent)} Takip Et</div>
         </div>)}
       </div>
     </div>}
     <div style={{ padding:"0 16px" }}>
-      {feed.length>0 ? feed.map(m=><MatchCard key={m.id} match={m} onNav={onNav} mode={mode}/>) :
-        <Empty icon={I.empty()} title="Henüz kimseyi takip etmiyorsun" desc="Takip ettiğin kişilerin maçları burada görünecek" action="Keşfet'e Git" onAction={()=>setMode("explore")}/>}
+      {feed.length>0 ? feed.map(p=><PostCard key={p.id} post={p} onNav={onNav}/>) :
+        <Empty icon={I.empty()} title="Henüz kimseyi takip etmiyorsun" desc="Takip ettiğin kişilerin postları burada görünecek" action="Keşfet'e Git" onAction={()=>setMode("explore")}/>}
     </div>
   </div>;
 }
@@ -284,31 +337,32 @@ function S07({ onNav }) {
   const [q,setQ]=useState("");
   const res=q.length>0?U.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.un.includes(q.toLowerCase())):[];
   return <div style={{ padding:"0 16px 100px" }}>
-    <div style={{ padding:"12px 0", display:"flex", alignItems:"center", gap:10 }}>
+    <div style={{ padding:"12px 0", display:"flex", alignItems:"center", gap:12 }}>
       <span onClick={()=>onNav("S05")} style={{ cursor:"pointer", display:"flex" }}>{I.arrowLeft()}</span>
       <div style={{ flex:1 }}><InpField placeholder="Kullanıcı ara..." icon={I.search} value={q} onChange={e=>setQ(e.target.value)} autoFocus/></div>
     </div>
-    {q.length===0&&<div style={{ padding:"0" }}>
+    {q.length===0&&<div>
       <div style={{ fontSize:11, fontWeight:700, color:T.textMuted, marginBottom:12, textTransform:"uppercase", letterSpacing:.5 }}>Önerilen Kullanıcılar</div>
       {U.filter(u=>!u.follow&&u.id!==1).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
-        <Av i={u.av} s={42}/>
+        <Av i={u.av} s={44}/>
         <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.name}</div><div style={{ fontSize:12, color:T.textDim }}>@{u.un} · {u.matches} maç</div></div>
         <Btn small primary>Takip Et</Btn>
       </div>)}
     </div>}
     {q.length>0&&res.length===0&&<Empty icon={I.noResult()} title="Kullanıcı bulunamadı" desc={`"${q}" ile eşleşen kullanıcı yok`}/>}
     {res.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
-      <Av i={u.av} s={42}/>
+      <Av i={u.av} s={44}/>
       <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.name}</div><div style={{ fontSize:12, color:T.textDim }}>@{u.un} · {u.matches} maç</div></div>
       <Btn small primary>{u.follow?"✓ Takip":"Takip Et"}</Btn>
     </div>)}
   </div>;
 }
 
-// S42: Comments Page
-function S42({ onNav, matchId }) {
-  const m=M.find(x=>x.id===matchId)||M[0];
-  const host=uf(m.host);
+// S42: Comments Page (post-based)
+function S42({ onNav, postId }) {
+  const p=P.find(x=>x.id===postId)||P[0];
+  const owner=uf(p.userId);
+  const m=mf(p.matchId);
   return <div style={{ paddingBottom:80 }}>
     {/* Top bar */}
     <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}22` }}>
@@ -316,46 +370,47 @@ function S42({ onNav, matchId }) {
       <span style={{ fontSize:16, fontWeight:700, color:T.text, fontFamily:FONT_H }}>Yorumlar</span>
     </div>
 
-    {/* Match summary */}
-    <div style={{ padding:"14px 16px", borderBottom:`1px solid ${T.cardBorder}44` }}>
-      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
-        <Av i={host.av} s={32} onClick={()=>onNav("S16",host.id)}/>
-        <div><div style={{ fontWeight:600, fontSize:13, color:T.text }}>{host.un}</div><div style={{ fontSize:11, color:T.textMuted }}>{m.date}, {m.time}</div></div>
+    {/* Post summary */}
+    <div style={{ padding:"16px", borderBottom:`1px solid ${T.cardBorder}44` }}>
+      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
+        <Av i={owner.av} s={32} onClick={()=>onNav("S16",owner.id)}/>
+        <div><div style={{ fontWeight:600, fontSize:13, color:T.text }}>{owner.name}</div><div style={{ fontSize:11, color:T.textMuted }}>@{owner.un} · {p.date}</div></div>
       </div>
-      <div style={{ fontWeight:700, fontSize:15, color:T.text, marginBottom:6, fontFamily:FONT_H }}>{m.title}</div>
-      {m.sc&&<div style={{ fontSize:22, fontWeight:900, fontFamily:FONT_H, marginBottom:8 }}>
+      {p.caption && <div style={{ fontSize:14, color:T.textDim, marginBottom:8, lineHeight:1.4 }}>{p.caption}</div>}
+      {m && <div style={{ fontWeight:700, fontSize:15, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>}
+      {m?.sc&&<div style={{ fontSize:24, fontWeight:900, fontFamily:FONT_H, marginBottom:8 }}>
         <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
-        <span style={{ color:T.textMuted, margin:"0 6px", fontSize:14 }}>–</span>
+        <span style={{ color:T.textMuted, margin:"0 8px", fontSize:16 }}>–</span>
         <span style={{ color:m.sc[1]>m.sc[0]?T.accent:T.text }}>{m.sc[1]}</span>
       </div>}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <span style={{ display:"flex" }}>{I.heart()}</span>
-          <StackAv ids={(m.likers||[]).slice(0,3)} s={18}/>
-          <span onClick={()=>onNav("S43",m.id)} style={{ fontSize:13, color:T.text, fontWeight:600, cursor:"pointer" }}>{m.likes} beğeni</span>
+          <StackAv ids={(p.likers||[]).slice(0,3)} s={20}/>
+          <span onClick={()=>onNav("S43",p.id)} style={{ fontSize:13, color:T.text, fontWeight:600, cursor:"pointer" }}>{p.likes} beğeni</span>
         </div>
-        <span style={{ fontSize:13, color:T.textDim }}>{m.coms} yorum</span>
+        <span style={{ fontSize:13, color:T.textDim }}>{p.coms} yorum</span>
       </div>
     </div>
 
     {/* All comments */}
     <div style={{ padding:"12px 16px" }}>
-      {(m.comments||[]).map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:10, marginBottom:16, alignItems:"flex-start" }}>
+      {(p.comments||[]).map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:12, marginBottom:16, alignItems:"flex-start" }}>
         <Av i={cu.av} s={32} onClick={()=>onNav("S16",cu.id)}/>
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span onClick={()=>onNav("S16",cu.id)} style={{ fontWeight:600, fontSize:14, color:T.text, cursor:"pointer" }}>{cu.un}</span>
             <span style={{ fontSize:12, color:T.textMuted }}>{c.t}</span>
           </div>
-          <div style={{ fontSize:14, color:T.textDim, marginTop:3, lineHeight:1.4 }}>{c.text}</div>
+          <div style={{ fontSize:14, color:T.textDim, marginTop:4, lineHeight:1.4 }}>{c.text}</div>
         </div>
       </div>;})}
     </div>
 
     {/* Input bar — fixed bottom */}
-    <div style={{ position:"fixed", bottom:0, left:0, right:0, maxWidth:430, margin:"0 auto", background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, padding:"10px 16px", display:"flex", alignItems:"center", gap:10, zIndex:90 }}>
+    <div style={{ position:"fixed", bottom:0, left:0, right:0, maxWidth:430, margin:"0 auto", background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, padding:"12px 16px", display:"flex", alignItems:"center", gap:12, zIndex:90 }}>
       <Av i="BY" s={28}/>
-      <div style={{ flex:1, background:T.card, borderRadius:20, padding:"8px 14px", display:"flex", alignItems:"center" }}>
+      <div style={{ flex:1, background:T.card, borderRadius:20, padding:"8px 16px", display:"flex", alignItems:"center" }}>
         <input placeholder="Bir yorum ekle..." style={{ background:"none", border:"none", color:T.text, fontSize:14, width:"100%", outline:"none" }}/>
       </div>
       <span style={{ cursor:"pointer", display:"flex" }}>{I.send()}</span>
@@ -363,11 +418,11 @@ function S42({ onNav, matchId }) {
   </div>;
 }
 
-// S43: Likes Page
-function S43({ onNav, matchId }) {
-  const m=M.find(x=>x.id===matchId)||M[0];
+// S43: Likes Page (post-based)
+function S43({ onNav, postId }) {
+  const p=P.find(x=>x.id===postId)||P[0];
   const [q,setQ]=useState("");
-  const likers=(m.likers||[]).map(uid=>uf(uid)).filter(Boolean);
+  const likers=(p.likers||[]).map(uid=>uf(uid)).filter(Boolean);
   const filtered=q?likers.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.un.includes(q.toLowerCase())):likers;
 
   return <div style={{ paddingBottom:20 }}>
@@ -406,8 +461,8 @@ export default function SporWaveFeed() {
     switch(cur){
       case "S05": return <S05 onNav={nav} mode={mode} setMode={setMode} dropOpen={drop} setDropOpen={setDrop}/>;
       case "S07": return <S07 onNav={nav}/>;
-      case "S42": return <S42 onNav={nav} matchId={curId}/>;
-      case "S43": return <S43 onNav={nav} matchId={curId}/>;
+      case "S42": return <S42 onNav={nav} postId={curId}/>;
+      case "S43": return <S43 onNav={nav} postId={curId}/>;
       default: return <S05 onNav={nav} mode={mode} setMode={setMode} dropOpen={drop} setDropOpen={setDrop}/>;
     }
   };
@@ -418,11 +473,11 @@ export default function SporWaveFeed() {
 
   return <div style={{ maxWidth:430, margin:"0 auto", minHeight:"100vh", background:T.bg, color:T.text, fontFamily:FONT_B, position:"relative", boxShadow:"0 0 60px rgba(0,0,0,.5)" }}>
     {/* Dev ribbon */}
-    <div style={{ position:"sticky", top:0, zIndex:200, background:T.bgAlt, borderBottom:`1px solid ${T.cardBorder}`, padding:"6px 8px", display:"flex", gap:4 }}>
-      {[{p:"S05",l:"Feed"},{p:"S07",l:"Arama"},{p:"S42",l:"Yorumlar",id:1},{p:"S43",l:"Beğeniler",id:1}].map(n=><span key={n.p} onClick={()=>nav(n.p,n.id)} style={{ padding:"4px 10px", borderRadius:6, fontSize:11, fontWeight:600, background:cur===n.p?T.accent:`${T.textDim}22`, color:cur===n.p?T.bg:T.textDim, cursor:"pointer" }}>{n.l}</span>)}
+    <div style={{ position:"sticky", top:0, zIndex:200, background:T.bgAlt, borderBottom:`1px solid ${T.cardBorder}`, padding:"8px 8px", display:"flex", gap:4 }}>
+      {[{p:"S05",l:"Feed"},{p:"S07",l:"Arama"},{p:"S42",l:"Yorumlar",id:101},{p:"S43",l:"Beğeniler",id:101}].map(n=><span key={n.p} onClick={()=>nav(n.p,n.id)} style={{ padding:"4px 12px", borderRadius:8, fontSize:11, fontWeight:600, background:cur===n.p?T.accent:`${T.textDim}22`, color:cur===n.p?T.bg:T.textDim, cursor:"pointer" }}>{n.l}</span>)}
     </div>
     {showNav&&<TopNav mode={mode} setMode={setMode} dropOpen={drop} setDropOpen={setDrop} showActions={showActions} onNav={nav}/>}
-    <div style={{ opacity:fade?1:0, transform:fade?"translateY(0)":"translateY(6px)", transition:"all .12s ease" }}>{pg()}</div>
+    <div style={{ opacity:fade?1:0, transform:fade?"translateY(0)":"translateY(8px)", transition:"all .12s ease" }}>{pg()}</div>
     {showTabs&&<TabBar active="S05" onNav={nav}/>}
   </div>;
 }
