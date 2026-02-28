@@ -8,5 +8,6 @@ export default defineConfig({
     alias: {
       "@modules": path.resolve(__dirname, "../design_modules"),
     },
+    dedupe: ["react", "react-dom"],
   },
 });
