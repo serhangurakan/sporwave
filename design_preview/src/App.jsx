@@ -20,6 +20,7 @@ const labels = {
   "02_feed": "Feed & Search",
   "03_matches": "Matches & Sports",
   "04_match_detail": "Match Detail",
+  "05_profile": "Profile",
 };
 
 const T = {
