@@ -4,7 +4,7 @@
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
 > Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
-> Son güncelleme: 1 Mart 2026 (oturum 3)
+> Son güncelleme: 1 Mart 2026 (oturum 4)
 
 ---
 
@@ -482,32 +482,34 @@ Ana Sayfa tab'ında:
 - Back butonu
 
 #### S12: Planlanan Maç Detay (Henüz oynanmamış)
-- Üst bölüm: Spor ikonu + Maç başlığı
+- **Header:** ← Maçlar (geri + yazı birlikte, S08'e döner) · "Maç Detay" başlık ortada · ⋮ menü sağda
+- Üst bölüm: Maç başlığı (ikon yok)
 - Organizatör: avatar + isim (tıklanınca profil)
 - **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye tercihi
 - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
-- **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri) — maçın S08'de herkese açık listede görünüp görünmediğini gösterir
+- **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
 - **Kontenjan gösterimi:** "7/10 oyuncu" (progress bar ile)
-- **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (turuncu-sarı) + otomatik silinmeye kalan süre: "Kalan süre: Xsa Xdk"
-- **Katılımcı listesi:**
-  - Her satır: avatar + isim + deneyim seviyesi + katılım oranı (%) → profil tıklanabilir
-  - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar" (onay dialog'u ile, kısıtlamasız — host istediğini çıkarabilir)
-- **CTA Butonları (organizatör değilsen, maç katılımcısıysan):**
-  - "🎮 Maçı Başlat" birincil → S10 Canlı Skor (maç saati gelince aktif olur)
-  - "💬 Maç Sohbeti" → S35 Maç Sohbeti
-  - **"👑 Host Devral"** butonu — host olmak için oylama başlatır (detaylar aşağıda)
-- **CTA Butonları (henüz katılmamışsan):**
-  - "Katıl (X yer kaldı)" birincil → S14 Deneyim Seviyesi Seçimi
-  - "💬 Maç Sohbeti" → S35 Maç Sohbeti
-- **CTA Butonları (organizatörsen):**
-  - "Başvuruları Gör" → S13 (onay modundaysa)
-  - "🎮 Maçı Başlat" birincil (maç saati gelince aktif olur, **maç saatinden sonra da aktif kalır** — her iki takımda en az 1 oyuncu varsa başlatılabilir) → S10 Canlı Skor (maç bilgileri otomatik doldurulur)
-  - "Maçı Düzenle" (tarih/saat/konum değiştir, reschedule — tüm katılımcılara bildirim gider. **Tarihi geçmiş başlamamış maçın tarihi gelecek bir tarihe güncellenirse** maç tekrar S08'de herkese görünür olur)
-  - "Oyuncu Davet Et" → S41 Oyuncu Davet (arkadaş listesi)
-  - "Eksik Oyuncu Bul" → maçı S08'de açık maç olarak yayınla (kontenjan dolmamışsa)
-- **Paylaş butonu:** Deep link kopyala + share
-- ⋮ Menü: Raporla / Engelle
-- Back butonu
+- **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (turuncu-sarı) + otomatik silinmeye kalan süre
+- **Takım görünümü:**
+  - Takım A (accent) | Takım B (orange) — her iki kolon 3'er grid, satır satır hizalı
+  - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
+  - Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (fmt'e göre — 6v6 ise 6 slot her takımda)
+  - **Katılımcılar** (takım seçmemiş oyuncular): takım grid'inin altında section label + liste görünümü (avatar + isim + seviye + katılım %)
+  - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar"
+- **CTA Butonları (katılımcıysan) — sırayla:**
+  1. Paylaş
+  2. Host Devral
+  3. Maç Sohbeti
+  4. ▶ Maçı Başlat (primary, en altta)
+- **CTA Butonları (katılmamışsan) — sırayla:**
+  1. Paylaş
+  2. Maç Sohbeti
+  3. Katıl (X yer kaldı) (primary, en altta)
+- **CTA Butonları (organizatörsen) — sırayla:**
+  1. Paylaş
+  2. Başvuruları Gör (onay modundaysa)
+  3. Oyuncu Davet Et + Düzenle (yan yana)
+  4. ▶ Maçı Başlat (primary, en altta)
 
 **Host Devralma Mekanizması:**
 - Maçın katılımcıları (host hariç) "👑 Host Devral" butonuna basarak host olmak için oylama başlatabilir

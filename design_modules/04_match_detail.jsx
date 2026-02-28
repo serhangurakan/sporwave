@@ -57,6 +57,9 @@ const PLANNED_MATCH={
   id:101,title:"Cumartesi Akşam Maçı",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",
   host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",
   players:[2,1,4,3,7,8,5],
+  tA:[2,1,4], // Takım A (atanmış)
+  tB:[3,7],   // Takım B (atanmış)
+  // players içinde tA+tB dışındakiler → takımsız (unassigned)
   hostTakeover:null, // or {requester:3,votesYes:2,votesNo:1,total:7,deadline:"23sa"}
 };
 
@@ -103,6 +106,7 @@ const I={
   download:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
   instagram:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.purple} strokeWidth="2" strokeLinecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill={c||T.purple} stroke="none"/></svg>,
   gamepad:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.accent} strokeWidth="2" strokeLinecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="12" y1="6" x2="12" y2="18"/></svg>,
+  play:c=><svg width="16" height="16" viewBox="0 0 24 24" fill={c||T.bg} style={{marginLeft:1}}><polygon points="5,3 19,12 5,21"/></svg>,
   vote:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.accent} strokeWidth="2" strokeLinecap="round"><path d="M14 9V5a3 3 0 00-6 0v4"/><rect x="2" y="9" width="20" height="13" rx="2"/><path d="M12 17v-4"/></svg>,
 };
 
@@ -269,8 +273,8 @@ function S12({onNav}){
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <span onClick={()=>onNav("S08")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
-        <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>Maç Detay</span>
+        <div onClick={()=>onNav("S08")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{I.arrowLeft()}<span style={{fontSize:14,fontWeight:600,color:T.textDim}}>Maçlar</span></div>
+        <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,flex:1,textAlign:"center"}}>Maç Detay</span>
         <span style={{cursor:"pointer",display:"flex",padding:4}}>{I.dots(T.textDim)}</span>
       </div>
     </div>
@@ -278,7 +282,6 @@ function S12({onNav}){
     {/* Title */}
     <div style={{padding:"0 16px 16px"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-        {I.football(T.accent)}
         <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>{m.title}</span>
       </div>
 
@@ -337,49 +340,110 @@ function S12({onNav}){
       </div>}
     </div>
 
-    {/* Player list */}
-    <div style={{padding:"0 16px",marginBottom:16}}>
-      <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:10,textTransform:"uppercase",letterSpacing:.5}}>Katılımcılar ({m.joined})</div>
-      {m.players.map(uid=>{
+    {/* Teams */}
+    {(()=>{
+      const teamSize=parseInt(m.fmt); // "6v6" → 6
+      const tA=m.tA||[];
+      const tB=m.tB||[];
+      const assigned=new Set([...tA,...tB]);
+      const unassigned=m.players.filter(uid=>!assigned.has(uid));
+      const emptyA=teamSize-tA.length;
+      const emptyB=teamSize-tB.length;
+
+      const BADGE_H=18; // host badge için sabit alan yüksekliği
+      const PlayerCell=({uid,teamColor})=>{
         const u=uf(uid);if(!u)return null;
-        const lv=LEVELS[u.level];
-        return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-          <Av i={u.av} s={36} onClick={()=>onNav("S16",uid)}/>
-          <div style={{flex:1}} onClick={()=>onNav("S16",uid)}>
-            <div style={{display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}>
-              <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
-              {uid===m.host&&<Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>}
-            </div>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
-              {lv&&<span style={{fontSize:11,color:lv.c,fontWeight:600}}>{lv.l}</span>}
-              <span style={{fontSize:11,color:T.textMuted}}>%{u.att} katılım</span>
-            </div>
+        const isHostUser=uid===m.host;
+        return <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"4px 4px 8px"}}>
+          {/* Sabit badge alanı — hep aynı yükseklikte */}
+          <div style={{height:BADGE_H,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+            {isHostUser&&<Badge c={T.gold} st={{fontSize:8,padding:"1px 5px",lineHeight:1.2}}>{I.crown(T.gold)}</Badge>}
           </div>
-          {isHost&&uid!==1&&<span style={{cursor:"pointer",display:"flex",padding:4}}>{I.dots(T.textMuted)}</span>}
+          <Av i={u.av} s={36} c={teamColor} onClick={()=>onNav("S16",uid)}/>
+          <span style={{fontSize:10,fontWeight:600,color:T.text,textAlign:"center",maxWidth:56,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name.split(" ")[0]}</span>
         </div>;
-      })}
-    </div>
+      };
+
+      const EmptySlot=()=><div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"4px 4px 8px"}}>
+        <div style={{height:BADGE_H}}/>
+        <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px dashed ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <span style={{fontSize:16,color:T.textMuted,lineHeight:1}}>+</span>
+        </div>
+        <span style={{fontSize:10,color:T.textMuted}}>Boş</span>
+      </div>;
+
+      // Her iki takımın slotlarını satır satır yan yana hizala
+      const rowCount=Math.ceil(Math.max(tA.length+emptyA,tB.length+emptyB)/3);
+      const slotsA=[...tA.map(uid=>({uid,empty:false})),...Array.from({length:emptyA},(_,i)=>({uid:null,empty:true,k:`ea${i}`}))];
+      const slotsB=[...tB.map(uid=>({uid,empty:false})),...Array.from({length:emptyB},(_,i)=>({uid:null,empty:true,k:`eb${i}`}))];
+
+      return <div style={{padding:"0 16px",marginBottom:16}}>
+        {/* Header row */}
+        <div style={{display:"flex",marginBottom:8}}>
+          <div style={{flex:3,fontSize:11,fontWeight:700,color:T.accent,textAlign:"center",textTransform:"uppercase",letterSpacing:.5}}>Takım A</div>
+          <div style={{width:17}}/>
+          <div style={{flex:3,fontSize:11,fontWeight:700,color:T.orange,textAlign:"center",textTransform:"uppercase",letterSpacing:.5}}>Takım B</div>
+        </div>
+        {/* Team grid — satır satır A3 | divider | B3 */}
+        {Array.from({length:rowCount}).map((_,row)=>{
+          const rowA=slotsA.slice(row*3,row*3+3);
+          const rowB=slotsB.slice(row*3,row*3+3);
+          return <div key={row} style={{display:"flex",alignItems:"flex-start",marginBottom:4}}>
+            <div style={{flex:3,display:"grid",gridTemplateColumns:"repeat(3,1fr)"}}>
+              {rowA.map((s,i)=>s.empty?<EmptySlot key={s.k||i}/>:<PlayerCell key={s.uid} uid={s.uid} teamColor={T.accent}/>)}
+            </div>
+            <div style={{width:1,background:T.cardBorder,margin:"0 8px",alignSelf:"stretch"}}/>
+            <div style={{flex:3,display:"grid",gridTemplateColumns:"repeat(3,1fr)"}}>
+              {rowB.map((s,i)=>s.empty?<EmptySlot key={s.k||i}/>:<PlayerCell key={s.uid} uid={s.uid} teamColor={T.orange}/>)}
+            </div>
+          </div>;
+        })}
+
+        {/* Unassigned players */}
+        {unassigned.length>0&&<>
+          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginTop:16,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Katılımcılar ({unassigned.length})</div>
+          {unassigned.map(uid=>{
+            const u=uf(uid);if(!u)return null;
+            const lv=LEVELS[u.level];
+            return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+              <Av i={u.av} s={36} onClick={()=>onNav("S16",uid)}/>
+              <div style={{flex:1}} onClick={()=>onNav("S16",uid)}>
+                <div style={{display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}>
+                  <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
+                  {uid===m.host&&<Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>}
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
+                  {lv&&<span style={{fontSize:11,color:lv.c,fontWeight:600}}>{lv.l}</span>}
+                  <span style={{fontSize:11,color:T.textMuted}}>%{u.att} katılım</span>
+                </div>
+              </div>
+              {isHost&&uid!==1&&<span style={{cursor:"pointer",display:"flex",padding:4}}>{I.dots(T.textMuted)}</span>}
+            </div>;
+          })}
+        </>}
+      </div>;
+    })()}
 
     {/* CTA Buttons */}
     <div style={{padding:"0 16px"}}>
       {isHost?<>
+        <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         {m.mode==="approval"&&<Btn full onClick={()=>onNav("S13")} st={{marginBottom:8}}>Başvuruları Gör</Btn>}
-        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.gamepad(T.bg)} Maçı Başlat</Btn>
         <div style={{display:"flex",gap:8,marginBottom:8}}>
           <Btn full onClick={()=>onNav("S41")} st={{flex:1}}>Oyuncu Davet Et</Btn>
           <Btn full st={{flex:1}}>{I.edit(T.text)} Düzenle</Btn>
         </div>
+        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
       </>:isPlayer?<>
-        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.gamepad(T.bg)} Maçı Başlat</Btn>
-        <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
+        <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         <Btn full st={{marginBottom:8}}>{I.crown(T.gold)} Host Devral</Btn>
-      </>:<>
-        <Btn full primary onClick={()=>onNav("S14")} st={{marginBottom:8}}>Katıl ({remaining} yer kaldı)</Btn>
         <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
+        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
+      </>:<>
+        <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
+        <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
+        <Btn full primary onClick={()=>onNav("S14")} st={{marginBottom:8}}>Katıl ({remaining} yer kaldı)</Btn>
       </>}
-
-      {/* Share */}
-      <Btn full st={{marginBottom:0}}>{I.share(T.text)} Paylaş</Btn>
     </div>
   </div>;
 }
