@@ -323,29 +323,33 @@ Ana Sayfa tab'ında:
 - Tıklanınca → S40 Puanlama & Attendance sayfası
 - Puanlama yapıldıktan sonra kart buradan kalkar
 
-**Devam eden maç banner'ı (varsa):**
-- "⏸️ Devam eden maçın var — Devam Et" banner'ı (accent renk)
-- Tıklanınca → S10 Adım 3 (kaldığı yerden devam)
+**Devam eden maç widget'ı (varsa — footer üstünde):**
+- Footer'ın hemen üstüne sabitlenmiş kompakt widget
+- İçerik: ↑ yukarı ok (sol) | "Aktif Maç" | güncel süre | 🗑️ kırmızı çöp kutusu (sağ)
+- Yukarı oka tıklanırsa → S10 Canlı Skor sayfasına geri dönülür
+- Çöp kutusuna tıklanırsa → "Bu maçı silmek istediğinize emin misiniz?" popup (Maçı Sil / İptal)
+- Bu widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
+- Maç detay, ayarlar vb. sayfalarda görünmez
 
 **Katıldığım yaklaşan maçlar (vurgulu bölüm):**
 - Farklı arka plan rengi veya sol kenarda accent renk border ile ayrışır
-- Her kart üzerinde "Katılıyorsun ✓" badge'i
 - Tarih sırasına göre (en yakın olan en üstte)
-- **Her kart:**
+- **Her kart (katılım bilgisi EN ÜSTTE):**
+  - "Katılıyorsun ✓" badge (accent renk, kartın en üstünde)
   - Spor ikonu + Maç başlığı (bold)
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
   - Kontenjan: "7/10 oyuncu" (progress bar)
   - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
-  - "Katılıyorsun ✓" badge (accent renk)
   - Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
   - Tıklanınca → S12 Planlanan Maç Detay
 
 **Açık maçlar (altında, standart liste):**
-- **Arkadaşlarının katıldığı maçlar önce** — her kartta "🤝 [isim] katılıyor" etiketi
+- **Arkadaşlarının katıldığı maçlar önce**
 - Ardından diğer açık maçlar (tarihe göre sıralı)
 - **Tarihi geçmiş başlamamış maçlar bu listede gösterilmez** — sadece katılımcılara görünür
-- **Her kart:**
+- **Her kart (katılım bilgisi EN ÜSTTE):**
+  - Arkadaş katılıyorsa: "🤝 Ali katılıyor" etiketi (kartın en üstünde)
   - Spor ikonu + Maç başlığı (bold)
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
@@ -353,7 +357,6 @@ Ana Sayfa tab'ında:
   - Deneyim seviyesi tercihi badge'i (varsa: "Herkes" / "Orta+")
   - Kabul modu badge'i (varsa: "Onay gerekli")
   - Görünürlük badge'i: 👁️ (küçük, sağ üstte)
-  - Arkadaş katılıyorsa: "🤝 Ali katılıyor" etiketi
   - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
   - Tıklanınca → S12 Planlanan Maç Detay
 
@@ -389,61 +392,71 @@ Ana Sayfa tab'ında:
 
 **Maç başlatma koşulu:** Her iki takımda en az 1 oyuncu (uygulama kullanıcısı veya misafir) kayıtlı olmalı. Planlanan maçlarda (S31) maç saatinden sonra da başlatılabilir — 24 saat boyunca başlatma imkanı devam eder.
 
-**Adım 1 — Maç Kurulumu:**
+**Sayfa yapısı (4 ayrı sayfa — adım/progress bar YOK, geri butonu YOK):**
+
+**Maç Ayarları (bağımsız sayfa — S10_SETUP):**
+- Geri butonu yok
 - Maç formatı: 5v5 / 6v6 / 7v7 / Özel
 - Konum: Otomatik GPS + manuel düzenleme
-- "Başlat" butonu
+- "Devam" butonu → Takım Kurulumu sayfasına geçiş
 
-**Adım 2 — Takım Kurulumu (OPSİYONEL — atlanabilir):**
+**Takım Kurulumu (bağımsız sayfa — S10_TEAMS):**
+- Geri butonu yok, "Atla" seçeneği yok
 - Takım 1 vs Takım 2
 - Her takıma oyuncu ekle:
   - **Uygulama kullanıcısı:** İsim/@kullanıcıadı ile ara, seç
   - **Misafir Oyuncu:** "Misafir Ekle" butonu → sadece isim girişi (otomatik doldurma yok)
 - Takım rengi seçimi (opsiyonel)
 - **Drag & drop ile takım değişikliği:** Oyuncular iki takım arasında sürükle-bırak ile taşınabilir. Mobilde uzun basma (long press) ile drag başlar. İki kolon (Takım 1 | Takım 2) formatında.
-- **"Atla — Sonra eklerim"** linki (takım kurmadan skor takibine geç)
-- "Devam" butonu
+- "Devam" butonu → Canlı Skor sayfasına geçiş
 
-**Adım 3 — Canlı Skor Ekranı:**
+**Canlı Skor Sayfası (ayrı sayfa):**
+- **Sol üstte ↓ aşağı ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Devam eden maçın var" widget'ına dönüşür (footer üstünde)
+- **Takımlar & Maç Ayarları butonları:** Üstte 2 buton — "Takımlar" (takım kurulumuna döner) ve "Maç Ayarları" (maç kurulumuna döner)
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
 - **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)
 - Her takım için **"+ Gol"** butonu (büyük, kolay tıklanabilir, takım rengiyle)
-- **Gol eklenince:**
-  - "Kim attı?" popup → oyuncu listesinden seç / "Belirtme" seçeneği
-  - "Asist?" popup → oyuncu listesinden seç / "Yok" / "Atla"
-  - **5 saniyelik "Geri Al" toast:** "⚽ Gol eklendi — Geri Al" (tıklanırsa gol iptal)
-- **Gol geçmişi listesi** (kronolojik): "12' ⚽ Berk (Asist: Ali)" formatında
+- **Gol eklenince — Bottom Drawer akışı:**
+  - Drawer açılır → golü atan takımın oyuncu listesi gösterilir
+  - Başlık: "Golü kim attı?" + altta "Atla" seçeneği
+  - Oyuncu seçilirse → ikinci drawer: "Asisti kim yaptı?" + aynı format + "Atla" seçeneği
+  - "Golü kim attı?" atlanırsa → asist sorulmaz
+  - Golcü/asist bilgisi girilirse → gol geçmişinde takım ismi yerine oyuncu isimleri gösterilir
+  - **5 saniyelik "Geri Al" toast:** "Gol eklendi — Geri Al" (tıklanırsa gol iptal)
+- **Gol geçmişi listesi** (kronolojik): "12' Berk (Asist: Ali)" formatında
   - Her gol satırında **sola kaydır (swipe) → "Sil"** aksiyonu
 - **Otomatik kaydetme:** Her gol ekleme/silme anında state local storage + backend'e kaydedilir
-- **Çoklu kullanıcı skor güncelleme:** Maçtaki **tüm katılımcılar** gol ekleyebilir/silebilir — sadece host değil. Skor real-time sync olur (backend üzerinden). Host'un telefonu ölse bile başka biri devam edebilir.
+- **Çoklu kullanıcı skor güncelleme:** Maçtaki **tüm katılımcılar** gol ekleyebilir/silebilir — sadece host değil. Skor real-time sync olur (backend üzerinden).
 - **Skor kuralları:**
   - **Last write wins** — çakışma durumunda son yazılan geçerli (MVP basitliği)
   - **Goal rate limit:** Aynı kullanıcı saniyede 1'den fazla gol eventi oluşturamaz (≥1 saniye aralık zorunlu)
   - Her gol bir event log entry olarak kaydedilir — event log final skoru belirler
 - **"Maçı Bitir"** butonu — **tüm katılımcılarda aktif** (onay dialog'u ile: "Maçı bitirmek istediğine emin misin?")
 
-**Geri tuşu davranışı (Adım 3'te):**
-- Geri tuşuna basınca "Maçı duraklatmak mı istiyorsun?" dialog'u çıkar:
-  - **"Duraklat"** → maç duraklatılmış olarak kalır, S08'e dönülür, S08'in en üstünde "⏸️ Devam eden maçın var — Devam Et" banner'ı görünür
-  - **"Maçı İptal Et"** → onay dialog'u → maç silinir
-  - **"Geri Dön"** → dialog kapanır, maça devam
+**Aşağı ok (minimize) davranışı:**
+- Canlı skor sayfasında sol üstte ↓ aşağı ok ikonuna basınca → maç minimize edilir
+- "Devam eden maçın var" widget'ı footer'ın üstüne sabitlenir
+- Widget: ↑ yukarı ok (sol) | "Aktif Maç" | güncel süre | kırmızı çöp kutusu (sağ)
+- Yukarı ok → canlı skor sayfasına geri dön
+- Çöp kutusu → "Bu maçı silmek istediğinize emin misiniz?" popup (Maçı Sil / İptal)
+- Widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
 
 **App kapanması / crash koruması:**
-- Uygulama tekrar açıldığında: "Devam eden maçın var — Devam Et?" banner'ı (S08'de)
+- Uygulama tekrar açıldığında: "Devam eden maçın var" widget'ı görünür
 - Kronometer duraklatılmış olarak bekler, kullanıcı devam ettiğinde kaldığı yerden devam (gerçek zamanlı saymaz arkaplanda)
-- 24 saatten fazla geçtiyse: "Bu maçı tamamlamak ister misin?" → Evet: maç özeti ekranına git / Hayır: maçı sil
+- 24 saatten fazla geçtiyse: "Bu maçı tamamlamak ister misin?" → Evet: maç sonu sayfasına git / Hayır: maçı sil
 
-**Adım 4 — Maç Özeti & Kaydet (düzenleme ekranı — SON MAÇ VERİSİ EDİT NOKTASI):**
+**Maç Sonu — Kaydet & Paylaş (SON MAÇ VERİSİ EDİT NOKTASI):**
 - Skor özeti: Takım 1 [X] — [Y] Takım 2
 - Maç süresi
-- **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Adım 2'de atlandıysa burada tamamlanmalı.
-- **Drag & drop ile takım değişikliği:** Adım 2 ile aynı — oyuncular iki takım arasında sürükle-bırak ile taşınabilir.
-- **Gol listesi (düzenlenebilir):**
-  - Her gol satırı tıklanabilir → "Gol atan: [değiştir]" + "Asist: [değiştir]"
-  - Gol silme butonu (çarpı ikonu)
+- **Gol zaman çizelgesi (düzenlenebilir):**
+  - Her gol satırında: dakika, golcü ismi (tıkla → değiştir), asist ismi (tıkla → değiştir), sil butonu
   - "Gol Ekle" butonu (maç sırasında kaçırdıysan buradan da ekleyebilirsin)
+- **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Takım kurulumunda atlandıysa burada tamamlanmalı.
+- **Drag & drop ile takım değişikliği:** Takım kurulumu sayfası ile aynı.
 - **Maç Başlığı** input (opsiyonel, placeholder: "Kadıköy Halısaha Maçı") — maç verisinin başlığı, tüm postların varsayılan başlığı olur
 - **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → S30 Shareable kart gösterilir
+- **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
 - **Not:** MVP oylama ve attendance bildirimi bu sayfada yapılmaz — maç kaydedildikten sonra S40'ta 24 saat boyunca yapılır.
 
@@ -476,24 +489,19 @@ Ana Sayfa tab'ında:
   - Her satır: avatar + isim + deneyim seviyesi + katılım oranı (%) → profil tıklanabilir
   - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar" (onay dialog'u ile, kısıtlamasız — host istediğini çıkarabilir)
 - **CTA Butonları (organizatör değilsen, maç katılımcısıysan):**
+  - "🎮 Maçı Başlat" birincil → S10 Canlı Skor (maç saati gelince aktif olur)
   - "💬 Maç Sohbeti" → S35 Maç Sohbeti
-  - "💬 Mesaj Gönder" ikincil → S18 Sohbet (host'a DM)
-  - "📱 WhatsApp ile Mesaj" ikincil → WhatsApp'a yönlendir
-  - **"👑 Host Devral"** butonu (ikincil) — host olmak için oylama başlatır (detaylar aşağıda)
+  - **"👑 Host Devral"** butonu — host olmak için oylama başlatır (detaylar aşağıda)
 - **CTA Butonları (henüz katılmamışsan):**
   - "Katıl (X yer kaldı)" birincil → S14 Deneyim Seviyesi Seçimi
   - "💬 Maç Sohbeti" → S35 Maç Sohbeti
-  - "💬 Mesaj Gönder" ikincil → S18 Sohbet (host'a DM)
-  - "📱 WhatsApp ile Mesaj" ikincil → WhatsApp'a yönlendir
 - **CTA Butonları (organizatörsen):**
   - "Başvuruları Gör" → S13 (onay modundaysa)
+  - "🎮 Maçı Başlat" birincil (maç saati gelince aktif olur, **maç saatinden sonra da aktif kalır** — her iki takımda en az 1 oyuncu varsa başlatılabilir) → S10 Canlı Skor (maç bilgileri otomatik doldurulur)
   - "Maçı Düzenle" (tarih/saat/konum değiştir, reschedule — tüm katılımcılara bildirim gider. **Tarihi geçmiş başlamamış maçın tarihi gelecek bir tarihe güncellenirse** maç tekrar S08'de herkese görünür olur)
   - "Oyuncu Davet Et" → S41 Oyuncu Davet (arkadaş listesi)
   - "Eksik Oyuncu Bul" → maçı S08'de açık maç olarak yayınla (kontenjan dolmamışsa)
-  - "🎮 Maçı Başlat" (maç saati gelince aktif olur, **maç saatinden sonra da aktif kalır** — her iki takımda en az 1 oyuncu varsa başlatılabilir) → S10 Adım 3'e geçiş (maç bilgileri otomatik doldurulur)
-- **💬 Maç Sohbeti butonu:** Maçın grup sohbetine git → S35
-- **Paylaş butonu:** Deep link kopyala + WhatsApp / Instagram Stories share
-- **📋 Davet Linkini Kopyala** butonu
+- **Paylaş butonu:** Deep link kopyala + share
 - ⋮ Menü: Raporla / Engelle
 - Back butonu
 

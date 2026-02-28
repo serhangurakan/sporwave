@@ -97,10 +97,7 @@ function S08({onNav}){
       </div>)}
     </div>}
 
-    {/* Continue match banner */}
-    <div style={{margin:"0 16px 12px",background:`${T.accent}12`,border:`1.5px solid ${T.accent}33`,borderRadius:14,padding:"12px 16px",cursor:"pointer"}} onClick={()=>onNav("S10")}>
-      <div style={{fontSize:13,fontWeight:700,color:T.accent}}>⏸️ Devam eden maçın var — Devam Et</div>
-    </div>
+    {/* Continue match banner — now handled by ActiveMatchWidget in MAIN */}
 
     {/* My upcoming matches */}
     {myMatches.length>0&&<div style={{padding:"0 16px"}}>
@@ -121,6 +118,8 @@ function S08({onNav}){
 function MatchListCard({m,onNav,isMine}){
   const host=uf(m.host);
   return <div onClick={()=>onNav("S12",m.id)} style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:"14px 16px",marginBottom:10,cursor:"pointer",borderLeft:isMine?`3px solid ${T.accent}`:"none"}}>
+    {isMine&&<div style={{marginBottom:8}}><Badge c={T.accent}>{I.check()} Katılıyorsun</Badge></div>}
+    {m.friendJoined&&!isMine&&<div style={{fontSize:11,color:T.accent,marginBottom:8,fontWeight:600}}>🤝 {m.friendJoined} katılıyor</div>}
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
       <div style={{flex:1}}>
         <div style={{fontWeight:700,fontSize:14,color:T.text,marginBottom:4,fontFamily:FH}}>{m.title}</div>
@@ -143,8 +142,6 @@ function MatchListCard({m,onNav,isMine}){
       {m.mode==="approval"&&<Badge c={T.purple}>Onay gerekli</Badge>}
     </div>
     <CapacityBar joined={m.joined} max={m.max}/>
-    {isMine&&<Badge c={T.accent} st={{marginTop:8}}>{I.check()} Katılıyorsun</Badge>}
-    {m.friendJoined&&!isMine&&<div style={{fontSize:11,color:T.accent,marginTop:6,fontWeight:600}}>🤝 {m.friendJoined} katılıyor</div>}
   </div>;
 }
 
@@ -156,7 +153,7 @@ function S09({onNav}){
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:20,fontFamily:FH}}>Ne yapmak istiyorsun?</div>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
-        <div onClick={()=>onNav("S10")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"20px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
+        <div onClick={()=>onNav("S10_SETUP")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"20px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
           <div style={{width:52,height:52,borderRadius:14,background:`${T.accent}12`,border:`1.5px solid ${T.accent}28`,display:"flex",alignItems:"center",justifyContent:"center"}}>{I.gamepad()}</div>
           <div><div style={{fontWeight:700,fontSize:15,color:T.text,fontFamily:FH}}>Maç Başlat</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>Hemen oynayacağın bir maçı başlat ve skor tut</div></div>
         </div>
@@ -169,156 +166,230 @@ function S09({onNav}){
   </div>;
 }
 
-// S10: Live Match (4 Steps)
-const S10_STEP_TITLES=["Maç Kurulumu","Takım Kur","Canlı Skor","Kaydet & Paylaş"];
+// S10: Live Match (3 pages — no progress bar)
+// Icons for S10
+const I10={
+  chevDown:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>,
+  chevUp:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,15 12,9 18,15"/></svg>,
+  settings:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
+  usersIcon:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,
+  edit:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+};
 
-function S10({onNav}){
-  const [step,setStep]=useState(0);
+// S10 Setup — Maç Ayarları (bağımsız sayfa)
+function S10Setup({onNav}){
   const [fmt,setFmt]=useState("5v5");
-  const [teamA,setTeamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
-  const [teamB,setTeamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
+  const fmts=["5v5","6v6","7v7","Özel"];
+  return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,marginTop:24,letterSpacing:"-0.5px",fontFamily:FH}}>Maç Ayarları</div>
+    <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Formatı</div>
+    <div style={{display:"flex",gap:8,marginBottom:24}}>
+      {fmts.map(f=><div key={f} onClick={()=>setFmt(f)} style={{flex:1,padding:"16px 8px",borderRadius:12,background:fmt===f?`${T.accent}12`:T.card,border:`1.5px solid ${fmt===f?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
+        <div style={{fontSize:14,fontWeight:fmt===f?700:600,color:fmt===f?T.accent:T.text}}>{f}</div>
+      </div>)}
+    </div>
+    <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Konum</div>
+    <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:32,display:"flex",alignItems:"center",gap:12}}>
+      {I.pin(T.accent)}<span style={{fontSize:14,color:T.text,fontWeight:500}}>Kadıköy Spor Tesisleri</span><Badge c={T.green}>GPS</Badge>
+    </div>
+    <Btn primary full onClick={()=>onNav("S10_TEAMS")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
+  </div>;
+}
+
+// S10 Teams — Takım Kurulumu (bağımsız sayfa)
+function S10Teams({onNav}){
+  const teamA=[{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}];
+  const teamB=[{id:3,name:"Mehmet",av:"MK"}];
+  return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,marginTop:24,letterSpacing:"-0.5px",fontFamily:FH}}>Takım Kurulumu</div>
+    <div style={{display:"flex",gap:12,marginBottom:24}}>
+      <div style={{flex:1}}>
+        <div style={{fontSize:13,fontWeight:700,color:T.accent,marginBottom:12,textAlign:"center"}}>Takım A</div>
+        {teamA.map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}><Av i={p.av} s={32}/><span style={{fontSize:14,color:T.text,fontWeight:500}}>{p.name}</span></div>)}
+        <div style={{padding:"12px 0",fontSize:13,color:T.accent,cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
+      </div>
+      <div style={{width:1,background:T.cardBorder}}/>
+      <div style={{flex:1}}>
+        <div style={{fontSize:13,fontWeight:700,color:T.orange,marginBottom:12,textAlign:"center"}}>Takım B</div>
+        {teamB.map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}><Av i={p.av} s={32}/><span style={{fontSize:14,color:T.text,fontWeight:500}}>{p.name}</span></div>)}
+        <div style={{padding:"12px 0",fontSize:13,color:T.orange,cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
+      </div>
+    </div>
+    <div style={{fontSize:13,color:T.textMuted,textAlign:"center",marginBottom:32}}>Sürükle-bırak ile takım değiştir</div>
+    <Btn primary full onClick={()=>onNav("S10")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
+  </div>;
+}
+
+// S10: Canlı Skor + Maç Sonu (sadece bu 2 sayfa)
+function S10({onNav,onMinimize}){
+  const [page,setPage]=useState("live");
+  const [fmt]=useState("5v5");
+  const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
+  const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
   const [score,setScore]=useState([0,0]);
   const [goals,setGoals]=useState([]);
-  const [running,setRunning]=useState(false);
+  const [running,setRunning]=useState(true);
   const [seconds,setSeconds]=useState(0);
   const [toast,setToast]=useState(null);
   const [title,setTitle]=useState("");
+  const [deletePopup,setDeletePopup]=useState(false);
+  const [goalDrawer,setGoalDrawer]=useState(null);
   const timerRef=useRef(null);
 
   useEffect(()=>{if(running){timerRef.current=setInterval(()=>setSeconds(s=>s+1),1000);}else{clearInterval(timerRef.current);}return()=>clearInterval(timerRef.current);},[running]);
 
   const fmtTime=s=>{const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec<10?"0":""}${sec}`;};
-  const addGoal=(team)=>{const min=Math.floor(seconds/60);const g={id:Date.now(),team,min,scorer:null,assist:null};const ns=[...score];ns[team==="A"?0:1]++;setScore(ns);setGoals([g,...goals]);setToast(g.id);setTimeout(()=>setToast(null),5000);};
+  const getPlayerName=(id,team)=>{const list=team==="A"?teamA:teamB;const p=list.find(x=>x.id===id);return p?p.name:null;};
+  const drawerPlayers=goalDrawer?(goalDrawer.team==="A"?teamA:teamB):[];
+
+  const addGoal=(team)=>{
+    const min=Math.floor(seconds/60);
+    const g={id:Date.now(),team,min,scorer:null,assist:null};
+    const ns=[...score];ns[team==="A"?0:1]++;
+    setScore(ns);setGoals(prev=>[g,...prev]);
+    setToast(g.id);setTimeout(()=>setToast(null),5000);
+    setGoalDrawer({team,phase:"scorer",goalId:g.id});
+  };
+  const editGoal=(g)=>{setGoalDrawer({team:g.team,phase:"scorer",goalId:g.id});};
+  const selectScorer=(playerId)=>{
+    if(!goalDrawer)return;
+    const gid=goalDrawer.goalId;const team=goalDrawer.team;
+    setGoals(prev=>prev.map(g=>g.id===gid?{...g,scorer:playerId}:g));
+    setGoalDrawer({team,phase:"assist",goalId:gid});
+  };
+  const selectAssist=(playerId)=>{
+    if(!goalDrawer)return;
+    setGoals(prev=>prev.map(g=>g.id===goalDrawer.goalId?{...g,assist:playerId}:g));
+    setGoalDrawer(null);
+  };
+  const skipScorer=()=>{setGoalDrawer(null);};
+  const skipAssist=()=>{setGoalDrawer(null);};
   const undoGoal=(gid)=>{const g=goals.find(x=>x.id===gid);if(!g)return;const ns=[...score];ns[g.team==="A"?0:1]--;setScore(ns);setGoals(goals.filter(x=>x.id!==gid));setToast(null);};
   const removeGoal=(gid)=>{const g=goals.find(x=>x.id===gid);if(!g)return;const ns=[...score];ns[g.team==="A"?0:1]--;setScore(ns);setGoals(goals.filter(x=>x.id!==gid));};
 
-  const fmts=["5v5","6v6","7v7","Özel"];
+  // Shared drawer (works on both live + end pages)
+  const GoalDrawerUI=()=>goalDrawer?<div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:250,display:"flex",alignItems:"flex-end"}}>
+    <div onClick={goalDrawer.phase==="scorer"?skipScorer:skipAssist} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+    <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:251}}>
+      <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
+      <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:16,fontFamily:FH}}>
+        {goalDrawer.phase==="scorer"?"Golü kim attı?":"Asisti kim yaptı?"}
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:4}}>
+        {drawerPlayers.map(p=><div key={p.id} onClick={()=>goalDrawer.phase==="scorer"?selectScorer(p.id):selectAssist(p.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderRadius:12,background:T.bg,border:`1px solid ${T.cardBorder}`,cursor:"pointer",transition:"border-color .15s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=T.accent} onMouseLeave={e=>e.currentTarget.style.borderColor=T.cardBorder}>
+          <Av i={p.av} s={36}/>
+          <span style={{fontSize:14,fontWeight:600,color:T.text}}>{p.name}</span>
+        </div>)}
+      </div>
+      <div onClick={goalDrawer.phase==="scorer"?skipScorer:skipAssist} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:600}}>Atla</div>
+    </div>
+  </div>:null;
 
+  // Delete popup
+  const DeletePopupUI=()=>deletePopup?<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div onClick={()=>setDeletePopup(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.65)"}}/>
+    <div style={{position:"relative",width:"85%",background:T.card,borderRadius:16,padding:"28px 24px",textAlign:"center",zIndex:301}}>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:20,fontFamily:FH}}>Bu maçı silmek istediğinize emin misiniz?</div>
+      <Btn danger full onClick={()=>{setDeletePopup(false);onNav("S08");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12,marginBottom:10}}>Maçı Sil</Btn>
+      <Btn full onClick={()=>setDeletePopup(false)} st={{fontSize:15,fontWeight:600,padding:"14px 24px",borderRadius:12}}>İptal</Btn>
+    </div>
+  </div>:null;
+
+  // Goal list row (reused in live + end)
+  const GoalRow=({g,showEdit})=>{
+    const scorerName=g.scorer?getPlayerName(g.scorer,g.team):null;
+    const assistName=g.assist?getPlayerName(g.assist,g.team):null;
+    return <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+        <span style={{fontSize:11,color:T.textMuted,width:28}}>{g.min}'</span>
+        <Badge c={g.team==="A"?T.accent:T.orange}>{scorerName||`Takım ${g.team}`}</Badge>
+        {assistName&&<span style={{fontSize:11,color:T.textDim}}>(Asist: {assistName})</span>}
+        {showEdit&&<span onClick={()=>editGoal(g)} style={{cursor:"pointer",display:"flex",marginLeft:4}}>{I10.edit(T.accent)}</span>}
+      </div>
+      <span onClick={()=>removeGoal(g.id)} style={{cursor:"pointer",display:"flex"}}>{I.trash()}</span>
+    </div>;
+  };
+
+  // ========== LIVE SCORE PAGE ==========
+  if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
+      <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.chevDown(T.text)}</div>
+      <div style={{display:"flex",gap:8}}>
+        <div onClick={()=>onNav("S10_TEAMS")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.usersIcon(T.textDim)} Takımlar</div>
+        <div onClick={()=>onNav("S10_SETUP")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
+      </div>
+    </div>
+
+    <div style={{textAlign:"center",marginBottom:20}}>
+      <div style={{fontSize:42,fontWeight:900,fontFamily:FH,color:T.text,letterSpacing:"-2px"}}>{fmtTime(seconds)}</div>
+      <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:8}}>
+        <div onClick={()=>setRunning(!running)} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{running?I.pause():I.play()}</div>
+      </div>
+    </div>
+
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
+      <div style={{flex:1,textAlign:"center"}}>
+        <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
+        <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
+        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
+        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
+      </div>
+      <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
+      <div style={{flex:1,textAlign:"center"}}>
+        <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
+        <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
+        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
+        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
+      </div>
+    </div>
+
+    {toast&&<div style={{background:T.card,border:`1.5px solid ${T.accent}44`,borderRadius:12,padding:"12px 16px",marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <span style={{fontSize:14,color:T.text}}>Gol eklendi</span>
+      <span onClick={()=>undoGoal(toast)} style={{fontSize:13,color:T.accent,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>{I.undo(T.accent)} Geri Al</span>
+    </div>}
+
+    {goals.length>0&&<div style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20}}>
+      <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:8}}>GOL GEÇMİŞİ</div>
+      {goals.map(g=><GoalRow key={g.id} g={g}/>)}
+    </div>}
+
+    <Btn danger full onClick={()=>{setRunning(false);setPage("end");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Maçı Bitir</Btn>
+    <GoalDrawerUI/>
+  </div>;
+
+  // ========== MATCH END PAGE ==========
   return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,marginTop:8,letterSpacing:"-0.5px",fontFamily:FH}}>Maç Sonu</div>
 
-    {/* Progress bar */}
-    <div style={{marginTop:16}}>
-      <ProgressBar current={step} total={4}/>
+    <div style={{textAlign:"center",marginBottom:28}}>
+      <div style={{fontSize:48,fontWeight:900,fontFamily:FH}}>
+        <span style={{color:score[0]>score[1]?T.accent:T.text}}>{score[0]}</span>
+        <span style={{color:T.textMuted,margin:"0 12px",fontSize:24}}>–</span>
+        <span style={{color:score[1]>score[0]?T.accent:T.text}}>{score[1]}</span>
+      </div>
+      <div style={{fontSize:13,color:T.textDim,marginTop:4}}>Süre: {fmtTime(seconds)} · {fmt}</div>
     </div>
 
-    {/* Back link */}
-    <BackLink onClick={step>0?()=>setStep(step-1):()=>onNav("S09")}/>
+    {goals.length>0&&<div style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20}}>
+      <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:8}}>GOL ZAMANÇİZELGESİ</div>
+      {goals.map(g=><GoalRow key={g.id} g={g} showEdit/>)}
+    </div>}
 
-    {/* Step label */}
-    <div style={{marginBottom:8}}>
-      <span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>
-        Adım {step+1}/4
-      </span>
+    <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Başlığı (opsiyonel)</div>
+    <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:24}}>
+      <input placeholder="Kadıköy Halısaha Maçı" value={title} onChange={e=>setTitle(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
     </div>
 
-    {/* Big title */}
-    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>
-      {S10_STEP_TITLES[step]}
+    <div style={{background:`${T.accent}10`,borderRadius:12,padding:"14px 16px",marginBottom:24,border:`1px solid ${T.accent}22`}}>
+      <div style={{fontSize:13,color:T.accent,fontWeight:600,marginBottom:4}}>Maç kaydedildiğinde:</div>
+      <div style={{fontSize:13,color:T.textDim,lineHeight:1.6}}>Tüm katılımcılar için kişisel post oluşturulur. Fotoğraf ve not eklemek post üzerinden yapılır.</div>
     </div>
 
-    {/* Step 1: Setup */}
-    {step===0&&<>
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Formatı</div>
-      <div style={{display:"flex",gap:8,marginBottom:24}}>
-        {fmts.map(f=><div key={f} onClick={()=>setFmt(f)} style={{flex:1,padding:"16px 8px",borderRadius:12,background:fmt===f?`${T.accent}12`:T.card,border:`1.5px solid ${fmt===f?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
-          <div style={{fontSize:14,fontWeight:fmt===f?700:600,color:fmt===f?T.accent:T.text}}>{f}</div>
-        </div>)}
-      </div>
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Konum</div>
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:32,display:"flex",alignItems:"center",gap:12}}>
-        {I.pin(T.accent)}<span style={{fontSize:14,color:T.text,fontWeight:500}}>Kadıköy Spor Tesisleri</span><Badge c={T.green}>GPS</Badge>
-      </div>
-      <Btn primary full onClick={()=>setStep(1)} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Başlat</Btn>
-    </>}
+    <Btn primary full onClick={()=>onNav("S08")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
+    <div onClick={()=>setDeletePopup(true)} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.red,cursor:"pointer",fontWeight:600}}>Maçı Sil</div>
 
-    {/* Step 2: Teams */}
-    {step===1&&<>
-      <div style={{display:"flex",gap:12,marginBottom:24}}>
-        <div style={{flex:1}}>
-          <div style={{fontSize:13,fontWeight:700,color:T.accent,marginBottom:12,textAlign:"center"}}>Takım A</div>
-          {teamA.map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}><Av i={p.av} s={32}/><span style={{fontSize:14,color:T.text,fontWeight:500}}>{p.name}</span></div>)}
-          <div style={{padding:"12px 0",fontSize:13,color:T.accent,cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
-        </div>
-        <div style={{width:1,background:T.cardBorder}}/>
-        <div style={{flex:1}}>
-          <div style={{fontSize:13,fontWeight:700,color:T.orange,marginBottom:12,textAlign:"center"}}>Takım B</div>
-          {teamB.map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}><Av i={p.av} s={32}/><span style={{fontSize:14,color:T.text,fontWeight:500}}>{p.name}</span></div>)}
-          <div style={{padding:"12px 0",fontSize:13,color:T.orange,cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
-        </div>
-      </div>
-      <div style={{fontSize:13,color:T.textMuted,textAlign:"center",marginBottom:32}}>Sürükle-bırak ile takım değiştir</div>
-      <Btn primary full onClick={()=>{setStep(2);setRunning(true);}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
-      <div onClick={()=>{setStep(2);setRunning(true);}} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500}}>Atla — Sonra eklerim →</div>
-    </>}
-
-    {/* Step 3: Live Score */}
-    {step===2&&<>
-      <div style={{textAlign:"center",marginBottom:24}}>
-        <div style={{fontSize:42,fontWeight:900,fontFamily:FH,color:T.text,letterSpacing:"-2px"}}>{fmtTime(seconds)}</div>
-        <div style={{display:"flex",justifyContent:"center",gap:12,marginTop:8}}>
-          <div onClick={()=>setRunning(!running)} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{running?I.pause():I.play()}</div>
-        </div>
-      </div>
-
-      <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
-        <div style={{flex:1,textAlign:"center"}}>
-          <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
-          <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
-          <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
-          <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
-        </div>
-        <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
-        <div style={{flex:1,textAlign:"center"}}>
-          <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
-          <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
-          <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
-          <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
-        </div>
-      </div>
-
-      {toast&&<div style={{background:T.card,border:`1.5px solid ${T.accent}44`,borderRadius:12,padding:"12px 16px",marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <span style={{fontSize:14,color:T.text}}>⚽ Gol eklendi</span>
-        <span onClick={()=>undoGoal(toast)} style={{fontSize:13,color:T.accent,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>{I.undo(T.accent)} Geri Al</span>
-      </div>}
-
-      {goals.length>0&&<div style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20}}>
-        <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:8}}>GOL GEÇMİŞİ</div>
-        {goals.map(g=><div key={g.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:11,color:T.textMuted,width:28}}>{g.min}'</span>
-            <span style={{fontSize:13}}>⚽</span>
-            <Badge c={g.team==="A"?T.accent:T.orange}>{g.team==="A"?"Takım A":"Takım B"}</Badge>
-          </div>
-          <span onClick={()=>removeGoal(g.id)} style={{cursor:"pointer",display:"flex"}}>{I.trash()}</span>
-        </div>)}
-      </div>}
-
-      <Btn danger full onClick={()=>{setRunning(false);setStep(3);}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Maçı Bitir</Btn>
-    </>}
-
-    {/* Step 4: Save & Share */}
-    {step===3&&<>
-      <div style={{textAlign:"center",marginBottom:28}}>
-        <div style={{fontSize:48,fontWeight:900,fontFamily:FH}}>
-          <span style={{color:score[0]>score[1]?T.accent:T.text}}>{score[0]}</span>
-          <span style={{color:T.textMuted,margin:"0 12px",fontSize:24}}>–</span>
-          <span style={{color:score[1]>score[0]?T.accent:T.text}}>{score[1]}</span>
-        </div>
-        <div style={{fontSize:13,color:T.textDim,marginTop:4}}>Süre: {fmtTime(seconds)} · {fmt}</div>
-      </div>
-
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Başlığı (opsiyonel)</div>
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:24}}>
-        <input placeholder="Kadıköy Halısaha Maçı" value={title} onChange={e=>setTitle(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-      </div>
-
-      <div style={{background:`${T.accent}10`,borderRadius:12,padding:"14px 16px",marginBottom:32,border:`1px solid ${T.accent}22`}}>
-        <div style={{fontSize:13,color:T.accent,fontWeight:600,marginBottom:4}}>Maç kaydedildiğinde:</div>
-        <div style={{fontSize:13,color:T.textDim,lineHeight:1.6}}>Tüm katılımcılar için kişisel post oluşturulur. Fotoğraf ve not eklemek post üzerinden yapılır.</div>
-      </div>
-
-      <Btn primary full onClick={()=>onNav("S08")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
-    </>}
+    <GoalDrawerUI/>
+    <DeletePopupUI/>
   </div>;
 }
 
@@ -504,23 +575,70 @@ function S31({onNav}){
 }
 
 // ============================================================
+// Active Match Widget (footer üstü — S05, S08, S15'te görünür)
+// ============================================================
+function ActiveMatchWidget({seconds,score,onResume,onDelete}){
+  const [deletePopup,setDeletePopup]=useState(false);
+  const fmtTime=s=>{const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec<10?"0":""}${sec}`;};
+
+  return <>
+    <div style={{position:"fixed",bottom:56,left:0,right:0,maxWidth:430,margin:"0 auto",zIndex:95,padding:"0 12px"}}>
+      <div onClick={onResume} style={{background:T.card,border:`1.5px solid ${T.accent}33`,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
+        <div style={{display:"flex"}}>{I10.chevUp(T.accent)}</div>
+        <div style={{flex:1,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:14,fontWeight:700,color:T.accent}}>Aktif Maç</span>
+          <span style={{fontSize:13,color:T.textDim,fontWeight:600}}>{fmtTime(seconds)}</span>
+          <span style={{fontSize:12,color:T.textDim}}>{score[0]} – {score[1]}</span>
+        </div>
+        <div onClick={(e)=>{e.stopPropagation();setDeletePopup(true);}} style={{cursor:"pointer",display:"flex",padding:4}}>{I.trash(T.red)}</div>
+      </div>
+    </div>
+    {deletePopup&&<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div onClick={()=>setDeletePopup(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.65)"}}/>
+      <div style={{position:"relative",width:"85%",background:T.card,borderRadius:16,padding:"28px 24px",textAlign:"center",zIndex:301}}>
+        <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:20,fontFamily:FH}}>Bu maçı silmek istediğinize emin misiniz?</div>
+        <Btn danger full onClick={()=>{setDeletePopup(false);onDelete();}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12,marginBottom:10}}>Maçı Sil</Btn>
+        <Btn full onClick={()=>setDeletePopup(false)} st={{fontSize:15,fontWeight:600,padding:"14px 24px",borderRadius:12}}>İptal</Btn>
+      </div>
+    </div>}
+  </>;
+}
+
+// ============================================================
 // MAIN
 // ============================================================
 export default function SporWaveMatches(){
   const [cur,setCur]=useState("S08");
   const [curId,setCurId]=useState(null);
   const [fade,setFade]=useState(true);
+  // Active match minimize state
+  const [activeMatch,setActiveMatch]=useState({active:true,minimized:true,seconds:342,score:[2,1]});
 
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
 
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
+  const handleMinimize=(secs,sc)=>{
+    setActiveMatch({active:true,minimized:true,seconds:secs,score:sc});
+    nav("S08");
+  };
+  const handleResume=()=>{
+    setActiveMatch(prev=>({...prev,minimized:false}));
+    nav("S10");
+  };
+  const handleDeleteMatch=()=>{
+    setActiveMatch({active:false,minimized:false,seconds:0,score:[0,0]});
+  };
+
   const isMatchesView=["S08","S09","S14"].includes(cur);
+  const showWidget=activeMatch.active&&activeMatch.minimized&&isMatchesView;
 
   const pg=()=>{
     switch(cur){
       case "S08":case "S09":case "S14":return <S08 onNav={nav}/>;
-      case "S10":return <S10 onNav={nav}/>;
+      case "S10_SETUP":return <S10Setup onNav={nav}/>;
+      case "S10_TEAMS":return <S10Teams onNav={nav}/>;
+      case "S10":return <S10 onNav={nav} onMinimize={handleMinimize}/>;
       case "S31":return <S31 onNav={nav}/>;
       default:return <S08 onNav={nav}/>;
     }
@@ -528,13 +646,14 @@ export default function SporWaveMatches(){
 
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 60px rgba(0,0,0,.5)"}}>
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4}}>
-      {[{p:"S08",l:"Maçlar"},{p:"S09",l:"FAB Menu"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S08",l:"Maçlar"},{p:"S09",l:"FAB Menu"},{p:"S10_SETUP",l:"Maç Ayarları"},{p:"S10_TEAMS",l:"Takımlar"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {/* Fixed elements OUTSIDE transform div */}
-    {isMatchesView&&<div style={{position:"fixed",bottom:72,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
+    {isMatchesView&&<div style={{position:"fixed",bottom:showWidget?108:72,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24,transition:"bottom .2s"}}>
       <div onClick={()=>nav("S09")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus(T.bg)}</div>
     </div>}
+    {showWidget&&<ActiveMatchWidget seconds={activeMatch.seconds} score={activeMatch.score} onResume={handleResume} onDelete={handleDeleteMatch}/>}
     {cur==="S09"&&<S09 onNav={nav}/>}
     {cur==="S14"&&<S14 onNav={nav}/>}
     {isMatchesView&&<TabBar active="S08" onNav={nav}/>}

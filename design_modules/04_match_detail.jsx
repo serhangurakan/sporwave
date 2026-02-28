@@ -359,26 +359,16 @@ function S12({onNav}){
           <Btn full st={{flex:1}}>{I.edit(T.text)} Düzenle</Btn>
         </div>
       </>:isPlayer?<>
-        <div style={{display:"flex",gap:8,marginBottom:8}}>
-          <Btn full primary st={{flex:1}}>{I.chat(T.bg)} Maç Sohbeti</Btn>
-          <Btn full st={{flex:1}}>{I.chat(T.text)} Mesaj Gönder</Btn>
-        </div>
-        <Btn full st={{marginBottom:8}}>{I.whatsapp()} WhatsApp ile Mesaj</Btn>
+        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.gamepad(T.bg)} Maçı Başlat</Btn>
+        <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
         <Btn full st={{marginBottom:8}}>{I.crown(T.gold)} Host Devral</Btn>
       </>:<>
         <Btn full primary onClick={()=>onNav("S14")} st={{marginBottom:8}}>Katıl ({remaining} yer kaldı)</Btn>
-        <div style={{display:"flex",gap:8,marginBottom:8}}>
-          <Btn full st={{flex:1}}>{I.chat(T.text)} Maç Sohbeti</Btn>
-          <Btn full st={{flex:1}}>{I.chat(T.text)} Mesaj Gönder</Btn>
-        </div>
-        <Btn full st={{marginBottom:8}}>{I.whatsapp()} WhatsApp ile Mesaj</Btn>
+        <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
       </>}
 
-      {/* Share & Copy */}
-      <div style={{display:"flex",gap:8}}>
-        <Btn full st={{flex:1}}>{I.share(T.text)} Paylaş</Btn>
-        <Btn full st={{flex:1}}>{I.copy(T.text)} Davet Linkini Kopyala</Btn>
-      </div>
+      {/* Share */}
+      <Btn full st={{marginBottom:0}}>{I.share(T.text)} Paylaş</Btn>
     </div>
   </div>;
 }
