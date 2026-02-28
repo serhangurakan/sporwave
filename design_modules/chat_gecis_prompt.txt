@@ -10,7 +10,7 @@ TAMAMLANAN MODÜLLER:
 - Modül 4: Maç Detay (S11, S12, S13, S40, S41, S30) ☑️
 - Modül 5: Profil (S15, S16, S22, S23) ☑️
 
-SIRADAKI MODÜL: 6. Mesajlaşma & Bildirimler (S17-S19, S35)
+SIRADAKI MODÜL: 6. Mesajlaşma & Bildirimler (S17-S19, S35) 
 
 MODÜL PLANI:
 1. Auth & Onboarding → S01-S04, S32 ✅
