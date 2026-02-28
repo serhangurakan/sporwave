@@ -1,0 +1,9 @@
+Karar Verilmesi Gereken Şeyler
+
+1 - Host maçı evden başlatıp bitirirse ve maç oynanmadıysa herkesin 
+profiline maç oynanmış olarak yansayacak bunun önlemi nasıl olur ?
+
+2 - Maç maximum kaç saat olmalı, maçı host veya herhangi bir kullanıcı maçı 
+bitirmez ise maç ne zaman bitecek.
+
+3 - 
