@@ -4,7 +4,7 @@
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
 > Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
-> Son güncelleme: 28 Şubat 2026 (oturum 2)
+> Son güncelleme: 1 Mart 2026 (oturum 3)
 
 ---
 
@@ -382,9 +382,10 @@ Ana Sayfa tab'ında:
 
 #### S09: Maç Seçenekleri (Bottom Sheet — FAB'a basınca)
 - **Başlık:** "Ne yapmak istiyorsun?"
-- İki büyük seçenek kartı:
-  1. **"🎮 Maç Başlat"** — "Hemen oynayacağın bir maçı başlat ve skor tut"
-  2. **"📢 Maç Oluştur"** — "İleri tarihli maç planla ve oyuncu bul"
+- İki büyük seçenek kartı (background transparent, sadece border):
+  1. **"▶ Maç Başlat"** — "Hemen oynayacağın bir maçı başlat ve skor tut" (accent border + play ikonu)
+  2. **"📢 Maç Oluştur"** — "İleri tarihli maç planla ve oyuncu bul" (purple border + megaphone ikonu)
+- Kart padding: `14px 16px`, başlık `fontSize:16, fontWeight:700, FH`, açıklama `fontSize:12, FB`
 - Kart tıklanınca ilgili akışa geçiş
 
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
@@ -392,26 +393,29 @@ Ana Sayfa tab'ında:
 
 **Maç başlatma koşulu:** Her iki takımda en az 1 oyuncu (uygulama kullanıcısı veya misafir) kayıtlı olmalı. Planlanan maçlarda (S31) maç saatinden sonra da başlatılabilir — 24 saat boyunca başlatma imkanı devam eder.
 
-**Sayfa yapısı (4 ayrı sayfa — adım/progress bar YOK, geri butonu YOK):**
+**Sayfa yapısı (2 adım + Canlı Skor — progress bar + geri butonu VAR):**
 
-**Maç Ayarları (bağımsız sayfa — S10_SETUP):**
-- Geri butonu yok
+**Maç Başlat — Adım 1/2 (S10_SETUP):**
+- Progress bar (2 adım, üstte)
+- ← Geri butonu (S08 Maçlar'a döner)
+- Adım etiketi: "ADIM 1/2"
 - Maç formatı: 5v5 / 6v6 / 7v7 / Özel
 - Konum: Otomatik GPS + manuel düzenleme
-- "Devam" butonu → Takım Kurulumu sayfasına geçiş
+- "Devam" butonu → Takım Oluştur sayfasına geçiş
 
-**Takım Kurulumu (bağımsız sayfa — S10_TEAMS):**
-- Geri butonu yok, "Atla" seçeneği yok
+**Takım Oluştur — Adım 2/2 (S10_TEAMS):**
+- Progress bar (2 adım, 2. adım aktif)
+- ← Geri butonu (S10_SETUP'a döner), "Atla" seçeneği yok
 - Takım 1 vs Takım 2
 - Her takıma oyuncu ekle:
   - **Uygulama kullanıcısı:** İsim/@kullanıcıadı ile ara, seç
   - **Misafir Oyuncu:** "Misafir Ekle" butonu → sadece isim girişi (otomatik doldurma yok)
 - Takım rengi seçimi (opsiyonel)
 - **Drag & drop ile takım değişikliği:** Oyuncular iki takım arasında sürükle-bırak ile taşınabilir. Mobilde uzun basma (long press) ile drag başlar. İki kolon (Takım 1 | Takım 2) formatında.
-- "Devam" butonu → Canlı Skor sayfasına geçiş
+- "Başla" butonu → Canlı Skor sayfasına geçiş
 
 **Canlı Skor Sayfası (ayrı sayfa):**
-- **Sol üstte ↓ aşağı ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Devam eden maçın var" widget'ına dönüşür (footer üstünde)
+- **Sol üstte ← geri ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde)
 - **Takımlar & Maç Ayarları butonları:** Üstte 2 buton — "Takımlar" (takım kurulumuna döner) ve "Maç Ayarları" (maç kurulumuna döner)
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
 - **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)

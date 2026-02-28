@@ -170,13 +170,13 @@ function S09({onNav}){
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:20,fontFamily:FH}}>Ne yapmak istiyorsun?</div>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
-        <div onClick={()=>onNav("S10_SETUP")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"20px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
-          <div style={{width:52,height:52,borderRadius:14,background:`${T.accent}12`,border:`1.5px solid ${T.accent}28`,display:"flex",alignItems:"center",justifyContent:"center"}}>{I.gamepad()}</div>
-          <div><div style={{fontWeight:700,fontSize:15,color:T.text,fontFamily:FH}}>Maç Başlat</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>Hemen oynayacağın bir maçı başlat ve skor tut</div></div>
+        <div onClick={()=>onNav("S10_SETUP")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
+          <div style={{width:52,height:52,borderRadius:14,background:"transparent",border:`1.5px solid ${T.accent}`,display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="24" height="24" viewBox="0 0 24 24" fill={T.accent} style={{marginLeft:2}}><polygon points="5,3 19,12 5,21"/></svg></div>
+          <div><div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>Maç Başlat</div><div style={{fontSize:12,color:T.textDim,marginTop:3,fontFamily:FB}}>Hemen oynayacağın bir maçı başlat ve skor tut</div></div>
         </div>
-        <div onClick={()=>onNav("S31")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"20px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
-          <div style={{width:52,height:52,borderRadius:14,background:`${T.purple}12`,border:`1.5px solid ${T.purple}28`,display:"flex",alignItems:"center",justifyContent:"center"}}>{I.megaphone()}</div>
-          <div><div style={{fontWeight:700,fontSize:15,color:T.text,fontFamily:FH}}>Maç Oluştur</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>İleri tarihli maç planla ve oyuncu bul</div></div>
+        <div onClick={()=>onNav("S31")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
+          <div style={{width:52,height:52,borderRadius:14,background:"transparent",border:`1.5px solid ${T.purple}`,display:"flex",alignItems:"center",justifyContent:"center"}}>{I.megaphone()}</div>
+          <div><div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>Maç Oluştur</div><div style={{fontSize:12,color:T.textDim,marginTop:3,fontFamily:FB}}>İleri tarihli maç planla ve oyuncu bul</div></div>
         </div>
       </div>
     </div>
@@ -199,7 +199,10 @@ function S10Setup({onNav}){
   const [fmt,setFmt]=useState("5v5");
   const fmts=["5v5","6v6","7v7","Özel"];
   return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
-    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,marginTop:24,letterSpacing:"-0.5px",fontFamily:FH}}>Maç Başlat</div>
+    <div style={{marginTop:16}}><ProgressBar current={0} total={2}/></div>
+    <BackLink onClick={()=>onNav("S08")}/>
+    <div style={{marginBottom:8}}><span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>Adım 1/2</span></div>
+    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>Maç Başlat</div>
     <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Formatı</div>
     <div style={{display:"flex",gap:8,marginBottom:24}}>
       {fmts.map(f=><div key={f} onClick={()=>setFmt(f)} style={{flex:1,padding:"16px 8px",borderRadius:12,background:fmt===f?`${T.accent}12`:T.card,border:`1.5px solid ${fmt===f?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
@@ -219,7 +222,10 @@ function S10Teams({onNav}){
   const teamA=[{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}];
   const teamB=[{id:3,name:"Mehmet",av:"MK"}];
   return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
-    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,marginTop:24,letterSpacing:"-0.5px",fontFamily:FH}}>Takım Kurulumu</div>
+    <div style={{marginTop:16}}><ProgressBar current={1} total={2}/></div>
+    <BackLink onClick={()=>onNav("S10_SETUP")}/>
+    <div style={{marginBottom:8}}><span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>Adım 2/2</span></div>
+    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>Takım Oluştur</div>
     <div style={{display:"flex",gap:12,marginBottom:24}}>
       <div style={{flex:1}}>
         <div style={{fontSize:13,fontWeight:700,color:T.accent,marginBottom:12,textAlign:"center"}}>Takım A</div>
@@ -234,7 +240,7 @@ function S10Teams({onNav}){
       </div>
     </div>
     <div style={{fontSize:13,color:T.textMuted,textAlign:"center",marginBottom:32}}>Sürükle-bırak ile takım değiştir</div>
-    <Btn primary full onClick={()=>onNav("S10")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
+    <Btn primary full onClick={()=>onNav("S10")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Başla</Btn>
   </div>;
 }
 
