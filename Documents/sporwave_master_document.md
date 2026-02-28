@@ -554,11 +554,11 @@ Ana Sayfa tab'ında:
   - **Seçenek 1 — "Saha Biliyorum":** Pin atar + saha adı girer
   - **Seçenek 2 — "Saha Önerisine Açığım":** Sadece semt/ilçe düzeyinde pin atar, saha adı boş bırakılır. Maç kartında "📍 Kadıköy — Saha belirlenecek" şeklinde görünür. Katılımcılar maç sohbetinde (S35) sahayı birlikte belirler. Host daha sonra maçı düzenleyerek kesin sahayı ekler.
   - **Seçenek 3 — "Konumsuz Devam Et":** Konum belirtmeden maç oluştur. Maç kartında konum gösterilmez, sohbette belirlenir.
-- "Devam" butonu
+- **Buton sırası:** "Devam" birincil butonu önce, altında "Konumu sonra belirle →" ikincil link — konum seçilmemişken görünür, seçilince gizlenir
 
 **Adım 3 — Katılım Ayarları:**
 - Maksimum oyuncu sayısı (number input)
-- Deneyim seviyesi tercihi (pill: Herkes / Başlangıç / Orta / İyi / Profesyonel)
+- Deneyim seviyesi tercihi (pill: Herkes / Başlangıç / Orta / İyi / Profesyonel) — **varsayılan: "Herkes" seçili**
 - Kabul modu:
   - "Herkesi Kabul Et" — ilk gelen alır
   - "Onay ile Kabul Et" — başvuruları sen onaylarsın
@@ -566,13 +566,14 @@ Ana Sayfa tab'ında:
   - "Herkese açık" — Maçlar sekmesinde görünür
   - "Sadece takipçilere" — sadece takipçilerin görebilir
   - "Sadece davet ile" — link paylaşarak katılım
+- Seviye tercihi, Kabul Modu ve Gizlilik seçim elementleri aynı stil: `borderRadius:12, padding:"10px 16px"`, seçilince accent border + accent renkli metin
 - "Devam" butonu
 
 **Adım 4 — Davet (opsiyonel):**
 - "Arkadaşlarını Davet Et" — arkadaş listesi (takip edilenler), her profil yanında "Davet Et" butonu
-- Davet gönderilince buton "Gönderildi ✓" olur
+- Davet gönderilince buton: yeşil tik ikonu + **"Davet Edildi"** (accent renk border + accent renk metin)
 - **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez, diğer kişilere cooldown'sız davet atılabilir
-- "Atla" linki veya **"Yayınla 📢"** butonu
+- **"Yayınla 📢"** butonu (Atla linki yok — adım atlanmak isteniyorsa direkt Yayınla'ya basılır)
 
 **Yayınla sonrası:**
 - Maç sohbeti (S35) otomatik oluşturulur
@@ -1118,6 +1119,16 @@ Maç saati geçer → Maç hala başlamamış
 - Puanlanmamış maç kartı: turuncu border
 - Devam eden maç banner'ı: accent renk arka plan
 - Katılım oranı düşükse (<%70): kırmızı renk uyarı
+
+**Çok adımlı form UI standartları (S04 Onboarding baz alınarak — S10, S31 dahil tüm çok adımlı akışlar):**
+- **Sayfa padding:** `24px 20px` (PageShell)
+- **ProgressBar:** Sayfa en üstünde, `marginTop:16` wrapper içinde, `marginBottom:24`; çubuk yüksekliği 4px, `borderRadius:4`, aralarında `gap:6`
+- **BackLink (← Geri):** ProgressBar'ın hemen altında, `fontSize:14, color:T.textDim, marginTop:20, marginBottom:8`; adım > 0 ise bir önceki adıma döner, adım === 0 ise akışın başladığı sayfaya döner (örn. S09)
+- **Adım etiketi:** `fontSize:12, fontWeight:600, color:T.textMuted, textTransform:"uppercase", letterSpacing:"1px"`
+- **Büyük başlık:** `fontSize:24, fontWeight:800, color:T.text, marginBottom:24, letterSpacing:"-0.5px"`, Plus Jakarta Sans font
+- **Birincil buton:** `fontSize:15, fontWeight:700, padding:"14px 24px", borderRadius:12`, tam genişlik
+- **İkincil link (Atla vb.):** `marginTop:16, fontSize:14, fontWeight:500, color:T.textDim`, metin ortalamalı; birincil butonun **altında** yer alır
+- **Seçim elementleri (pill/kart):** `borderRadius:12, padding:"10px 16px"`, seçilince `border: 1.5px solid T.accent`, `background: T.accent + "12"`, `color: T.accent`; seçilmeyince `border: 1.5px solid T.cardBorder`, `background: T.card`
 
 ---
 
