@@ -19,6 +19,7 @@ const labels = {
   "01_auth": "Auth & Onboarding",
   "02_feed": "Feed & Search",
   "03_matches": "Matches & Sports",
+  "04_match_detail": "Match Detail",
 };
 
 const T = {
