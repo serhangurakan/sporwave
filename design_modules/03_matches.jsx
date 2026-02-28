@@ -66,7 +66,7 @@ function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 
 // S08: Matches Page
-function S08({onNav}){
+function S08({onNav,showUnrated}){
   const [filter,setFilter]=useState(false);
   const myMatches=PLANNED.filter(m=>m.myMatch);
   const openMatches=PLANNED.filter(m=>!m.myMatch);
@@ -87,13 +87,13 @@ function S08({onNav}){
     </div>}
 
     {/* Unrated matches */}
-    {UNRATED.length>0&&<div style={{padding:"0 16px 12px"}}>
-      {UNRATED.map(m=><div key={m.id} onClick={()=>onNav("S40",m.id)} style={{background:"none",borderRadius:14,border:`2px solid ${T.orange}`,padding:"14px 16px",cursor:"pointer",marginBottom:8}}>
+    {showUnrated&&UNRATED.length>0&&<div style={{padding:"12px 16px 0"}}>
+      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:T.card,borderRadius:14,border:`2px solid ${T.orange}`,padding:"14px 16px",cursor:"default",marginBottom:12,boxShadow:"0 8px 24px rgba(0,0,0,.25)",transition:"box-shadow .2s ease, transform .2s ease"}}>
         {/* Badge */}
         <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star(T.orange)} Değerlendir</Badge></div>
         {/* Title + skor */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
-          <div style={{fontWeight:700,fontSize:14,color:T.text,fontFamily:FH,flex:1}}>{m.title}</div>
+          <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
           <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.orange,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
         </div>
         {/* Tarih · Konum */}
@@ -126,12 +126,19 @@ function MatchListCard({m,onNav,isMine}){
   const host=uf(m.host);
   const spotsLeft=m.max-m.joined;
   const almostFull=spotsLeft<=2;
-  return <div onClick={()=>isMine?onNav("S12",m.id):onNav("S14",m.id)} style={{background:"none",borderRadius:14,border:isMine?`1px solid ${T.cardBorder}`:"none",borderLeft:isMine?`2px solid ${T.accent}`:`2px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:8,cursor:"pointer"}}>
-    {/* Title + badge */}
+  const levelLabel = m.level && m.level !== "Herkes" ? m.level : "Herkes";
+  const levelColor = m.level && m.level !== "Herkes" ? T.orange : T.textDim;
+  const acceptLabel = m.mode === "approval" ? "Onay gerekli" : "Açık";
+  const acceptColor = m.mode === "approval" ? T.purple : T.textDim;
+  const statusBadge = isMine
+    ? <Badge c={T.accent}>{I.check()} Katılıyorsun</Badge>
+    : (m.friendJoined ? <Badge c={T.accent}>🤝 {m.friendJoined} katılıyor</Badge> : null);
+  return <div onClick={()=>isMine?window.location.assign("/04_match_detail?view=S12"):onNav("S14",m.id)} onMouseEnter={e=>{e.currentTarget.style.boxShadow="0 12px 30px rgba(0,0,0,.30)";e.currentTarget.style.transform="translateY(-1px)";}} onMouseLeave={e=>{e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,.25)";e.currentTarget.style.transform="none";}} onMouseDown={e=>{e.currentTarget.style.transform="translateY(0)";}} onMouseUp={e=>{e.currentTarget.style.transform="translateY(-1px)";}} style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,borderLeft:isMine?`2px solid ${T.accent}`:`2px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:12,cursor:"pointer",boxShadow:"0 8px 24px rgba(0,0,0,.25)",transition:"box-shadow .2s ease, transform .2s ease"}}>
+    {/* Status row */}
+    {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
+    {/* Title row */}
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
       <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
-      {isMine&&<Badge c={T.accent}>{I.check()} Katılıyorsun</Badge>}
-      {m.friendJoined&&!isMine&&<Badge c={T.accent}>🤝 {m.friendJoined} katılıyor</Badge>}
     </div>
     {/* Date / location */}
     <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,marginBottom:8,flexWrap:"wrap",alignItems:"center",lineHeight:1.4}}>
@@ -146,8 +153,8 @@ function MatchListCard({m,onNav,isMine}){
         <span style={{fontSize:12,color:T.textDim}}>{host?.name?.split(" ")[0]}</span>
         <span style={{fontSize:11,color:T.textMuted}}>·</span>
         <Badge c={T.textDim}>{m.fmt}</Badge>
-        {m.level!=="Herkes"&&<Badge c={T.orange}>{m.level}</Badge>}
-        {m.mode==="approval"&&<Badge c={T.purple}>Onay gerekli</Badge>}
+        <Badge c={levelColor}>{levelLabel}</Badge>
+        <Badge c={acceptColor}>{acceptLabel}</Badge>
       </div>
       {almostFull&&<span style={{fontSize:11,fontWeight:700,color:T.text}}>Son {spotsLeft} yer!</span>}
     </div>
@@ -180,6 +187,7 @@ function S09({onNav}){
 // Icons for S10
 const I10={
   chevDown:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>,
+  arrowLeft:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15,18 9,12 15,6"/></svg>,
   chevUp:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,15 12,9 18,15"/></svg>,
   settings:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
   usersIcon:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,
@@ -323,7 +331,7 @@ function S10({onNav,onMinimize}){
   // ========== LIVE SCORE PAGE ==========
   if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
-      <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.chevDown(T.text)}</div>
+      <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.arrowLeft(T.text)}</div>
       <div style={{display:"flex",gap:8}}>
         <div onClick={()=>onNav("S10_TEAMS")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.usersIcon(T.textDim)} Takımlar</div>
         <div onClick={()=>onNav("S10_SETUP")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
@@ -424,7 +432,7 @@ function S14({onNav}){
           <div><div style={{fontWeight:700,fontSize:14,color:sel===l.id?l.c:T.text}}>{l.label}</div><div style={{fontSize:12,color:T.textDim}}>{l.desc}</div></div>
         </div>)}
       </div>
-      <Btn primary full disabled={!sel} onClick={()=>onNav("S12")} st={{marginTop:16}}>Katıl</Btn>
+      <Btn primary full disabled={!sel} onClick={()=>window.location.assign("/04_match_detail?view=S12")} st={{marginTop:16}}>Katıl</Btn>
     </div>
   </div>;
 }
@@ -620,6 +628,7 @@ export default function SporWaveMatches(){
   const [cur,setCur]=useState("S08");
   const [curId,setCurId]=useState(null);
   const [fade,setFade]=useState(true);
+  const [showUnrated,setShowUnrated]=useState(true);
   // Active match minimize state
   const [activeMatch,setActiveMatch]=useState({active:true,minimized:true,seconds:342,score:[2,1]});
 
@@ -644,12 +653,12 @@ export default function SporWaveMatches(){
 
   const pg=()=>{
     switch(cur){
-      case "S08":case "S09":case "S14":return <S08 onNav={nav}/>;
+      case "S08":case "S09":case "S14":return <S08 onNav={nav} showUnrated={showUnrated}/>;
       case "S10_SETUP":return <S10Setup onNav={nav}/>;
       case "S10_TEAMS":return <S10Teams onNav={nav}/>;
       case "S10":return <S10 onNav={nav} onMinimize={handleMinimize}/>;
       case "S31":return <S31 onNav={nav}/>;
-      default:return <S08 onNav={nav}/>;
+      default:return <S08 onNav={nav} showUnrated={showUnrated}/>;
     }
   };
 
@@ -657,6 +666,7 @@ export default function SporWaveMatches(){
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap",alignItems:"center"}}>
       {[{p:"S08",l:"Maçlar"},{p:"S09",l:"FAB Menu"},{p:"S10_SETUP",l:"Maç Başlat"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
       <span style={{marginLeft:"auto",width:1,height:16,background:T.cardBorder,flexShrink:0}}/>
+      <span onClick={()=>setShowUnrated(v=>!v)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${showUnrated?T.orange:"transparent"}`,background:showUnrated?`${T.orange}15`:`${T.textDim}22`,color:showUnrated?T.orange:T.textDim,cursor:"pointer"}}>⭐ Değerlendirme Maçı: {showUnrated?"ON":"OFF"}</span>
       <span onClick={()=>setActiveMatch(prev=>({...prev,active:!prev.active,minimized:!prev.active}))} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${activeMatch.active?T.accent:"transparent"}`,background:activeMatch.active?`${T.accent}15`:`${T.textDim}22`,color:activeMatch.active?T.accent:T.textDim,cursor:"pointer"}}>▶ Aktif Maç: {activeMatch.active?"ON":"OFF"}</span>
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>

@@ -665,6 +665,11 @@ export default function SporWaveMatchDetail(){
   const [fade,setFade]=useState(true);
 
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
+  useEffect(()=>{
+    const view=new URLSearchParams(window.location.search).get("view");
+    const allowed=["S11","S12","S13","S40","S30"];
+    if(view&&allowed.includes(view))setCur(view);
+  },[]);
 
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
