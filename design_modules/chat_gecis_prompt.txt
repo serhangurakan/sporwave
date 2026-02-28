@@ -1,17 +1,21 @@
 SporWave interactive prototype geliştiriyoruz. Modül bazlı ayrı artifact'ler yapıyoruz.
 
+Sayfa geliştirildiyse ☑️
+Design tamamlandıysa ✅
+
 TAMAMLANAN MODÜLLER:
 - Modül 1: Auth & Onboarding (S01-S04, S32) ✅
 - Modül 2: Feed & Arama (S05, S07, S33, S42, S43) ✅
-- Modül 3: Maçlar Core (S08, S09, S10, S14, S31) ✅
+- Modül 3: Maçlar Core (S08, S09, S10, S14, S31) ☑️
+- Modül 4: Maç Detay (S11, S12, S13, S40, S41, S30) ☑️
 
 SIRADAKI MODÜL: [X numaralı modül]
 
 MODÜL PLANI:
 1. Auth & Onboarding → S01-S04, S32 ✅
 2. Feed & Arama → S05, S07, S33, S42, S43 ✅
-3. Maçlar Core → S08, S09, S10, S14, S31 ✅
-4. Maç Detay → S11, S12, S13, S40, S41, S30
+3. Maçlar Core → S08, S09, S10, S14, S31 ☑️
+4. Maç Detay → S11, S12, S13, S40, S41, S30 ☑️
 5. Profil → S15, S16, S22, S23
 6. Mesajlaşma & Bildirimler → S17-S19, S35
 7. Ayarlar & Güvenlik → S20, S21, S24-S29, S34
