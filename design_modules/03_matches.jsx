@@ -72,8 +72,8 @@ function S08({onNav}){
   const openMatches=PLANNED.filter(m=>!m.myMatch);
 
   return <div style={{paddingBottom:80}}>
-    {/* Header */}
-    <div style={{padding:"14px 16px 8px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+    {/* Header — sticky */}
+    <div style={{position:"sticky",top:32,zIndex:50,padding:"14px 16px 8px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)"}}>
       <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
       <span onClick={()=>setFilter(!filter)} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}15`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
     </div>
@@ -115,8 +115,6 @@ function S08({onNav}){
         <div style={{textAlign:"center",padding:"32px 0"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>}
     </div>
 
-    {/* FAB */}
-    <div onClick={()=>onNav("S09")} style={{position:"fixed",bottom:72,right:24,width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,zIndex:90,maxWidth:430,transition:"transform .2s"}}>{I.plus(T.bg)}</div>
   </div>;
 }
 
@@ -152,9 +150,9 @@ function MatchListCard({m,onNav,isMine}){
 
 // S09: Bottom Sheet
 function S09({onNav}){
-  return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,zIndex:150,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+  return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
     <div onClick={()=>onNav("S08")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
-    <div style={{position:"relative",width:"100%",maxWidth:430,background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:151}}>
+    <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",marginBottom:56,zIndex:151}}>
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:20,fontFamily:FH}}>Ne yapmak istiyorsun?</div>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
@@ -324,9 +322,9 @@ function S14({onNav}){
     {id:"good",icon:"🔥",label:"İyi",desc:"Deneyimliyim",c:T.orange},
     {id:"pro",icon:"🏆",label:"Profesyonel",desc:"Yarışma seviyesi",c:T.gold},
   ];
-  return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,zIndex:150,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+  return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
     <div onClick={()=>onNav("S08")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
-    <div style={{position:"relative",width:"100%",maxWidth:430,background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:151}}>
+    <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",marginBottom:56,zIndex:151}}>
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:4,fontFamily:FH}}>Deneyim Seviyeni Seç</div>
       <div style={{fontSize:13,color:T.textDim,marginBottom:20}}>Maç sahibi seviyeni görerek karar verecek</div>
@@ -342,17 +340,27 @@ function S14({onNav}){
 }
 
 // S31: Create Match (4 Steps)
+const LOC_RESULTS=[
+  {id:"l1",name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy"},
+  {id:"l2",name:"Kadıköy Arena Halısaha",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy"},
+  {id:"l3",name:"Kadıköy Sahil Halısaha",addr:"Osmanağa Mah. Bahariye Cad. No:78, Kadıköy"},
+  {id:"l4",name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş"},
+  {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir"},
+];
+
 function S31({onNav}){
   const [step,setStep]=useState(0);
   const [fmt,setFmt]=useState("6v6");
-  const [locMode,setLocMode]=useState(null);
+  const [locQuery,setLocQuery]=useState("");
+  const [selectedLoc,setSelectedLoc]=useState(null);
+  const [locSkipped,setLocSkipped]=useState(false);
   const [privacy,setPrivacy]=useState("public");
   const [accept,setAccept]=useState("open");
   const [invites,setInvites]=useState([]);
 
   const fmts=["5v5","6v6","7v7","Özel"];
   const privacyOpts=[{id:"public",l:"Herkese açık"},{id:"followers",l:"Sadece takipçilere"},{id:"invite",l:"Sadece davet ile"}];
-  const locModes=[{id:"known",l:"Saha Biliyorum",ic:"📍"},{id:"suggest",l:"Önerisine Açığım",ic:"🗺️"},{id:"none",l:"Konumsuz",ic:"❌"}];
+  const locFiltered=locQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(locQuery.toLowerCase())||l.addr.toLowerCase().includes(locQuery.toLowerCase())):[];
 
   return <div style={{paddingBottom:40}}>
     <div style={{padding:"12px 16px 0"}}>
@@ -389,12 +397,38 @@ function S31({onNav}){
         <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 14px"}}><input type="time" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",colorScheme:"dark"}}/></div>
       </div>
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Konum</div>
-      <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:24}}>
-        {locModes.map(l=><div key={l.id} onClick={()=>setLocMode(l.id)} style={{padding:"14px 16px",borderRadius:12,background:locMode===l.id?`${T.accent}10`:T.card,border:`1.5px solid ${locMode===l.id?T.accent:T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",gap:12}}>
-          <span style={{fontSize:20}}>{l.ic}</span>
-          <span style={{fontSize:14,fontWeight:locMode===l.id?700:500,color:locMode===l.id?T.accent:T.text}}>{l.l}</span>
-        </div>)}
+      {!selectedLoc&&!locSkipped?<>
+        {/* Search input */}
+        <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 14px",display:"flex",alignItems:"center",gap:10,transition:"border-color .2s",marginBottom:locFiltered.length>0?0:8}}>
+          {I.pin(locQuery.length>=2?T.accent:T.textDim)}
+          <input value={locQuery} onChange={e=>{setLocQuery(e.target.value);}} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
+          {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
+        </div>
+        {/* Autocomplete results */}
+        {locFiltered.length>0&&<div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 12px 12px",marginBottom:8,overflow:"hidden"}}>
+          {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc(loc);setLocQuery("");}} style={{padding:"12px 14px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:10,borderTop:i>0?`1px solid ${T.cardBorder}22`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+            <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
+            <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
+          </div>)}
+        </div>}
+        {locQuery.length>=2&&locFiltered.length===0&&<div style={{padding:"12px 0 8px",textAlign:"center",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+        {/* Skip option */}
+        <div onClick={()=>setLocSkipped(true)} style={{textAlign:"center",padding:"8px 0",fontSize:13,color:T.textDim,cursor:"pointer",marginBottom:16}}>Konumu sonra belirle</div>
+      </>
+      :selectedLoc?<div style={{marginBottom:24}}>
+        <div style={{background:`${T.green}10`,borderRadius:12,border:`1.5px solid ${T.green}33`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
+          {I.pin(T.green)}
+          <div style={{flex:1}}><div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{selectedLoc.addr}</div></div>
+          <span onClick={()=>{setSelectedLoc(null);setLocSkipped(false);}} style={{fontSize:12,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
+        </div>
       </div>
+      :<div style={{marginBottom:24}}>
+        <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
+          {I.pin(T.textMuted)}
+          <span style={{fontSize:14,color:T.textDim,flex:1}}>Konum sonra belirlenecek</span>
+          <span onClick={()=>{setLocSkipped(false);}} style={{fontSize:12,color:T.accent,fontWeight:600,cursor:"pointer"}}>Ekle</span>
+        </div>
+      </div>}
       <Btn primary full onClick={()=>setStep(2)}>Devam</Btn>
     </div>}
 
@@ -430,7 +464,7 @@ function S31({onNav}){
         <div style={{flex:1}}><div style={{fontSize:14,color:T.text,fontWeight:500}}>{u.name}</div><div style={{fontSize:11,color:T.textDim}}>%{u.att} katılım</div></div>
         <Btn small primary={!invites.includes(u.id)} onClick={()=>setInvites(p=>p.includes(u.id)?p:[ ...p,u.id])} st={invites.includes(u.id)?{background:`${T.green}22`,color:T.green,border:`1.5px solid ${T.green}44`}:{}}>{invites.includes(u.id)?"Gönderildi ✓":"Davet Et"}</Btn>
       </div>)}
-      <Btn primary full onClick={()=>onNav("S08")} st={{marginTop:20}}>Yayınla 📢</Btn>
+      <Btn primary full onClick={()=>onNav("S08")} st={{marginTop:20}}>Yayınla</Btn>
       <div onClick={()=>onNav("S08")} style={{textAlign:"center",marginTop:12,fontSize:13,color:T.textDim,cursor:"pointer"}}>Atla</div>
     </div>}
   </div>;
@@ -448,24 +482,28 @@ export default function SporWaveMatches(){
 
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
+  const isMatchesView=["S08","S09","S14"].includes(cur);
+
   const pg=()=>{
     switch(cur){
-      case "S08":return <S08 onNav={nav}/>;
-      case "S09":return <><S08 onNav={nav}/><S09 onNav={nav}/></>;
+      case "S08":case "S09":case "S14":return <S08 onNav={nav}/>;
       case "S10":return <S10 onNav={nav}/>;
-      case "S14":return <><S08 onNav={nav}/><S14 onNav={nav}/></>;
       case "S31":return <S31 onNav={nav}/>;
       default:return <S08 onNav={nav}/>;
     }
   };
 
-  const showTabs=["S08","S09","S14"].includes(cur);
-
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 60px rgba(0,0,0,.5)"}}>
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4}}>
       {[{p:"S08",l:"Maçlar"},{p:"S09",l:"FAB Menu"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
-    <div style={{opacity:fade?1:0,transform:fade?"translateY(0)":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
-    {showTabs&&<TabBar active="S08" onNav={nav}/>}
+    <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
+    {/* Fixed elements OUTSIDE transform div */}
+    {isMatchesView&&<div style={{position:"fixed",bottom:72,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
+      <div onClick={()=>nav("S09")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus(T.bg)}</div>
+    </div>}
+    {cur==="S09"&&<S09 onNav={nav}/>}
+    {cur==="S14"&&<S14 onNav={nav}/>}
+    {isMatchesView&&<TabBar active="S08" onNav={nav}/>}
   </div>;
 }
