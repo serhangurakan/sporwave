@@ -111,7 +111,18 @@ function Av({i,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style=
 function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?T.bg:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}22`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textDim,fontWeight:600,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
-function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer",padding:"6px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
+function TabBar({active,onNav}){
+  const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];
+  const handleTabClick=(tabId)=>{
+    if(tabId==="S05"){window.location.assign("/02_feed");return;}
+    if(tabId==="S15"){window.location.assign("/05_profile");return;}
+    if(tabId==="S08"){onNav("S08");return;}
+    onNav(tabId);
+  };
+  return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",zIndex:100,maxWidth:430,margin:"0 auto"}}>
+    {tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,cursor:"pointer",padding:"8px 0"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}
+  </div>;
+}
 
 // ============================================================
 // S11: Geçmiş Maç Detay (Oynanmış)
@@ -150,7 +161,7 @@ function S11({onNav}){
     </div>;
   };
 
-  return <div style={{paddingBottom:40}}>
+  return <div style={{paddingBottom:80}}>
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
@@ -384,7 +395,7 @@ function S13({onNav}){
   const approve=(uid)=>{setPending(p=>p.filter(x=>x.uid!==uid));setApproved(a=>[...a,uid]);};
   const reject=(uid)=>{setPending(p=>p.filter(x=>x.uid!==uid));};
 
-  return <div style={{paddingBottom:40}}>
+  return <div style={{paddingBottom:80}}>
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
@@ -455,7 +466,7 @@ function S40({onNav}){
     </div>;
   }
 
-  return <div style={{paddingBottom:40}}>
+  return <div style={{paddingBottom:80}}>
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
@@ -564,7 +575,7 @@ function S30({onNav}){
   const myStats=m.goals.reduce((acc,g)=>{if(g.scorer===1)acc.g++;if(g.assist===1)acc.a++;return acc;},{g:0,a:0});
   const mvps=m.mvp.map(id=>uf(id));
 
-  return <div style={{paddingBottom:40}}>
+  return <div style={{paddingBottom:80}}>
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
@@ -675,5 +686,6 @@ export default function SporWaveMatchDetail(){
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {cur==="S41"&&<S41 onNav={nav}/>}
+    <TabBar active="S08" onNav={nav}/>
   </div>;
 }

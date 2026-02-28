@@ -372,7 +372,7 @@ function S05({ onNav, mode, setMode }) {
       {feed.length>0 ? <>
         {/* İlk post */}
         <PostCard post={feed[0]} onNav={onNav}/>
-        {(mode==="explore"||feed.length>1)&&<div style={{height:8,background:T.card}}/>}
+        {mode==="explore"&&<div style={{height:8,background:T.card}}/>}
         {/* Önerilen Kullanıcılar — ilk posttan sonra, sadece Keşfet modunda */}
         {mode==="explore"&&<div style={{padding:"16px 16px 16px"}}>
           <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:12,textTransform:"uppercase",letterSpacing:.5}}>Önerilen Kullanıcılar</div>
