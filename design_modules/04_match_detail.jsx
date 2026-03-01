@@ -279,6 +279,7 @@ function S12({onNav}){
   const [showEditDrawer,setShowEditDrawer]=useState(false);
   const [showInviteDrawer,setShowInviteDrawer]=useState(false);
   const [showDotsMenu,setShowDotsMenu]=useState(false);
+  const [removeConfirm,setRemoveConfirm]=useState(null); // uid to confirm removal
   const [editForm,setEditForm]=useState({date:m.date,time:m.time,loc:m.loc,fmt:m.fmt,level:m.level,vis:m.vis});
   const [inviteQ,setInviteQ]=useState("");
   const [inviteSent,setInviteSent]=useState([]);
@@ -295,12 +296,18 @@ function S12({onNav}){
     else if(team==="B"&&tB.length<teamSize){setTB(b=>[...b.filter(x=>x!==uid),uid]);setTA(a=>a.filter(x=>x!==uid));}
     setDragTarget(null);
   };
-  // Host: remove player from match
+  // Host: unassign player from team (move back to Katılımcılar)
+  const unassignPlayer=(uid)=>{
+    setTA(a=>a.filter(x=>x!==uid));
+    setTB(b=>b.filter(x=>x!==uid));
+  };
+  // Host: remove player from match entirely
   const removePlayer=(uid)=>{
     setPlayers(p=>p.filter(x=>x!==uid));
     setTA(a=>a.filter(x=>x!==uid));
     setTB(b=>b.filter(x=>x!==uid));
     setJoined(j=>j-1);
+    setRemoveConfirm(null);
   };
   // Host: leave match → transfer to earliest joined player
   const hostLeave=()=>{
@@ -347,7 +354,7 @@ function S12({onNav}){
       <div style={{position:"relative"}}>
         <Av i={u.av} s={36} c={isDragging?T.accent:teamColor}/>
         {isHost&&uid!==m.host&&<div
-          onClick={e=>{e.stopPropagation();removePlayer(uid);}}
+          onClick={e=>{e.stopPropagation();unassignPlayer(uid);}}
           style={{position:"absolute",top:-4,right:-4,width:16,height:16,borderRadius:"50%",background:T.textMuted,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}
         ><span style={{color:"#fff",fontSize:9,fontWeight:700,lineHeight:1}}>✕</span></div>}
       </div>
@@ -502,7 +509,7 @@ function S12({onNav}){
                 <span style={{fontSize:11,color:T.textMuted}}>%{u.att} katılım</span>
               </div>
             </div>
-            {isHost&&uid!==m.host&&<span onClick={e=>{e.stopPropagation();removePlayer(uid);}} style={{cursor:"pointer",display:"flex",padding:4,color:T.textMuted,fontSize:16,fontWeight:700}}>✕</span>}
+            {isHost&&uid!==m.host&&<span onClick={e=>{e.stopPropagation();setRemoveConfirm(uid);}} style={{cursor:"pointer",display:"flex",padding:4,color:T.textMuted,fontSize:16,fontWeight:700}}>✕</span>}
             {isDragging&&<span style={{fontSize:10,color:T.accent,fontWeight:600}}>→ Takım seç</span>}
           </div>;
         })}
@@ -517,6 +524,18 @@ function S12({onNav}){
         <div style={{display:"flex",gap:8}}>
           <Btn full danger onClick={()=>{setCancelConfirm(false);window.location.assign("/03_matches");}} st={{flex:1}}>Evet, İptal Et</Btn>
           <Btn full onClick={()=>setCancelConfirm(false)} st={{flex:1}}>Vazgeç</Btn>
+        </div>
+      </div>
+    </div>}
+
+    {/* Remove player confirm modal (host) */}
+    {removeConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
+      <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:360,width:"100%",border:`1px solid ${T.cardBorder}`}}>
+        <div style={{fontSize:16,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:8}}>Oyuncuyu Çıkar</div>
+        <div style={{fontSize:13,color:T.textDim,marginBottom:20}}><span style={{fontWeight:700,color:T.text}}>{uf(removeConfirm)?.name}</span> kişisini maçtan çıkartmak istediğinize emin misiniz?</div>
+        <div style={{display:"flex",gap:8}}>
+          <Btn full danger onClick={()=>removePlayer(removeConfirm)} st={{flex:1}}>Çıkar</Btn>
+          <Btn full onClick={()=>setRemoveConfirm(null)} st={{flex:1}}>İptal</Btn>
         </div>
       </div>
     </div>}
