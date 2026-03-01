@@ -309,7 +309,7 @@ Ana Sayfa tab'ında:
 
 **Sayfa yapısı (tek akış, bölüm başlığı yok):**
 
-**Üstte sağ:** Filtre ikonu 🔽 (tıklayınca filtre popup açılır)
+**Üstte sağ:** Şehir seçici (1px border, pin ikonu + kullanıcının profilindeki şehir; tıklayınca şehirler listesi açılır, değiştirilebilir) + Filtre ikonu 🔽 (tıklayınca filtre popup açılır)
 
 **Filtre Popup (bottom sheet):**
 - **Konum:** İlçe seçici (çoklu seçim)

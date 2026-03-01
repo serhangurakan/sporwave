@@ -78,13 +78,29 @@ function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{
 // S08: Matches Page
 function S08({onNav,showUnrated,hasActiveWidget}){
   const [filter,setFilter]=useState(false);
+  const cities=["İstanbul","Ankara","İzmir","Bursa","Antalya","Adana","Konya","Gaziantep","Mersin","Kayseri","Eskişehir","Trabzon","Samsun","Denizli","Sakarya"];
+  const [city,setCity]=useState("İstanbul");
+  const [cityOpen,setCityOpen]=useState(false);
 
   return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
     <div style={{position:"sticky",top:32,zIndex:50,padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
       <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
-      <span onClick={()=>setFilter(!filter)} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <div onClick={()=>setCityOpen(!cityOpen)} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:4,padding:"4px 10px",borderRadius:8,border:`1px solid ${T.cardBorder}`,background:cityOpen?`${T.accent}10`:"transparent"}}>
+          {I.pin(cityOpen?T.accent:T.textDim)}<span style={{fontSize:12,fontWeight:600,color:cityOpen?T.accent:T.textDim}}>{city}</span>
+        </div>
+        <span onClick={()=>setFilter(!filter)} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
+      </div>
     </div>
+
+    {/* City picker dropdown */}
+    {cityOpen&&<div style={{position:"sticky",top:76,zIndex:49,margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:12,maxHeight:240,overflowY:"auto"}}>
+      {cities.map(c=><div key={c} onClick={()=>{setCity(c);setCityOpen(false);}} style={{padding:"10px 12px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",gap:8,background:city===c?`${T.accent}12`:"transparent",transition:"background .15s"}} onMouseEnter={e=>{if(city!==c)e.currentTarget.style.background=`${T.textDim}10`;}} onMouseLeave={e=>{if(city!==c)e.currentTarget.style.background="transparent";}}>
+        {I.pin(city===c?T.accent:T.textMuted)}<span style={{fontSize:13,fontWeight:city===c?700:500,color:city===c?T.accent:T.text}}>{c}</span>
+        {city===c&&<span style={{marginLeft:"auto",fontSize:14,color:T.accent}}>✓</span>}
+      </div>)}
+    </div>}
 
     {/* Filter popup */}
     {filter&&<div style={{margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:16}}>
@@ -613,7 +629,7 @@ export default function SporWaveMatches(){
   const [fade,setFade]=useState(true);
   const [showUnrated,setShowUnrated]=useState(false);
   // Active match minimize state
-  const [activeMatch,setActiveMatch]=useState({active:true,minimized:true,seconds:342,score:[2,1]});
+  const [activeMatch,setActiveMatch]=useState({active:false,minimized:false,seconds:0,score:[0,0]});
 
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
   useEffect(()=>{
