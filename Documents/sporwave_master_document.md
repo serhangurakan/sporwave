@@ -388,7 +388,9 @@ Ana Sayfa tab'ında:
   1. **"▶ Maç Başlat"** — "Hemen oynayacağın bir maçı başlat ve skor tut" (accent border + play ikonu)
   2. **"📢 Maç Oluştur"** — "İleri tarihli maç planla ve oyuncu bul" (purple border + megaphone ikonu)
 - Kart padding: `14px 16px`, başlık `fontSize:16, fontWeight:700, FH`, açıklama `fontSize:12, FB`
-- Kart tıklanınca ilgili akışa geçiş
+- Kart tıklanınca ilgili akışa geçiş:
+  - "Maç Başlat" → doğrudan S10 Canlı Skor sayfasına geçiş
+  - "Maç Oluştur" → maç oluşturma akışına geçiş
 
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
@@ -418,7 +420,7 @@ Ana Sayfa tab'ında:
 
 **Canlı Skor Sayfası (ayrı sayfa):**
 - **Sol üstte ← geri ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde)
-- **Takımlar & Maç Ayarları butonları:** Üstte 2 buton — "Takımlar" (takım kurulumuna döner) ve "Maç Ayarları" (maç kurulumuna döner)
+- **Ayarlar butonu:** Sağ üstte tek buton — "Ayarlar" (S12 Planlanan Maç detay sayfasına yönlendirir)
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
 - **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)
 - Her takım için **"+ Gol"** butonu (büyük, kolay tıklanabilir, takım rengiyle)
@@ -508,7 +510,7 @@ Ana Sayfa tab'ında:
   1. Paylaş
   2. Maç Sohbeti
   3. 👑 Host Devral
-  4. ▶ Maçı Başlat (primary, en altta)
+  4. ▶ Maçı Başlat (primary, en altta) — **Not:** Maç "Oynanıyor" durumundaysa bu buton gizlenir
 - **CTA Butonları (katılmamışsan / misafir) — sırayla:**
   1. Paylaş
   2. Maça Katıl (X yer kaldı) (primary, en altta)
@@ -516,7 +518,7 @@ Ana Sayfa tab'ında:
   1. Paylaş
   2. Başvuruları Gör (onay modundaysa)
   3. Oyuncu Davet Et (tıklanınca bottom drawer açılır — arkadaş listesinden davet)
-  4. ▶ Maçı Başlat (primary, en altta)
+  4. ▶ Maçı Başlat (primary, en altta) — **Not:** Maç "Oynanıyor" durumundaysa bu buton gizlenir
 
 **Host Devralma Mekanizması:**
 - Maçın katılımcıları (host hariç) "👑 Host Devral" butonuna basarak host olmak için oylama başlatabilir

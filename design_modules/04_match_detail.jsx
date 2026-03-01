@@ -267,6 +267,7 @@ function S12({onNav}){
   const host=uf(m.host);
   // viewMode: "host" | "player" | "guest"
   const [viewMode,setViewMode]=useState("host");
+  const [matchState,setMatchState]=useState("planning"); // "planning" | "playing"
   const isHost=viewMode==="host";
   const isPlayer=viewMode==="host"||viewMode==="player";
   const remaining=m.max-m.joined;
@@ -384,6 +385,8 @@ function S12({onNav}){
     <div style={{background:`${T.cardBorder}44`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>STATE:</span>
       {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?T.bg:T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
+      <span style={{width:1,height:14,background:T.textMuted,margin:"0 2px"}}/>
+      {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?(s==="playing"?T.green:`${T.textDim}22`):`${T.textDim}22`,color:matchState===s?(s==="playing"?"#fff":T.textDim):T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
     </div>
 
     {/* Header */}
@@ -596,12 +599,12 @@ function S12({onNav}){
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         {m.mode==="approval"&&<Btn full onClick={()=>onNav("S13")} st={{marginBottom:8}}>Başvuruları Gör</Btn>}
         <Btn full onClick={()=>setShowInviteDrawer(true)} st={{marginBottom:8}}>Oyuncu Davet Et</Btn>
-        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
+        {matchState!=="playing"&&<Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
       </>:isPlayer?<>
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
         <Btn full st={{marginBottom:8}}>{I.crown(T.gold)} Host Devral</Btn>
-        <Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
+        {matchState!=="playing"&&<Btn full primary onClick={()=>onNav("S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
       </>:<>
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         <Btn full primary onClick={joinMatch} st={{marginBottom:8}}>Maça Katıl ({m.max-joined} yer kaldı)</Btn>

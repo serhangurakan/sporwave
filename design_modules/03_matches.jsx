@@ -178,7 +178,7 @@ function S09({onNav}){
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:20,fontFamily:FH}}>Ne yapmak istiyorsun?</div>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
-        <div onClick={()=>onNav("S10_SETUP")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
+        <div onClick={()=>onNav("S10")} style={{background:T.bg,borderRadius:16,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer",display:"flex",gap:16,alignItems:"center",transition:"border-color .2s"}}>
           <div style={{width:52,height:52,borderRadius:14,background:"transparent",border:`1.5px solid ${T.accent}`,display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="24" height="24" viewBox="0 0 24 24" fill={T.accent} style={{marginLeft:2}}><polygon points="5,3 19,12 5,21"/></svg></div>
           <div><div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>Maç Başlat</div><div style={{fontSize:12,color:T.textDim,marginTop:3,fontFamily:FB}}>Hemen oynayacağın bir maçı başlat ve skor tut</div></div>
         </div>
@@ -426,10 +426,7 @@ function S10({onNav,onMinimize,onEndMatch}){
   if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
       <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.arrowLeft(T.text)}</div>
-      <div style={{display:"flex",gap:8}}>
-        <div onClick={()=>onNav("S10_TEAMS")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.usersIcon(T.textDim)} Takımlar</div>
-        <div onClick={()=>onNav("S10_SETUP")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
-      </div>
+      <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
     </div>
 
     <div style={{textAlign:"center",marginBottom:20}}>
