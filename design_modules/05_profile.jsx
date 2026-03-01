@@ -11,16 +11,28 @@ import T from "./theme.js";
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
+// Avatar images
+const AVATARS=[
+  "/assets/images/avatars/avatar_01.jpg",
+  "/assets/images/avatars/avatar_02.jpg",
+  "/assets/images/avatars/avatar_03.jpg",
+  "/assets/images/avatars/avatar_04.jpg",
+  "/assets/images/avatars/avatar_05.jpeg",
+  "/assets/images/avatars/avatar_06.jpg",
+  "/assets/images/avatars/avatar_07.jpg",
+  "/assets/images/avatars/avatar_08.jpg",
+];
+
 // Mock Users
 const U=[
-  {id:1,name:"Berk Yılmaz",un:"berk26",av:"BY",att:94,bio:"Halısaha tutkunu. Haftada 3 maç.",city:"Kadıköy",sports:["Futbol","Basketbol"],ig:"berk.ylmz",tw:"",gender:"Erkek",bday:"26.04.1998",followers:128,following:85,matches:47,goals:31,assists:18,wins:28,losses:12,draws:7,mvp:8,verified:true},
-  {id:2,name:"Ali Demir",un:"alidemir",av:"AD",att:88,bio:"Defans oynarım.",city:"Beşiktaş",sports:["Futbol"],ig:"ali.dmr",tw:"",gender:"Erkek",bday:"12.09.1996",followers:64,following:42,matches:32,goals:5,assists:12,wins:18,losses:10,draws:4,mvp:2,verified:false},
-  {id:3,name:"Mehmet Kaya",un:"mkaya",av:"MK",att:91,bio:"Kaleci. Pazar sabahları müsaitim.",city:"Üsküdar",sports:["Futbol","Voleybol"],ig:"",tw:"",gender:"Erkek",bday:"03.01.1995",followers:95,following:60,matches:28,goals:0,assists:3,wins:15,losses:8,draws:5,mvp:5,verified:true},
-  {id:4,name:"Emre Çelik",un:"emrecelik",av:"EÇ",att:96,bio:"Forvet. Gol krallığı yarışında.",city:"Kadıköy",sports:["Futbol"],ig:"emre.celik",tw:"emrecelik_",gender:"Erkek",bday:"15.07.1997",followers:210,following:112,matches:41,goals:52,assists:24,wins:30,losses:7,draws:4,mvp:12,verified:true},
-  {id:5,name:"Can Yıldız",un:"canyildiz",av:"CY",att:85,bio:"Yeni başladım ama bırakmam.",city:"Ataşehir",sports:["Futbol"],ig:"",tw:"",gender:"Erkek",bday:"22.11.2000",followers:18,following:35,matches:4,goals:2,assists:1,wins:2,losses:1,draws:1,mvp:0,verified:false},
-  {id:6,name:"Oğuz Han",un:"oguzhan",av:"OH",att:92,bio:"Orta saha patronu.",city:"Beşiktaş",sports:["Futbol","Tenis"],ig:"oguz_han",tw:"",gender:"Erkek",bday:"08.03.1994",followers:145,following:78,matches:36,goals:14,assists:28,wins:22,losses:9,draws:5,mvp:6,verified:false},
-  {id:7,name:"Kerem Aktaş",un:"keremm",av:"KA",att:78,bio:"",city:"Maltepe",sports:["Futbol"],ig:"",tw:"",gender:"Erkek",bday:"19.06.2001",followers:12,following:29,matches:14,goals:3,assists:2,wins:6,losses:5,draws:3,mvp:0,verified:false},
-  {id:8,name:"Burak Şen",un:"buraksen",av:"BŞ",att:90,bio:"Hızlı kanat.",city:"Kadıköy",sports:["Futbol","Basketbol"],ig:"burak.sen",tw:"",gender:"Erkek",bday:"11.12.1999",followers:73,following:55,matches:22,goals:11,assists:15,wins:14,losses:5,draws:3,mvp:3,verified:false},
+  {id:1,name:"Berk Yılmaz",un:"berk26",av:"BY",img:AVATARS[0],att:94,bio:"Halısaha tutkunu. Haftada 3 maç.",city:"Kadıköy",sports:["Futbol","Basketbol"],ig:"berk.ylmz",tw:"",gender:"Erkek",bday:"26.04.1998",followers:128,following:85,matches:47,goals:31,assists:18,wins:28,losses:12,draws:7,mvp:8,verified:true},
+  {id:2,name:"Ali Demir",un:"alidemir",av:"AD",img:AVATARS[1],att:88,bio:"Defans oynarım.",city:"Beşiktaş",sports:["Futbol"],ig:"ali.dmr",tw:"",gender:"Erkek",bday:"12.09.1996",followers:64,following:42,matches:32,goals:5,assists:12,wins:18,losses:10,draws:4,mvp:2,verified:false},
+  {id:3,name:"Mehmet Kaya",un:"mkaya",av:"MK",img:AVATARS[2],att:91,bio:"Kaleci. Pazar sabahları müsaitim.",city:"Üsküdar",sports:["Futbol","Voleybol"],ig:"",tw:"",gender:"Erkek",bday:"03.01.1995",followers:95,following:60,matches:28,goals:0,assists:3,wins:15,losses:8,draws:5,mvp:5,verified:true},
+  {id:4,name:"Emre Çelik",un:"emrecelik",av:"EÇ",img:AVATARS[3],att:96,bio:"Forvet. Gol krallığı yarışında.",city:"Kadıköy",sports:["Futbol"],ig:"emre.celik",tw:"emrecelik_",gender:"Erkek",bday:"15.07.1997",followers:210,following:112,matches:41,goals:52,assists:24,wins:30,losses:7,draws:4,mvp:12,verified:true},
+  {id:5,name:"Can Yıldız",un:"canyildiz",av:"CY",img:AVATARS[4],att:85,bio:"Yeni başladım ama bırakmam.",city:"Ataşehir",sports:["Futbol"],ig:"",tw:"",gender:"Erkek",bday:"22.11.2000",followers:18,following:35,matches:4,goals:2,assists:1,wins:2,losses:1,draws:1,mvp:0,verified:false},
+  {id:6,name:"Oğuz Han",un:"oguzhan",av:"OH",img:AVATARS[5],att:92,bio:"Orta saha patronu.",city:"Beşiktaş",sports:["Futbol","Tenis"],ig:"oguz_han",tw:"",gender:"Erkek",bday:"08.03.1994",followers:145,following:78,matches:36,goals:14,assists:28,wins:22,losses:9,draws:5,mvp:6,verified:false},
+  {id:7,name:"Kerem Aktaş",un:"keremm",av:"KA",img:AVATARS[6],att:78,bio:"",city:"Maltepe",sports:["Futbol"],ig:"",tw:"",gender:"Erkek",bday:"19.06.2001",followers:12,following:29,matches:14,goals:3,assists:2,wins:6,losses:5,draws:3,mvp:0,verified:false},
+  {id:8,name:"Burak Şen",un:"buraksen",av:"BŞ",img:AVATARS[7],att:90,bio:"Hızlı kanat.",city:"Kadıköy",sports:["Futbol","Basketbol"],ig:"burak.sen",tw:"",gender:"Erkek",bday:"11.12.1999",followers:73,following:55,matches:22,goals:11,assists:15,wins:14,losses:5,draws:3,mvp:3,verified:false},
 ];
 const ME=U[0]; // Berk = logged-in user
 const uf=id=>U.find(u=>u.id===id);
@@ -41,13 +53,13 @@ const mf=id=>M.find(m=>m.id===id);
 
 // Mock: Match posts (two-layer: match data + personal post)
 const POSTS=[
-  {id:1,matchId:1,userId:1,caption:"Ev sahibi olarak güzel bir maçtı!",photos:2,likes:8,coms:3,likedByMe:false,status:"visible",
+  {id:1,matchId:1,userId:1,caption:"Ev sahibi olarak güzel bir maçtı!",photos:2,imgs:["/assets/images/posts/sporwave_sample_photo_01.jpeg","/assets/images/posts/sporwave_sample_photo_02.jpeg"],likes:8,coms:3,likedByMe:false,status:"visible",
     likers:[4,2,3,5,6,7,8],
     comments:[{uid:4,text:"Süper organizasyondu 👏",t:"2sa"},{uid:2,text:"Tekrar yapalım!",t:"1sa"}]},
   {id:2,matchId:3,userId:1,caption:"Beraberlik de güzel",photos:0,likes:4,coms:1,likedByMe:false,status:"visible",
     likers:[2,6,5,8],
     comments:[{uid:6,text:"Hakem kötüydü ama olsun",t:"4sa"}]},
-  {id:3,matchId:6,userId:1,caption:null,photos:1,likes:6,coms:2,likedByMe:false,status:"hidden",
+  {id:3,matchId:6,userId:1,caption:null,photos:1,imgs:["/assets/images/posts/sporwave_sample_photo_03.jpeg"],likes:6,coms:2,likedByMe:false,status:"hidden",
     likers:[3,7,8,5,6,2],
     comments:[{uid:3,text:"Kalede sağlamdım",t:"1g"},{uid:8,text:"Güzel maçtı",t:"1g"}]},
   {id:4,matchId:7,userId:1,caption:"Çok zevkli maçtı!",photos:0,likes:11,coms:5,likedByMe:false,status:"visible",
@@ -56,7 +68,7 @@ const POSTS=[
   {id:5,matchId:1,userId:4,caption:"MVP seçilmek güzel hissettirdi",photos:0,likes:12,coms:4,likedByMe:false,status:"visible",
     likers:[1,2,3,5,6,7,8,4],
     comments:[{uid:1,text:"Hak ettin MVP'yi 👏",t:"2sa"},{uid:3,text:"Skor gerçekçi değil 😂",t:"45dk"}]},
-  {id:6,matchId:8,userId:4,caption:"Hat-trick! Formun zirvesi.",photos:1,likes:18,coms:7,likedByMe:false,status:"visible",
+  {id:6,matchId:8,userId:4,caption:"Hat-trick! Formun zirvesi.",photos:1,imgs:["/assets/images/posts/sporwave_sample_photo_04.jpeg"],likes:18,coms:7,likedByMe:false,status:"visible",
     likers:[1,2,3,5,6,7,8],
     comments:[{uid:1,text:"Durdurulamıyorsun",t:"5sa"},{uid:8,text:"Asistler de güzeldi",t:"4sa"}]},
   {id:7,matchId:9,userId:4,caption:null,photos:0,likes:5,coms:2,likedByMe:false,status:"visible",
@@ -109,29 +121,32 @@ const I={
 };
 
 // Shared Components
-function Av({i,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{i}</div>;}
+function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:"none",color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
 function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}if(tabId==="S08"){window.location.assign("/03_matches");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer",padding:"6px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
-function StackAv({ids,max=3,s=24}){const vis=ids.slice(0,max);return <div style={{display:"flex"}}>{vis.map((uid,i)=>{const u=uf(uid);return u&&<div key={uid} style={{marginLeft:i>0?-8:0,zIndex:max-i,position:"relative"}}><Av i={u.av} s={s}/></div>;})}{ids.length>max&&<span style={{fontSize:10,color:T.textDim,marginLeft:4,fontWeight:600}}>+{ids.length-max}</span>}</div>;}
+function StackAv({ids,max=3,s=24}){const vis=ids.slice(0,max);return <div style={{display:"flex"}}>{vis.map((uid,i)=>{const u=uf(uid);return u&&<div key={uid} style={{marginLeft:i>0?-8:0,zIndex:max-i,position:"relative"}}><Av i={u.av} img={u.img} s={s}/></div>;})}{ids.length>max&&<span style={{fontSize:10,color:T.textDim,marginLeft:4,fontWeight:600}}>+{ids.length-max}</span>}</div>;}
 
 // Media Slider (photo carousel + scoreboard as last slide)
-function MediaSlider({photoCount,scoreContent,onMatchNav}){
+function MediaSlider({photoCount,imgs,scoreContent,onMatchNav}){
   const total=photoCount+1;
   const[cur,setCur]=useState(0);
   const prev=()=>setCur(c=>Math.max(0,c-1));
   const next=()=>setCur(c=>Math.min(total-1,c+1));
   const isScore=cur===total-1;
   return <div style={{position:"relative",overflow:"hidden",height:430}}>
-    <div style={{display:"flex",height:"100%",transform:`translateX(-${cur*100}%)`,transition:"transform .28s ease"}}>
-      {Array.from({length:photoCount},(_,i)=><div key={i} style={{minWidth:"100%",height:430,background:T.bgAlt,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:40,color:T.textMuted}}>
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={T.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+    <div style={{display:"flex",height:"100%",width:`${total*100}%`,transform:`translateX(-${cur*(100/total)}%)`,transition:"transform .28s ease"}}>
+      {Array.from({length:photoCount},(_,i)=><div key={i} style={{width:`${100/total}%`,height:430,flexShrink:0,background:T.bgAlt}}>
+        {imgs&&imgs[i]
+          ?<img src={imgs[i]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+          :<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:40,color:T.textMuted}}>📷</div>
+        }
       </div>)}
-      <div onClick={onMatchNav} style={{minWidth:"100%",height:430,borderTop:`2px solid ${T.card}`,borderBottom:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>{scoreContent}</div>
+      <div onClick={onMatchNav} style={{width:`${100/total}%`,height:430,borderTop:`2px solid ${T.bgAlt}`,borderBottom:`2px solid ${T.bgAlt}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>{scoreContent}</div>
     </div>
     {cur>0&&<div onClick={prev} style={{position:"absolute",left:0,top:0,bottom:32,width:"35%",cursor:"pointer"}}/>}
     {cur<total-1&&<div onClick={next} style={{position:"absolute",right:0,top:0,bottom:32,width:"35%",cursor:"pointer"}}/>}
-    <div style={{position:"absolute",top:10,right:10,background:"rgba(0,0,0,.6)",borderRadius:20,padding:"3px 9px",fontSize:11,color:"#fff",fontWeight:600}}>{isScore?<span style={{display:"flex"}}>{I.chart(T.accent)}</span>:`${cur+1}/${photoCount}`}</div>
+    <div style={{position:"absolute",top:10,right:10,background:"rgba(0,0,0,.6)",borderRadius:20,padding:"3px 9px",fontSize:11,color:"#fff",fontWeight:600}}>{isScore?"📊":`${cur+1}/${photoCount}`}</div>
     <div style={{position:"absolute",bottom:10,left:0,right:0,display:"flex",justifyContent:"center",gap:5}}>
       {Array.from({length:total},(_,i)=><div key={i} onClick={()=>setCur(i)} style={{width:i===cur?16:6,height:6,borderRadius:3,background:i===cur?T.accent:i===total-1?`${T.accent}55`:`${T.text}33`,transition:"all .2s",cursor:"pointer"}}/>)}
     </div>
@@ -165,7 +180,7 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
       <span style={{fontSize:11,color:T.textDim,marginLeft:12}}>Takım B</span>
     </div>
     {mvp&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:4,marginTop:8}}>
-      {I.star()} <span style={{fontSize:12,color:T.gold,fontWeight:600}}>{mvp.name}</span>
+      {I.star(T.accent)} <span style={{fontSize:12,color:T.accent,fontWeight:600}}>{mvp.name}</span>
     </div>}
   </div>:null;
 
@@ -176,7 +191,7 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
     {/* Header — post owner */}
     <div style={{padding:"16px 16px 0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
       <div style={{display:"flex",alignItems:"center",gap:12,flex:1}}>
-        <Av i={owner.av} s={36} onClick={()=>onNav?.("S16",owner.id)}/>
+        <Av i={owner.av} img={owner.img} s={36} onClick={()=>onNav?.("S16",owner.id)}/>
         <div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <span onClick={()=>onNav?.("S16",owner.id)} style={{fontWeight:700,fontSize:14,color:T.text,cursor:"pointer"}}>{owner.name}</span>
@@ -219,8 +234,8 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
       {/* Scoreboard / Photo area */}
       <div style={{marginTop:12}}>
         {p.photos>0
-          ?<MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>m&&window.location.assign("/04_match_detail?view=S11")}/>
-          :<div style={{borderTop:`2px solid ${T.card}`,borderBottom:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 16px"}}>
+          ?<MediaSlider photoCount={p.photos} imgs={p.imgs||[]} scoreContent={scoreOnly} onMatchNav={()=>m&&window.location.assign("/04_match_detail?view=S11")}/>
+          :<div style={{borderTop:`2px solid ${T.bgAlt}`,borderBottom:`2px solid ${T.bgAlt}`,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 16px"}}>
             {scoreOnly}
           </div>
         }
@@ -252,7 +267,7 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
     {/* Comments — max 2 */}
     {visComments.length>0&&<div style={{padding:"8px 16px 0"}}>
       {visComments.map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:8}}>
-        <Av i={cu.av} s={24} onClick={()=>onNav?.("S16",cu.id)}/>
+        <Av i={cu.av} img={cu.img} s={24} onClick={()=>onNav?.("S16",cu.id)}/>
         <div style={{fontSize:14}}>
           <span onClick={()=>onNav?.("S16",cu.id)} style={{fontWeight:600,color:T.text,cursor:"pointer"}}>{cu.un}</span>
           <span style={{color:T.textMuted,marginLeft:8}}>{c.t}</span>
@@ -263,7 +278,7 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
 
     {/* Add comment */}
     <div style={{padding:"12px 16px 16px",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
-      <Av i={ME.av} s={24}/>
+      <Av i={ME.av} img={ME.img} s={24}/>
       <span style={{fontSize:13,color:T.textMuted}}>Bir yorum ekle...</span>
     </div>
   </div>;
@@ -276,6 +291,9 @@ function S15({onNav}){
   const u=ME;
   const [deleteConfirm,setDeleteConfirm]=useState(null);
   const [posts,setPosts]=useState(POSTS.filter(p=>p.userId===u.id));
+  const [panelOpen,setPanelOpen]=useState(null);
+  const winRate=u.matches>0?Math.round((u.wins/u.matches)*100):0;
+  const calDays=[...Array(28)].map((_,i)=>{const hasMatch=[2,5,8,12,15,18,22,25].includes(i+1);return{day:i+1,match:hasMatch};});
 
   const handlePostMenu=(action,postId)=>{
     if(action==="hide"){setPosts(ps=>ps.map(p=>p.id===postId?{...p,status:"hidden"}:p));}
@@ -293,7 +311,7 @@ function S15({onNav}){
 
     {/* Profile top */}
     <div style={{padding:"8px 16px 0",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      <Av i={u.av} s={80} c={T.accent}/>
+      <Av i={u.av} img={u.img} s={80} c={T.accent}/>
       <div style={{marginTop:12,display:"flex",alignItems:"center",gap:6}}>
         <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
         {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
@@ -312,10 +330,56 @@ function S15({onNav}){
     {/* Bio */}
     {u.bio&&<div style={{padding:"12px 16px 0",fontSize:13,color:T.textDim,lineHeight:1.4}}>{u.bio}</div>}
 
+    {/* Pano */}
+    <div style={{padding:"16px 16px 0",display:"flex",gap:8}}>
+      {[
+        {id:"stats",ic:I.chart,l:"İstatistikler",c:T.accent},
+        {id:"badges",ic:I.trophy,l:"Başarılar",c:T.gold},
+        {id:"calendar",ic:I.calendar,l:"Takvim",c:T.purple},
+      ].map(card=><div key={card.id} onClick={()=>setPanelOpen(panelOpen===card.id?null:card.id)} style={{flex:1,background:panelOpen===card.id?`${card.c}15`:T.card,border:`1px solid ${panelOpen===card.id?card.c:T.cardBorder}`,borderRadius:12,padding:"14px 8px",textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
+        <div style={{display:"flex",justifyContent:"center",marginBottom:6}}>{card.ic(card.c)}</div>
+        <div style={{fontSize:11,fontWeight:600,color:panelOpen===card.id?card.c:T.textDim}}>{card.l}</div>
+      </div>)}
+    </div>
+
+    {/* Stats Panel */}
+    {panelOpen==="stats"&&<div style={{margin:"12px 16px 0",padding:16,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
+        {[
+          {l:"Galibiyet",v:u.wins,c:T.green},
+          {l:"Beraberlik",v:u.draws,c:T.textDim},
+          {l:"Mağlubiyet",v:u.losses,c:T.red},
+          {l:"Gol",v:u.goals,c:T.accent},
+          {l:"Asist",v:u.assists,c:T.accent},
+          {l:"MVP",v:u.mvp,c:T.gold},
+        ].map((s,i)=><div key={i} style={{textAlign:"center",padding:"8px 0"}}>
+          <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:s.c}}>{s.v}</div>
+          <div style={{fontSize:11,color:T.textDim,fontWeight:600,marginTop:2}}>{s.l}</div>
+        </div>)}
+      </div>
+      <div style={{marginTop:12,padding:"10px 0",borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:12,color:T.textDim}}>Kazanma Oranı</span>
+        <span style={{fontSize:14,fontWeight:700,color:T.accent}}>{winRate}%</span>
+      </div>
+    </div>}
+
+    {/* Badges Panel */}
+    {panelOpen==="badges"&&<div style={{margin:"12px 16px 0",padding:16,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,textAlign:"center"}}>
+      <div style={{fontSize:13,color:T.textDim}}>Yakında</div>
+    </div>}
+
+    {/* Calendar Panel */}
+    {panelOpen==="calendar"&&<div style={{margin:"12px 16px 0",padding:16,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,textAlign:"center"}}>
+        {["Pt","Sa","Ça","Pe","Cu","Ct","Pa"].map(d=><div key={d} style={{fontSize:10,color:T.textMuted,fontWeight:600,padding:4}}>{d}</div>)}
+        {calDays.map((d,i)=><div key={i} style={{width:32,height:32,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:d.match?700:500,color:d.match?T.bg:T.textDim,background:d.match?T.accent:"transparent",margin:"0 auto"}}>{d.day}</div>)}
+      </div>
+    </div>}
+
     {/* Match post feed */}
     <div style={{padding:"20px 16px 0"}}>
       <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Mac Postlari</div>
-      {posts.map(p=><PostCard key={p.id} p={p} isOwn={true} onMenuAction={handlePostMenu} onNav={onNav}/>)}
+      {posts.map((p,i)=><div key={p.id}>{i>0&&<div style={{height:8,background:T.bgAlt}}/>}<PostCard p={p} isOwn={true} onMenuAction={handlePostMenu} onNav={onNav}/></div>)}
       {posts.length===0&&<div style={{textAlign:"center",padding:40,color:T.textMuted,fontSize:13}}>Henuz post yok</div>}
     </div>
 
@@ -363,7 +427,7 @@ function S16({onNav,userId}){
 
     {/* Profile top */}
     <div style={{padding:"8px 16px 0",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      <Av i={u.av} s={80} c={T.accent}/>
+      <Av i={u.av} img={u.img} s={80} c={T.accent}/>
       <div style={{marginTop:12,display:"flex",alignItems:"center",gap:6}}>
         <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
         {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
@@ -396,14 +460,14 @@ function S16({onNav,userId}){
     {/* Match post feed */}
     <div style={{padding:"20px 16px 0"}}>
       <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Mac Postlari</div>
-      {userPosts.map(p=><PostCard key={p.id} p={p} isOwn={false} onNav={onNav}/>)}
+      {userPosts.map((p,i)=><div key={p.id}>{i>0&&<div style={{height:8,background:T.bgAlt}}/>}<PostCard p={p} isOwn={false} onNav={onNav}/></div>)}
       {userPosts.length===0&&<div style={{textAlign:"center",padding:40,color:T.textMuted,fontSize:13}}>Henuz post yok</div>}
     </div>
 
     {/* Unfollow confirm */}
     {unfollowConfirm&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,padding:20}}>
       <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:320,width:"100%",textAlign:"center"}}>
-        <Av i={u.av} s={56} c={T.accent} st={{margin:"0 auto 12"}}/>
+        <Av i={u.av} img={u.img} s={56} c={T.accent} st={{margin:"0 auto 12"}}/>
         <div style={{fontSize:16,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:4}}>Takipten Cik</div>
         <div style={{fontSize:13,color:T.textDim,marginBottom:20}}>{u.name} adli kisinin takibini birakmak istiyor musun?</div>
         <Btn full danger onClick={()=>{setFollowState("not_following");setUnfollowConfirm(false);}} st={{marginBottom:8}}>Takipten Cik</Btn>
@@ -453,7 +517,7 @@ function S22({onNav,data}){
     {/* List */}
     <div style={{padding:"0 16px"}}>
       {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
-        <Av i={u.av} s={40} c={T.accent} onClick={()=>onNav("S16",u.id)}/>
+        <Av i={u.av} img={u.img} s={40} c={T.accent} onClick={()=>onNav("S16",u.id)}/>
         <div onClick={()=>onNav("S16",u.id)} style={{flex:1,cursor:"pointer"}}>
           <div style={{fontSize:14,fontWeight:600,color:T.text}}>{u.name}</div>
           <div style={{fontSize:12,color:T.textDim}}>@{u.un}</div>
@@ -512,7 +576,7 @@ function S23({onNav}){
     {/* Photo */}
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"20px 16px 0"}}>
       <div style={{position:"relative"}}>
-        <Av i={ME.av} s={80} c={T.accent}/>
+        <Av i={ME.av} img={ME.img} s={80} c={T.accent}/>
         <div onClick={()=>setPhotoSheet(true)} style={{position:"absolute",bottom:-2,right:-2,width:28,height:28,borderRadius:"50%",background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",border:`2px solid ${T.bg}`}}>{I.camera(T.bg)}</div>
       </div>
       <div onClick={()=>setPhotoSheet(true)} style={{fontSize:13,color:T.accent,fontWeight:600,marginTop:8,cursor:"pointer"}}>Degistir</div>

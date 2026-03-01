@@ -23,3 +23,6 @@ Geri tuşu ve adımlar kaldırılmalı. Bu sayfalara da minimize butonu ekleyebi
 6 - yorumlar sayfasındaki yorum yazma bölümü sayfanın en altına fixlenmeli.
 
 7 - profil feedinde arada Gizli diye bişey var. onu orda unutmayalım.   
+
+8 - maç detay sayfasında kullanıcıların profiline gidebilmeliyim. Bunun için
+kişi listesi bölümü gerekiyor.
