@@ -339,6 +339,7 @@ Ana Sayfa tab'ında:
 - **Her kart (katılım bilgisi EN ÜSTTE):**
   - "Katılıyorsun ✓" badge (accent renk, kartın en üstünde)
   - Spor ikonu + Maç başlığı (bold)
+  - Açıklama (varsa, maks. 2 satır, truncate ile "...")
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
   - Kontenjan: "7/10 oyuncu" (progress bar)
@@ -353,6 +354,7 @@ Ana Sayfa tab'ında:
 - **Her kart (katılım bilgisi EN ÜSTTE):**
   - Arkadaş katılıyorsa: "🤝 Ali katılıyor" etiketi (kartın en üstünde)
   - Spor ikonu + Maç başlığı (bold)
+  - Açıklama (varsa, maks. 2 satır, truncate ile "...")
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
   - Kontenjan: "7/10 oyuncu" (progress bar)
@@ -401,7 +403,7 @@ Ana Sayfa tab'ında:
 
 **Canlı Skor Sayfası:**
 - **Sol üstte ↓ aşağı ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde), Maçlar (S08) sayfasına yönlendirilir
-- **Ayarlar butonu:** Sağ üstte tek buton — "Ayarlar" (S12 Planlanan Maç detay sayfasına yönlendirir, **match state otomatik olarak "Maç Oynanıyor" olarak açılır**)
+- **Ayarlar butonu:** Sağ üstte tek ikon butonu — yazısız, sadece ayarlar SVG ikonu (S12 Planlanan Maç detay sayfasına yönlendirir, **match state otomatik olarak "Maç Oynanıyor" olarak açılır**)
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
 - **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)
 - Her takım için **"+ Gol"** butonu (büyük, kolay tıklanabilir, takım rengiyle)
@@ -471,6 +473,7 @@ Ana Sayfa tab'ında:
   - **Maç Oynanıyor state'inde:** ← Canlı Skor (S10'a döner)
 - Üst bölüm: Maç başlığı (ikon yok)
 - Organizatör: avatar + isim (tıklanınca profil)
+- **Açıklama:** Organizatör altında, varsa maç açıklaması (tam metin)
 - **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye tercihi
   - **Host için:** bilgi kartının sağ üstünde "✏️ Düzenle" butonu → bottom drawer (Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük alanları)
 - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"

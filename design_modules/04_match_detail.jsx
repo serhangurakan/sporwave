@@ -54,7 +54,7 @@ const PAST_MATCH={
 
 // Mock: Planned match (S12)
 const PLANNED_MATCH={
-  id:101,title:"Cumartesi Akşam Maçı",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",
+  id:101,title:"Cumartesi Akşam Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",
   host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",
   players:[2,1,4,3,7,8,5],
   tA:[2,1,4], // Takım A (atanmış)
@@ -411,6 +411,9 @@ function S12({onNav}){
           <div style={{fontSize:11,color:T.textDim}}>Organizatör</div>
         </div>
       </div>
+
+      {/* Description */}
+      {m.desc&&<div style={{fontSize:14,color:T.textDim,lineHeight:1.6,marginBottom:16}}>{m.desc}</div>}
 
       {/* Info card */}
       <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:16,marginBottom:16}}>

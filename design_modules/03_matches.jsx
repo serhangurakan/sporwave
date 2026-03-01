@@ -22,10 +22,10 @@ const U=[
 const uf=id=>U.find(u=>u.id===id);
 
 const PLANNED=[
-  {id:104,title:"Kadıköy Gece Maçı",date:"8 Mar",time:"21:30",loc:"Kadıköy Arena",fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendJoined:null},
-  {id:101,title:"Cumartesi Akşam Maçı",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendJoined:"Emre"},
+  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:"Kadıköy Arena",fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendJoined:null},
+  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var.",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendJoined:"Emre"},
   {id:103,title:"Ataşehir Turnuva",date:"5 Mar",time:"19:00",loc:null,fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendJoined:"Ali"},
-  {id:102,title:"Pazar Sabah Maçı",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendJoined:null},
+  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendJoined:null},
 ];
 
 const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:"Kadıköy Spor",sc:[3,2],host:4}];
@@ -148,6 +148,8 @@ function MatchListCard({m,onNav,isMine}){
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
       <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
     </div>
+    {/* Description */}
+    {m.desc&&<div style={{fontSize:13,color:T.textDim,lineHeight:1.5,marginBottom:8,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{m.desc}</div>}
     {/* Date / location */}
     <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,marginBottom:8,flexWrap:"wrap",alignItems:"center",lineHeight:1.4}}>
       <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
@@ -295,7 +297,7 @@ function S10({onNav,onMinimize,onEndMatch}){
   if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
       <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.chevDown(T.text)}</div>
-      <div onClick={()=>window.location.assign("/04_match_detail?view=S12&state=playing")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
+      <div onClick={()=>window.location.assign("/04_match_detail?view=S12&state=playing")} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.settings(T.textDim)}</div>
     </div>
 
     <div style={{textAlign:"center",marginBottom:20}}>
