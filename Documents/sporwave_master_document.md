@@ -467,17 +467,13 @@ Ana Sayfa tab'ında:
 - Back butonu
 
 #### S12: Planlanan Maç Detay (Henüz oynanmamış)
-- **Header:** Geri butonu (geri ok + yazı birlikte) · ⋮ menü sağda (başlık yok)
+- **Header:** Geri butonu (geri ok + yazı birlikte), başlık yok, sağda menü yok
   - **Maç Planlama state'inde:** ← Maçlar (S08'e döner)
   - **Maç Oynanıyor state'inde:** ← Canlı Skor (S10'a döner)
-- **⋮ Dropdown Menü:**
-  - **Host ise:** "Maçı İptal Et" (kırmızı) + "Maçtan Çık"
-  - **Katılımcı ise:** "Maçtan Ayrıl"
-  - **Misafir ise:** görüntülemez (menü açılmaz)
 - Üst bölüm: Maç başlığı (ikon yok)
 - Organizatör: avatar + isim (tıklanınca profil)
 - **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye tercihi
-  - **Host için:** bilgi kartının sağ üstünde "✏️ Düzenle" butonu → bottom drawer (Tarih, Saat, Konum, Format, Seviye, Görünürlük alanları)
+  - **Host için:** bilgi kartının sağ üstünde "✏️ Düzenle" butonu → bottom drawer (Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük alanları)
 - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
 - **Kontenjan gösterimi:** "7/10 oyuncu" (progress bar ile)
@@ -489,19 +485,20 @@ Ana Sayfa tab'ında:
   - **Host için:** oyuncuları sürükle-bırak veya tıkla→slot seç ile takımlara ata; hücre üzerinde gri ✕ butonu → oyuncuyu maçtan çıkar
   - **Katılımcılar** (takım seçmemiş oyuncular): takım grid'inin altında section label + liste görünümü (avatar + isim + seviye + katılım %)
   - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar"
-- **CTA Butonları (katılımcıysan) — sırayla:**
-  1. Paylaş
-  2. Maç Sohbeti
-  3. 👑 Host Devral
-  4. ▶ Maçı Başlat (primary, en altta) — **Not:** Maç "Oynanıyor" durumundaysa bu buton gizlenir
-- **CTA Butonları (katılmamışsan / misafir) — sırayla:**
-  1. Paylaş
-  2. Maça Katıl (X yer kaldı) (primary, en altta)
 - **CTA Butonları (organizatör / host) — sırayla:**
   1. Paylaş
   2. Başvuruları Gör (onay modundaysa)
   3. Oyuncu Davet Et (tıklanınca bottom drawer açılır — arkadaş listesinden davet)
-  4. ▶ Maçı Başlat (primary, en altta) — **Not:** Maç "Oynanıyor" durumundaysa bu buton gizlenir
+  4. Maçtan Çık
+  5. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta)
+- **CTA Butonları (katılımcıysan) — sırayla:**
+  1. Paylaş
+  2. Maç Sohbeti
+  3. Maçtan Çık
+  4. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta)
+- **CTA Butonları (katılmamışsan / misafir) — sırayla:**
+  1. Paylaş
+  2. Maça Katıl (X yer kaldı) (primary, en altta)
 
 **Host Devralma Mekanizması:**
 - Maçın katılımcıları (host hariç) "👑 Host Devral" butonuna basarak host olmak için oylama başlatabilir
@@ -514,7 +511,7 @@ Ana Sayfa tab'ında:
 - Host devralma oylaması S12'de inline banner olarak gösterilir: "👑 [İsim] host olmak istiyor — Oyla!" + "Evet" / "Hayır" butonları + kalan süre
 
 **Host Maçtan Çıkış Kuralı:**
-- Host ⋮ menüden "Maçtan Çık" seçerse: maça katılan katılımcılar arasından **en önce katılana** otomatik olarak host yetkisi devredilir
+- Host "Maçtan Çık" butonuna basarsa: maça katılan katılımcılar arasından **en önce katılana** otomatik olarak host yetkisi devredilir
 - Devir anında hem eski host'a hem yeni host'a bildirim gönderilir
 - Eğer başka katılımcı yoksa: maç otomatik iptal edilir
 

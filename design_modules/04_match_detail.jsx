@@ -279,9 +279,8 @@ function S12({onNav}){
   const [cancelConfirm,setCancelConfirm]=useState(false);
   const [showEditDrawer,setShowEditDrawer]=useState(false);
   const [showInviteDrawer,setShowInviteDrawer]=useState(false);
-  const [showDotsMenu,setShowDotsMenu]=useState(false);
   const [removeConfirm,setRemoveConfirm]=useState(null); // uid to confirm removal
-  const [editForm,setEditForm]=useState({date:m.date,time:m.time,loc:m.loc,fmt:m.fmt,level:m.level,vis:m.vis});
+  const [editForm,setEditForm]=useState({title:m.title,date:m.date,time:m.time,loc:m.loc,fmt:m.fmt,level:m.level,vis:m.vis});
   const [inviteQ,setInviteQ]=useState("");
   const [inviteSent,setInviteSent]=useState([]);
   const friends=U.filter(u=>u.follow&&u.id!==1);
@@ -396,20 +395,6 @@ function S12({onNav}){
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
         <div onClick={()=>window.location.assign(matchState==="playing"?"/03_matches?view=S10":"/03_matches")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{I.arrowLeft()}<span style={{fontSize:14,fontWeight:600,color:T.textDim}}>{matchState==="playing"?"Canlı Skor":"Maçlar"}</span></div>
         <span style={{flex:1}}/>
-        <div style={{position:"relative"}}>
-          <span onClick={()=>setShowDotsMenu(v=>!v)} style={{cursor:"pointer",display:"flex",padding:4}}>{I.dots(T.textDim)}</span>
-          {showDotsMenu&&<>
-            <div onClick={()=>setShowDotsMenu(false)} style={{position:"fixed",inset:0,zIndex:198}}/>
-            <div style={{position:"absolute",right:0,top:"calc(100% + 4px)",background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,minWidth:180,zIndex:199,overflow:"hidden",boxShadow:"0 8px 24px rgba(0,0,0,.4)"}}>
-              {isHost&&<>
-                <div onClick={()=>{setShowDotsMenu(false);setCancelConfirm(true);}} style={{padding:"12px 16px",fontSize:13,fontWeight:600,color:T.red,cursor:"pointer",borderBottom:`1px solid ${T.cardBorder}22`}}>Maçı İptal Et</div>
-                <div onClick={hostLeave} style={{padding:"12px 16px",fontSize:13,fontWeight:600,color:T.textDim,cursor:"pointer"}}>Maçtan Çık</div>
-              </>}
-              {!isHost&&isPlayer&&<div onClick={()=>{setShowDotsMenu(false);leaveMatch();}} style={{padding:"12px 16px",fontSize:13,fontWeight:600,color:T.textDim,cursor:"pointer"}}>Maçtan Ayrıl</div>}
-              {!isPlayer&&<div style={{padding:"12px 16px",fontSize:13,color:T.textMuted,cursor:"default"}}>Seçenek yok</div>}
-            </div>
-          </>}
-        </div>
       </div>
     </div>
 
@@ -552,6 +537,7 @@ function S12({onNav}){
         <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
         <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:20}}>Maçı Düzenle</div>
         {[
+          {label:"Maç Başlığı",key:"title",placeholder:"ör. Cuma Akşamı Maçı"},
           {label:"Tarih",key:"date",placeholder:"ör. 8 Mar"},
           {label:"Saat",key:"time",placeholder:"ör. 20:00"},
           {label:"Konum",key:"loc",placeholder:"Saha adı"},
@@ -601,12 +587,15 @@ function S12({onNav}){
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         {m.mode==="approval"&&<Btn full onClick={()=>onNav("S13")} st={{marginBottom:8}}>Başvuruları Gör</Btn>}
         <Btn full onClick={()=>setShowInviteDrawer(true)} st={{marginBottom:8}}>Oyuncu Davet Et</Btn>
-        {matchState!=="playing"&&<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
+        <Btn full onClick={hostLeave} st={{marginBottom:8}}>Maçtan Çık</Btn>
+        {matchState==="playing"?<Btn full onClick={()=>setCancelConfirm(true)} st={{marginBottom:8,color:T.red}}>Maçı Bitir</Btn>
+        :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
       </>:isPlayer?<>
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
-        <Btn full st={{marginBottom:8}}>{I.crown(T.gold)} Host Devral</Btn>
-        {matchState!=="playing"&&<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
+        <Btn full onClick={leaveMatch} st={{marginBottom:8}}>Maçtan Çık</Btn>
+        {matchState==="playing"?<Btn full onClick={()=>setCancelConfirm(true)} st={{marginBottom:8,color:T.red}}>Maçı Bitir</Btn>
+        :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
       </>:<>
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         <Btn full primary onClick={joinMatch} st={{marginBottom:8}}>Maça Katıl ({m.max-joined} yer kaldı)</Btn>
