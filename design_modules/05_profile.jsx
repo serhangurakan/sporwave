@@ -142,7 +142,7 @@ function MediaSlider({photoCount,scoreContent,onMatchNav}){
       {Array.from({length:photoCount},(_,i)=><div key={i} style={{minWidth:"100%",height:430,background:T.bgAlt,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:40,color:T.textMuted}}>
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={T.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
       </div>)}
-      <div onClick={onMatchNav} style={{minWidth:"100%",height:430,background:T.card,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>{scoreContent}</div>
+      <div onClick={onMatchNav} style={{minWidth:"100%",height:430,borderTop:`2px solid ${T.card}`,borderBottom:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>{scoreContent}</div>
     </div>
     {cur>0&&<div onClick={prev} style={{position:"absolute",left:0,top:0,bottom:32,width:"35%",cursor:"pointer"}}/>}
     {cur<total-1&&<div onClick={next} style={{position:"absolute",right:0,top:0,bottom:32,width:"35%",cursor:"pointer"}}/>}
@@ -233,24 +233,23 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
     <div style={{marginTop:12}}>
       {p.photos>0
         ?<MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>onNav?.("S11",m?.id)}/>
-        :<div onClick={()=>onNav?.("S11",m?.id)} style={{cursor:"pointer",background:T.card,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 16px"}}>
+        :<div onClick={()=>onNav?.("S11",m?.id)} style={{cursor:"pointer",borderTop:`2px solid ${T.card}`,borderBottom:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 16px"}}>
           {scoreOnly}
         </div>
       }
     </div>
 
-    {/* Others in this match */}
-    {others.length>0&&<div style={{padding:"8px 16px 0",display:"flex",alignItems:"center",gap:8}}>
-      <StackAv ids={others.slice(0,3)} s={20}/>
-      <span style={{fontSize:12,color:T.textDim}}>
-        <b style={{color:T.text}}>{uf(others[0])?.name.split(" ")[0]}</b>
-        {others.length>1&&<span> ve {others.length-1} kişi daha</span>}
-        {" bu maçta oynadı"}
+    {/* Likers */}
+    {lc>0&&<div style={{padding:"8px 16px 0",fontSize:12,color:T.textDim,display:"flex",alignItems:"center",gap:8,marginTop:8}}>
+      <StackAv ids={(p.likers||[]).slice(0,3)} s={20}/>
+      <span>
+        <b onClick={()=>onNav?.("S16",firstLiker?.id)} style={{color:T.text,cursor:"pointer"}}>{liked?"Sen":firstLiker?.name?.split(" ")[0]}</b>
+        {lc>1&&<span> ve <b style={{color:T.text}}>{lc-1} diğer kişiler beğendi</b></span>}
       </span>
     </div>}
 
     {/* Interaction row */}
-    <div style={{padding:"12px 16px 0",display:"flex",gap:20,alignItems:"center",borderTop:`1px solid ${T.cardBorder}44`,marginTop:8}}>
+    <div style={{padding:"12px 16px 0",display:"flex",gap:20,alignItems:"center",borderBottom:`1px solid ${T.cardBorder}44`}}>
       <div onClick={toggleLike} style={{display:"flex",alignItems:"center",gap:4,cursor:"pointer",fontSize:13,color:liked?T.red:T.textDim,fontWeight:liked?600:400}}>
         {liked?I.heartFill():I.heart()} {lc}
       </div>
@@ -261,15 +260,6 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
         {I.share()}
       </div>
     </div>
-
-    {/* Likers */}
-    {lc>0&&<div style={{padding:"8px 16px 0",fontSize:12,color:T.textDim,display:"flex",alignItems:"center",gap:8}}>
-      <StackAv ids={(p.likers||[]).slice(0,3)} s={20}/>
-      <span>
-        <b onClick={()=>onNav?.("S16",firstLiker?.id)} style={{color:T.text,cursor:"pointer"}}>{liked?"Sen":firstLiker?.name?.split(" ")[0]}</b>
-        {lc>1&&<span> ve <b style={{color:T.text}}>{lc-1} diğerleri</b></span>}
-      </span>
-    </div>}
 
     {/* Comments — max 2 */}
     {visComments.length>0&&<div style={{padding:"8px 16px 0"}}>

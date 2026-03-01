@@ -51,3 +51,10 @@ S17 Mesajlar (06_messaging.jsx):
 S05 Feed (02_feed.jsx):
 - Bell ikonu → /06_messaging?view=S19 (bildirimler sayfasına cross-module yönlendirme)
 - Chat ikonu → /06_messaging (mesajlar sayfasına cross-module yönlendirme)
+
+S05 Feed + S15 Profil Maç Kartları (02_feed.jsx, 05_profile.jsx):
+- Skor alanı background kaldırıldı, border-top + border-bottom 2px solid eklendi
+- "Bu maçta oynadı" bölümü kaldırıldı
+- Beğenenler satırı etkileşim satırının üstüne taşındı
+- Etkileşim satırından borderTop kaldırıldı, borderBottom eklendi
+- Beğenenler metni güncellendi: "X ve Y diğerleri" → "X ve Y diğer kişiler beğendi"
