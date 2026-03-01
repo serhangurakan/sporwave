@@ -8,7 +8,7 @@
 
 export const COLORS = {
   // Ana renkler
-  primary:     "#07DD05",   // Accent / CTA / vurgu rengi
+  primary:     "#599A77",   // Accent / CTA / vurgu rengi
   white:       "#FFFFFF",
   black:       "#0D0D0D",
 
