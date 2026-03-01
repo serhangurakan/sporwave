@@ -16,15 +16,25 @@ const FONT_H = "'Plus Jakarta Sans', 'SF Pro Display', -apple-system, sans-serif
 const FONT_B = "'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
 // — MOCK DATA —
+const AVATARS = [
+  "/assets/images/avatars/avatar_01.jpg",
+  "/assets/images/avatars/avatar_02.jpg",
+  "/assets/images/avatars/avatar_03.jpg",
+  "/assets/images/avatars/avatar_04.jpg",
+  "/assets/images/avatars/avatar_05.jpeg",
+  "/assets/images/avatars/avatar_06.jpg",
+  "/assets/images/avatars/avatar_07.jpg",
+  "/assets/images/avatars/avatar_08.jpg",
+];
 const U = [
-  { id: 1, name: "Berk Yılmaz", un: "berk26", av: "BY", matches: 47, follow: true },
-  { id: 2, name: "Ali Demir", un: "alidemir", av: "AD", matches: 32, follow: true },
-  { id: 3, name: "Mehmet Kaya", un: "mkaya", av: "MK", matches: 28, follow: false },
-  { id: 4, name: "Emre Çelik", un: "emrecelik", av: "EÇ", matches: 41, follow: true },
-  { id: 5, name: "Can Yıldız", un: "canyildiz", av: "CY", matches: 19, follow: false },
-  { id: 6, name: "Oğuz Han", un: "oguzhan", av: "OH", matches: 36, follow: false },
-  { id: 7, name: "Kerem Aktaş", un: "keremm", av: "KA", matches: 14, follow: false },
-  { id: 8, name: "Burak Şen", un: "buraksen", av: "BŞ", matches: 22, follow: false },
+  { id: 1, name: "Berk Yılmaz", un: "berk26", av: "BY", img: AVATARS[0], matches: 47, follow: true },
+  { id: 2, name: "Ali Demir", un: "alidemir", av: "AD", img: AVATARS[1], matches: 32, follow: true },
+  { id: 3, name: "Mehmet Kaya", un: "mkaya", av: "MK", img: AVATARS[2], matches: 28, follow: false },
+  { id: 4, name: "Emre Çelik", un: "emrecelik", av: "EÇ", img: AVATARS[3], matches: 41, follow: true },
+  { id: 5, name: "Can Yıldız", un: "canyildiz", av: "CY", img: AVATARS[4], matches: 19, follow: false },
+  { id: 6, name: "Oğuz Han", un: "oguzhan", av: "OH", img: AVATARS[5], matches: 36, follow: false },
+  { id: 7, name: "Kerem Aktaş", un: "keremm", av: "KA", img: AVATARS[6], matches: 14, follow: false },
+  { id: 8, name: "Burak Şen", un: "buraksen", av: "BŞ", img: AVATARS[7], matches: 22, follow: false },
 ];
 const uf = id => U.find(u => u.id === id);
 
@@ -46,7 +56,7 @@ const P = [
       {uid:6, text:"Bir daha ne zaman?", t:"30dk"},
       {uid:2, text:"Süper oynadın", t:"20dk"},
     ]},
-  { id:101, matchId:1, userId:1, caption:"Ev sahibi olarak güzel bir maçtı!", photos:2, status:"visible", date:"25 Şub", likes:8, coms:3, likedByMe:false,
+  { id:101, matchId:1, userId:1, caption:"Ev sahibi olarak güzel bir maçtı!", photos:2, imgs:["/assets/images/posts/sporwave_sample_photo_01.jpeg","/assets/images/posts/sporwave_sample_photo_02.jpeg"], status:"visible", date:"25 Şub", likes:8, coms:3, likedByMe:false,
     likers:[2,4,3,5,6,7,8],
     comments:[
       {uid:2, text:"Harika maçtı, tekrarlayalım! 🔥", t:"2sa"},
@@ -65,13 +75,13 @@ const P = [
       {uid:7, text:"Savunma sağlamdı", t:"3sa"},
       {uid:3, text:"Güzel sahada oynamak farklı", t:"2sa"},
     ]},
-  { id:202, matchId:3, userId:1, caption:"Beşiktaş sahası çok iyiydi", photos:1, status:"visible", date:"28 Şub", likes:5, coms:2, likedByMe:false,
+  { id:202, matchId:3, userId:1, caption:"Beşiktaş sahası çok iyiydi", photos:1, imgs:["/assets/images/posts/sporwave_sample_photo_03.jpeg"], status:"visible", date:"28 Şub", likes:5, coms:2, likedByMe:false,
     likers:[6,3,7,2,4],
     comments:[
       {uid:6, text:"Yine bekleriz!", t:"5sa"},
       {uid:2, text:"Sahayı beğendim ben de", t:"4sa"},
     ]},
-  { id:301, matchId:6, userId:3, caption:"Host olarak teşekkür ederim herkese, Ataşehir Arena her zamanki gibi mükemmeldi", photos:3, status:"visible", date:"22 Şub", likes:15, coms:5, likedByMe:false,
+  { id:301, matchId:6, userId:3, caption:"Host olarak teşekkür ederim herkese, Ataşehir Arena her zamanki gibi mükemmeldi", photos:3, imgs:["/assets/images/posts/sporwave_sample_photo_04.jpeg","/assets/images/posts/sporwave_sample_photo_01.jpeg","/assets/images/posts/sporwave_sample_photo_02.jpeg"], status:"visible", date:"22 Şub", likes:15, coms:5, likedByMe:false,
     likers:[7,8,5,6,1,2,4,3],
     comments:[
       {uid:7, text:"Mehmet abinin maçı 💪", t:"3g"},
@@ -119,12 +129,14 @@ const I = {
 };
 
 // — COMPONENTS —
-function Av({ i, s = 32, c = T.accent, onClick, st }) {
-  return <div onClick={onClick} style={{ width:s, height:s, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:`${c}18`, border:`1.5px solid ${c}44`, color:c, fontSize:s*.34, fontWeight:700, cursor:onClick?"pointer":"default", flexShrink:0, ...st }}>{i}</div>;
+function Av({ i, img, s = 32, c = T.accent, onClick, st }) {
+  return <div onClick={onClick} style={{ width:s, height:s, borderRadius:"50%", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", background:`${c}18`, border:`1.5px solid ${c}44`, color:c, fontSize:s*.34, fontWeight:700, cursor:onClick?"pointer":"default", flexShrink:0, ...st }}>
+    {img ? <img src={img} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}/> : i}
+  </div>;
 }
 function StackAv({ ids, max=3, s=24 }) {
   const vis = ids.slice(0, max);
-  return <div style={{ display:"flex" }}>{vis.map((uid,i) => { const u=uf(uid); return u && <div key={uid} style={{ marginLeft:i>0?-8:0, zIndex:max-i, position:"relative" }}><Av i={u.av} s={s}/></div>; })}{ids.length>max && <span style={{ fontSize:10, color:T.textDim, marginLeft:4, fontWeight:600 }}>+{ids.length-max}</span>}</div>;
+  return <div style={{ display:"flex" }}>{vis.map((uid,i) => { const u=uf(uid); return u && <div key={uid} style={{ marginLeft:i>0?-8:0, zIndex:max-i, position:"relative" }}><Av i={u.av} img={u.img} s={s}/></div>; })}{ids.length>max && <span style={{ fontSize:10, color:T.textDim, marginLeft:4, fontWeight:600 }}>+{ids.length-max}</span>}</div>;
 }
 function Badge({ children, c=T.accent }) {
   return <span style={{ display:"inline-flex", alignItems:"center", gap:4, padding:"2px 8px", borderRadius:20, fontSize:11, fontWeight:600, color:c, background:`${c}15`, whiteSpace:"nowrap" }}>{children}</span>;
@@ -172,7 +184,7 @@ function TabBar({ active, onNav }) {
 }
 
 // — MEDIA SLIDER (foto sayfaları + son sayfa scoreboard) —
-function MediaSlider({ photoCount, scoreContent, onMatchNav }) {
+function MediaSlider({ photoCount, imgs, scoreContent, onMatchNav }) {
   const total = photoCount + 1; // her fotoğraf 1 sayfa, son sayfa scoreboard
   const [cur, setCur] = useState(0);
   const prev = () => setCur(c => Math.max(0, c - 1));
@@ -181,12 +193,17 @@ function MediaSlider({ photoCount, scoreContent, onMatchNav }) {
 
   return <div style={{ position:"relative", overflow:"hidden", height:430 }}>
     {/* Slides */}
-    <div style={{ display:"flex", height:"100%", transform:`translateX(-${cur * 100}%)`, transition:"transform .28s ease" }}>
+    <div style={{ display:"flex", height:"100%", width:`${total * 100}%`, transform:`translateX(-${cur * (100/total)}%)`, transition:"transform .28s ease" }}>
       {Array.from({length:photoCount}, (_, i) => (
-        <div key={i} style={{ minWidth:"100%", height:430, background:T.bgAlt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontSize:40, color:T.textMuted }}>📷</div>
+        <div key={i} style={{ width:`${100/total}%`, height:430, flexShrink:0, background:T.bgAlt }}>
+          {imgs[i]
+            ? <img src={imgs[i]} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}/>
+            : <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:40, color:T.textMuted }}>📷</div>
+          }
+        </div>
       ))}
       {/* Scoreboard slide */}
-      <div onClick={onMatchNav} style={{ minWidth:"100%", height:430, background:T.card, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:"pointer" }}>
+      <div onClick={onMatchNav} style={{ width:`${100/total}%`, height:430, background:T.card, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:"pointer" }}>
         {scoreContent}
       </div>
     </div>
@@ -244,7 +261,7 @@ function PostCard({ post: p, onNav }) {
     {/* Header — single post owner */}
     <div style={{ padding:"16px 16px 0", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
       <div style={{ display:"flex", alignItems:"center", gap:12, flex:1 }}>
-        <Av i={owner.av} s={36} onClick={()=>onNav("S16",owner.id)}/>
+        <Av i={owner.av} img={owner.img} s={36} onClick={()=>onNav("S16",owner.id)}/>
         <div>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span onClick={()=>onNav("S16",owner.id)} style={{ fontWeight:700, fontSize:14, color:T.text, cursor:"pointer" }}>{owner.name}</span>
@@ -285,7 +302,7 @@ function PostCard({ post: p, onNav }) {
     {/* Scoreboard / Photo area */}
     <div style={{ marginTop:12 }}>
       {p.photos>0
-        ? <MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>m&&onNav("S11",m.id)}/>
+        ? <MediaSlider photoCount={p.photos} imgs={p.imgs||[]} scoreContent={scoreOnly} onMatchNav={()=>m&&onNav("S11",m.id)}/>
         : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", background:T.card, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px 16px" }}>
             {scoreOnly}
           </div>
@@ -327,7 +344,7 @@ function PostCard({ post: p, onNav }) {
     {/* Comments — max 2 */}
     {visComments.length>0 && <div style={{ padding:"8px 16px 0" }}>
       {visComments.map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:8 }}>
-        <Av i={cu.av} s={24} onClick={()=>onNav("S16",cu.id)}/>
+        <Av i={cu.av} img={cu.img} s={24} onClick={()=>onNav("S16",cu.id)}/>
         <div style={{ fontSize:14 }}>
           <span onClick={()=>onNav("S16",cu.id)} style={{ fontWeight:600, color:T.text, cursor:"pointer" }}>{cu.un}</span>
           <span style={{ color:T.textMuted, marginLeft:8 }}>{c.t}</span>
@@ -338,7 +355,7 @@ function PostCard({ post: p, onNav }) {
 
     {/* Add comment */}
     <div onClick={()=>onNav("S42",p.id)} style={{ padding:"12px 16px 16px", display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
-      <Av i="BY" s={24}/>
+      <Av i="BY" img={AVATARS[0]} s={24}/>
       <span style={{ fontSize:13, color:T.textMuted }}>Bir yorum ekle...</span>
     </div>
   </div>;
@@ -378,7 +395,7 @@ function S05({ onNav, mode, setMode }) {
           <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:12,textTransform:"uppercase",letterSpacing:.5}}>Önerilen Kullanıcılar</div>
           <div ref={hRef} className="sw-hscroll" onMouseDown={onMD} onMouseUp={onMU} onMouseLeave={onMU} onMouseMove={onMM} style={{display:"flex",gap:12,overflowX:"auto",paddingBottom:4,cursor:"grab",userSelect:"none"}}>
             {U.filter(u=>!u.follow&&u.id!==1).slice(0,5).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{minWidth:104,background:T.card,borderRadius:16,padding:"16px 14px",textAlign:"center",border:`1px solid ${T.cardBorder}`,cursor:"pointer",flexShrink:0}}>
-              <Av i={u.av} s={52} st={{margin:"0 auto"}}/>
+              <Av i={u.av} img={u.img} s={52} st={{margin:"0 auto"}}/>
               <div style={{fontSize:13,fontWeight:600,color:T.text,marginTop:10}}>{u.name.split(" ")[0]}</div>
               <div style={{fontSize:11,color:T.textDim,marginTop:2}}>@{u.un}</div>
               <div style={{marginTop:10,fontSize:11,fontWeight:700,color:T.accent,display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{I.plus(T.accent)} Takip Et</div>
@@ -408,14 +425,14 @@ function S07({ onNav }) {
     {q.length===0&&<div>
       <div style={{ fontSize:11, fontWeight:700, color:T.textMuted, marginBottom:12, textTransform:"uppercase", letterSpacing:.5 }}>Önerilen Kullanıcılar</div>
       {U.filter(u=>!u.follow&&u.id!==1).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
-        <Av i={u.av} s={44}/>
+        <Av i={u.av} img={u.img} s={44}/>
         <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.name}</div><div style={{ fontSize:12, color:T.textDim }}>@{u.un} · {u.matches} maç</div></div>
         <Btn small primary>Takip Et</Btn>
       </div>)}
     </div>}
     {q.length>0&&res.length===0&&<Empty icon={I.noResult()} title="Kullanıcı bulunamadı" desc={`"${q}" ile eşleşen kullanıcı yok`}/>}
     {res.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
-      <Av i={u.av} s={44}/>
+      <Av i={u.av} img={u.img} s={44}/>
       <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.name}</div><div style={{ fontSize:12, color:T.textDim }}>@{u.un} · {u.matches} maç</div></div>
       <Btn small primary>{u.follow?"✓ Takip":"Takip Et"}</Btn>
     </div>)}
@@ -437,7 +454,7 @@ function S42({ onNav, postId }) {
     {/* Post summary */}
     <div style={{ padding:"16px", borderBottom:`1px solid ${T.cardBorder}44` }}>
       <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
-        <Av i={owner.av} s={32} onClick={()=>onNav("S16",owner.id)}/>
+        <Av i={owner.av} img={owner.img} s={32} onClick={()=>onNav("S16",owner.id)}/>
         <div><div style={{ fontWeight:600, fontSize:13, color:T.text }}>{owner.name}</div><div style={{ fontSize:11, color:T.textMuted }}>@{owner.un} · {p.date}</div></div>
       </div>
       {p.caption && <div style={{ fontSize:14, color:T.textDim, marginBottom:8, lineHeight:1.5 }}>{p.caption}</div>}
@@ -460,7 +477,7 @@ function S42({ onNav, postId }) {
     {/* All comments */}
     <div style={{ padding:"12px 16px" }}>
       {(p.comments||[]).map((c,i)=>{const cu=uf(c.uid);return cu&&<div key={i} style={{ display:"flex", gap:12, marginBottom:16, alignItems:"flex-start" }}>
-        <Av i={cu.av} s={32} onClick={()=>onNav("S16",cu.id)}/>
+        <Av i={cu.av} img={cu.img} s={32} onClick={()=>onNav("S16",cu.id)}/>
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span onClick={()=>onNav("S16",cu.id)} style={{ fontWeight:600, fontSize:14, color:T.text, cursor:"pointer" }}>{cu.un}</span>
@@ -473,7 +490,7 @@ function S42({ onNav, postId }) {
 
     {/* Input bar — fixed bottom */}
     <div style={{ position:"fixed", bottom:0, left:0, right:0, maxWidth:430, margin:"0 auto", background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, padding:"12px 16px", display:"flex", alignItems:"center", gap:12, zIndex:90 }}>
-      <Av i="BY" s={28}/>
+      <Av i="BY" img={AVATARS[0]} s={28}/>
       <div style={{ flex:1, background:T.card, borderRadius:20, padding:"8px 16px", display:"flex", alignItems:"center" }}>
         <input placeholder="Bir yorum ekle..." style={{ background:"none", border:"none", color:T.text, fontSize:14, width:"100%", outline:"none" }}/>
       </div>
@@ -499,7 +516,7 @@ function S43({ onNav, postId }) {
     </div>
     <div style={{ padding:"0 16px" }}>
       {filtered.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
-        <Av i={u.av} s={44}/>
+        <Av i={u.av} img={u.img} s={44}/>
         <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.un}</div><div style={{ fontSize:12, color:T.textDim }}>{u.name}</div></div>
         <Btn small primary>{u.follow?"Takip Ediliyor":"Takip Et"}</Btn>
       </div>)}
