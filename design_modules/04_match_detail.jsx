@@ -118,6 +118,7 @@ const I={
   gamepad:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.accent} strokeWidth="2" strokeLinecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="12" y1="6" x2="12" y2="18"/></svg>,
   play:c=><svg width="16" height="16" viewBox="0 0 24 24" fill={c||T.bg} style={{marginLeft:1}}><polygon points="5,3 19,12 5,21"/></svg>,
   vote:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.accent} strokeWidth="2" strokeLinecap="round"><path d="M14 9V5a3 3 0 00-6 0v4"/><rect x="2" y="9" width="20" height="13" rx="2"/><path d="M12 17v-4"/></svg>,
+  info:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8" strokeWidth="2.5"/><line x1="12" y1="12" x2="12" y2="16"/></svg>,
 };
 
 // Shared Components
@@ -465,7 +466,7 @@ function S12({onNav}){
 
     {/* Drag hint (host only) */}
     {isHost&&<div style={{margin:"0 16px 12px",background:`${T.accent}08`,borderRadius:10,border:`1px solid ${T.accent}22`,padding:"8px 12px",display:"flex",alignItems:"center",gap:8}}>
-      <span style={{fontSize:12,color:T.accent}}>↕</span>
+      <span style={{display:"flex",flexShrink:0}}>{I.info(T.accent)}</span>
       <span style={{fontSize:11,color:T.textDim}}>Oyuncuya tıkla → boş slota yerleştir. ✕ ile maçtan çıkar.</span>
     </div>}
 

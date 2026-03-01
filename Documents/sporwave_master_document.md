@@ -4,7 +4,7 @@
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
 > Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
-> Son güncelleme: 1 Mart 2026 (oturum 4)
+> Son güncelleme: 1 Mart 2026 (oturum 5)
 
 ---
 
@@ -372,17 +372,7 @@ Ana Sayfa tab'ında:
 
 **Boş durum:** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
 
-**Sağ altta FAB "+" butonu** → tıklayınca S09 Bottom Sheet açılır
-
-#### S09: Maç Seçenekleri (Bottom Sheet — FAB'a basınca)
-- **Başlık:** "Ne yapmak istiyorsun?"
-- İki büyük seçenek kartı (background transparent, sadece border):
-  1. **"▶ Maç Başlat"** — "Hemen oynayacağın bir maçı başlat ve skor tut" (accent border + play ikonu)
-  2. **"📢 Maç Oluştur"** — "İleri tarihli maç planla ve oyuncu bul" (purple border + megaphone ikonu)
-- Kart padding: `14px 16px`, başlık `fontSize:16, fontWeight:700, FH`, açıklama `fontSize:12, FB`
-- Kart tıklanınca ilgili akışa geçiş:
-  - "Maç Başlat" → doğrudan S10 Canlı Skor sayfasına geçiş
-  - "Maç Oluştur" → maç oluşturma akışına geçiş
+**Sağ altta FAB "+" butonu** → tıklayınca direkt S31 Maç Oluştur sayfasına gider (S09 Bottom Sheet kaldırıldı)
 
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
@@ -474,7 +464,7 @@ Ana Sayfa tab'ında:
   - Takım A (accent) | Takım B (orange) — her iki kolon 3'er grid, satır satır hizalı
   - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
   - Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (fmt'e göre — 6v6 ise 6 slot her takımda)
-  - **Host için:** oyuncuları sürükle-bırak veya tıkla→slot seç ile takımlara ata; hücre üzerinde gri ✕ butonu → oyuncuyu maçtan çıkar
+  - **Host için:** oyuncuları sürükle-bırak veya tıkla→slot seç ile takımlara ata; hücre üzerinde gri ✕ butonu → oyuncuyu maçtan çıkar. Host'a takım grid'inin üstünde küçük bir bilgi hint'i gösterilir (ⓘ info ikonu + "Oyuncuya tıkla → boş slota yerleştir. ✕ ile maçtan çıkar." metni, accent renk kenarlıklı)
   - **Katılımcılar** (takım seçmemiş oyuncular): takım grid'inin altında section label + liste görünümü (avatar + isim + seviye + katılım %)
   - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar"
 - **CTA Butonları (organizatör / host) — sırayla:**
@@ -538,16 +528,13 @@ Ana Sayfa tab'ında:
 
 #### S31: Maç Oluştur (İleri Tarihli — Login gerekli)
 - **Amaç:** Gelecek tarihli maç planla, oyuncu topla
-- **Erişim:** S09 Bottom Sheet → "Maç Oluştur"
-- İlerleme çubuğu (4 adım)
+- **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu (S09 Bottom Sheet kaldırıldı — direkt S31'e gider)
+- İlerleme çubuğu (3 adım)
 
 **Adım 1 — Maç Detayları:**
 - Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı")
 - Açıklama textarea
 - Maç formatı: 5v5 / 6v6 / 7v7 / Özel
-- "Devam" butonu
-
-**Adım 2 — Tarih & Konum:**
 - Tarih picker
 - Saat picker
 - **Konum seçimi (opsiyonel):** Map picker açılır, pin atılır
@@ -556,7 +543,7 @@ Ana Sayfa tab'ında:
   - **Seçenek 3 — "Konumsuz Devam Et":** Konum belirtmeden maç oluştur. Maç kartında konum gösterilmez, sohbette belirlenir.
 - **Buton sırası:** "Devam" birincil butonu önce, altında "Konumu sonra belirle →" ikincil link — konum seçilmemişken görünür, seçilince gizlenir
 
-**Adım 3 — Katılım Ayarları:**
+**Adım 2 — Katılım Ayarları:**
 - Deneyim seviyesi tercihi (pill: Herkes / Başlangıç / Orta / İyi / Profesyonel) — **varsayılan: "Herkes" seçili**
 - Kabul modu:
   - "Herkesi Kabul Et" — ilk gelen alır
@@ -568,7 +555,7 @@ Ana Sayfa tab'ında:
 - Seviye tercihi, Kabul Modu ve Gizlilik seçim elementleri aynı stil: `borderRadius:12, padding:"10px 16px"`, seçilince accent border + accent renkli metin
 - "Devam" butonu
 
-**Adım 4 — Davet (opsiyonel):**
+**Adım 3 — Davet (opsiyonel):**
 - "Arkadaşlarını Davet Et" — arkadaş listesi (takip edilenler), her profil yanında "Davet Et" butonu
 - Davet gönderilince buton: yeşil tik ikonu + **"Davet Edildi"** (accent renk border + accent renk metin)
 - **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez, diğer kişilere cooldown'sız davet atılabilir
@@ -900,7 +887,7 @@ Ana Sayfa tab'ında:
 ### BÖLÜM 11: OYUNCU DAVET (1 sayfa)
 
 #### S41: Oyuncu Davet (Bottom Sheet — Login gerekli)
-- **Erişim:** S12'deki "Oyuncu Davet Et" butonu veya S31 Adım 4
+- **Erişim:** S12'deki "Oyuncu Davet Et" butonu veya S31 Adım 3 (Davet adımı)
 - Arkadaş listesi (takip edilenler + karşılıklı takipler):
   - Her satır: Avatar + isim + @kullanıcıadı + katılım oranı (%)
   - "Davet Et" butonu (sağda)
@@ -1003,9 +990,10 @@ Maçlar tab → FAB "+" → "Maç Başlat" → Format seç + konum
 
 ### Akış 3: Maç Oluştur (Planlama)
 ```
-Maçlar tab → FAB "+" → "Maç Oluştur" → Detaylar gir
-→ Konum seç (opsiyonel — saha bilmiyorsan "önerisine açığım" veya konumsuz devam et)
-→ Katılım ayarları → Arkadaşları davet et (opsiyonel)
+Maçlar tab → FAB "+" → S31 (direkt açılır, S09 Bottom Sheet yok)
+→ Adım 1: Maç adı + açıklama + format + tarih/saat + konum
+→ Adım 2: Katılım ayarları (seviye + kabul modu + gizlilik)
+→ Adım 3: Arkadaşları davet et (opsiyonel)
 → Yayınla → Deep link üretilir + Maç sohbeti otomatik oluşur
 → Maçlar sekmesinde görünür (👁️ badge) → Başvurular/katılımlar gelir
 → Maç saati → "Maçı Başlat" → Canlı skor akışına geç
@@ -1123,7 +1111,7 @@ Maç saati geçer → Maç hala başlamamış
 **Çok adımlı form UI standartları (S04 Onboarding baz alınarak — S10, S31 dahil tüm çok adımlı akışlar):**
 - **Sayfa padding:** `24px 20px` (PageShell)
 - **ProgressBar:** Sayfa en üstünde, `marginTop:16` wrapper içinde, `marginBottom:24`; çubuk yüksekliği 4px, `borderRadius:4`, aralarında `gap:6`
-- **BackLink (← Geri):** ProgressBar'ın hemen altında, `fontSize:14, color:T.textDim, marginTop:20, marginBottom:8`; adım > 0 ise bir önceki adıma döner, adım === 0 ise akışın başladığı sayfaya döner (örn. S09)
+- **BackLink (← Geri):** ProgressBar'ın hemen altında, `fontSize:14, color:T.textDim, marginTop:20, marginBottom:8`; adım > 0 ise bir önceki adıma döner, adım === 0 ise akışın başladığı sayfaya döner (S31 için S08 Maçlar)
 - **Adım etiketi:** `fontSize:12, fontWeight:600, color:T.textMuted, textTransform:"uppercase", letterSpacing:"1px"`
 - **Büyük başlık:** `fontSize:24, fontWeight:800, color:T.text, marginBottom:24, letterSpacing:"-0.5px"`, Plus Jakarta Sans font
 - **Birincil buton:** `fontSize:15, fontWeight:700, padding:"14px 24px", borderRadius:12`, tam genişlik
