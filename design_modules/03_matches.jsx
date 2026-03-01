@@ -54,6 +54,7 @@ const I={
   share:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>,
   eye:c=><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c||T.green} strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
   lock:c=><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>,
+  search:c=><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
 };
 
 // Components
@@ -226,29 +227,109 @@ function S10Setup({onNav}){
 
 // S10 Teams — Takım Kurulumu (bağımsız sayfa)
 function S10Teams({onNav}){
-  const teamA=[{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}];
-  const teamB=[{id:3,name:"Mehmet",av:"MK"}];
-  return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
-    <div style={{marginTop:16}}><ProgressBar current={1} total={2}/></div>
-    <BackLink onClick={()=>onNav("S10_SETUP")}/>
-    <div style={{marginBottom:8}}><span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>Adım 2/2</span></div>
-    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>Takım Oluştur</div>
-    <div style={{display:"flex",gap:12,marginBottom:24}}>
-      <div style={{flex:1}}>
-        <div style={{fontSize:13,fontWeight:700,color:T.accent,marginBottom:12,textAlign:"center"}}>Takım A</div>
-        {teamA.map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}><Av i={p.av} s={32}/><span style={{fontSize:14,color:T.text,fontWeight:500}}>{p.name}</span></div>)}
-        <div style={{padding:"12px 0",fontSize:13,color:T.accent,cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
+  const [teamA,setTeamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
+  const [teamB,setTeamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
+  const [sheet,setSheet]=useState(null); // null | "A" | "B"
+  const [q,setQ]=useState("");
+  const [customName,setCustomName]=useState("");
+
+  const friends=U.filter(u=>u.follow&&u.id!==1);
+  const results=q.length>0?U.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.un.includes(q.toLowerCase())):friends;
+  const inTeam=uid=>[...teamA,...teamB].some(p=>p.id===uid);
+
+  const addPlayer=u=>{
+    const entry={id:u.id,name:u.name.split(" ")[0],av:u.av};
+    sheet==="A"?setTeamA(p=>[...p,entry]):setTeamB(p=>[...p,entry]);
+    setSheet(null);setQ("");setCustomName("");
+  };
+  const addCustomPlayer=()=>{
+    const name=customName.trim();
+    if(!name)return;
+    const initials=name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+    const entry={id:`custom-${Date.now()}`,name:name.split(" ")[0],av:initials,isCustom:true};
+    sheet==="A"?setTeamA(p=>[...p,entry]):setTeamB(p=>[...p,entry]);
+    setSheet(null);setQ("");setCustomName("");
+  };
+  const closeSheet=()=>{setSheet(null);setQ("");setCustomName("");};
+
+  const teamColor=t=>t==="A"?T.accent:T.orange;
+
+  return <>
+    <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+      <div style={{marginTop:16}}><ProgressBar current={1} total={2}/></div>
+      <BackLink onClick={()=>onNav("S10_SETUP")}/>
+      <div style={{marginBottom:8}}><span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>Adım 2/2</span></div>
+      <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>Takım Oluştur</div>
+      <div style={{display:"flex",gap:12,marginBottom:24}}>
+        {["A","B"].map((t,i)=><>
+          {i===1&&<div key="div" style={{width:1,background:T.cardBorder}}/>}
+          <div key={t} style={{flex:1}}>
+            <div style={{fontSize:13,fontWeight:700,color:teamColor(t),marginBottom:12,textAlign:"center"}}>Takım {t}</div>
+            {(t==="A"?teamA:teamB).map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+              <Av i={p.av} s={32} c={p.isCustom?T.textMuted:teamColor(t)}/>
+              <span style={{flex:1,fontSize:14,color:p.isCustom?T.textDim:T.text,fontWeight:500}}>{p.name}</span>
+              <span onClick={()=>t==="A"?setTeamA(prev=>prev.filter(x=>x.id!==p.id)):setTeamB(prev=>prev.filter(x=>x.id!==p.id))} style={{cursor:"pointer",display:"flex",padding:2}}>{I.x(T.textMuted)}</span>
+            </div>)}
+            <div onClick={()=>setSheet(t)} style={{padding:"12px 0",fontSize:13,color:teamColor(t),cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
+          </div>
+        </>)}
       </div>
-      <div style={{width:1,background:T.cardBorder}}/>
-      <div style={{flex:1}}>
-        <div style={{fontSize:13,fontWeight:700,color:T.orange,marginBottom:12,textAlign:"center"}}>Takım B</div>
-        {teamB.map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}><Av i={p.av} s={32}/><span style={{fontSize:14,color:T.text,fontWeight:500}}>{p.name}</span></div>)}
-        <div style={{padding:"12px 0",fontSize:13,color:T.orange,cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
-      </div>
+      <div style={{fontSize:13,color:T.textMuted,textAlign:"center",marginBottom:32}}>Sürükle-bırak ile takım değiştir</div>
+      <Btn primary full onClick={()=>onNav("S10")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Başla</Btn>
     </div>
-    <div style={{fontSize:13,color:T.textMuted,textAlign:"center",marginBottom:32}}>Sürükle-bırak ile takım değiştir</div>
-    <Btn primary full onClick={()=>onNav("S10")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Başla</Btn>
-  </div>;
+
+    {/* Bottom Sheet */}
+    {sheet&&<>
+      <div onClick={closeSheet} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:200}}/>
+      <div style={{position:"fixed",bottom:0,left:0,right:0,maxWidth:430,margin:"0 auto",background:T.card,borderRadius:"20px 20px 0 0",zIndex:201,display:"flex",flexDirection:"column",maxHeight:"70vh"}}>
+        <div style={{padding:"16px 20px 12px"}}>
+          <div style={{width:36,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
+          <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>
+            Oyuncu Ekle — <span style={{color:teamColor(sheet)}}>Takım {sheet}</span>
+          </div>
+          {/* Search input */}
+          <div style={{marginTop:4}}>
+            <div style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>Arkadaşlarını Davet Et</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,background:T.bg,border:`1px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px"}}>
+              {I.search(T.textDim)}
+              <input autoFocus value={q} onChange={e=>setQ(e.target.value)} placeholder="Arkadaş ara..." style={{flex:1,background:"transparent",border:"none",outline:"none",color:T.text,fontSize:14,fontFamily:FB}}/>
+              {q.length>0&&<span onClick={()=>setQ("")} style={{cursor:"pointer",display:"flex"}}>{I.x(T.textDim)}</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* User list */}
+        <div style={{flex:1,overflowY:"auto",padding:"0 20px"}}>
+          {results.filter(u=>!inTeam(u.id)).length===0
+            ?<div style={{textAlign:"center",padding:"24px 0",color:T.textMuted,fontSize:13}}>{q.length>0?"Kullanıcı bulunamadı":"Tüm arkadaşların zaten takımlarda"}</div>
+            :results.filter(u=>!inTeam(u.id)).map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+              <Av i={u.av} s={36}/>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:600,color:T.text}}>{u.name}</div>
+                <div style={{fontSize:12,color:T.textDim}}>@{u.un}</div>
+              </div>
+              <Btn small primary onClick={()=>addPlayer(u)}>Davet Et</Btn>
+            </div>)
+          }
+        </div>
+
+        {/* Manuel oyuncu */}
+        <div style={{padding:"12px 20px 28px",borderTop:`1px solid ${T.cardBorder}22`}}>
+          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>Oyuncu Ekle</div>
+          <div style={{display:"flex",gap:8}}>
+            <input
+              value={customName}
+              onChange={e=>setCustomName(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&addCustomPlayer()}
+              placeholder="Ad Soyad..."
+              style={{flex:1,background:T.bg,border:`1px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:14,fontFamily:FB,outline:"none"}}
+            />
+            <Btn primary onClick={addCustomPlayer} disabled={!customName.trim()} st={{borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700}}>Ekle</Btn>
+          </div>
+        </div>
+      </div>
+    </>}
+  </>;
 }
 
 // S10: Canlı Skor + Maç Sonu (sadece bu 2 sayfa)
