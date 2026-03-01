@@ -137,7 +137,7 @@ function Badge({ children, c=T.accent }) {
 }
 function Btn({ children, primary, small, full, onClick, st }) {
   const [h,setH]=useState(false);
-  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:small?"6px 16px":"12px 20px", borderRadius:10, border:primary?"none":`1.5px solid ${T.cardBorder}`, background:primary?T.accent:"transparent", color:primary?"#0D0D0D":T.text, fontSize:small?12:14, fontWeight:600, cursor:"pointer", width:full?"100%":"auto", transition:"all .2s", transform:h?"translateY(-1px)":"none", display:"flex", alignItems:"center", justifyContent:"center", gap:8, ...st }}>{children}</button>;
+  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:small?"6px 16px":"12px 20px", borderRadius:10, border:primary?"none":`1.5px solid ${T.cardBorder}`, background:primary?T.accent:"transparent", color:primary?"#fff":T.text, fontSize:small?12:14, fontWeight:600, cursor:"pointer", width:full?"100%":"auto", transition:"all .2s", transform:h?"translateY(-1px)":"none", display:"flex", alignItems:"center", justifyContent:"center", gap:8, ...st }}>{children}</button>;
 }
 function InpField({ placeholder, icon, value, onChange, autoFocus }) {
   const [f,setF]=useState(false);
@@ -280,28 +280,31 @@ function PostCard({ post: p, onNav }) {
       </div>
     </div>
 
-    {/* Title */}
-    {m && <div style={{ padding:"12px 16px 0", fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{m.title}</div>}
+    {/* Title + Caption + Meta + Score — tıklanabilir alan */}
+    <div onClick={()=>m&&window.location.assign("/04_match_detail?view=S11")} style={{ cursor:m?"pointer":"default" }}>
+      {/* Title */}
+      {m && <div style={{ padding:"12px 16px 0", fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{m.title}</div>}
 
-    {/* Caption */}
-    {p.caption && <div style={{ padding:"6px 16px 0", fontSize:14, color:T.textDim, lineHeight:1.5 }}>{p.caption}</div>}
+      {/* Caption */}
+      {p.caption && <div style={{ padding:"6px 16px 0", fontSize:14, color:T.textDim, lineHeight:1.5 }}>{p.caption}</div>}
 
-    {/* Meta */}
-    {m && <div style={{ padding:"8px 16px 0", display:"flex", gap:12, fontSize:12, color:T.textDim, alignItems:"center", flexWrap:"wrap" }}>
-      <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.clock()} {m.dur}</span>
-      <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
-      <Badge c={T.textDim}>{m.fmt}</Badge>
-      <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.users()} {all.length}</span>
-    </div>}
+      {/* Meta */}
+      {m && <div style={{ padding:"8px 16px 0", display:"flex", gap:12, fontSize:12, color:T.textDim, alignItems:"center", flexWrap:"wrap" }}>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.clock()} {m.dur}</span>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
+        <Badge c={T.textDim}>{m.fmt}</Badge>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.users()} {all.length}</span>
+      </div>}
 
-    {/* Scoreboard / Photo area */}
-    <div style={{ marginTop:12 }}>
-      {p.photos>0
-        ? <MediaSlider photoCount={p.photos} imgs={p.imgs||[]} scoreContent={scoreOnly} onMatchNav={()=>m&&onNav("S11",m.id)}/>
-        : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", borderTop:`2px solid ${T.bgAlt}`, borderBottom:`2px solid ${T.bgAlt}`, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px 16px" }}>
-            {scoreOnly}
-          </div>
-      }
+      {/* Scoreboard / Photo area */}
+      <div style={{ marginTop:12 }}>
+        {p.photos>0
+          ? <MediaSlider photoCount={p.photos} imgs={p.imgs||[]} scoreContent={scoreOnly} onMatchNav={()=>m&&window.location.assign("/04_match_detail?view=S11")}/>
+          : <div style={{ borderTop:`2px solid ${T.bgAlt}`, borderBottom:`2px solid ${T.bgAlt}`, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px 16px" }}>
+              {scoreOnly}
+            </div>
+        }
+      </div>
     </div>
 
     {/* Likers */}
@@ -429,6 +432,13 @@ function S42({ onNav, postId }) {
   const p=P.find(x=>x.id===postId)||P[0];
   const owner=uf(p.userId);
   const m=mf(p.matchId);
+  const all=[...(m?.tA||[]),...(m?.tB||[])];
+  const mvp=m?uf(m.mvp):null;
+  const firstLiker=p.likers?.[0]?uf(p.likers[0]):null;
+  const [liked,setLiked]=useState(p.likedByMe);
+  const [lc,setLc]=useState(p.likes);
+  const toggleLike=()=>{setLiked(!liked);setLc(c=>liked?c-1:c+1);};
+
   return <div style={{ paddingBottom:80 }}>
     {/* Top bar */}
     <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}` }}>
@@ -436,26 +446,67 @@ function S42({ onNav, postId }) {
       <span style={{ fontSize:16, fontWeight:700, color:T.text, fontFamily:FONT_H }}>Yorumlar</span>
     </div>
 
-    {/* Post summary */}
-    <div style={{ padding:"16px", borderBottom:`1px solid ${T.cardBorder}` }}>
-      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
-        <Av i={owner.av} img={owner.img} s={32} onClick={()=>onNav("S16",owner.id)}/>
-        <div><div style={{ fontWeight:600, fontSize:13, color:T.text }}>{owner.name}</div><div style={{ fontSize:11, color:T.textMuted }}>@{owner.un} · {p.date}</div></div>
-      </div>
-      {p.caption && <div style={{ fontSize:14, color:T.textDim, marginBottom:8, lineHeight:1.5 }}>{p.caption}</div>}
-      {m && <div style={{ fontWeight:700, fontSize:16, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>}
-      {m?.sc&&<div style={{ fontSize:38, fontWeight:900, fontFamily:FONT_H, marginBottom:8 }}>
-        <span style={{ color:T.text }}>{m.sc[0]}</span>
-        <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
-        <span style={{ color:T.text }}>{m.sc[1]}</span>
-      </div>}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <span style={{ display:"flex" }}>{I.heart()}</span>
-          <StackAv ids={(p.likers||[]).slice(0,3)} s={20}/>
-          <span onClick={()=>onNav("S43",p.id)} style={{ fontSize:13, color:T.text, fontWeight:600, cursor:"pointer" }}>{p.likes} beğeni</span>
+    {/* Post summary — feed kartıyla aynı stil */}
+    <div style={{ borderBottom:`1px solid ${T.cardBorder}` }}>
+      {/* Header */}
+      <div style={{ padding:"16px 16px 0", display:"flex", alignItems:"center", gap:12 }}>
+        <Av i={owner.av} img={owner.img} s={36} onClick={()=>onNav("S16",owner.id)}/>
+        <div>
+          <span onClick={()=>onNav("S16",owner.id)} style={{ fontWeight:700, fontSize:14, color:T.text, cursor:"pointer" }}>{owner.name}</span>
+          <div style={{ fontSize:12, color:T.textMuted, marginTop:2 }}>@{owner.un} · {p.date}</div>
         </div>
-        <span style={{ fontSize:13, color:T.textDim }}>{p.coms} yorum</span>
+      </div>
+
+      {/* Title */}
+      {m && <div style={{ padding:"12px 16px 0", fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{m.title}</div>}
+
+      {/* Caption */}
+      {p.caption && <div style={{ padding:"6px 16px 0", fontSize:14, color:T.textDim, lineHeight:1.5 }}>{p.caption}</div>}
+
+      {/* Meta */}
+      {m && <div style={{ padding:"8px 16px 0", display:"flex", gap:12, fontSize:12, color:T.textDim, alignItems:"center", flexWrap:"wrap" }}>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.clock()} {m.dur}</span>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
+        <Badge c={T.textDim}>{m.fmt}</Badge>
+        <span style={{ display:"flex", alignItems:"center", gap:4 }}>{I.users()} {all.length}</span>
+      </div>}
+
+      {/* Score */}
+      {m?.sc && <div style={{ marginTop:12, borderTop:`2px solid ${T.bgAlt}`, borderBottom:`2px solid ${T.bgAlt}`, padding:"20px 16px", textAlign:"center" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <span style={{ fontSize:11, color:T.textDim, marginRight:12 }}>Takım A</span>
+          <span style={{ fontSize:38, fontWeight:900, letterSpacing:"-2px", fontFamily:FONT_H }}>
+            <span style={{ color:T.text }}>{m.sc[0]}</span>
+            <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
+            <span style={{ color:T.text }}>{m.sc[1]}</span>
+          </span>
+          <span style={{ fontSize:11, color:T.textDim, marginLeft:12 }}>Takım B</span>
+        </div>
+        {mvp && <div onClick={()=>onNav("S16",mvp.id)} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:8, cursor:"pointer" }}>
+          {I.star(T.accent)} <span style={{ fontSize:12, color:T.accent, fontWeight:600 }}>{mvp.name}</span>
+        </div>}
+      </div>}
+
+      {/* Likers */}
+      {lc>0 && <div style={{ padding:"8px 16px 0", fontSize:12, color:T.textDim, display:"flex", alignItems:"center", gap:8, marginTop:8 }}>
+        <StackAv ids={(p.likers||[]).slice(0,3)} s={20}/>
+        <span>
+          <b onClick={()=>onNav("S16",firstLiker?.id)} style={{ color:T.text, cursor:"pointer" }}>{liked?"Sen":firstLiker?.name?.split(" ")[0]}</b>
+          {lc>1 && <span onClick={()=>onNav("S43",p.id)} style={{ cursor:"pointer" }}> ve <b style={{ color:T.text }}>{lc-1} diğer kişiler beğendi</b></span>}
+        </span>
+      </div>}
+
+      {/* Interaction row */}
+      <div style={{ padding:"12px 16px", display:"flex", gap:20, alignItems:"center" }}>
+        <div onClick={toggleLike} style={{ display:"flex", alignItems:"center", gap:4, cursor:"pointer", fontSize:13, color:liked?T.red:T.textDim, fontWeight:liked?600:400 }}>
+          {liked?I.heartFill():I.heart()} {lc}
+        </div>
+        <span style={{ fontSize:13, color:T.textDim, display:"flex", alignItems:"center", gap:4 }}>
+          {I.comment()} {p.coms}
+        </span>
+        <div style={{ display:"flex", alignItems:"center", cursor:"pointer" }}>
+          {I.share()}
+        </div>
       </div>
     </div>
 

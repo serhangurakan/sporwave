@@ -142,7 +142,7 @@ function InputField({ placeholder, type = "text", icon, value, onChange, error }
 function Button({ children, primary, danger, ghost, full, small, onClick, disabled, style: s }) {
   const [hover, setHover] = useState(false);
   const bg = danger ? T.red : primary ? T.accent : "transparent";
-  const c = danger ? "#fff" : primary ? "#0D0D0D" : T.text;
+  const c = danger ? "#fff" : primary ? "#fff" : T.text;
   const border = !primary && !danger ? `1.5px solid ${ghost ? "transparent" : T.cardBorder}` : "1.5px solid transparent";
   return (
     <button

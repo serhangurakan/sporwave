@@ -326,9 +326,10 @@ Ana Sayfa tab'ında:
 - Puanlanmamış kartlar bittikten sonra 8px divider ile planned kartlardan ayrılır
 
 **Devam eden maç widget'ı (varsa — footer üstünde):**
-- Footer'ın hemen üstüne sabitlenmiş kompakt widget
-- İçerik: ↑ yukarı ok (sol) | "Aktif Maç" | güncel süre | 🗑️ kırmızı çöp kutusu (sağ)
-- Yukarı oka tıklanırsa → S10 Canlı Skor sayfasına geri dönülür
+- Footer'ın hemen üstüne sabitlenmiş kompakt widget, background her zaman accent (yeşil)
+- İçerik: ▶/⏸ play/pause butonu (sol) | "Maç Oynanıyor" / "Maç Durduruldu" | güncel süre | skor | 🗑️ kırmızı çöp kutusu (sağ)
+- Play/pause butonu: Kronometreyi widget üzerinden başlatır/durdurur, ikon toggle olur
+- Widget'ın geri kalan alanına tıklanırsa → S10 Canlı Skor sayfasına geri dönülür (aynı süre ve play/pause state'i korunur)
 - Çöp kutusuna tıklanırsa → "Bu maçı silmek istediğinize emin misiniz?" popup (Maçı Sil / İptal)
 - Bu widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
 - Maç detay, ayarlar vb. sayfalarda görünmez
@@ -349,7 +350,7 @@ Ana Sayfa tab'ında:
   - Açıklama (varsa, maks. 2 satır, truncate ile "...")
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
-  - Kontenjan: "7/10 oyuncu" (progress bar)
+  - Kontenjan: "7/10 oyuncu" (progress bar — her zaman accent/primary rengi, doluluk oranından bağımsız)
   - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
   - Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
   - Tıklanınca → S12 Planlanan Maç Detay
@@ -372,7 +373,7 @@ Ana Sayfa tab'ında:
 
 **Boş durum:** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
 
-**Sağ altta FAB "+" butonu** → tıklayınca direkt S31 Maç Oluştur sayfasına gider (S09 Bottom Sheet kaldırıldı)
+**Sağ altta FAB "+" butonu** → tıklayınca direkt S31 Maç Oluştur sayfasına gider
 
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
@@ -406,9 +407,10 @@ Ana Sayfa tab'ında:
 
 **Aşağı ok (minimize) davranışı:**
 - Canlı skor sayfasında sol üstte ↓ aşağı ok ikonuna basınca → maç minimize edilir
-- "Devam eden maçın var" widget'ı footer'ın üstüne sabitlenir
-- Widget: ↑ yukarı ok (sol) | "Aktif Maç" | güncel süre | kırmızı çöp kutusu (sağ)
-- Yukarı ok → canlı skor sayfasına geri dön
+- Widget footer'ın üstüne sabitlenir (accent yeşil background, her zaman aynı)
+- Widget: ▶/⏸ play/pause (sol) | "Maç Oynanıyor" / "Maç Durduruldu" | güncel süre | skor | kırmızı çöp kutusu (sağ)
+- Play/pause → kronometreyi widget üzerinden başlat/durdur
+- Widget alanına tıkla → canlı skor sayfasına geri dön (süre ve state korunur)
 - Çöp kutusu → "Bu maçı silmek istediğinize emin misiniz?" popup (Maçı Sil / İptal)
 - Widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
 
@@ -458,7 +460,7 @@ Ana Sayfa tab'ında:
   - **Host için:** bilgi kartının sağ üstünde "✏️ Düzenle" butonu → bottom drawer (Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük alanları)
 - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
-- **Kontenjan gösterimi:** "7/10 oyuncu" (progress bar ile)
+- **Kontenjan gösterimi:** "7/10 oyuncu" (progress bar ile — her zaman accent/primary rengi)
 - **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (turuncu-sarı) + otomatik silinmeye kalan süre
 - **Takım görünümü:**
   - Takım A (accent) | Takım B (orange) — her iki kolon 3'er grid, satır satır hizalı
@@ -528,13 +530,13 @@ Ana Sayfa tab'ında:
 
 #### S31: Maç Oluştur (İleri Tarihli — Login gerekli)
 - **Amaç:** Gelecek tarihli maç planla, oyuncu topla
-- **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu (S09 Bottom Sheet kaldırıldı — direkt S31'e gider)
+- **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu ( S31'e gider)
 - İlerleme çubuğu (3 adım)
 
 **Adım 1 — Maç Detayları:**
 - Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı")
 - Açıklama textarea
-- Maç formatı: 5v5 / 6v6 / 7v7 / Özel
+- Takımlar kaç kişilik?: Dropdown number picker (3–11 arası)
 - Tarih picker
 - Saat picker
 - **Konum seçimi (opsiyonel):** Map picker açılır, pin atılır
@@ -926,10 +928,12 @@ Ana Sayfa tab'ında:
 #### S42: Yorumlar Sayfası (Reusable — Post Yorum Detayı)
 - **Erişim:** Post kartı her nerede görünürse (S05 Feed, S15 Profil, S16 Başka Profil) yorum ikonuna veya "Bir yorum ekle..." alanına tıklayınca açılır
 - **Üst bar:** ← geri + "Yorumlar" başlığı
-- **Post özet kartı (üstte, compact):**
-  - Post sahibi avatar + kullanıcıadı + tarih
-  - Post başlığı + skor
+- **Post özet kartı (üstte — ana sayfadaki PostCard ile aynı format):**
+  - Header: avatar + kullanıcıadı + tarih
+  - Başlık + açıklama + meta (süre, konum, format badge, oyuncu sayısı)
+  - Skor: Takım A [X] — [Y] Takım B + MVP
   - Beğeni ikonu + avatarlar + "X beğeni" (tıklanınca → S43 Beğeniler) + "X yorum" (sağda)
+  - Like toggle, paylaş butonu — etkileşim satırı
 - **Yorum listesi:**
   - Her yorum: Avatar + kullanıcıadı + zaman + yorum metni
   - **Kullanıcı adı tıklanabilir → S16 Profil**
@@ -990,7 +994,7 @@ Maçlar tab → FAB "+" → "Maç Başlat" → Format seç + konum
 
 ### Akış 3: Maç Oluştur (Planlama)
 ```
-Maçlar tab → FAB "+" → S31 (direkt açılır, S09 Bottom Sheet yok)
+Maçlar tab → FAB "+" → S31 
 → Adım 1: Maç adı + açıklama + format + tarih/saat + konum
 → Adım 2: Katılım ayarları (seviye + kabul modu + gizlilik)
 → Adım 3: Arkadaşları davet et (opsiyonel)
@@ -1114,7 +1118,7 @@ Maç saati geçer → Maç hala başlamamış
 - **BackLink (← Geri):** ProgressBar'ın hemen altında, `fontSize:14, color:T.textDim, marginTop:20, marginBottom:8`; adım > 0 ise bir önceki adıma döner, adım === 0 ise akışın başladığı sayfaya döner (S31 için S08 Maçlar)
 - **Adım etiketi:** `fontSize:12, fontWeight:600, color:T.textMuted, textTransform:"uppercase", letterSpacing:"1px"`
 - **Büyük başlık:** `fontSize:24, fontWeight:800, color:T.text, marginBottom:24, letterSpacing:"-0.5px"`, Plus Jakarta Sans font
-- **Birincil buton:** `fontSize:15, fontWeight:700, padding:"14px 24px", borderRadius:12`, tam genişlik
+- **Birincil buton:** `fontSize:15, fontWeight:700, padding:"14px 24px", borderRadius:12`, tam genişlik, **text rengi beyaz (#fff)**
 - **İkincil link (Atla vb.):** `marginTop:16, fontSize:14, fontWeight:500, color:T.textDim`, metin ortalamalı; birincil butonun **altında** yer alır
 - **Seçim elementleri (pill/kart):** `borderRadius:12, padding:"10px 16px"`, seçilince `border: 1.5px solid T.accent`, `background: T.accent + "12"`, `color: T.accent`; seçilmeyince `border: 1.5px solid T.cardBorder`, `background: T.card`
 

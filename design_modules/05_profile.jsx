@@ -124,7 +124,7 @@ const I={
 
 // Shared Components
 function Av({i,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#0D0D0D":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer",padding:"6px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
 function StackAv({ids,max=3,s=24}){const vis=ids.slice(0,max);return <div style={{display:"flex"}}>{vis.map((uid,i)=>{const u=uf(uid);return u&&<div key={uid} style={{marginLeft:i>0?-8:0,zIndex:max-i,position:"relative"}}><Av i={u.av} s={s}/></div>;})}{ids.length>max&&<span style={{fontSize:10,color:T.textDim,marginLeft:4,fontWeight:600}}>+{ids.length-max}</span>}</div>;}
@@ -214,28 +214,31 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
       </div>
     </div>
 
-    {/* Title */}
-    {m&&<div style={{padding:"12px 16px 0",fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>{m.title}</div>}
+    {/* Title + Caption + Meta + Score — tıklanabilir alan */}
+    <div onClick={()=>m&&window.location.assign("/04_match_detail?view=S11")} style={{cursor:m?"pointer":"default"}}>
+      {/* Title */}
+      {m&&<div style={{padding:"12px 16px 0",fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>{m.title}</div>}
 
-    {/* Caption */}
-    {p.caption&&<div style={{padding:"6px 16px 0",fontSize:14,color:T.textDim,lineHeight:1.5}}>{p.caption}</div>}
+      {/* Caption */}
+      {p.caption&&<div style={{padding:"6px 16px 0",fontSize:14,color:T.textDim,lineHeight:1.5}}>{p.caption}</div>}
 
-    {/* Meta */}
-    {m&&<div style={{padding:"8px 16px 0",display:"flex",gap:12,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
-      <span style={{display:"flex",alignItems:"center",gap:4}}>{I.clock()} {m.dur}</span>
-      <span style={{display:"flex",alignItems:"center",gap:4}}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
-      <Badge c={T.textDim}>{m.fmt}</Badge>
-      <span style={{display:"flex",alignItems:"center",gap:4}}>{I.users()} {all.length}</span>
-    </div>}
+      {/* Meta */}
+      {m&&<div style={{padding:"8px 16px 0",display:"flex",gap:12,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
+        <span style={{display:"flex",alignItems:"center",gap:4}}>{I.clock()} {m.dur}</span>
+        <span style={{display:"flex",alignItems:"center",gap:4}}>{I.mapPin()} {m.loc?.split(" ")[0]}</span>
+        <Badge c={T.textDim}>{m.fmt}</Badge>
+        <span style={{display:"flex",alignItems:"center",gap:4}}>{I.users()} {all.length}</span>
+      </div>}
 
-    {/* Scoreboard / Photo area */}
-    <div style={{marginTop:12}}>
-      {p.photos>0
-        ?<MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>onNav?.("S11",m?.id)}/>
-        :<div onClick={()=>onNav?.("S11",m?.id)} style={{cursor:"pointer",borderTop:`2px solid ${T.card}`,borderBottom:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 16px"}}>
-          {scoreOnly}
-        </div>
-      }
+      {/* Scoreboard / Photo area */}
+      <div style={{marginTop:12}}>
+        {p.photos>0
+          ?<MediaSlider photoCount={p.photos} scoreContent={scoreOnly} onMatchNav={()=>m&&window.location.assign("/04_match_detail?view=S11")}/>
+          :<div style={{borderTop:`2px solid ${T.card}`,borderBottom:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 16px"}}>
+            {scoreOnly}
+          </div>
+        }
+      </div>
     </div>
 
     {/* Likers */}

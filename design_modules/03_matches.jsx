@@ -68,12 +68,12 @@ const I={
 
 // Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:"none",color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#0D0D0D":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:"#fff",background:c,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function ProgressBar({current,total}){return <div style={{display:"flex",gap:6,marginBottom:24,padding:"0 4px"}}>{Array.from({length:total},(_,i)=><div key={i} style={{flex:1,height:4,borderRadius:4,background:i<current?T.accent:i===current?`${T.accent}55`:`${T.textDim}22`,transition:"background .4s"}}/>)}</div>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:"8px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
 
-function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
+function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 
 // S08: Matches Page
 function S08({onNav,showUnrated,hasActiveWidget}){
@@ -201,7 +201,7 @@ const I10={
 };
 
 // S10: Canlı Skor + Maç Sonu (sadece bu 2 sayfa)
-function S10({onNav,onMinimize,onEndMatch}){
+function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
   const [page,setPage]=useState(()=>{const p=new URLSearchParams(window.location.search).get("page");return p==="end"?"end":"live";});
   const [fmt]=useState("5v5");
   const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
@@ -215,8 +215,8 @@ function S10({onNav,onMinimize,onEndMatch}){
     {id:4,team:"A",min:58,scorer:1,assist:null},
     {id:5,team:"B",min:72,scorer:3,assist:null},
   ]:[]);
-  const [running,setRunning]=useState(initEnd?false:true);
-  const [seconds,setSeconds]=useState(initEnd?5400:0);
+  const [running,setRunning]=useState(initEnd?false:(initialRunning!=null?initialRunning:true));
+  const [seconds,setSeconds]=useState(initEnd?5400:(initialSeconds!=null?initialSeconds:0));
   const [toast,setToast]=useState(null);
   const [deletePopup,setDeletePopup]=useState(false);
   const [goalDrawer,setGoalDrawer]=useState(null);
@@ -568,19 +568,28 @@ function S31({onNav}){
 // ============================================================
 function ActiveMatchWidget({seconds,score,onResume,onDelete}){
   const [deletePopup,setDeletePopup]=useState(false);
+  const [paused,setPaused]=useState(false);
+  const [localSec,setLocalSec]=useState(seconds);
+  const timerRef=useRef(null);
   const fmtTime=s=>{const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec<10?"0":""}${sec}`;};
+
+  useEffect(()=>{
+    if(!paused){timerRef.current=setInterval(()=>setLocalSec(s=>s+1),1000);}
+    else{clearInterval(timerRef.current);}
+    return()=>clearInterval(timerRef.current);
+  },[paused]);
 
   return <>
     <div style={{position:"fixed",bottom:56,left:0,right:0,maxWidth:430,margin:"0 auto",zIndex:95,padding:"8px 12px"}}>
-      <div style={{background:T.accent,border:"none",borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
-        <div onClick={onResume} style={{display:"flex",alignItems:"center",gap:12,flex:1,cursor:"pointer"}}>
-          <div style={{display:"flex"}}>{I.play("#fff")}</div>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:14,fontWeight:700,color:"#fff"}}>Maç Oynanıyor</span>
-            <span style={{fontSize:13,color:"#ffffffaa",fontWeight:600}}>{fmtTime(seconds)}</span>
-          </div>
+      <div style={{background:T.accent,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
+        <div onClick={()=>setPaused(!paused)} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,background:"rgba(255,255,255,0.15)",cursor:"pointer",flexShrink:0}}>
+          {paused?I.play("#fff"):I.pause("#fff")}
         </div>
-        <span onClick={onResume} style={{fontSize:16,fontWeight:900,color:"#fff",cursor:"pointer"}}>{score[0]} – {score[1]}</span>
+        <div onClick={()=>onResume(localSec,!paused)} style={{display:"flex",alignItems:"center",gap:8,flex:1,cursor:"pointer"}}>
+          <span style={{fontSize:14,fontWeight:700,color:"#fff"}}>{paused?"Maç Durduruldu":"Maç Oynanıyor"}</span>
+          <span style={{fontSize:13,color:"#ffffffaa",fontWeight:600}}>{fmtTime(localSec)}</span>
+        </div>
+        <span onClick={()=>onResume(localSec,!paused)} style={{fontSize:16,fontWeight:900,color:"#fff",cursor:"pointer"}}>{score[0]} – {score[1]}</span>
         <div onClick={e=>{e.stopPropagation();setDeletePopup(true);}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,background:"rgba(255,255,255,0.15)",cursor:"pointer",flexShrink:0}}>{I.trash(T.red)}</div>
       </div>
     </div>
@@ -619,8 +628,8 @@ export default function SporWaveMatches(){
     setActiveMatch({active:true,minimized:true,seconds:secs,score:sc});
     nav("S08");
   };
-  const handleResume=()=>{
-    setActiveMatch(prev=>({...prev,minimized:false}));
+  const handleResume=(secs,running)=>{
+    setActiveMatch(prev=>({...prev,minimized:false,seconds:secs??prev.seconds,running:running??true}));
     nav("S10");
   };
   const handleDeleteMatch=()=>{
@@ -633,7 +642,7 @@ export default function SporWaveMatches(){
   const pg=()=>{
     switch(cur){
       case "S08":case "S14":return <S08 onNav={nav} showUnrated={showUnrated} hasActiveWidget={showWidget}/>;
-      case "S10":return <S10 onNav={nav} onMinimize={handleMinimize} onEndMatch={handleDeleteMatch}/>;
+      case "S10":return <S10 onNav={nav} onMinimize={handleMinimize} onEndMatch={handleDeleteMatch} initialSeconds={activeMatch.seconds} initialRunning={activeMatch.running}/>;
       case "S31":return <S31 onNav={nav}/>;
       default:return <S08 onNav={nav} showUnrated={showUnrated}/>;
     }
