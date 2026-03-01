@@ -69,20 +69,6 @@ const POSTS=[
     likers:[1,6,8],comments:[]},
 ];
 
-// Mock: Weekly activity (last 12 weeks)
-const WEEKLY_ACTIVITY=[2,3,1,4,2,3,3,2,4,1,3,2];
-const WEEKLY_GOALS=[1,2,0,3,1,2,2,1,3,0,2,1];
-const WEEKLY_DURATION=[90,150,60,200,100,140,160,80,210,55,130,95];
-
-// Badges
-const BADGES=[
-  {id:1,icon:"trophy",label:"50 Maç Kulübü",earned:false},
-  {id:2,icon:"check",label:"%100 Katılım",earned:true},
-  {id:3,icon:"mic",label:"Süper Organizatör",earned:true},
-  {id:4,icon:"star",label:"MVP x5",earned:true},
-  {id:5,icon:"fire",label:"4 Hafta Seri",earned:true},
-  {id:6,icon:"new",label:"Yeni Üye",earned:true},
-];
 
 // Icons
 const I={
@@ -288,21 +274,8 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
 // ============================================================
 function S15({onNav}){
   const u=ME;
-  const [timeFilter,setTimeFilter]=useState("3m");
-  const [graphMetric,setGraphMetric]=useState("match");
-  const [panelOpen,setPanelOpen]=useState(null); // "stats"|"badges"|"calendar"|null
   const [deleteConfirm,setDeleteConfirm]=useState(null);
   const [posts,setPosts]=useState(POSTS.filter(p=>p.userId===u.id));
-
-  const timeLbl={["1m"]:"Son 1 ay",["3m"]:"Son 3 ay",["6m"]:"Son 6 ay",all:"Tüm zamanlar"};
-  const [tfOpen,setTfOpen]=useState(false);
-
-  const winRate=u.matches>0?Math.round(u.wins/u.matches*100):0;
-  const weeklyData=graphMetric==="match"?WEEKLY_ACTIVITY:graphMetric==="goal"?WEEKLY_GOALS:WEEKLY_DURATION;
-  const maxBar=Math.max(...weeklyData,1);
-
-  // Match days for calendar mock
-  const calDays=[3,7,10,14,17,18,21,22,25,28];
 
   const handlePostMenu=(action,postId)=>{
     if(action==="hide"){setPosts(ps=>ps.map(p=>p.id===postId?{...p,status:"hidden"}:p));}
@@ -334,117 +307,10 @@ function S15({onNav}){
         <div onClick={()=>onNav("S22",{tab:"following"})} style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Takip</div></div>
       </div>
 
-      {/* Attendance badge */}
-      {u.matches>=5&&<Badge c={T.accent} st={{marginTop:12}}>%{u.att} Katilim</Badge>}
     </div>
 
     {/* Bio */}
     {u.bio&&<div style={{padding:"12px 16px 0",fontSize:13,color:T.textDim,lineHeight:1.4}}>{u.bio}</div>}
-
-    {/* Weekly summary */}
-    <div style={{padding:"16px 16px 0"}}>
-      <div style={{fontSize:14,color:T.text,fontWeight:600}}><span style={{fontSize:20,fontWeight:900,fontFamily:FH,color:T.accent}}>3</span> mac bu hafta</div>
-    </div>
-
-    {/* Time filter */}
-    <div style={{padding:"12px 16px 0",position:"relative"}}>
-      <div onClick={()=>setTfOpen(!tfOpen)} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"6px 12px",borderRadius:8,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,color:T.textDim,fontWeight:600}}>
-        {timeLbl[timeFilter]} {I.chevDown(T.textDim)}
-      </div>
-      {tfOpen&&<div style={{position:"absolute",top:44,left:16,background:T.bgAlt,border:`1px solid ${T.cardBorder}`,borderRadius:10,padding:4,zIndex:10}}>
-        {Object.entries(timeLbl).map(([k,v])=><div key={k} onClick={()=>{setTimeFilter(k);setTfOpen(false);}} style={{padding:"8px 16px",fontSize:12,color:timeFilter===k?T.accent:T.text,fontWeight:600,cursor:"pointer",borderRadius:6}}>{v}</div>)}
-      </div>}
-    </div>
-
-    {/* Activity graph */}
-    <div style={{padding:"16px 16px 0"}}>
-      <div style={{display:"flex",alignItems:"flex-end",gap:4,height:80,marginBottom:8}}>
-        {weeklyData.map((v,i)=><div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-          <div style={{width:"100%",height:Math.max(4,v/maxBar*64),borderRadius:4,background:i===weeklyData.length-1?T.accent:`${T.accent}44`,transition:"height .3s"}}/>
-        </div>)}
-      </div>
-      {/* Metric pills */}
-      <div style={{display:"flex",gap:8}}>
-        {[{k:"match",l:"Mac"},{k:"goal",l:"Gol"},{k:"duration",l:"Sure"}].map(m=><div key={m.k} onClick={()=>setGraphMetric(m.k)} style={{padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600,background:graphMetric===m.k?T.accent:`${T.textDim}22`,color:graphMetric===m.k?"#0D0D0D":T.textDim,cursor:"pointer"}}>{m.l}</div>)}
-      </div>
-    </div>
-
-    {/* Pano (3 cards) */}
-    <div style={{padding:"20px 16px 0",display:"flex",gap:8}}>
-      <div onClick={()=>setPanelOpen(panelOpen==="stats"?null:"stats")} style={{flex:1,background:T.card,borderRadius:12,border:`1px solid ${panelOpen==="stats"?T.accent:T.cardBorder}`,padding:12,textAlign:"center",cursor:"pointer"}}>
-        {I.chart(T.accent)}
-        <div style={{fontSize:12,fontWeight:700,color:T.text,marginTop:4}}>Istatistikler</div>
-      </div>
-      <div onClick={()=>setPanelOpen(panelOpen==="badges"?null:"badges")} style={{flex:1,background:T.card,borderRadius:12,border:`1px solid ${panelOpen==="badges"?T.gold:T.cardBorder}`,padding:12,textAlign:"center",cursor:"pointer"}}>
-        {I.trophy(T.gold)}
-        <div style={{fontSize:12,fontWeight:700,color:T.text,marginTop:4}}>Basarilar</div>
-      </div>
-      <div onClick={()=>setPanelOpen(panelOpen==="calendar"?null:"calendar")} style={{flex:1,background:T.card,borderRadius:12,border:`1px solid ${panelOpen==="calendar"?T.purple:T.cardBorder}`,padding:12,textAlign:"center",cursor:"pointer"}}>
-        {I.calendar(T.purple)}
-        <div style={{fontSize:12,fontWeight:700,color:T.text,marginTop:4}}>Takvim</div>
-      </div>
-    </div>
-
-    {/* Panel expand */}
-    {panelOpen==="stats"&&<div style={{margin:"8px 16px 0",background:T.card,borderRadius:12,border:`1px solid ${T.accent}33`,padding:16}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Istatistikler</div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
-        {[
-          {l:"Toplam Mac",v:u.matches},{l:"Galibiyet",v:u.wins},{l:"Maglubiyet",v:u.losses},
-          {l:"Beraberlik",v:u.draws},{l:"Kazanma %",v:`%${winRate}`},{l:"Toplam Gol",v:u.goals},
-          {l:"Toplam Asist",v:u.assists},{l:"MVP",v:u.mvp},
-        ].map((s,i)=><div key={i} style={{textAlign:"center"}}>
-          <div style={{fontSize:18,fontWeight:900,fontFamily:FH,color:T.accent}}>{s.v}</div>
-          <div style={{fontSize:10,color:T.textDim,fontWeight:600,marginTop:2}}>{s.l}</div>
-        </div>)}
-      </div>
-    </div>}
-
-    {panelOpen==="badges"&&<div style={{margin:"8px 16px 0",background:T.card,borderRadius:12,border:`1px solid ${T.gold}33`,padding:16}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Basarilar</div>
-      <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-        {BADGES.map(b=><div key={b.id} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:b.earned?`${T.gold}15`:`${T.textDim}10`,border:`1px solid ${b.earned?`${T.gold}33`:`${T.textDim}22`}`}}>
-          <span style={{fontSize:13}}>{b.icon==="trophy"?I.trophy(b.earned?T.gold:T.textMuted):b.icon==="check"?I.check(b.earned?T.green:T.textMuted):b.icon==="star"?<svg width="14" height="14" viewBox="0 0 24 24" fill={b.earned?T.gold:T.textMuted}><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>:b.icon==="fire"?I.fire(b.earned?T.orange:T.textMuted):b.icon==="mic"?<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={b.earned?T.accent:T.textMuted} strokeWidth="2" strokeLinecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>:b.icon==="new"?<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={b.earned?T.accent:T.textMuted} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>:null}</span>
-          <span style={{fontSize:11,fontWeight:600,color:b.earned?T.text:T.textMuted}}>{b.label}</span>
-        </div>)}
-      </div>
-    </div>}
-
-    {panelOpen==="calendar"&&<div style={{margin:"8px 16px 0",background:T.card,borderRadius:12,border:`1px solid ${T.purple}33`,padding:16}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Subat 2026</div>
-      {/* Days header */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:4}}>
-        {["Pt","Sa","Ca","Pe","Cu","Ct","Pz"].map(d=><div key={d} style={{fontSize:10,color:T.textMuted,fontWeight:600,textAlign:"center"}}>{d}</div>)}
-      </div>
-      {/* Calendar grid (Feb 2026 starts on Sunday=7th col, 28 days) */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}}>
-        {/* 6 empty cells for offset (Feb 1, 2026 = Sunday) */}
-        {[...Array(6)].map((_,i)=><div key={`e${i}`}/>)}
-        {[...Array(28)].map((_,i)=>{
-          const day=i+1;
-          const hasMatch=calDays.includes(day);
-          return <div key={day} style={{textAlign:"center",padding:4,borderRadius:6,cursor:hasMatch?"pointer":"default",background:hasMatch?`${T.accent}15`:"transparent"}}>
-            <div style={{fontSize:12,fontWeight:hasMatch?700:500,color:hasMatch?T.accent:T.textDim}}>{day}</div>
-            {hasMatch&&<div style={{width:4,height:4,borderRadius:2,background:T.accent,margin:"2px auto 0"}}/>}
-          </div>;
-        })}
-      </div>
-    </div>}
-
-    {/* Streak */}
-    <div style={{padding:"16px 16px 0",display:"flex",alignItems:"center",gap:8}}>
-      {I.fire(T.orange)}
-      <span style={{fontSize:14,fontWeight:700,color:T.text}}>4 haftalik serin!</span>
-    </div>
-    <div style={{padding:"4px 16px 0",fontSize:12,color:T.textDim}}>En uzun seri: 6 hafta</div>
-
-    {/* Badges (horizontal scroll) */}
-    <div style={{padding:"16px 16px 0"}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:8}}>Rozetler</div>
-      <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
-        {BADGES.filter(b=>b.earned).map(b=><Badge key={b.id} c={T.gold} st={{whiteSpace:"nowrap",flexShrink:0}}>{b.label}</Badge>)}
-      </div>
-    </div>
 
     {/* Match post feed */}
     <div style={{padding:"20px 16px 0"}}>
@@ -475,16 +341,9 @@ function S16({onNav,userId}){
   const [followState,setFollowState]=useState(FOLLOWING_IDS.has(u.id)?"following":"not_following"); // "not_following"|"following"|"mutual"
   const [unfollowConfirm,setUnfollowConfirm]=useState(false);
   const [menuOpen,setMenuOpen]=useState(false);
-  const [graphMetric,setGraphMetric]=useState("match");
-  const [timeFilter,setTimeFilter]=useState("3m");
-  const [tfOpen,setTfOpen]=useState(false);
-  const timeLbl={["1m"]:"Son 1 ay",["3m"]:"Son 3 ay",["6m"]:"Son 6 ay",all:"Tum zamanlar"};
 
   // Check if mutual
   const isMutual=followState==="following"&&u.id===4; // Mock: Emre is mutual
-
-  const weeklyData=graphMetric==="match"?WEEKLY_ACTIVITY:graphMetric==="goal"?WEEKLY_GOALS:WEEKLY_DURATION;
-  const maxBar=Math.max(...weeklyData,1);
 
   const userPosts=POSTS.filter(p=>p.userId===u.id&&p.status==="visible");
 
@@ -518,9 +377,6 @@ function S16({onNav,userId}){
         <div onClick={()=>onNav("S22",{tab:"following",uid:u.id})} style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Takip</div></div>
       </div>
 
-      {/* Attendance badge */}
-      {u.matches>=5&&<Badge c={T.accent} st={{marginTop:12}}>%{u.att} Katilim</Badge>}
-
       {/* Mutual label */}
       {isMutual&&followState==="following"&&<Badge c={T.green} st={{marginTop:8}}>Arkadas</Badge>}
     </div>
@@ -535,43 +391,6 @@ function S16({onNav,userId}){
         <Btn full onClick={()=>setUnfollowConfirm(true)} st={{flex:1}}>{I.check(T.accent)} Takip Ediliyor</Btn>
       }
       <Btn onClick={()=>onNav("S18")} st={{flex:1}}>{I.chat(T.text)} Mesaj Gonder</Btn>
-    </div>
-
-    {/* Time filter */}
-    <div style={{padding:"16px 16px 0",position:"relative"}}>
-      <div onClick={()=>setTfOpen(!tfOpen)} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"6px 12px",borderRadius:8,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,color:T.textDim,fontWeight:600}}>
-        {timeLbl[timeFilter]} {I.chevDown(T.textDim)}
-      </div>
-      {tfOpen&&<div style={{position:"absolute",top:52,left:16,background:T.bgAlt,border:`1px solid ${T.cardBorder}`,borderRadius:10,padding:4,zIndex:10}}>
-        {Object.entries(timeLbl).map(([k,v])=><div key={k} onClick={()=>{setTimeFilter(k);setTfOpen(false);}} style={{padding:"8px 16px",fontSize:12,color:timeFilter===k?T.accent:T.text,fontWeight:600,cursor:"pointer",borderRadius:6}}>{v}</div>)}
-      </div>}
-    </div>
-
-    {/* Activity graph */}
-    <div style={{padding:"16px 16px 0"}}>
-      <div style={{display:"flex",alignItems:"flex-end",gap:4,height:80,marginBottom:8}}>
-        {weeklyData.map((v,i)=><div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-          <div style={{width:"100%",height:Math.max(4,v/maxBar*64),borderRadius:4,background:i===weeklyData.length-1?T.accent:`${T.accent}44`,transition:"height .3s"}}/>
-        </div>)}
-      </div>
-      <div style={{display:"flex",gap:8}}>
-        {[{k:"match",l:"Mac"},{k:"goal",l:"Gol"},{k:"duration",l:"Sure"}].map(m=><div key={m.k} onClick={()=>setGraphMetric(m.k)} style={{padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600,background:graphMetric===m.k?T.accent:`${T.textDim}22`,color:graphMetric===m.k?"#0D0D0D":T.textDim,cursor:"pointer"}}>{m.l}</div>)}
-      </div>
-    </div>
-
-    {/* Streak */}
-    <div style={{padding:"16px 16px 0",display:"flex",alignItems:"center",gap:8}}>
-      {I.fire(T.orange)}
-      <span style={{fontSize:14,fontWeight:700,color:T.text}}>6 haftalik seri!</span>
-    </div>
-    <div style={{padding:"4px 16px 0",fontSize:12,color:T.textDim}}>En uzun seri: 8 hafta</div>
-
-    {/* Badges */}
-    <div style={{padding:"16px 16px 0"}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:8}}>Rozetler</div>
-      <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
-        {BADGES.filter(b=>b.earned).map(b=><Badge key={b.id} c={T.gold} st={{whiteSpace:"nowrap",flexShrink:0}}>{b.label}</Badge>)}
-      </div>
     </div>
 
     {/* Match post feed */}

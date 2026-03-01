@@ -23,7 +23,7 @@
 | **Derecelendirme** | MVP'de yok — deneyim seviyesi self-select olarak kalacak |
 | **Diğer spor dalları** | UI'da gösterilmiyor, sadece onboarding'de tercih soruluyor (data toplama amaçlı) |
 | **Tab yapısı** | 3 tab: Ana Sayfa (sosyal) + Maçlar (aksiyon) + Profil (kişisel) |
-| **Attendance sistemi** | MVP'de var — %60 çoğunluk kuralı ile katılım bildirimi |
+| **Attendance sistemi** | MVP'de yok — kaldırıldı |
 | **Keşfet algoritması** | Etkileşim skoru: Like×1 + Comment×2 + Share×3, son 7 gün göreli sıralama |
 | **Maç sohbeti** | MVP'de var — her planlanan maçın otomatik grup chat'i |
 | **Maç editlenebilirlik** | Feed'e düştükten sonra edit yok, sadece 24 saat puanlama |
@@ -34,7 +34,7 @@
 | **Maç state machine** | 7 state: draft → open → full → started → ended → rating → archived |
 | **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
 | **Maç sohbeti arşiv** | Maç arşivlenince mesajlar silinir (salt okunur arşiv yok), sadece metadata korunur |
-| **Attendance hesaplama** | Son 10 maç bazlı (ilk 5 maçta gösterilmez) |
+| **Attendance hesaplama** | Kaldırıldı |
 | **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
 | **Feed modeli** | Duplicated feed — her katılımcının kendi maç postu var, feed'de ayrı ayrı görünür |
 | **Maç verisi vs Post** | Maç verisi (skor, takımlar, MVP) paylaşımlı ve immutable. Her katılımcının kişisel postu (başlık, not, fotoğraf) ayrı |
@@ -59,7 +59,7 @@ draft → open → full → started → ended → rating → archived
 | **full** | Kontenjan doldu | Sadece katılımcılara (dışarıdan görünmez) |
 | **started** | Maç başladı, skor takibi aktif | Sadece katılımcılara |
 | **ended** | Maç bitti, skor kilitlendi | Sadece katılımcılara (feed'e düşene kadar) |
-| **rating** | 24 saatlik MVP oylama + attendance penceresi | Katılımcılara |
+| **rating** | 24 saatlik MVP oylama penceresi | Katılımcılara |
 | **archived** | Profil ve feed'de geçmiş maç olarak görünür | Herkese (gizlilik ayarına göre) |
 
 **Geçiş kuralları:**
@@ -281,7 +281,7 @@ Ana Sayfa tab'ında:
 | **hidden** (gizli) | Görünmez | Görünmez | Evet |
 | **deleted** (silinmiş) | Görünmez | Görünmez | Hayır |
 
-**Maç verisi editlenebilirlik kuralı:** Maç verisi (Katman 1) arşivlendikten sonra editlenemez. Kişisel post (Katman 2) her zaman düzenlenebilir (başlık, not, fotoğraf). Son maç verisi düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama ve attendance bildirimi yapılabilir.
+**Maç verisi editlenebilirlik kuralı:** Maç verisi (Katman 1) arşivlendikten sonra editlenemez. Kişisel post (Katman 2) her zaman düzenlenebilir (başlık, not, fotoğraf). Son maç verisi düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama yapılabilir.
 
 **Boş durum (Ana Sayfa — kimseyi takip etmiyorsan):**
 - İllüstrasyon + "Henüz kimseyi takip etmiyorsun"
@@ -318,10 +318,10 @@ Ana Sayfa tab'ında:
 - "Uygula" butonu + "Sıfırla" linki
 
 **Puanlanmamış maçlar (varsayılan gizli — "Değerlendirme Maçı" toggle OFF):**
-- Kullanıcının henüz MVP oylaması ve/veya attendance bildirimi yapmadığı biten maçlar
+- Kullanıcının henüz MVP oylaması yapmadığı biten maçlar
 - `background:none, borderRadius:0, borderLeft: 3px solid turuncu` kart stili + "⭐ Bu maçı değerlendir" badge'i
 - Kartlar arasında 8px `T.card` divider
-- Tıklanınca → S40 Puanlama & Attendance sayfası
+- Tıklanınca → S40 Puanlama sayfası
 - Puanlama yapıldıktan sonra kart buradan kalkar
 - Puanlanmamış kartlar bittikten sonra 8px divider ile planned kartlardan ayrılır
 
@@ -440,7 +440,6 @@ Ana Sayfa tab'ında:
   - Takım 1 listesi: avatar + isim + gol/asist sayısı + MVP yıldızı (varsa) — **her oyuncu tıklanabilir → S16 Profil**
   - Takım 2 listesi: aynı format
   - Misafir oyuncular gri tonunda, profil linki yok
-  - Katılmadı olarak işaretlenen oyuncular: "❌ Katılmadı" etiketi
 - **Gol zaman çizelgesi:** Kronolojik gol listesi — **gol atan ve asist yapan isimler tıklanabilir → S16 Profil**
 - **Maçın Yıldızı:** MVP seçilen oyuncu vurgulu gösterim (altın çerçeve). Eşit oy durumunda Co-MVP olarak birden fazla oyuncu gösterilir.
 - **Not:** S11 maç verisini (Katman 1) gösterir — fotoğraf ve kişisel notlar burada yoktur, bunlar post kartlarında görünür.
@@ -467,7 +466,7 @@ Ana Sayfa tab'ında:
   - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
   - Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (fmt'e göre — 6v6 ise 6 slot her takımda)
   - **Host için:** oyuncuları sürükle-bırak veya tıkla→slot seç ile takımlara ata; hücre üzerinde gri ✕ butonu → oyuncuyu maçtan çıkar. Host'a takım grid'inin üstünde küçük bir bilgi hint'i gösterilir (ⓘ info ikonu + "Oyuncuya tıkla → boş slota yerleştir. ✕ ile maçtan çıkar." metni, accent renk kenarlıklı)
-  - **Katılımcılar** (takım seçmemiş oyuncular): takım grid'inin altında section label + liste görünümü (avatar + isim + seviye + katılım %)
+  - **Katılımcılar** (takım seçmemiş oyuncular): takım grid'inin altında section label + liste görünümü (avatar + isim + seviye)
   - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar"
 - **CTA Butonları (organizatör / host) — sırayla:**
   1. Paylaş
@@ -508,7 +507,7 @@ Ana Sayfa tab'ında:
 #### S13: Başvuru Yönetimi (Organizatör için — Login gerekli)
 - Maç başlığı (üstte)
 - Gelen başvuru listesi:
-  - Her başvuru: avatar + isim + deneyim seviyesi + katılım oranı (%)
+  - Her başvuru: avatar + isim + deneyim seviyesi
   - "Onayla" butonu (yeşil) + "Reddet" butonu (kırmızı)
 - Onaylı katılımcılar listesi (altta)
 - Sadece "Onay ile kabul et" modundaki maçlarda görünür
@@ -582,36 +581,8 @@ Ana Sayfa tab'ında:
 - "Doğrulanmış ✓" rozeti (varsa)
 - İstatistik satırı: **Maç** (sayı) · **Takipçi** (sayı) · **Takip** (sayı)
   - Takipçi/takip sayılarına tıklanınca liste açılır (S22)
-- **Katılım Oranı:** "%94 Katılım" badge'i (ilk 5 maçta gösterilmez — yeni kullanıcı koruması)
 
 **Sağ üst ikonlar:** ✏️ Profil düzenle + ↗ Paylaş + ⚙️ Ayarlar
-
-**Haftalık özet:** "X maç bu hafta" (bold rakam + açıklama)
-
-**Zaman filtresi:** Son 3 ay ▾ (dropdown: Son 1 ay / Son 3 ay / Son 6 ay / Tüm zamanlar)
-
-**Haftalık aktivite grafiği** (bar chart — Hevy tarzı):
-- Son 12 hafta, her bar = o haftaki maç sayısı
-- Alt seçim pilleri: "Maç" / "Gol" / "Süre"
-
-**Pano (3 kart yan yana — Hevy tarzı):**
-- 📊 **İstatistikler** → İstatistik detay sayfasına git (inline genişleme veya modal):
-  - Toplam maç / Galibiyet / Mağlubiyet / Beraberlik / Kazanma oranı (%)
-  - Toplam gol / Toplam asist / MVP seçilme sayısı
-  - **Win/loss hesaplama:** Sadece "ended" state'inde olan VE final skoru kaydedilen maçlarda, kullanıcının maç bitişinde Takım A veya Takım B'de olmasına göre hesaplanır
-- 🏆 **Başarılar** → Kazanılan rozetler ve ilerleme
-- 📅 **Takvim** → Detaylı takvim görünümü:
-  - Maç günleri accent renk noktalar ile gösterilir
-  - **Bir güne tıklayınca** o günün maçları listelenir: maç başlığı, saat, konum, durum
-  - Buradan maç detayına gidilebilir (S11 veya S12)
-  - "Düzenle" / "Reschedule" aksiyonu alınabilir (planlanan maçlar için)
-
-**Seri Gösterimi** (varsa, vurgulu):
-- "🔥 X haftalık serin!" (aktif seri)
-- "En uzun seri: X hafta"
-
-**Rozetler** (kazanılanlar yatay scroll):
-- 🏅 50 Maç Kulübü / ✅ %100 Katılım / 🎙️ Süper Organizatör / 🆕 Yeni Üye vb.
 
 **Maç post feed'i:**
 - Profil sayfasının alt yarısı = kullanıcının **kişisel maç postları** (S05 post kartı formatında)
@@ -626,12 +597,8 @@ Ana Sayfa tab'ında:
 
 #### S16: Başka Kullanıcının Profili
 - **Yapı:** S15 ile benzer layout, düzenleme/ayar butonları yok
-- **Pano bölümü gösterilmez** — sadece kendi profilinde görünür
 
 **Üst bölüm:** Fotoğraf + isim + @kullanıcıadı + doğrulanmış rozeti + istatistik satırı
-- **Katılım Oranı:** "%94 Katılım" badge'i (ilk 5 maçta gösterilmez)
-
-**Grafik + Rozetler + Seri:** S15 ile aynı (salt okunur, Pano hariç)
 
 **Maç post feed'i:** Kullanıcının herkese açık **kişisel maç postları** — kendi başlıkları, notları ve fotoğraflarıyla (tıklanınca Maç Detay S11'e gider). Gizli/silinmiş postlar başkalarına görünmez.
 
@@ -735,7 +702,6 @@ Ana Sayfa tab'ında:
 - ❌ "Maç başvurun reddedildi" → S12 Planlanan Maç
 - 📢 "Ali yeni bir maç oluşturdu" (takip ettiklerin) → S12
 - 🏅 "50 Maç Kulübü'ne hoş geldin!" → S15 Profil
-- 🔥 "4 haftalık serin devam ediyor!" → S15 Profil
 - 💬 "Ali sana mesaj gönderdi" → S18 Sohbet
 - ⚽ "Yarınki maçın yaklaşıyor!" → S12 Planlanan Maç (hatırlatıcı)
 - 📩 "Berk seni Cumartesi Halısaha Maçı'na davet etti" → S12 Planlanan Maç
@@ -848,16 +814,16 @@ Ana Sayfa tab'ında:
 
 ---
 
-### BÖLÜM 10: PUANLAMA & ATTENDANCE (1 sayfa)
+### BÖLÜM 10: PUANLAMA (1 sayfa)
 
-#### S40: Puanlama & Attendance (Maç Sonrası — Login gerekli)
-- **Amaç:** Maç sonrası MVP oylama ve katılım bildirimi
+#### S40: Puanlama (Maç Sonrası — Login gerekli)
+- **Amaç:** Maç sonrası MVP oylama
 - **Erişim:** S08'deki puanlanmamış maç kartı (turuncu border) veya bildirim
 - **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
 
 **Üst bölüm:** Maç başlığı + skor + tarih (salt okunur özet)
 
-**Bölüm 1 — MVP Oylaması:**
+**MVP Oylaması:**
 - "Maçın yıldızını seç" başlığı
 - Katılımcı listesi — her biri tıklanabilir, tek bir kişi seçilir
 - Her kullanıcı 1 oy verir, en çok oy alan MVP olur
@@ -865,26 +831,7 @@ Ana Sayfa tab'ında:
 - Oy vermeyenler hakkını kaybeder (ceza yok)
 - MVP oylaması 24 saat sonra otomatik kapanır
 
-**Bölüm 2 — Attendance (Katılım Bildirimi):**
-- "Katılım durumunu bildir" başlığı
-- Katılımcı listesi — her kişinin yanında "✅ Geldi" ve "❌ Gelmedi" butonları
-- Her kullanıcı diğer tüm katılımcılar için oy verir
-- **%60 çoğunluk kuralı:**
-  - Oy verenlerin %60'ı veya fazlası "Gelmedi" derse → kişi **katılmadı** olarak işaretlenir
-  - %60'ın altındaysa → katıldı sayılır (şüpheden sanık yararlanır)
-  - **Minimum oy sayısı:** Karar için en az 3 kişi oy vermiş olmalı. 3'ün altında oy varsa karar verilmez.
-- "Gelmedi" oyu 24 saat içinde geri alınabilir
-- Örnek: 10 kişilik maçta 8 kişi oy verdi. Ali için 5 kişi "gelmedi" dedi (5/8 = %62.5) → Ali katılmadı. Mehmet için 3 kişi "gelmedi" dedi (3/8 = %37.5) → Mehmet katıldı.
-
 **"Gönder" butonu** → puanlama tamamlandı, S08'deki turuncu kart kalkar
-
-**Profilde Katılım Puanı:**
-- Hesaplama: **Son 10 maç** bazlı — (Son 10 maçta katıldığı maç sayısı / Son 10 maçta katılacağını söylediği maç sayısı) × 100
-- Sadece "geliyorum" deyip gelmediği maçlar düşürür. Hiç cevap vermediği maçlar hesaba katılmaz.
-- **İlk 5 maçta katılım puanı gösterilmez** (yeni kullanıcı koruması)
-- 10'dan az maçı olan kullanıcılarda mevcut tüm maçlar kullanılır
-- Bu puan S12'de katılımcı listesinde ve S13'te başvuru listesinde de küçük gösterge olarak görünür
-- Katılım puanı profilde herkese açık gösterilir
 
 ---
 
@@ -893,7 +840,7 @@ Ana Sayfa tab'ında:
 #### S41: Oyuncu Davet (Bottom Sheet — Login gerekli)
 - **Erişim:** S12'deki "Oyuncu Davet Et" butonu veya S31 Adım 3 (Davet adımı)
 - Arkadaş listesi (takip edilenler + karşılıklı takipler):
-  - Her satır: Avatar + isim + @kullanıcıadı + katılım oranı (%)
+  - Her satır: Avatar + isim + @kullanıcıadı
   - "Davet Et" butonu (sağda)
 - "Davet Et"e basınca buton "Gönderildi ✓" olur
 - **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez. Diğer kişilere cooldown'sız davet atılabilir.
@@ -966,7 +913,7 @@ Ana Sayfa tab'ında:
 | Bildirimler | 1 | S19 |
 | Menü & Ayarlar | 6 | S20-S22, S24-S26 |
 | Güvenlik & Moderasyon | 4 | S27-S30 |
-| Puanlama & Attendance | 1 | S40 |
+| Puanlama | 1 | S40 |
 | Oyuncu Davet | 1 | S41 |
 | Ek Sayfalar | 5 | S32-S34, S42, S43 |
 | **TOPLAM** | **38** |
@@ -991,7 +938,7 @@ Maçlar tab → FAB "+" → "Maç Başlat" → Format seç + konum
 → Kaydet & Paylaş → Maç verisi kilitlenir + tüm katılımcılar için post oluşur
 → Shareable kart → Her katılımcının kendi postu feed'de ve profilinde görünür
 → Her katılımcı kendi postunu profilinden düzenleyebilir (başlık, not, fotoğraf)
-→ 24 saat içinde S40'ta MVP oyla + attendance bildir
+→ 24 saat içinde S40'ta MVP oyla
 ```
 
 ### Akış 3: Maç Oluştur (Planlama)
@@ -1049,7 +996,7 @@ Maç sırasında app kapanır → State otomatik kaydedilmiş
 ```
 Maç biter → Kaydet → S08'de turuncu border'lı kart çıkar
 → Tıkla → S40 Puanlama sayfası
-→ MVP oylaması + Attendance bildirimi (%60 çoğunluk)
+→ MVP oylaması
 → Gönder → Kart S08'den kalkar
 → 24 saat geçerse puanlama kapanır
 ```
@@ -1112,7 +1059,6 @@ Maç saati geçer → Maç hala başlamamış
 **Özel renk kuralları:**
 - Puanlanmamış maç kartı: turuncu border
 - Devam eden maç banner'ı: accent renk arka plan
-- Katılım oranı düşükse (<%70): kırmızı renk uyarı
 
 **Çok adımlı form UI standartları (S04 Onboarding baz alınarak — S10, S31 dahil tüm çok adımlı akışlar):**
 - **Sayfa padding:** `24px 20px` (PageShell)

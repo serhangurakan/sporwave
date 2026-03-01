@@ -236,6 +236,7 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
   const [toast,setToast]=useState(null);
   const [deletePopup,setDeletePopup]=useState(false);
   const [goalDrawer,setGoalDrawer]=useState(null);
+  const [menuOpen,setMenuOpen]=useState(false);
   const timerRef=useRef(null);
 
   useEffect(()=>{if(running){timerRef.current=setInterval(()=>setSeconds(s=>s+1),1000);}else{clearInterval(timerRef.current);}return()=>clearInterval(timerRef.current);},[running]);
@@ -316,8 +317,22 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
   if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
       <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.chevDown(T.text)}</div>
-      <div onClick={()=>window.location.assign("/04_match_detail?view=S12&state=playing")} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.settings(T.textDim)}</div>
+      <div style={{position:"relative"}}>
+        <div onClick={()=>setMenuOpen(!menuOpen)} style={{width:40,height:40,borderRadius:12,background:menuOpen?`${T.accent}10`:T.card,border:`1px solid ${menuOpen?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={menuOpen?T.accent:T.textDim} strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </div>
+        {menuOpen&&<div style={{position:"absolute",top:48,right:0,background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:4,minWidth:180,zIndex:100,boxShadow:"0 8px 32px rgba(0,0,0,.3)"}}>
+          <div onClick={()=>{setMenuOpen(false);window.location.assign("/04_match_detail?view=S12&state=playing");}} style={{padding:"12px 16px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",gap:10,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+            {I10.settings(T.textDim)}<span style={{fontSize:14,fontWeight:600,color:T.text}}>Ayarlar</span>
+          </div>
+          <div onClick={()=>{setMenuOpen(false);setRunning(false);setPage("end");}} style={{padding:"12px 16px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",gap:10,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.red} strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            <span style={{fontSize:14,fontWeight:600,color:T.red}}>Maçı Bitir</span>
+          </div>
+        </div>}
+      </div>
     </div>
+    {menuOpen&&<div onClick={()=>setMenuOpen(false)} style={{position:"fixed",inset:0,zIndex:50}}/>}
 
     <div style={{textAlign:"center",marginBottom:20}}>
       <div style={{fontSize:42,fontWeight:900,fontFamily:FH,color:T.text,letterSpacing:"-2px"}}>{fmtTime(seconds)}</div>
@@ -326,19 +341,16 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
       </div>
     </div>
 
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
-      <div style={{flex:1,textAlign:"center"}}>
-        <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
-        <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
-        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
-        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
+    <div style={{display:"flex",gap:12,marginBottom:20}}>
+      <div onClick={()=>addGoal("A")} style={{flex:1,padding:"24px 0",borderRadius:16,background:T.accent,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 16px ${T.accent}44`,transition:"transform .1s",gap:4}} onMouseDown={e=>e.currentTarget.style.transform="scale(0.97)"} onMouseUp={e=>e.currentTarget.style.transform="scale(1)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+        <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.8}}>Takım A</div>
+        <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:"#fff",lineHeight:1}}>{score[0]}</div>
+        <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.7,marginTop:2}}>+ Gol</div>
       </div>
-      <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
-      <div style={{flex:1,textAlign:"center"}}>
-        <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
-        <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
-        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
-        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
+      <div onClick={()=>addGoal("B")} style={{flex:1,padding:"24px 0",borderRadius:16,background:T.orange,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 16px ${T.orange}44`,transition:"transform .1s",gap:4}} onMouseDown={e=>e.currentTarget.style.transform="scale(0.97)"} onMouseUp={e=>e.currentTarget.style.transform="scale(1)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+        <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.8}}>Takım B</div>
+        <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:"#fff",lineHeight:1}}>{score[1]}</div>
+        <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.7,marginTop:2}}>+ Gol</div>
       </div>
     </div>
 
