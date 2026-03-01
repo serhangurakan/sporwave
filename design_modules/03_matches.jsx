@@ -69,9 +69,6 @@ function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{
 // S08: Matches Page
 function S08({onNav,showUnrated}){
   const [filter,setFilter]=useState(false);
-  const [myExpanded,setMyExpanded]=useState(true);
-  const myMatches=PLANNED.filter(m=>m.myMatch);
-  const openMatches=PLANNED.filter(m=>!m.myMatch);
 
   return <div style={{paddingBottom:80}}>
     {/* Header — sticky */}
@@ -89,8 +86,8 @@ function S08({onNav,showUnrated}){
     </div>}
 
     {/* Unrated matches */}
-    {showUnrated&&UNRATED.length>0&&<div style={{padding:"12px 16px 0"}}>
-      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:T.card,borderRadius:14,border:`2px solid ${T.orange}`,padding:"14px 16px",cursor:"default",marginBottom:12,boxShadow:"0 8px 24px rgba(0,0,0,.25)",transition:"box-shadow .2s ease, transform .2s ease"}}>
+    {showUnrated&&UNRATED.length>0&&<div>
+      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:"none",borderRadius:0,borderLeft:`3px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}33`,padding:"14px 16px",cursor:"default"}}>
         {/* Badge */}
         <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star(T.orange)} Değerlendir</Badge></div>
         {/* Title + skor */}
@@ -104,27 +101,18 @@ function S08({onNav,showUnrated}){
           {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
         </div>
       </div>)}
+      <div style={{height:8,background:T.card}}/>
     </div>}
 
-    {/* Continue match banner — now handled by ActiveMatchWidget in MAIN */}
-
-    {/* My upcoming matches */}
-    {myMatches.length>0&&<div style={{padding:"12px 16px 0"}}>
-      <div onClick={()=>setMyExpanded(v=>!v)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:myExpanded?8:0,cursor:"pointer"}}>
-        <div style={{display:"flex",alignItems:"center",gap:6}}>
-          <span style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5}}>Katıldığım Maçlar</span>
-          <span style={{fontSize:11,fontWeight:700,color:T.accent}}>({myMatches.length})</span>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textMuted} strokeWidth="2.5" strokeLinecap="round" style={{transition:"transform .2s",transform:myExpanded?"rotate(180deg)":"rotate(0deg)"}}><polyline points="6,9 12,15 18,9"/></svg>
-      </div>
-      {myExpanded&&myMatches.map(m=><MatchListCard key={m.id} m={m} onNav={onNav} isMine/>)}
-    </div>}
-
-    {/* Open matches */}
-    <div style={{padding:"12px 16px 0"}}>
-      <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Açık Maçlar</div>
-      {openMatches.length>0?openMatches.map(m=><MatchListCard key={m.id} m={m} onNav={onNav}/>):
-        <div style={{textAlign:"center",padding:"32px 0"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>}
+    {/* All matches — no section split */}
+    <div>
+      {PLANNED.length>0
+        ? PLANNED.map((m,i)=><>
+            {i>0&&<div key={`div-${m.id}`} style={{height:8,background:T.card}}/>}
+            <MatchListCard key={m.id} m={m} onNav={onNav} isMine={m.myMatch}/>
+          </>)
+        : <div style={{textAlign:"center",padding:"32px 0"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
+      }
     </div>
 
   </div>;
@@ -138,10 +126,11 @@ function MatchListCard({m,onNav,isMine}){
   const levelColor = m.level && m.level !== "Herkes" ? T.orange : T.textDim;
   const acceptLabel = m.mode === "approval" ? "Onay gerekli" : "Açık";
   const acceptColor = m.mode === "approval" ? T.purple : T.textDim;
+  const friendUser=m.friendJoined?U.find(u=>u.name.split(" ")[0]===m.friendJoined):null;
   const statusBadge = isMine
-    ? <Badge c={T.accent}>{I.check()} Katılıyorsun</Badge>
-    : (m.friendJoined ? <Badge c={T.accent}>🤝 {m.friendJoined} katılıyor</Badge> : null);
-  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} onMouseEnter={e=>{e.currentTarget.style.boxShadow="0 12px 30px rgba(0,0,0,.30)";e.currentTarget.style.transform="translateY(-1px)";}} onMouseLeave={e=>{e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,.25)";e.currentTarget.style.transform="none";}} onMouseDown={e=>{e.currentTarget.style.transform="translateY(0)";}} onMouseUp={e=>{e.currentTarget.style.transform="translateY(-1px)";}} style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,borderLeft:isMine?`2px solid ${T.accent}`:`2px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:12,cursor:"pointer",boxShadow:"0 8px 24px rgba(0,0,0,.25)",transition:"box-shadow .2s ease, transform .2s ease"}}>
+    ? <Badge c={T.accent}>{I.check(T.accent)} Katılıyorsun</Badge>
+    : (m.friendJoined ? <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px 2px 4px",borderRadius:20,fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}15`,whiteSpace:"nowrap"}}><Av i={friendUser?.av||m.friendJoined.slice(0,2).toUpperCase()} s={18} c={T.accent}/>{m.friendJoined} katılıyor</span> : null);
+  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:"none",borderRadius:0,borderLeft:isMine?`3px solid ${T.accent}`:`3px solid ${T.cardBorder}44`,borderBottom:`1px solid ${T.cardBorder}33`,padding:"14px 16px",cursor:"pointer"}}>
     {/* Status row */}
     {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
     {/* Title row */}

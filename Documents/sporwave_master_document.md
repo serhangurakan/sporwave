@@ -307,7 +307,7 @@ Ana Sayfa tab'ında:
 #### S08: Maçlar Sayfası (Açık Maçlar + Katıldıklarım)
 - **Amaç:** Katılabileceğin maçları bul + katıldığın maçları gör + maç oluştur/başlat
 
-**Sayfa yapısı (tek akış, tab yok):**
+**Sayfa yapısı (tek akış, bölüm başlığı yok):**
 
 **Üstte sağ:** Filtre ikonu 🔽 (tıklayınca filtre popup açılır)
 
@@ -317,11 +317,13 @@ Ana Sayfa tab'ında:
 - **Görünüm:** Tüm Maçlar / Sadece Katıldıklarım / Sadece Açık Maçlar
 - "Uygula" butonu + "Sıfırla" linki
 
-**Puanlanmamış maçlar (en üstte, turuncu border):**
+**Puanlanmamış maçlar (en üstte):**
 - Kullanıcının henüz MVP oylaması ve/veya attendance bildirimi yapmadığı biten maçlar
-- Turuncu border ile vurgulu kart + "⭐ Bu maçı değerlendir" badge'i
+- `background:none, borderRadius:0, borderLeft: 3px solid turuncu` kart stili + "⭐ Bu maçı değerlendir" badge'i
+- Kartlar arasında 8px `T.card` divider
 - Tıklanınca → S40 Puanlama & Attendance sayfası
 - Puanlama yapıldıktan sonra kart buradan kalkar
+- Puanlanmamış kartlar bittikten sonra 8px divider ile planned kartlardan ayrılır
 
 **Devam eden maç widget'ı (varsa — footer üstünde):**
 - Footer'ın hemen üstüne sabitlenmiş kompakt widget
@@ -331,13 +333,18 @@ Ana Sayfa tab'ında:
 - Bu widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
 - Maç detay, ayarlar vb. sayfalarda görünmez
 
-**Katıldığım yaklaşan maçlar (collapse/expand bölümü):**
-- Başlık tıklanabilir toggle: "Katıldığım Maçlar" + sağında maç sayısı "(X)" + chevron ikonu (▼/▲)
-- Tıklanınca maç kartları gizlenip gösterilebilir (varsayılan: açık)
-- Farklı arka plan rengi veya sol kenarda accent renk border ile ayrışır
-- Tarih sırasına göre (en yakın olan en üstte)
+**Tüm maç kartları (tek liste, bölüm ayrımı yok):**
+- Puanlanmamış kartlardan sonra tüm planned maçlar tek akış halinde listelenir
+- "Katıldığım Maçlar" / "Açık Maçlar" başlık ayrımı yoktur; kartlar tarih sırasına göre alt alta sıralanır
+- Kartlar arasında 8px `T.card` rengi divider kullanılır (ana sayfadaki post divider ile aynı pattern)
+- **Kart stili:**
+  - `background: none, borderRadius: 0`
+  - Katıldığın maçlar: `borderLeft: 3px solid T.accent` (accent yeşil)
+  - Diğer açık maçlar: `borderLeft: 3px solid T.cardBorder44` (çok soluk)
+  - Alt kenarda: `borderBottom: 1px solid T.cardBorder33`
 - **Her kart (katılım bilgisi EN ÜSTTE):**
-  - "Katılıyorsun ✓" badge (accent renk, kartın en üstünde)
+  - Katıldığın maçlarda: ✓ "Katılıyorsun" badge (tick ikonu + accent renk)
+  - Arkadaş katılıyorsa: küçük avatar + "[İsim] katılıyor" badge (accent renk)
   - Spor ikonu + Maç başlığı (bold)
   - Açıklama (varsa, maks. 2 satır, truncate ile "...")
   - Tarih/saat + Konum
@@ -345,23 +352,6 @@ Ana Sayfa tab'ında:
   - Kontenjan: "7/10 oyuncu" (progress bar)
   - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
   - Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
-  - Tıklanınca → S12 Planlanan Maç Detay
-
-**Açık maçlar (altında, standart liste):**
-- **Arkadaşlarının katıldığı maçlar önce**
-- Ardından diğer açık maçlar (tarihe göre sıralı)
-- **Tarihi geçmiş başlamamış maçlar bu listede gösterilmez** — sadece katılımcılara görünür
-- **Her kart (katılım bilgisi EN ÜSTTE):**
-  - Arkadaş katılıyorsa: "🤝 Ali katılıyor" etiketi (kartın en üstünde)
-  - Spor ikonu + Maç başlığı (bold)
-  - Açıklama (varsa, maks. 2 satır, truncate ile "...")
-  - Tarih/saat + Konum
-  - Organizatör: avatar + isim
-  - Kontenjan: "7/10 oyuncu" (progress bar)
-  - Deneyim seviyesi tercihi badge'i (varsa: "Herkes" / "Orta+")
-  - Kabul modu badge'i (varsa: "Onay gerekli")
-  - Görünürlük badge'i: 👁️ (küçük, sağ üstte)
-  - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
   - Tıklanınca → S12 Planlanan Maç Detay
 
 **Görünürlük badge'i:**
@@ -373,7 +363,7 @@ Ana Sayfa tab'ında:
 
 **Tarihi geçmiş başlamamış maçlar:**
 - Maç saati geçtiği halde henüz başlamamış maçlar **S08'deki açık maçlar listesinde diğer kullanıcılara gösterilmez**
-- Bu maçlar yalnızca **maçın katılımcılarına** "Katıldığım yaklaşan maçlar" bölümünde görünür (turuncu-sarı uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
+- Bu maçlar yalnızca **maçın katılımcılarına** görünür (turuncu-sarı uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
 - **Davet linki** ile maç görüntülenebilir — link sahibi maçı görebilir ama S08 listesinde görmez
 - Host maçın tarihini gelecek bir tarihe güncellerse → maç tekrar S08'de herkese görünür olur ve görünürlük badge'i "👁️ Herkese Görünür" olarak güncellenir
 - **Otomatik silme:** Maç saatinden **24 saat** geçtikten sonra hala başlamamışsa maç otomatik silinir, tüm katılımcılara bildirim gider
