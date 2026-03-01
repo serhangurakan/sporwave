@@ -67,7 +67,7 @@ draft → open → full → started → ended → rating → archived
 - `open → full`: Kontenjan dolduğunda otomatik
 - `full → open`: Bir katılımcı ayrıldığında otomatik (kontenjan açılır)
 - `open/full → started`: Host "Maçı Başlat" butonuna basar. Koşul: her iki takımda en az 1 oyuncu
-- `started → ended`: Herhangi bir katılımcı "Maçı Bitir" butonuna basar (onay dialog'u ile)
+- `started → ended`: Herhangi bir katılımcı S12'deki "Maçı Bitir" butonuna basar → Maç Sonu sayfasına yönlendirilir
 - `ended → rating`: Maç kaydedildikten sonra otomatik (24 saat pencere başlar)
 - `rating → archived`: 24 saat dolunca otomatik
 
@@ -420,7 +420,7 @@ Ana Sayfa tab'ında:
   - **Last write wins** — çakışma durumunda son yazılan geçerli (MVP basitliği)
   - **Goal rate limit:** Aynı kullanıcı saniyede 1'den fazla gol eventi oluşturamaz (≥1 saniye aralık zorunlu)
   - Her gol bir event log entry olarak kaydedilir — event log final skoru belirler
-- **"Maçı Bitir"** butonu — **tüm katılımcılarda aktif** (onay dialog'u ile: "Maçı bitirmek istediğine emin misin?")
+- **Not:** Canlı Skor ekranında "Maçı Bitir" butonu yoktur. Maç bitirmek için S12 Planlanan Maç Detay'daki "Maçı Bitir" butonu kullanılır (Ayarlar üzerinden erişilir).
 
 **Aşağı ok (minimize) davranışı:**
 - Canlı skor sayfasında sol üstte ↓ aşağı ok ikonuna basınca → maç minimize edilir
@@ -443,11 +443,10 @@ Ana Sayfa tab'ında:
   - "Gol Ekle" butonu (maç sırasında kaçırdıysan buradan da ekleyebilirsin)
 - **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Takım kurulumunda atlandıysa burada tamamlanmalı.
 - **Drag & drop ile takım değişikliği:** Takım kurulumu sayfası ile aynı.
-- **Maç Başlığı** input (opsiyonel, placeholder: "Kadıköy Halısaha Maçı") — maç verisinin başlığı, tüm postların varsayılan başlığı olur
-- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → S30 Shareable kart gösterilir
+- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → maçı bitiren kişi S40 Puanlama sayfasına yönlendirilir
 - **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
-- **Not:** MVP oylama ve attendance bildirimi bu sayfada yapılmaz — maç kaydedildikten sonra S40'ta 24 saat boyunca yapılır.
+- **Not:** Maçı bitiren kişi otomatik olarak S40 Puanlama sayfasına yönlendirilir. Diğer katılımcılar S08'deki puanlanmamış maç kartı veya bildirim ile S40'a erişir (24 saat boyunca).
 
 #### S11: Maç Detay Sayfası (Geçmiş — oynanmış maç)
 - **Üst bölüm:** Spor ikonu + Maç başlığı (büyük, bold)
@@ -490,12 +489,12 @@ Ana Sayfa tab'ında:
   2. Başvuruları Gör (onay modundaysa)
   3. Oyuncu Davet Et (tıklanınca bottom drawer açılır — arkadaş listesinden davet)
   4. Maçtan Çık
-  5. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta)
+  5. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta → S10 Maç Sonu sayfasına yönlendirir)
 - **CTA Butonları (katılımcıysan) — sırayla:**
   1. Paylaş
   2. Maç Sohbeti
   3. Maçtan Çık
-  4. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta)
+  4. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta → S10 Maç Sonu sayfasına yönlendirir)
 - **CTA Butonları (katılmamışsan / misafir) — sırayla:**
   1. Paylaş
   2. Maça Katıl (X yer kaldı) (primary, en altta)
@@ -551,7 +550,7 @@ Ana Sayfa tab'ında:
 
 **Adım 1 — Maç Detayları:**
 - Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı")
-- Açıklama textarea (opsiyonel)
+- Açıklama textarea
 - Maç formatı: 5v5 / 6v6 / 7v7 / Özel
 - "Devam" butonu
 
@@ -565,7 +564,6 @@ Ana Sayfa tab'ında:
 - **Buton sırası:** "Devam" birincil butonu önce, altında "Konumu sonra belirle →" ikincil link — konum seçilmemişken görünür, seçilince gizlenir
 
 **Adım 3 — Katılım Ayarları:**
-- Maksimum oyuncu sayısı (number input)
 - Deneyim seviyesi tercihi (pill: Herkes / Başlangıç / Orta / İyi / Profesyonel) — **varsayılan: "Herkes" seçili**
 - Kabul modu:
   - "Herkesi Kabul Et" — ilk gelen alır

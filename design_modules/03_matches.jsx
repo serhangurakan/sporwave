@@ -204,7 +204,7 @@ const I10={
 
 // S10: Canlı Skor + Maç Sonu (sadece bu 2 sayfa)
 function S10({onNav,onMinimize,onEndMatch}){
-  const [page,setPage]=useState("live");
+  const [page,setPage]=useState(()=>{const p=new URLSearchParams(window.location.search).get("page");return p==="end"?"end":"live";});
   const [fmt]=useState("5v5");
   const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
   const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
@@ -213,7 +213,6 @@ function S10({onNav,onMinimize,onEndMatch}){
   const [running,setRunning]=useState(true);
   const [seconds,setSeconds]=useState(0);
   const [toast,setToast]=useState(null);
-  const [title,setTitle]=useState("");
   const [deletePopup,setDeletePopup]=useState(false);
   const [goalDrawer,setGoalDrawer]=useState(null);
   const timerRef=useRef(null);
@@ -332,7 +331,6 @@ function S10({onNav,onMinimize,onEndMatch}){
       {goals.map(g=><GoalRow key={g.id} g={g}/>)}
     </div>}
 
-    <Btn danger full onClick={()=>{setRunning(false);setPage("end");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Maçı Bitir</Btn>
     <GoalDrawerUI/>
   </div>;
 
@@ -354,17 +352,12 @@ function S10({onNav,onMinimize,onEndMatch}){
       {goals.map(g=><GoalRow key={g.id} g={g} showEdit/>)}
     </div>}
 
-    <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Başlığı (opsiyonel)</div>
-    <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:24}}>
-      <input placeholder="Kadıköy Halısaha Maçı" value={title} onChange={e=>setTitle(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-    </div>
-
     <div style={{background:`${T.accent}10`,borderRadius:12,padding:"14px 16px",marginBottom:24,border:`1px solid ${T.accent}22`}}>
       <div style={{fontSize:13,color:T.accent,fontWeight:600,marginBottom:4}}>Maç kaydedildiğinde:</div>
       <div style={{fontSize:13,color:T.textDim,lineHeight:1.6}}>Tüm katılımcılar için kişisel post oluşturulur. Fotoğraf ve not eklemek post üzerinden yapılır.</div>
     </div>
 
-    <Btn primary full onClick={()=>{if(onEndMatch)onEndMatch();onNav("S08");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
+    <Btn primary full onClick={()=>{if(onEndMatch)onEndMatch();window.location.assign("/04_match_detail?view=S40");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
     <div onClick={()=>setDeletePopup(true)} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.red,cursor:"pointer",fontWeight:600}}>Maçı Sil</div>
 
     <GoalDrawerUI/>
@@ -459,7 +452,7 @@ function S31({onNav}){
         <input placeholder="Cumartesi Halısaha Maçı" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
       </div>
       <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:24,minHeight:72}}>
-        <textarea placeholder="Açıklama (opsiyonel)" rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
+        <textarea placeholder="Açıklama" rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
       </div>
       <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Formatı</div>
       <div style={{display:"flex",gap:8,marginBottom:32}}>
@@ -516,10 +509,6 @@ function S31({onNav}){
 
     {/* Step 3: Settings */}
     {step===2&&<>
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maks. Oyuncu</div>
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:24}}>
-        <input type="number" defaultValue={12} placeholder="12" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-      </div>
       <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Seviye Tercihi</div>
       <div style={{display:"flex",gap:8,marginBottom:24,flexWrap:"wrap"}}>
         {["Herkes","Başlangıç","Orta","İyi","Profesyonel"].map(l=><div key={l} onClick={()=>setLevel(l)} style={{padding:"10px 16px",borderRadius:12,background:level===l?`${T.accent}12`:T.card,border:`1.5px solid ${level===l?T.accent:T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:level===l?700:600,color:level===l?T.accent:T.textDim,transition:"all .2s"}}>{l}</div>)}

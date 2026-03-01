@@ -276,7 +276,6 @@ function S12({onNav}){
   const [tA,setTA]=useState(m.tA||[]);
   const [tB,setTB]=useState(m.tB||[]);
   const [dragTarget,setDragTarget]=useState(null);
-  const [cancelConfirm,setCancelConfirm]=useState(false);
   const [showEditDrawer,setShowEditDrawer]=useState(false);
   const [showInviteDrawer,setShowInviteDrawer]=useState(false);
   const [removeConfirm,setRemoveConfirm]=useState(null); // uid to confirm removal
@@ -506,18 +505,6 @@ function S12({onNav}){
       </>}
     </div>
 
-    {/* Cancel confirm modal (host) */}
-    {cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
-      <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:360,width:"100%",border:`1px solid ${T.cardBorder}`}}>
-        <div style={{fontSize:16,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:8}}>Maçı İptal Et</div>
-        <div style={{fontSize:13,color:T.textDim,marginBottom:20}}>Bu maç iptal edilecek. Tüm katılımcılara bildirim gönderilecek. Bu işlem geri alınamaz.</div>
-        <div style={{display:"flex",gap:8}}>
-          <Btn full danger onClick={()=>{setCancelConfirm(false);window.location.assign("/03_matches");}} st={{flex:1}}>Evet, İptal Et</Btn>
-          <Btn full onClick={()=>setCancelConfirm(false)} st={{flex:1}}>Vazgeç</Btn>
-        </div>
-      </div>
-    </div>}
-
     {/* Remove player confirm modal (host) */}
     {removeConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
       <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:360,width:"100%",border:`1px solid ${T.cardBorder}`}}>
@@ -588,13 +575,13 @@ function S12({onNav}){
         {m.mode==="approval"&&<Btn full onClick={()=>onNav("S13")} st={{marginBottom:8}}>Başvuruları Gör</Btn>}
         <Btn full onClick={()=>setShowInviteDrawer(true)} st={{marginBottom:8}}>Oyuncu Davet Et</Btn>
         <Btn full onClick={hostLeave} st={{marginBottom:8}}>Maçtan Çık</Btn>
-        {matchState==="playing"?<Btn full onClick={()=>setCancelConfirm(true)} st={{marginBottom:8,color:T.red}}>Maçı Bitir</Btn>
+        {matchState==="playing"?<Btn full onClick={()=>window.location.assign("/03_matches?view=S10&page=end")} st={{marginBottom:8,color:T.red}}>Maçı Bitir</Btn>
         :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
       </>:isPlayer?<>
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
         <Btn full st={{marginBottom:8}}>{I.chat(T.text)} Maç Sohbeti</Btn>
         <Btn full onClick={leaveMatch} st={{marginBottom:8}}>Maçtan Çık</Btn>
-        {matchState==="playing"?<Btn full onClick={()=>setCancelConfirm(true)} st={{marginBottom:8,color:T.red}}>Maçı Bitir</Btn>
+        {matchState==="playing"?<Btn full onClick={()=>window.location.assign("/03_matches?view=S10&page=end")} st={{marginBottom:8,color:T.red}}>Maçı Bitir</Btn>
         :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>}
       </>:<>
         <Btn full st={{marginBottom:8}}>{I.share(T.text)} Paylaş</Btn>
