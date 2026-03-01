@@ -69,7 +69,7 @@ const I={
 // Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
 function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#0D0D0D":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
-function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
+function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:"#fff",background:c,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function ProgressBar({current,total}){return <div style={{display:"flex",gap:6,marginBottom:24,padding:"0 4px"}}>{Array.from({length:total},(_,i)=><div key={i} style={{flex:1,height:4,borderRadius:4,background:i<current?T.accent:i===current?`${T.accent}55`:`${T.textDim}22`,transition:"background .4s"}}/>)}</div>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:"8px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
 
@@ -98,7 +98,7 @@ function S08({onNav,showUnrated,hasActiveWidget}){
     {showUnrated&&UNRATED.length>0&&<div>
       {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:"none",borderRadius:0,borderLeft:`3px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
         {/* Badge */}
-        <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star(T.orange)} Değerlendir</Badge></div>
+        <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star("#fff")} Değerlendir</Badge></div>
         {/* Title + skor */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
           <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
@@ -137,8 +137,8 @@ function MatchListCard({m,onNav,isMine}){
   const acceptColor = m.mode === "approval" ? T.purple : T.textDim;
   const friendUser=m.friendJoined?U.find(u=>u.name.split(" ")[0]===m.friendJoined):null;
   const statusBadge = isMine
-    ? <Badge c={T.accent}>{I.check(T.accent)} Katılıyorsun</Badge>
-    : (m.friendJoined ? <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px 2px 4px",borderRadius:20,fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}15`,whiteSpace:"nowrap"}}><Av i={friendUser?.av||m.friendJoined.slice(0,2).toUpperCase()} img={friendUser?.img} s={18} c={T.accent}/>{m.friendJoined} katılıyor</span> : null);
+    ? <Badge c={T.accent}>{I.check("#fff")} Katılıyorsun</Badge>
+    : (m.friendJoined ? <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px 2px 4px",borderRadius:20,fontSize:11,fontWeight:600,color:"#fff",background:T.accent,whiteSpace:"nowrap"}}><Av i={friendUser?.av||m.friendJoined.slice(0,2).toUpperCase()} img={friendUser?.img} s={18} c={T.accent}/>{m.friendJoined} katılıyor</span> : null);
   return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:"none",borderRadius:0,borderLeft:isMine?`3px solid ${T.accent}`:`3px solid ${T.cardBorder}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
     {/* Status row */}
     {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
