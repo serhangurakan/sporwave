@@ -22,4 +22,28 @@ Geri tuşu ve adımlar kaldırılmalı. Bu sayfalara da minimize butonu ekleyebi
 
 6 - yorumlar sayfasındaki yorum yazma bölümü sayfanın en altına fixlenmeli.
 
-7 - profil feedinde arada Gizli diye bişey var. onu orda unutmayalım.   
+7 - profil feedinde arada Gizli diye bişey var. onu orda unutmayalım.
+
+8 - Gizli post yönetimi belirsiz: Gizli postları nerede görürsün? Kendi profilinde
+kilit ikonu ile görünüyor ama gizliliği geri alma (unhide) butonu tanımlı değil.
+"Sil" aksiyonu hangi menüde? Feed ⋮ mi, profil ⋮ mi?
+"hidden (geri alınabilir) + deleted (kalıcı)" ayrımı UI'da nasıl gösterilecek?
+
+9 - Maç sohbeti yaşam döngüsü eksik: S35'te "salt okunur olur" diyor ama
+salt okunur UI nasıl görünecek? (input disable? banner?) Sohbet ne zaman
+silinecek/arşivlenecek? Katılımcı maçtan çıktığında sohbet geçmişini görebilir mi?
+
+10 - Hesap silme akışı yetersiz: S21'de sadece "onay dialog'u" var ama şifre/e-posta
+doğrulama adımı yok. Silme sonrası diğer kullanıcıların feed'indeki postlar ne olur?
+KVKK gereği veri dışa aktarma hakkı tanımlı değil. 30 günlük bekleme süresi olmalı mı?
+
+11 - Kontenjan aşımı (race condition): 2 kişi aynı anda son yere katılmaya çalışırsa
+ne olur? "Maalesef kontenjan doldu" error state'i tanımlanmalı.
+
+12 - Katılım oranı gösterimi: <%70 = turuncu uyarı, <%50 = kırmızı uyarı gibi
+eşik değerleri netleştirilmeli. Şuan sadece "kırmızı renk uyarı" diyor ama eşik
+belirsiz.
+
+13 - Misafir oyuncu akışı belirsiz: Misafir oyuncuya gol/asist nasıl atanır?
+Misafir MVP'ye seçilebilir mi? Misafir daha sonra kayıt olursa geçmiş maçları
+birleştirilebilir mi? Netleştirilmeli.   

@@ -150,6 +150,11 @@ function S21({onNav,onBack}){
   const[matchPrivacy,setMatchPrivacy]=useState("public");
   const[locationShare,setLocationShare]=useState(true);
   const[showDeleteConfirm,setShowDeleteConfirm]=useState(false);
+  const[showBlockedUsers,setShowBlockedUsers]=useState(false);
+  const[blockedUsers,setBlockedUsers]=useState([
+    {id:10,name:"Kaan Yılmaz",un:"kaanyilmaz",av:"KY",date:"15 Şub 2026"},
+    {id:11,name:"Emre Çelik",un:"emrecelik",av:"EÇ",date:"22 Şub 2026"},
+  ]);
 
   const privacyOptions=[{id:"public",label:"Herkese Açık"},{id:"followers",label:"Sadece Takipçilere"},{id:"hidden",label:"Gizli"}];
   const profilePrivacyOpts=privacyOptions.filter(o=>o.id!=="hidden");
@@ -230,6 +235,10 @@ function S21({onNav,onBack}){
         </div>
         <Toggle on={locationShare} onToggle={()=>setLocationShare(!locationShare)}/>
       </div>
+
+      <div style={{height:1,background:T.cardBorder,margin:"12px 0"}}/>
+
+      <MenuItem icon={I.block(T.textDim)} label="Engellenen Kullanıcılar" desc="Engellediğin kullanıcıları yönet" onClick={()=>setShowBlockedUsers(true)}/>
     </div>
 
     {/* Hakkında */}
@@ -261,6 +270,30 @@ function S21({onNav,onBack}){
         <div style={{display:"flex",gap:12}}>
           <Btn full onClick={()=>setShowDeleteConfirm(false)}>İptal</Btn>
           <Btn full danger onClick={()=>{setShowDeleteConfirm(false);alert("Hesap silindi");}}>Hesabı Sil</Btn>
+        </div>
+      </div>
+    </div>}
+
+    {/* Engellenen Kullanıcılar Modal */}
+    {showBlockedUsers&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:200,display:"flex",flexDirection:"column"}}>
+      <div style={{background:T.bg,maxWidth:430,width:"100%",margin:"0 auto",flex:1,display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"16px 16px 12px",display:"flex",alignItems:"center",gap:12,borderBottom:`1px solid ${T.cardBorder}`}}>
+          <div onClick={()=>setShowBlockedUsers(false)} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft(T.text)}</div>
+          <span style={{fontSize:16,fontWeight:700,color:T.text,fontFamily:FH}}>Engellenen Kullanıcılar</span>
+        </div>
+        <div style={{flex:1,overflowY:"auto",padding:"8px 0"}}>
+          {blockedUsers.length===0?<div style={{textAlign:"center",padding:"60px 20px"}}>
+            <div style={{fontSize:40,marginBottom:12}}>🚫</div>
+            <div style={{fontSize:15,fontWeight:600,color:T.text,marginBottom:4}}>Engellenen kullanıcın yok</div>
+            <div style={{fontSize:13,color:T.textMuted}}>Engellediğin kullanıcılar burada görünecek</div>
+          </div>:blockedUsers.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px"}}>
+            <Av i={u.av} s={40}/>
+            <div style={{flex:1}}>
+              <div style={{fontSize:14,fontWeight:600,color:T.text}}>{u.name}</div>
+              <div style={{fontSize:12,color:T.textMuted}}>@{u.un} · Engellendi: {u.date}</div>
+            </div>
+            <Btn small onClick={()=>{if(confirm(`${u.name} kullanıcısının engelini kaldırmak istiyor musun?`)){setBlockedUsers(prev=>prev.filter(x=>x.id!==u.id));}}} st={{borderColor:T.red,color:T.red}}>Engeli Kaldır</Btn>
+          </div>)}
         </div>
       </div>
     </div>}
