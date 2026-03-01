@@ -166,10 +166,8 @@ function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
 function TabBar({ active, onNav }) {
   const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];
   const handleTabClick = (tabId) => {
-    if (tabId === "S08") {
-      window.location.assign("/03_matches");
-      return;
-    }
+    if (tabId === "S08") { window.location.assign("/03_matches"); return; }
+    if (tabId === "S15") { window.location.assign("/05_profile"); return; }
     onNav(tabId);
   };
   return <div style={{ position:"fixed", bottom:0, left:0, right:0, height:56, background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, display:"flex", justifyContent:"space-around", alignItems:"center", zIndex:100, maxWidth:430, margin:"0 auto" }}>

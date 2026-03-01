@@ -129,8 +129,8 @@ function TabBar({active,onNav}){
   const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];
   const handleTabClick=(tabId)=>{
     if(tabId==="S05"){window.location.assign("/02_feed");return;}
+    if(tabId==="S08"){window.location.assign("/03_matches");return;}
     if(tabId==="S15"){window.location.assign("/05_profile");return;}
-    if(tabId==="S08"){onNav("S08");return;}
     onNav(tabId);
   };
   return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",zIndex:100,maxWidth:430,margin:"0 auto"}}>
