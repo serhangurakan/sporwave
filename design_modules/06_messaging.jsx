@@ -162,8 +162,11 @@ function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{
 // ============================================================
 function S17({onNav}){
   const[search,setSearch]=useState("");
+  const[tab,setTab]=useState("dm"); // "dm" | "group"
   const sorted=[...CONVERSATIONS].sort((a,b)=>a.ts-b.ts);
   const filtered=sorted.filter(c=>{
+    if(tab==="dm"&&c.type!=="dm")return false;
+    if(tab==="group"&&c.type!=="group")return false;
     if(!search)return true;
     const q=search.toLowerCase();
     if(c.type==="dm"){
@@ -173,17 +176,15 @@ function S17({onNav}){
     const m=MATCHES.find(m=>m.id===c.matchId);
     return m?.title.toLowerCase().includes(q);
   });
+  const dmUnread=CONVERSATIONS.filter(c=>c.type==="dm"&&c.unread>0).length;
+  const groupUnread=CONVERSATIONS.filter(c=>c.type==="group"&&c.unread>0).length;
 
   return <div style={{minHeight:"100vh",background:T.bg,fontFamily:FB,paddingBottom:72}}>
     {/* Header */}
     <div style={{position:"sticky",top:0,zIndex:50,background:T.bg,borderBottom:`1px solid ${T.cardBorder}`,padding:"16px 16px 12px"}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+      <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+        <div onClick={()=>window.location.assign("/02_feed")} style={{cursor:"pointer",display:"flex",padding:4}}>{I.arrowLeft(T.text)}</div>
         <h1 style={{fontFamily:FH,fontSize:20,fontWeight:800,color:T.text,margin:0}}>Mesajlar</h1>
-        <div style={{display:"flex",gap:8}}>
-          <div onClick={()=>onNav?.("S19")} style={{width:32,height:32,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",background:`${T.cardBorder}44`}}>
-            {I.bell(T.textDim)}
-          </div>
-        </div>
       </div>
       {/* Search */}
       <div style={{position:"relative"}}>
@@ -196,6 +197,14 @@ function S17({onNav}){
           onFocus={e=>e.target.style.borderColor=T.accent}
           onBlur={e=>e.target.style.borderColor=T.cardBorder}
         />
+      </div>
+
+      {/* Tabs */}
+      <div style={{display:"flex",gap:0,marginTop:12}}>
+        {[{id:"dm",label:"Sohbetler",unread:dmUnread},{id:"group",label:"Maç Sohbetleri",unread:groupUnread}].map(t=><div key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,textAlign:"center",padding:"10px 0",cursor:"pointer",borderBottom:`2px solid ${tab===t.id?T.accent:"transparent"}`,transition:"all .15s",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+          <span style={{fontSize:13,fontWeight:tab===t.id?700:500,color:tab===t.id?T.text:T.textMuted}}>{t.label}</span>
+          {t.unread>0&&<span style={{background:T.accent,color:T.bg,fontSize:10,fontWeight:700,borderRadius:10,padding:"1px 6px",minWidth:16,textAlign:"center"}}>{t.unread}</span>}
+        </div>)}
       </div>
     </div>
 
@@ -566,7 +575,7 @@ function DevRibbon({page,setPage}){
 // Main App
 // ============================================================
 export default function MessagingModule(){
-  const[page,setPage]=useState("S17");
+  const[page,setPage]=useState(()=>{const v=new URLSearchParams(window.location.search).get("view");return v==="S19"?"S19":"S17";});
   const[chatData,setChatData]=useState(null); // {convId, userId} for S18, {convId, matchId} for S35
 
   const nav=(target,data)=>{

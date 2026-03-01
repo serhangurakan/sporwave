@@ -164,8 +164,8 @@ function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
     </div>
     {showActions && <div style={{ display:"flex", gap:16, alignItems:"center" }}>
       <span onClick={()=>onNav("S07")} style={{ cursor:"pointer", display:"flex" }}>{I.search()}</span>
-      <span onClick={()=>onNav("S19")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.bell()}<span style={{ position:"absolute", top:-2, right:-4, width:8, height:8, borderRadius:4, background:T.red }}/></span>
-      <span onClick={()=>onNav("S17")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.chat()}<span style={{ position:"absolute", top:-2, right:-4, width:8, height:8, borderRadius:4, background:T.accent }}/></span>
+      <span onClick={()=>window.location.assign("/06_messaging?view=S19")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.bell()}<span style={{ position:"absolute", top:-2, right:-4, width:8, height:8, borderRadius:4, background:T.red }}/></span>
+      <span onClick={()=>window.location.assign("/06_messaging")} style={{ cursor:"pointer", display:"flex", position:"relative" }}>{I.chat()}<span style={{ position:"absolute", top:-2, right:-4, width:8, height:8, borderRadius:4, background:T.accent }}/></span>
     </div>}
   </div>;
 }

@@ -34,3 +34,20 @@ DESIGN KURALLARI:
 - Dev ribbon üstte (sayfalar arası hızlı geçiş)
 
 Tüm 7 modül tamamlandı. Design review aşamasına geçilebilir.
+
+SON YAPILAN DEĞİŞİKLİKLER:
+
+S10 Maç Sonu (03_matches.jsx):
+- Editlenebilir gol zamançizelgesi eklendi (+ butonları, gol ekle/sil/düzenle)
+- End page'e mock gol verisi (3-2, 5 gol) ve 90dk süre eklendi
+- Toast + Geri Al desteği
+
+S17 Mesajlar (06_messaging.jsx):
+- Bildirim (bell) butonu header'dan kaldırıldı
+- "Sohbetler" / "Maç Sohbetleri" tabları eklendi (unread badge'li)
+- Sol üste geri butonu eklendi (→ /02_feed)
+- URL param desteği: ?view=S19 ile bildirimler sayfasına direkt giriş
+
+S05 Feed (02_feed.jsx):
+- Bell ikonu → /06_messaging?view=S19 (bildirimler sayfasına cross-module yönlendirme)
+- Chat ikonu → /06_messaging (mesajlar sayfasına cross-module yönlendirme)
