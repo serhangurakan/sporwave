@@ -16,10 +16,10 @@ const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe
 
 // Mock Users (same as other modules)
 const U=[
-  {id:1,name:"Berk Yılmaz",un:"berk26",av:"BY",att:94,follow:true,level:"mid"},
+  {id:1,name:"Berk Başdemir",un:"berkbasdemir",av:"BB",att:94,follow:true,level:"mid"},
   {id:2,name:"Ali Demir",un:"alidemir",av:"AD",att:88,follow:true,level:"mid"},
   {id:3,name:"Mehmet Kaya",un:"mkaya",av:"MK",att:91,follow:false,level:"good"},
-  {id:4,name:"Emre Çelik",un:"emrecelik",av:"EÇ",att:96,follow:true,level:"good"},
+  {id:4,name:"Serhan Gürakan",un:"serhangurakan",av:"SG",att:96,follow:true,level:"good"},
   {id:5,name:"Can Yıldız",un:"canyildiz",av:"CY",att:85,follow:false,level:"beginner"},
   {id:6,name:"Oğuz Han",un:"oguzhan",av:"OH",att:92,follow:false,level:"mid"},
   {id:7,name:"Kerem Aktaş",un:"keremm",av:"KA",att:78,follow:false,level:"beginner"},
