@@ -503,7 +503,7 @@ function S19({onNav,onBack}){
   return <div style={{minHeight:"100vh",background:T.bg,fontFamily:FB,paddingBottom:72}}>
     {/* Header */}
     <div style={{position:"sticky",top:0,zIndex:50,background:T.bg,borderBottom:`1px solid ${T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12}}>
-      <div onClick={onBack} style={{cursor:"pointer",display:"flex",padding:4}}>{I.arrowLeft(T.text)}</div>
+      <div onClick={()=>window.location.assign("/02_feed")} style={{cursor:"pointer",display:"flex",padding:4}}>{I.arrowLeft(T.text)}</div>
       <h1 style={{fontFamily:FH,fontSize:20,fontWeight:800,color:T.text,margin:0,flex:1}}>Bildirimler</h1>
       {unreadCount>0&&<div onClick={markAllRead} style={{cursor:"pointer",padding:"6px 12px",borderRadius:8,fontSize:12,fontWeight:600,color:T.accent,background:`${T.accent}15`}}>
         Tümünü Okundu İşaretle

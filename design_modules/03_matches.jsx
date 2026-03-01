@@ -558,7 +558,7 @@ function S31({onNav}){
           {invites.includes(u.id)?"Davet Edildi":"Davet Et"}
         </div>
       </div>)}
-      <Btn primary full onClick={()=>onNav("S08")} st={{marginTop:28,fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Yayınla</Btn>
+      <Btn primary full onClick={()=>window.location.assign("/04_match_detail?view=S12")} st={{marginTop:28,fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Yayınla</Btn>
     </>}
   </div>;
 }
@@ -611,7 +611,7 @@ export default function SporWaveMatches(){
   const [cur,setCur]=useState("S08");
   const [curId,setCurId]=useState(null);
   const [fade,setFade]=useState(true);
-  const [showUnrated,setShowUnrated]=useState(true);
+  const [showUnrated,setShowUnrated]=useState(false);
   // Active match minimize state
   const [activeMatch,setActiveMatch]=useState({active:true,minimized:true,seconds:342,score:[2,1]});
 
@@ -658,7 +658,7 @@ export default function SporWaveMatches(){
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {/* Fixed elements OUTSIDE transform div */}
     {isMatchesView&&!activeMatch.active&&<div style={{position:"fixed",bottom:72,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
-      <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus("#0D0D0D")}</div>
+      <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus("#fff")}</div>
     </div>}
     {showWidget&&<ActiveMatchWidget seconds={activeMatch.seconds} score={activeMatch.score} onResume={handleResume} onDelete={handleDeleteMatch}/>}
     {cur==="S14"&&<S14 onNav={nav}/>}

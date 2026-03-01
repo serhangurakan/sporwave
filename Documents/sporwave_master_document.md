@@ -317,7 +317,7 @@ Ana Sayfa tab'ında:
 - **Görünüm:** Tüm Maçlar / Sadece Katıldıklarım / Sadece Açık Maçlar
 - "Uygula" butonu + "Sıfırla" linki
 
-**Puanlanmamış maçlar (en üstte):**
+**Puanlanmamış maçlar (varsayılan gizli — "Değerlendirme Maçı" toggle OFF):**
 - Kullanıcının henüz MVP oylaması ve/veya attendance bildirimi yapmadığı biten maçlar
 - `background:none, borderRadius:0, borderLeft: 3px solid turuncu` kart stili + "⭐ Bu maçı değerlendir" badge'i
 - Kartlar arasında 8px `T.card` divider
@@ -373,7 +373,7 @@ Ana Sayfa tab'ında:
 
 **Boş durum:** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
 
-**Sağ altta FAB "+" butonu** → tıklayınca direkt S31 Maç Oluştur sayfasına gider
+**Sağ altta FAB "+" butonu** (accent bg, beyaz "+" ikonu) → tıklayınca direkt S31 Maç Oluştur sayfasına gider
 
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
@@ -564,6 +564,7 @@ Ana Sayfa tab'ında:
 - **"Yayınla 📢"** butonu (Atla linki yok — adım atlanmak isteniyorsa direkt Yayınla'ya basılır)
 
 **Yayınla sonrası:**
+- Host, S12 Planlanan Maç Detay sayfasına yönlendirilir
 - Maç sohbeti (S35) otomatik oluşturulur
 - Deep link üretilir (sporwave.app/mac/XXXX) — WhatsApp, Instagram, SMS ile paylaşılabilir
 - Davet edilen kişilere bildirim + 1-1 sohbette davet kartı gider
@@ -721,6 +722,7 @@ Ana Sayfa tab'ında:
 
 #### S19: Bildirimler (Login gerekli)
 - Üst navbar'daki 🔔 ikonundan erişilir
+- **← Geri butonu:** Ana Sayfa'ya (S05) yönlendirir
 - Bildirim listesi (kronolojik):
   - Her bildirim: tür ikonu + avatar + metin + zaman + okunmamış göstergesi
   - **Tıklanınca ilgili sayfaya yönlendir**
@@ -998,7 +1000,7 @@ Maçlar tab → FAB "+" → S31
 → Adım 1: Maç adı + açıklama + format + tarih/saat + konum
 → Adım 2: Katılım ayarları (seviye + kabul modu + gizlilik)
 → Adım 3: Arkadaşları davet et (opsiyonel)
-→ Yayınla → Deep link üretilir + Maç sohbeti otomatik oluşur
+→ Yayınla → S12 Planlanan Maç Detay'a yönlendirilir (host olarak) + Deep link üretilir + Maç sohbeti otomatik oluşur
 → Maçlar sekmesinde görünür (👁️ badge) → Başvurular/katılımlar gelir
 → Maç saati → "Maçı Başlat" → Canlı skor akışına geç
 → Maç saati geçtiyse: Maç hala başlatılabilir (24 saat boyunca)
