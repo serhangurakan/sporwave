@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 3 — Maçlar Core (S08, S09, S10, S14, S31)
 // ============================================================
-
-const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -82,7 +81,7 @@ function S08({onNav,showUnrated,hasActiveWidget}){
 
   return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
-    <div style={{position:"sticky",top:32,zIndex:50,padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}22`}}>
+    <div style={{position:"sticky",top:32,zIndex:50,padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
       <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
       <span onClick={()=>setFilter(!filter)} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
     </div>
@@ -97,7 +96,7 @@ function S08({onNav,showUnrated,hasActiveWidget}){
 
     {/* Unrated matches */}
     {showUnrated&&UNRATED.length>0&&<div>
-      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:"none",borderRadius:0,borderLeft:`3px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}33`,padding:"14px 16px",cursor:"default"}}>
+      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:"none",borderRadius:0,borderLeft:`3px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
         {/* Badge */}
         <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star(T.orange)} Değerlendir</Badge></div>
         {/* Title + skor */}
@@ -140,7 +139,7 @@ function MatchListCard({m,onNav,isMine}){
   const statusBadge = isMine
     ? <Badge c={T.accent}>{I.check(T.accent)} Katılıyorsun</Badge>
     : (m.friendJoined ? <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px 2px 4px",borderRadius:20,fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}15`,whiteSpace:"nowrap"}}><Av i={friendUser?.av||m.friendJoined.slice(0,2).toUpperCase()} img={friendUser?.img} s={18} c={T.accent}/>{m.friendJoined} katılıyor</span> : null);
-  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:"none",borderRadius:0,borderLeft:isMine?`3px solid ${T.accent}`:`3px solid ${T.cardBorder}44`,borderBottom:`1px solid ${T.cardBorder}33`,padding:"14px 16px",cursor:"pointer"}}>
+  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:"none",borderRadius:0,borderLeft:isMine?`3px solid ${T.accent}`:`3px solid ${T.cardBorder}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
     {/* Status row */}
     {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
     {/* Title row */}
@@ -288,7 +287,7 @@ function S10({onNav,onMinimize,onEndMatch}){
   const GoalRow=({g,showEdit})=>{
     const scorerName=g.scorer?getPlayerName(g.scorer,g.team):null;
     const assistName=g.assist?getPlayerName(g.assist,g.team):null;
-    return <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+    return <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
       <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
         <span style={{fontSize:11,color:T.textMuted,width:28}}>{g.min}'</span>
         <Badge c={g.team==="A"?T.accent:T.orange}>{scorerName||`Takım ${g.team}`}</Badge>
@@ -503,7 +502,7 @@ function S31({onNav}){
           {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
         </div>
         {locFiltered.length>0&&<div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 12px 12px",overflow:"hidden"}}>
-          {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc(loc);setLocQuery("");}} style={{padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderTop:i>0?`1px solid ${T.cardBorder}22`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+          {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc(loc);setLocQuery("");}} style={{padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
             <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
             <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
           </div>)}
@@ -547,7 +546,7 @@ function S31({onNav}){
 
     {/* Step 3: Invite */}
     {step===2&&<>
-      {U.filter(u=>u.follow&&u.id!==1).map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+      {U.filter(u=>u.follow&&u.id!==1).map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
         <Av i={u.av} img={u.img} s={40}/>
         <div style={{flex:1}}>
           <div style={{fontSize:14,color:T.text,fontWeight:600}}>{u.name}</div>

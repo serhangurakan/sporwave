@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 6 — Mesajlaşma & Bildirimler (S17, S18, S19, S35)
@@ -7,8 +8,6 @@ import { useState, useEffect, useRef } from "react";
 // S35: Maç Sohbeti (Grup Chat)
 // S19: Bildirimler
 // ============================================================
-
-const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -221,7 +220,7 @@ function S17({onNav}){
           if(conv.type==="dm"){
             const u=uf(conv.userId);
             if(!u)return null;
-            return <div key={conv.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:`1px solid ${T.cardBorder}11`,cursor:"pointer",transition:"background .15s"}}
+            return <div key={conv.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer",transition:"background .15s"}}
               onClick={()=>onNav?.("S18",{convId:conv.id,userId:conv.userId})}
               onMouseEnter={e=>e.currentTarget.style.background=`${T.card}88`}
               onMouseLeave={e=>e.currentTarget.style.background="transparent"}
@@ -243,7 +242,7 @@ function S17({onNav}){
             const m=MATCHES.find(m=>m.id===conv.matchId);
             if(!m)return null;
             const sender=conv.lastSender?uf(conv.lastSender):null;
-            return <div key={conv.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:`1px solid ${T.cardBorder}11`,cursor:"pointer",transition:"background .15s"}}
+            return <div key={conv.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer",transition:"background .15s"}}
               onClick={()=>onNav?.("S35",{convId:conv.id,matchId:conv.matchId})}
               onMouseEnter={e=>e.currentTarget.style.background=`${T.card}88`}
               onMouseLeave={e=>e.currentTarget.style.background="transparent"}
@@ -428,7 +427,7 @@ function S35({matchId,convId,onNav,onBack}){
     </div>
 
     {/* Match Info Bar */}
-    <div style={{background:`${T.card}88`,padding:"8px 16px",display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${T.cardBorder}11`}}>
+    <div style={{background:`${T.card}88`,padding:"8px 16px",display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${T.cardBorder}`}}>
       <span style={{fontSize:12,color:T.textMuted}}>{match.date} · {match.time}</span>
       <span style={{fontSize:12,color:T.textMuted}}>·</span>
       <span style={{fontSize:12,color:T.textMuted}}>{match.loc}</span>

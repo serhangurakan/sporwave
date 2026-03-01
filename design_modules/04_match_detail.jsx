@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 4 — Maç Detay (S11, S12, S13, S40, S41, S30)
@@ -9,8 +10,6 @@ import { useState, useEffect } from "react";
 // S41: Oyuncu davet (bottom sheet)
 // S30: Shareable kart (maç sonrası)
 // ============================================================
-
-const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -159,7 +158,7 @@ function S11({onNav}){
     const s=stats[uid];
     const isMvp=m.mvp.includes(uid);
     const isNoShow=m.noShow.includes(uid);
-    return <div onClick={()=>!u.guest&&onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`,cursor:u.guest?"default":"pointer",opacity:isNoShow?.5:1}}>
+    return <div onClick={()=>!u.guest&&onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,cursor:u.guest?"default":"pointer",opacity:isNoShow?.5:1}}>
       <Av i={u.av} img={u.img} s={32} c={isMvp?T.gold:team==="A"?T.accent:T.orange}/>
       <div style={{flex:1}}>
         <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -237,7 +236,7 @@ function S11({onNav}){
         {m.goals.map((g,i)=>{
           const scorer=uf(g.scorer);
           const assister=g.assist?uf(g.assist):null;
-          return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<m.goals.length-1?`1px solid ${T.cardBorder}22`:"none"}}>
+          return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<m.goals.length-1?`1px solid ${T.cardBorder}`:"none"}}>
             <span style={{fontSize:11,color:T.textMuted,width:28,fontWeight:600}}>{g.min}'</span>
             <Badge c={g.team==="A"?T.accent:T.orange}>{g.team==="A"?"A":"B"}</Badge>
             <div style={{flex:1,fontSize:13}}>
@@ -391,11 +390,11 @@ function S12({onNav}){
 
   return <div style={{paddingBottom:80}}>
     {/* State switcher (dev only) */}
-    <div style={{background:`${T.cardBorder}44`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
+    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>STATE:</span>
       {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?"#0D0D0D":T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
     </div>
-    <div style={{background:`${T.cardBorder}44`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
+    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>MATCH:</span>
       {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?"#0D0D0D":T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
     </div>
@@ -500,7 +499,7 @@ function S12({onNav}){
           const u=uf(uid);if(!u)return null;
           const lv=LEVELS[u.level];
           const isDragging=dragTarget===uid;
-          return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:isHost?"pointer":"default"}} onClick={isHost?()=>setDragTarget(isDragging?null:uid):()=>onNav("S16",uid)}>
+          return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:isHost?"pointer":"default"}} onClick={isHost?()=>setDragTarget(isDragging?null:uid):()=>onNav("S16",uid)}>
             <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:T.textDim}/>
             <div style={{flex:1}}>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -569,7 +568,7 @@ function S12({onNav}){
           <input value={inviteQ} onChange={e=>setInviteQ(e.target.value)} placeholder="İsim veya kullanıcı adı ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
         </div>
         <div style={{flex:1,overflowY:"auto"}}>
-          {filteredFriends.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+          {filteredFriends.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
             <Av i={u.av} img={u.img} s={36}/>
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:500,color:T.text}}>{u.name}</div>
@@ -657,7 +656,7 @@ function S13({onNav}){
       <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:10,textTransform:"uppercase",letterSpacing:.5}}>Onaylı Katılımcılar ({approved.length})</div>
       {approved.map(uid=>{
         const u=uf(uid);if(!u)return null;
-        return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+        return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
           <Av i={u.av} img={u.img} s={32}/>
           <span style={{fontSize:13,fontWeight:500,color:T.text,flex:1}}>{u.name}</span>
           <Badge c={T.green}>{I.check(T.green)} Onaylı</Badge>
@@ -697,7 +696,7 @@ function S40({onNav}){
     </div>
 
     {/* Match summary */}
-    <div style={{textAlign:"center",padding:"0 16px 20px",borderBottom:`1px solid ${T.cardBorder}22`}}>
+    <div style={{textAlign:"center",padding:"0 16px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
       <div style={{fontSize:16,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:8}}>{m.title}</div>
       <div style={{fontSize:36,fontWeight:900,fontFamily:FH,marginBottom:4}}>
         <span style={{color:m.sc[0]>m.sc[1]?T.accent:T.text}}>{m.sc[0]}</span>
@@ -773,7 +772,7 @@ function S41({onNav}){
 
       {/* Friend list */}
       <div style={{flex:1,overflowY:"auto"}}>
-        {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+        {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
           <Av i={u.av} img={u.img} s={36}/>
           <div style={{flex:1}}>
             <div style={{fontSize:14,fontWeight:500,color:T.text}}>{u.name}</div>

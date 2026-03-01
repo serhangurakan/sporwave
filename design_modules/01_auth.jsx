@@ -1,25 +1,10 @@
 import { useState, useEffect } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 1 — Auth & Onboarding (S01-S04, S32)
 // v2: SVG icons, brand logos, proper focus states, date picker
 // ============================================================
-
-// — THEME —
-const T = {
-  accent: "#B7F000",
-  bg: "#FFFFFF",
-  bgAlt: "#F5F5F5",
-  card: "#FFFFFF",
-  cardBorder: "#EBEBEB",
-  text: "#0D0D0D",
-  textDim: "#555F6D",
-  textMuted: "#8A95A5",
-  red: "#FF4757",
-  green: "#2ED573",
-  orange: "#FF8C42",
-  purple: "#A78BFA",
-};
 
 // — FONTS —
 const FONT_HEADING = "'Plus Jakarta Sans', 'SF Pro Display', -apple-system, sans-serif";

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 5 — Profil (S15, S16, S22, S23)
@@ -7,8 +8,6 @@ import { useState, useEffect, useRef } from "react";
 // S22: Takipçiler & Takip Listesi
 // S23: Profil Düzenle
 // ============================================================
-
-const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -631,7 +630,7 @@ function S22({onNav,data}){
 
     {/* List */}
     <div style={{padding:"0 16px"}}>
-      {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
+      {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
         <Av i={u.av} s={40} c={T.accent} onClick={()=>onNav("S16",u.id)}/>
         <div onClick={()=>onNav("S16",u.id)} style={{flex:1,cursor:"pointer"}}>
           <div style={{fontSize:14,fontWeight:600,color:T.text}}>{u.name}</div>

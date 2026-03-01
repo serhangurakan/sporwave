@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 7 — Ayarlar & Güvenlik
@@ -12,8 +13,6 @@ import { useState, useRef } from "react";
 // S29: Engelle (Onay Dialog)
 // S34: Hata Sayfası
 // ============================================================
-
-const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -199,7 +198,7 @@ function S21({onNav,onBack}){
         {label:"Maç Hatırlatıcı",on:notifMatchReminder,set:setNotifMatchReminder},
         {label:"Maç Daveti",on:notifInvite,set:setNotifInvite},
         {label:"Host Devralma Oylamaları",on:notifHostVote,set:setNotifHostVote},
-      ].map(n=><div key={n.label} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}11`}}>
+      ].map(n=><div key={n.label} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
         <span style={{fontSize:13,color:T.textDim}}>{n.label}</span>
         <Toggle on={n.on} onToggle={()=>n.set(!n.on)}/>
       </div>)}

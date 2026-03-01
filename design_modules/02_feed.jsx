@@ -1,17 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import T from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 2 v3 — Feed & Search (S05, S07, S42, S43)
 // Two-layer model: M (matches, shared) + P (posts, per-player)
 // PostCard replaces MatchCard — single owner, post-based engagement
 // ============================================================
-
-const T = {
-  accent: "#B7F000", bg: "#FFFFFF", bgAlt: "#F5F5F5",
-  card: "#FFFFFF", cardBorder: "#EBEBEB",
-  text: "#0D0D0D", textDim: "#555F6D", textMuted: "#8A95A5",
-  red: "#FF4757", green: "#2ED573", orange: "#FF8C42", gold: "#FFD700",
-};
 const FONT_H = "'Plus Jakarta Sans', 'SF Pro Display', -apple-system, sans-serif";
 const FONT_B = "'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
@@ -152,7 +146,7 @@ function InpField({ placeholder, icon, value, onChange, autoFocus }) {
 function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
   const [flash, setFlash] = useState(false);
   const handleClick = () => { setFlash(true); setTimeout(()=>setFlash(false), 180); setDropOpen(!dropOpen); };
-  return <div style={{ position:"sticky", top:32, zIndex:50, padding:"8px 16px", background:`${T.bg}ee`, backdropFilter:"blur(12px)", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:`1px solid ${T.cardBorder}22` }}>
+  return <div style={{ position:"sticky", top:32, zIndex:50, padding:"8px 16px", background:`${T.bg}ee`, backdropFilter:"blur(12px)", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:`1px solid ${T.cardBorder}` }}>
     <div style={{ position:"relative" }}>
       <div onClick={handleClick} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:8, padding:"8px 0", borderRadius:10, background:"transparent", opacity:flash?0.4:1, transition:"opacity .1s" }}>
         <span style={{ fontWeight:800, fontSize:20, color:T.text, fontFamily:FONT_H }}>{mode==="home"?"Ana Sayfa":"Keşfet"}</span>
@@ -414,14 +408,14 @@ function S07({ onNav }) {
     </div>
     {q.length===0&&<div>
       <div style={{ fontSize:11, fontWeight:700, color:T.textMuted, marginBottom:12, textTransform:"uppercase", letterSpacing:.5 }}>Önerilen Kullanıcılar</div>
-      {U.filter(u=>!u.follow&&u.id!==1).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
+      {U.filter(u=>!u.follow&&u.id!==1).map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}`, cursor:"pointer" }}>
         <Av i={u.av} img={u.img} s={44}/>
         <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.name}</div><div style={{ fontSize:12, color:T.textDim }}>@{u.un} · {u.matches} maç</div></div>
         <Btn small primary>Takip Et</Btn>
       </div>)}
     </div>}
     {q.length>0&&res.length===0&&<Empty icon={I.noResult()} title="Kullanıcı bulunamadı" desc={`"${q}" ile eşleşen kullanıcı yok`}/>}
-    {res.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
+    {res.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}`, cursor:"pointer" }}>
       <Av i={u.av} img={u.img} s={44}/>
       <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.name}</div><div style={{ fontSize:12, color:T.textDim }}>@{u.un} · {u.matches} maç</div></div>
       <Btn small primary>{u.follow?"✓ Takip":"Takip Et"}</Btn>
@@ -436,13 +430,13 @@ function S42({ onNav, postId }) {
   const m=mf(p.matchId);
   return <div style={{ paddingBottom:80 }}>
     {/* Top bar */}
-    <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}22` }}>
+    <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}` }}>
       <span onClick={()=>onNav("S05")} style={{ cursor:"pointer", display:"flex" }}>{I.arrowLeft()}</span>
       <span style={{ fontSize:16, fontWeight:700, color:T.text, fontFamily:FONT_H }}>Yorumlar</span>
     </div>
 
     {/* Post summary */}
-    <div style={{ padding:"16px", borderBottom:`1px solid ${T.cardBorder}44` }}>
+    <div style={{ padding:"16px", borderBottom:`1px solid ${T.cardBorder}` }}>
       <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
         <Av i={owner.av} img={owner.img} s={32} onClick={()=>onNav("S16",owner.id)}/>
         <div><div style={{ fontWeight:600, fontSize:13, color:T.text }}>{owner.name}</div><div style={{ fontSize:11, color:T.textMuted }}>@{owner.un} · {p.date}</div></div>
@@ -497,7 +491,7 @@ function S43({ onNav, postId }) {
   const filtered=q?likers.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.un.includes(q.toLowerCase())):likers;
 
   return <div style={{ paddingBottom:20 }}>
-    <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}22` }}>
+    <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}` }}>
       <span onClick={()=>onNav("S05")} style={{ cursor:"pointer", display:"flex" }}>{I.arrowLeft()}</span>
       <span style={{ fontSize:16, fontWeight:700, color:T.text, fontFamily:FONT_H }}>Beğeniler</span>
     </div>
@@ -505,7 +499,7 @@ function S43({ onNav, postId }) {
       <InpField placeholder="Kullanıcı adı ara" icon={I.search} value={q} onChange={e=>setQ(e.target.value)}/>
     </div>
     <div style={{ padding:"0 16px" }}>
-      {filtered.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}22`, cursor:"pointer" }}>
+      {filtered.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:`1px solid ${T.cardBorder}`, cursor:"pointer" }}>
         <Av i={u.av} img={u.img} s={44}/>
         <div style={{ flex:1 }}><div style={{ fontWeight:600, fontSize:14, color:T.text }}>{u.un}</div><div style={{ fontSize:12, color:T.textDim }}>{u.name}</div></div>
         <Btn small primary>{u.follow?"Takip Ediliyor":"Takip Et"}</Btn>
