@@ -15,15 +15,25 @@ const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
 // Mock Users (same as other modules)
+const AVATARS=[
+  "/assets/images/avatars/avatar_01.jpg",
+  "/assets/images/avatars/avatar_02.jpg",
+  "/assets/images/avatars/avatar_03.jpg",
+  "/assets/images/avatars/avatar_04.jpg",
+  "/assets/images/avatars/avatar_05.jpeg",
+  "/assets/images/avatars/avatar_06.jpg",
+  "/assets/images/avatars/avatar_07.jpg",
+  "/assets/images/avatars/avatar_08.jpg",
+];
 const U=[
-  {id:1,name:"Berk Başdemir",un:"berkbasdemir",av:"BB",att:94,follow:true,level:"mid"},
-  {id:2,name:"Ali Demir",un:"alidemir",av:"AD",att:88,follow:true,level:"mid"},
-  {id:3,name:"Mehmet Kaya",un:"mkaya",av:"MK",att:91,follow:false,level:"good"},
-  {id:4,name:"Serhan Gürakan",un:"serhangurakan",av:"SG",att:96,follow:true,level:"good"},
-  {id:5,name:"Can Yıldız",un:"canyildiz",av:"CY",att:85,follow:false,level:"beginner"},
-  {id:6,name:"Oğuz Han",un:"oguzhan",av:"OH",att:92,follow:false,level:"mid"},
-  {id:7,name:"Kerem Aktaş",un:"keremm",av:"KA",att:78,follow:false,level:"beginner"},
-  {id:8,name:"Burak Şen",un:"buraksen",av:"BŞ",att:90,follow:false,level:"mid"},
+  {id:1,name:"Berk Başdemir",un:"berkbasdemir",av:"BB",img:AVATARS[0],att:94,follow:true,level:"mid"},
+  {id:2,name:"Ali Demir",un:"alidemir",av:"AD",img:AVATARS[1],att:88,follow:true,level:"mid"},
+  {id:3,name:"Mehmet Kaya",un:"mkaya",av:"MK",img:AVATARS[2],att:91,follow:false,level:"good"},
+  {id:4,name:"Serhan Gürakan",un:"serhangurakan",av:"SG",img:AVATARS[3],att:96,follow:true,level:"good"},
+  {id:5,name:"Can Yıldız",un:"canyildiz",av:"CY",img:AVATARS[4],att:85,follow:false,level:"beginner"},
+  {id:6,name:"Oğuz Han",un:"oguzhan",av:"OH",img:AVATARS[5],att:92,follow:false,level:"mid"},
+  {id:7,name:"Kerem Aktaş",un:"keremm",av:"KA",img:AVATARS[6],att:78,follow:false,level:"beginner"},
+  {id:8,name:"Burak Şen",un:"buraksen",av:"BŞ",img:AVATARS[7],att:90,follow:false,level:"mid"},
   {id:9,name:"Tolga Sarı",un:"tolga",av:"TS",att:0,follow:false,level:"mid",guest:true},
   {id:10,name:"Yusuf Eren",un:"yusuf",av:"YE",att:0,follow:false,level:"beginner",guest:true},
 ];
@@ -111,7 +121,7 @@ const I={
 };
 
 // Shared Components
-function Av({i,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{i}</div>;}
+function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
 function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?T.bg:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}22`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textDim,fontWeight:600,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
@@ -149,7 +159,7 @@ function S11({onNav}){
     const isMvp=m.mvp.includes(uid);
     const isNoShow=m.noShow.includes(uid);
     return <div onClick={()=>!u.guest&&onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`,cursor:u.guest?"default":"pointer",opacity:isNoShow?.5:1}}>
-      <Av i={u.av} s={32} c={isMvp?T.gold:team==="A"?T.accent:T.orange}/>
+      <Av i={u.av} img={u.img} s={32} c={isMvp?T.gold:team==="A"?T.accent:T.orange}/>
       <div style={{flex:1}}>
         <div style={{display:"flex",alignItems:"center",gap:6}}>
           <span style={{fontSize:13,fontWeight:600,color:u.guest?T.textDim:T.text}}>{u.name}</span>
@@ -199,7 +209,7 @@ function S11({onNav}){
       <div style={{fontSize:12,fontWeight:700,color:T.gold,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{mvps.length>1?"Co-MVP":"Maçın Yıldızı"}</div>
       <div style={{display:"flex",justifyContent:"center",gap:16}}>
         {mvps.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{cursor:"pointer",textAlign:"center"}}>
-          <Av i={u.av} s={48} c={T.gold} st={{margin:"0 auto",border:`2px solid ${T.gold}`}}/>
+          <Av i={u.av} img={u.img} s={48} c={T.gold} st={{margin:"0 auto",border:`2px solid ${T.gold}`}}/>
           <div style={{fontSize:13,fontWeight:700,color:T.gold,marginTop:6}}>{u.name}</div>
           {stats[u.id]&&<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{stats[u.id].g} gol, {stats[u.id].a} asist</div>}
         </div>)}
@@ -244,7 +254,7 @@ function S11({onNav}){
       {m.posts.map(p=>{
         const owner=uf(p.userId);
         return <div key={p.id} onClick={()=>onNav("S42",p.id)} style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 14px",marginBottom:8,cursor:"pointer",display:"flex",alignItems:"center",gap:12}}>
-          <Av i={owner.av} s={36}/>
+          <Av i={owner.av} img={owner.img} s={36}/>
           <div style={{flex:1}}>
             <div style={{fontSize:13,fontWeight:600,color:T.text}}>{owner.name}</div>
             <div style={{fontSize:12,color:T.textDim,marginTop:2}}>{p.caption||"Post paylaştı"}</div>
@@ -351,7 +361,7 @@ function S12({onNav}){
         {isHostUser&&<Badge c={T.gold} st={{fontSize:8,padding:"1px 5px",lineHeight:1.2}}>{I.crown(T.gold)}</Badge>}
       </div>
       <div style={{position:"relative"}}>
-        <Av i={u.av} s={36} c={isDragging?T.accent:teamColor}/>
+        <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:teamColor}/>
         {isHost&&uid!==m.host&&<div
           onClick={e=>{e.stopPropagation();unassignPlayer(uid);}}
           style={{position:"absolute",top:-4,right:-4,width:16,height:16,borderRadius:"50%",background:T.textMuted,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}
@@ -405,7 +415,7 @@ function S12({onNav}){
 
       {/* Organizer */}
       <div onClick={()=>onNav("S16",host.id)} style={{display:"flex",alignItems:"center",gap:10,marginBottom:16,cursor:"pointer"}}>
-        <Av i={host.av} s={32}/>
+        <Av i={host.av} img={host.img} s={32}/>
         <div>
           <div style={{fontSize:13,fontWeight:600,color:T.text}}>{host.name}</div>
           <div style={{fontSize:11,color:T.textDim}}>Organizatör</div>
@@ -490,7 +500,7 @@ function S12({onNav}){
           const lv=LEVELS[u.level];
           const isDragging=dragTarget===uid;
           return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:isHost?"pointer":"default"}} onClick={isHost?()=>setDragTarget(isDragging?null:uid):()=>onNav("S16",uid)}>
-            <Av i={u.av} s={36} c={isDragging?T.accent:T.textDim}/>
+            <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:T.textDim}/>
             <div style={{flex:1}}>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
@@ -559,7 +569,7 @@ function S12({onNav}){
         </div>
         <div style={{flex:1,overflowY:"auto"}}>
           {filteredFriends.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-            <Av i={u.av} s={36}/>
+            <Av i={u.av} img={u.img} s={36}/>
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:500,color:T.text}}>{u.name}</div>
               <div style={{fontSize:11,color:T.textDim}}>@{u.un} · %{u.att} katılım</div>
@@ -623,7 +633,7 @@ function S13({onNav}){
         const lv=LEVELS[app.level];
         return <div key={app.uid} style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"14px 16px",marginBottom:8}}>
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-            <Av i={u.av} s={40} onClick={()=>onNav("S16",u.id)}/>
+            <Av i={u.av} img={u.img} s={40} onClick={()=>onNav("S16",u.id)}/>
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:600,color:T.text}}>{u.name}</div>
               <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
@@ -647,7 +657,7 @@ function S13({onNav}){
       {approved.map(uid=>{
         const u=uf(uid);if(!u)return null;
         return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-          <Av i={u.av} s={32}/>
+          <Av i={u.av} img={u.img} s={32}/>
           <span style={{fontSize:13,fontWeight:500,color:T.text,flex:1}}>{u.name}</span>
           <Badge c={T.green}>{I.check(T.green)} Onaylı</Badge>
         </div>;
@@ -705,7 +715,7 @@ function S40({onNav}){
           const u=uf(uid);if(!u)return null;
           const sel=mvpVote===uid;
           return <div key={uid} onClick={()=>setMvpVote(sel?null:uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:sel?`${T.gold}10`:T.card,border:`1.5px solid ${sel?T.gold:T.cardBorder}`,cursor:"pointer",transition:"all .2s"}}>
-            <Av i={u.av} s={32} c={sel?T.gold:T.accent}/>
+            <Av i={u.av} img={u.img} s={32} c={sel?T.gold:T.accent}/>
             <span style={{fontSize:13,fontWeight:sel?700:500,color:sel?T.gold:T.text,flex:1}}>{u.name}</span>
             {sel&&<span style={{display:"flex"}}>{I.star(T.gold)}</span>}
           </div>;
@@ -722,7 +732,7 @@ function S40({onNav}){
           const u=uf(uid);if(!u)return null;
           const val=attendance[uid];
           return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`}}>
-            <Av i={u.av} s={28}/>
+            <Av i={u.av} img={u.img} s={28}/>
             <span style={{fontSize:13,color:T.text,flex:1,fontWeight:500}}>{u.name}</span>
             <div style={{display:"flex",gap:4}}>
               <div onClick={()=>toggleAtt(uid,"yes")} style={{padding:"4px 10px",borderRadius:8,background:val==="yes"?`${T.green}20`:"transparent",border:`1.5px solid ${val==="yes"?T.green:T.cardBorder}`,cursor:"pointer",fontSize:11,fontWeight:600,color:val==="yes"?T.green:T.textMuted}}>Geldi</div>
@@ -763,7 +773,7 @@ function S41({onNav}){
       {/* Friend list */}
       <div style={{flex:1,overflowY:"auto"}}>
         {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-          <Av i={u.av} s={36}/>
+          <Av i={u.av} img={u.img} s={36}/>
           <div style={{flex:1}}>
             <div style={{fontSize:14,fontWeight:500,color:T.text}}>{u.name}</div>
             <div style={{fontSize:11,color:T.textDim}}>@{u.un} · %{u.att} katılım</div>
@@ -834,7 +844,7 @@ function S30({onNav}){
       {/* My stats */}
       <div style={{background:`${T.accent}08`,borderRadius:12,padding:"12px 16px",border:`1px solid ${T.accent}22`}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-          <Av i={me.av} s={28} c={T.accent}/>
+          <Av i={me.av} img={me.img} s={28} c={T.accent}/>
           <span style={{fontSize:14,fontWeight:700,color:T.text}}>{me.name}</span>
         </div>
         <div style={{display:"flex",gap:16}}>
