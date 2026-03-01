@@ -199,10 +199,17 @@ function S10({onNav,onMinimize,onEndMatch}){
   const [fmt]=useState("5v5");
   const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
   const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
-  const [score,setScore]=useState([0,0]);
-  const [goals,setGoals]=useState([]);
-  const [running,setRunning]=useState(true);
-  const [seconds,setSeconds]=useState(0);
+  const initEnd=page==="end";
+  const [score,setScore]=useState(initEnd?[3,2]:[0,0]);
+  const [goals,setGoals]=useState(initEnd?[
+    {id:1,team:"A",min:12,scorer:1,assist:2},
+    {id:2,team:"B",min:23,scorer:3,assist:null},
+    {id:3,team:"A",min:35,scorer:2,assist:1},
+    {id:4,team:"A",min:58,scorer:1,assist:null},
+    {id:5,team:"B",min:72,scorer:3,assist:null},
+  ]:[]);
+  const [running,setRunning]=useState(initEnd?false:true);
+  const [seconds,setSeconds]=useState(initEnd?5400:0);
   const [toast,setToast]=useState(null);
   const [deletePopup,setDeletePopup]=useState(false);
   const [goalDrawer,setGoalDrawer]=useState(null);
@@ -329,14 +336,28 @@ function S10({onNav,onMinimize,onEndMatch}){
   return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
     <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,marginTop:8,letterSpacing:"-0.5px",fontFamily:FH}}>Maç Sonu</div>
 
-    <div style={{textAlign:"center",marginBottom:28}}>
-      <div style={{fontSize:48,fontWeight:900,fontFamily:FH}}>
-        <span style={{color:score[0]>score[1]?T.accent:T.text}}>{score[0]}</span>
-        <span style={{color:T.textMuted,margin:"0 12px",fontSize:24}}>–</span>
-        <span style={{color:score[1]>score[0]?T.accent:T.text}}>{score[1]}</span>
+    <div style={{fontSize:13,color:T.textDim,marginBottom:16,textAlign:"center"}}>Süre: {fmtTime(seconds)} · {fmt}</div>
+
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
+      <div style={{flex:1,textAlign:"center"}}>
+        <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
+        <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
+        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
+        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div>
       </div>
-      <div style={{fontSize:13,color:T.textDim,marginTop:4}}>Süre: {fmtTime(seconds)} · {fmt}</div>
+      <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
+      <div style={{flex:1,textAlign:"center"}}>
+        <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
+        <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
+        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
+        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div>
+      </div>
     </div>
+
+    {toast&&<div style={{background:T.card,border:`1.5px solid ${T.accent}44`,borderRadius:12,padding:"12px 16px",marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <span style={{fontSize:14,color:T.text}}>Gol eklendi</span>
+      <span onClick={()=>undoGoal(toast)} style={{fontSize:13,color:T.accent,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>{I.undo(T.accent)} Geri Al</span>
+    </div>}
 
     {goals.length>0&&<div style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20}}>
       <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:8}}>GOL ZAMANÇİZELGESİ</div>
