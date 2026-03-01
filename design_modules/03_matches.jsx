@@ -96,7 +96,7 @@ function S08({onNav,showUnrated,hasActiveWidget}){
 
     {/* Unrated matches */}
     {showUnrated&&UNRATED.length>0&&<div>
-      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:"none",borderRadius:0,borderLeft:`4px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
+      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:`${T.orange}14`,borderRadius:0,borderLeft:`4px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
         {/* Badge */}
         <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star("#fff")} Değerlendir</Badge></div>
         {/* Title + skor */}
@@ -139,7 +139,7 @@ function MatchListCard({m,onNav,isMine}){
   const statusBadge = isMine
     ? <Badge c={T.accent}>{I.check("#fff")} Katılıyorsun</Badge>
     : (m.friendJoined ? <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px 2px 4px",borderRadius:20,fontSize:11,fontWeight:600,color:"#fff",background:T.accent,whiteSpace:"nowrap"}}><Av i={friendUser?.av||m.friendJoined.slice(0,2).toUpperCase()} img={friendUser?.img} s={18} c={T.accent}/>{m.friendJoined} katılıyor</span> : null);
-  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:"none",borderRadius:0,borderLeft:isMine?`4px solid ${T.accent}`:`4px solid ${T.cardBorder}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
+  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:isMine?`${T.accent}14`:"none",borderRadius:0,borderLeft:isMine?`4px solid ${T.accent}`:`4px solid ${T.cardBorder}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
     {/* Status row */}
     {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
     {/* Title row */}
@@ -571,7 +571,7 @@ function ActiveMatchWidget({seconds,score,onResume,onDelete}){
 
   return <>
     <div style={{position:"fixed",bottom:56,left:0,right:0,maxWidth:430,margin:"0 auto",zIndex:95,padding:"8px 12px"}}>
-      <div style={{background:T.card,border:`1.5px solid ${T.accent}33`,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
+      <div style={{background:T.card,border:`1.5px solid ${T.accent}`,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
         <div onClick={onResume} style={{display:"flex",alignItems:"center",gap:12,flex:1,cursor:"pointer"}}>
           <div style={{display:"flex"}}>{I.play(T.accent)}</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
