@@ -437,13 +437,15 @@ function S42({ onNav, postId }) {
   const [lc,setLc]=useState(p.likes);
   const toggleLike=()=>{setLiked(!liked);setLc(c=>liked?c-1:c+1);};
 
-  return <div style={{ paddingBottom:80 }}>
+  return <div style={{ display:"flex", flexDirection:"column", height:"calc(100vh - 45px)" }}>
     {/* Top bar */}
-    <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}` }}>
+    <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:12, borderBottom:`1px solid ${T.cardBorder}`, flexShrink:0 }}>
       <span onClick={()=>onNav("S05")} style={{ cursor:"pointer", display:"flex" }}>{I.arrowLeft()}</span>
       <span style={{ fontSize:16, fontWeight:700, color:T.text, fontFamily:FONT_H }}>Yorumlar</span>
     </div>
 
+    {/* Scrollable content */}
+    <div style={{ flex:1, overflowY:"auto" }}>
     {/* Post summary — feed kartıyla aynı stil */}
     <div style={{ borderBottom:`1px solid ${T.cardBorder}` }}>
       {/* Header */}
@@ -455,6 +457,8 @@ function S42({ onNav, postId }) {
         </div>
       </div>
 
+      {/* Title + Caption + Meta + Score — tıklanabilir alan → S11 */}
+      <div onClick={()=>m&&window.location.assign("/04_match_detail?view=S11")} style={{ cursor:m?"pointer":"default" }}>
       {/* Title */}
       {m && <div style={{ padding:"12px 16px 0", fontWeight:700, fontSize:16, color:T.text, fontFamily:FONT_H }}>{m.title}</div>}
 
@@ -480,10 +484,11 @@ function S42({ onNav, postId }) {
           </span>
           <span style={{ fontSize:11, color:T.textDim, marginLeft:12 }}>Takım B</span>
         </div>
-        {mvp && <div onClick={()=>onNav("S16",mvp.id)} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:8, cursor:"pointer" }}>
+        {mvp && <div onClick={e=>{e.stopPropagation();onNav("S16",mvp.id);}} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:8, cursor:"pointer" }}>
           {I.star(T.accent)} <span style={{ fontSize:12, color:T.accent, fontWeight:600 }}>{mvp.name}</span>
         </div>}
       </div>}
+      </div>
 
       {/* Likers */}
       {lc>0 && <div style={{ padding:"8px 16px 0", fontSize:12, color:T.textDim, display:"flex", alignItems:"center", gap:8, marginTop:8 }}>
@@ -521,9 +526,10 @@ function S42({ onNav, postId }) {
         </div>
       </div>;})}
     </div>
+    </div>{/* end scrollable */}
 
-    {/* Input bar — fixed bottom */}
-    <div style={{ position:"fixed", bottom:0, left:0, right:0, maxWidth:430, margin:"0 auto", background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, padding:"12px 16px", display:"flex", alignItems:"center", gap:12, zIndex:90 }}>
+    {/* Input bar — bottom */}
+    <div style={{ flexShrink:0, background:T.bgAlt, borderTop:`1px solid ${T.cardBorder}`, padding:"12px 16px", display:"flex", alignItems:"center", gap:12 }}>
       <Av i="BY" img={AVATARS[0]} s={28}/>
       <div style={{ flex:1, background:T.card, borderRadius:20, padding:"8px 16px", display:"flex", alignItems:"center" }}>
         <input placeholder="Bir yorum ekle..." style={{ background:"none", border:"none", color:T.text, fontSize:14, width:"100%", outline:"none" }}/>
