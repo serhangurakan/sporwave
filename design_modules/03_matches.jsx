@@ -110,14 +110,14 @@ function S08({onNav,showUnrated,hasActiveWidget}){
           {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
         </div>
       </div>)}
-      <div style={{height:8,background:T.card}}/>
+      <div style={{height:8,background:T.bgAlt}}/>
     </div>}
 
     {/* All matches — no section split */}
     <div>
       {PLANNED.length>0
         ? PLANNED.map((m,i)=><>
-            {i>0&&<div key={`div-${m.id}`} style={{height:8,background:T.card}}/>}
+            {i>0&&<div key={`div-${m.id}`} style={{height:8,background:T.bgAlt}}/>}
             <MatchListCard key={m.id} m={m} onNav={onNav} isMine={m.myMatch}/>
           </>)
         : <div style={{textAlign:"center",padding:"32px 0"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
