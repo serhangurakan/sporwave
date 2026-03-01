@@ -397,30 +397,11 @@ Ana Sayfa tab'ında:
 
 **Maç başlatma koşulu:** Her iki takımda en az 1 oyuncu (uygulama kullanıcısı veya misafir) kayıtlı olmalı. Planlanan maçlarda (S31) maç saatinden sonra da başlatılabilir — 24 saat boyunca başlatma imkanı devam eder.
 
-**Sayfa yapısı (2 adım + Canlı Skor — progress bar + geri butonu VAR):**
+**Sayfa yapısı (doğrudan Canlı Skor — setup adımları kaldırıldı):**
 
-**Maç Başlat — Adım 1/2 (S10_SETUP):**
-- Progress bar (2 adım, üstte)
-- ← Geri butonu (S08 Maçlar'a döner)
-- Adım etiketi: "ADIM 1/2"
-- Maç formatı: 5v5 / 6v6 / 7v7 / Özel
-- Konum: Otomatik GPS + manuel düzenleme
-- "Devam" butonu → Takım Oluştur sayfasına geçiş
-
-**Takım Oluştur — Adım 2/2 (S10_TEAMS):**
-- Progress bar (2 adım, 2. adım aktif)
-- ← Geri butonu (S10_SETUP'a döner), "Atla" seçeneği yok
-- Takım 1 vs Takım 2
-- Her takıma oyuncu ekle:
-  - **Uygulama kullanıcısı:** İsim/@kullanıcıadı ile ara, seç
-  - **Misafir Oyuncu:** "Misafir Ekle" butonu → sadece isim girişi (otomatik doldurma yok)
-- Takım rengi seçimi (opsiyonel)
-- **Drag & drop ile takım değişikliği:** Oyuncular iki takım arasında sürükle-bırak ile taşınabilir. Mobilde uzun basma (long press) ile drag başlar. İki kolon (Takım 1 | Takım 2) formatında.
-- "Başla" butonu → Canlı Skor sayfasına geçiş
-
-**Canlı Skor Sayfası (ayrı sayfa):**
-- **Sol üstte ← geri ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde)
-- **Ayarlar butonu:** Sağ üstte tek buton — "Ayarlar" (S12 Planlanan Maç detay sayfasına yönlendirir)
+**Canlı Skor Sayfası:**
+- **Sol üstte ↓ aşağı ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde), Maçlar (S08) sayfasına yönlendirilir
+- **Ayarlar butonu:** Sağ üstte tek buton — "Ayarlar" (S12 Planlanan Maç detay sayfasına yönlendirir, **match state otomatik olarak "Maç Oynanıyor" olarak açılır**)
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
 - **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)
 - Her takım için **"+ Gol"** butonu (büyük, kolay tıklanabilir, takım rengiyle)
@@ -486,7 +467,9 @@ Ana Sayfa tab'ında:
 - Back butonu
 
 #### S12: Planlanan Maç Detay (Henüz oynanmamış)
-- **Header:** ← Maçlar (geri + yazı birlikte, S08'e döner) · ⋮ menü sağda (başlık yok)
+- **Header:** Geri butonu (geri ok + yazı birlikte) · ⋮ menü sağda (başlık yok)
+  - **Maç Planlama state'inde:** ← Maçlar (S08'e döner)
+  - **Maç Oynanıyor state'inde:** ← Canlı Skor (S10'a döner)
 - **⋮ Dropdown Menü:**
   - **Host ise:** "Maçı İptal Et" (kırmızı) + "Maçtan Çık"
   - **Katılımcı ise:** "Maçtan Ayrıl"
@@ -1141,7 +1124,8 @@ Maç saati geçer → Maç hala başlamamış
 - Örnek: Ana Sayfa → Maç Detay → Oyuncu Profili → Geri = Maç Detay → Geri = Ana Sayfa
 - Tab'a basınca stack sıfırlanır ve o tab'ın ana sayfasına gidilir
 - Sayfa içindeki tüm isim/avatar tıklamaları stack'e yeni sayfa ekler
-- **İstisna:** Canlı skor ekranında (S10 Adım 3) geri tuşu → duraklat/iptal dialog'u
+- **İstisna:** Canlı skor ekranında (S10) geri tuşu → duraklat/iptal dialog'u
+- **İstisna:** S12 Planlanan Maç Detay'da geri butonu match state'ine göre değişir: Maç Planlama → S08 Maçlar, Maç Oynanıyor → S10 Canlı Skor
 
 **Özel renk kuralları:**
 - Puanlanmamış maç kartı: turuncu border

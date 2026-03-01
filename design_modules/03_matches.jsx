@@ -202,136 +202,6 @@ const I10={
   edit:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
 };
 
-// S10 Setup — Maç Ayarları (bağımsız sayfa)
-function S10Setup({onNav}){
-  const [fmt,setFmt]=useState("5v5");
-  const fmts=["5v5","6v6","7v7","Özel"];
-  return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
-    <div style={{marginTop:16}}><ProgressBar current={0} total={2}/></div>
-    <BackLink onClick={()=>onNav("S08")}/>
-    <div style={{marginBottom:8}}><span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>Adım 1/2</span></div>
-    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>Maç Başlat</div>
-    <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Maç Formatı</div>
-    <div style={{display:"flex",gap:8,marginBottom:24}}>
-      {fmts.map(f=><div key={f} onClick={()=>setFmt(f)} style={{flex:1,padding:"16px 8px",borderRadius:12,background:fmt===f?`${T.accent}12`:T.card,border:`1.5px solid ${fmt===f?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
-        <div style={{fontSize:14,fontWeight:fmt===f?700:600,color:fmt===f?T.accent:T.text}}>{f}</div>
-      </div>)}
-    </div>
-    <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Konum</div>
-    <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:32,display:"flex",alignItems:"center",gap:12}}>
-      {I.pin(T.accent)}<span style={{fontSize:14,color:T.text,fontWeight:500}}>Kadıköy Spor Tesisleri</span><Badge c={T.green}>GPS</Badge>
-    </div>
-    <Btn primary full onClick={()=>onNav("S10_TEAMS")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
-  </div>;
-}
-
-// S10 Teams — Takım Kurulumu (bağımsız sayfa)
-function S10Teams({onNav}){
-  const [teamA,setTeamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
-  const [teamB,setTeamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
-  const [sheet,setSheet]=useState(null); // null | "A" | "B"
-  const [q,setQ]=useState("");
-  const [customName,setCustomName]=useState("");
-
-  const friends=U.filter(u=>u.follow&&u.id!==1);
-  const results=q.length>0?U.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.un.includes(q.toLowerCase())):friends;
-  const inTeam=uid=>[...teamA,...teamB].some(p=>p.id===uid);
-
-  const addPlayer=u=>{
-    const entry={id:u.id,name:u.name.split(" ")[0],av:u.av};
-    sheet==="A"?setTeamA(p=>[...p,entry]):setTeamB(p=>[...p,entry]);
-    setSheet(null);setQ("");setCustomName("");
-  };
-  const addCustomPlayer=()=>{
-    const name=customName.trim();
-    if(!name)return;
-    const initials=name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
-    const entry={id:`custom-${Date.now()}`,name:name.split(" ")[0],av:initials,isCustom:true};
-    sheet==="A"?setTeamA(p=>[...p,entry]):setTeamB(p=>[...p,entry]);
-    setSheet(null);setQ("");setCustomName("");
-  };
-  const closeSheet=()=>{setSheet(null);setQ("");setCustomName("");};
-
-  const teamColor=t=>t==="A"?T.accent:T.orange;
-
-  return <>
-    <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
-      <div style={{marginTop:16}}><ProgressBar current={1} total={2}/></div>
-      <BackLink onClick={()=>onNav("S10_SETUP")}/>
-      <div style={{marginBottom:8}}><span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>Adım 2/2</span></div>
-      <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>Takım Oluştur</div>
-      <div style={{display:"flex",gap:12,marginBottom:24}}>
-        {["A","B"].map((t,i)=><>
-          {i===1&&<div key="div" style={{width:1,background:T.cardBorder}}/>}
-          <div key={t} style={{flex:1}}>
-            <div style={{fontSize:13,fontWeight:700,color:teamColor(t),marginBottom:12,textAlign:"center"}}>Takım {t}</div>
-            {(t==="A"?teamA:teamB).map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-              <Av i={p.av} s={32} c={p.isCustom?T.textMuted:teamColor(t)}/>
-              <span style={{flex:1,fontSize:14,color:p.isCustom?T.textDim:T.text,fontWeight:500}}>{p.name}</span>
-              <span onClick={()=>t==="A"?setTeamA(prev=>prev.filter(x=>x.id!==p.id)):setTeamB(prev=>prev.filter(x=>x.id!==p.id))} style={{cursor:"pointer",display:"flex",padding:2}}>{I.x(T.textMuted)}</span>
-            </div>)}
-            <div onClick={()=>setSheet(t)} style={{padding:"12px 0",fontSize:13,color:teamColor(t),cursor:"pointer",fontWeight:600}}>+ Oyuncu Ekle</div>
-          </div>
-        </>)}
-      </div>
-      <div style={{fontSize:13,color:T.textMuted,textAlign:"center",marginBottom:32}}>Sürükle-bırak ile takım değiştir</div>
-      <Btn primary full onClick={()=>onNav("S10")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Başla</Btn>
-    </div>
-
-    {/* Bottom Sheet */}
-    {sheet&&<>
-      <div onClick={closeSheet} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:200}}/>
-      <div style={{position:"fixed",bottom:0,left:0,right:0,maxWidth:430,margin:"0 auto",background:T.card,borderRadius:"20px 20px 0 0",zIndex:201,display:"flex",flexDirection:"column",maxHeight:"70vh"}}>
-        <div style={{padding:"16px 20px 12px"}}>
-          <div style={{width:36,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
-          <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>
-            Oyuncu Ekle — <span style={{color:teamColor(sheet)}}>Takım {sheet}</span>
-          </div>
-          {/* Search input */}
-          <div style={{marginTop:4}}>
-            <div style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>Arkadaşlarını Davet Et</div>
-            <div style={{display:"flex",alignItems:"center",gap:10,background:T.bg,border:`1px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px"}}>
-              {I.search(T.textDim)}
-              <input autoFocus value={q} onChange={e=>setQ(e.target.value)} placeholder="Arkadaş ara..." style={{flex:1,background:"transparent",border:"none",outline:"none",color:T.text,fontSize:14,fontFamily:FB}}/>
-              {q.length>0&&<span onClick={()=>setQ("")} style={{cursor:"pointer",display:"flex"}}>{I.x(T.textDim)}</span>}
-            </div>
-          </div>
-        </div>
-
-        {/* User list */}
-        <div style={{flex:1,overflowY:"auto",padding:"0 20px"}}>
-          {results.filter(u=>!inTeam(u.id)).length===0
-            ?<div style={{textAlign:"center",padding:"24px 0",color:T.textMuted,fontSize:13}}>{q.length>0?"Kullanıcı bulunamadı":"Tüm arkadaşların zaten takımlarda"}</div>
-            :results.filter(u=>!inTeam(u.id)).map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-              <Av i={u.av} s={36}/>
-              <div style={{flex:1}}>
-                <div style={{fontSize:14,fontWeight:600,color:T.text}}>{u.name}</div>
-                <div style={{fontSize:12,color:T.textDim}}>@{u.un}</div>
-              </div>
-              <Btn small primary onClick={()=>addPlayer(u)}>Davet Et</Btn>
-            </div>)
-          }
-        </div>
-
-        {/* Manuel oyuncu */}
-        <div style={{padding:"12px 20px 28px",borderTop:`1px solid ${T.cardBorder}22`}}>
-          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>Oyuncu Ekle</div>
-          <div style={{display:"flex",gap:8}}>
-            <input
-              value={customName}
-              onChange={e=>setCustomName(e.target.value)}
-              onKeyDown={e=>e.key==="Enter"&&addCustomPlayer()}
-              placeholder="Ad Soyad..."
-              style={{flex:1,background:T.bg,border:`1px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:14,fontFamily:FB,outline:"none"}}
-            />
-            <Btn primary onClick={addCustomPlayer} disabled={!customName.trim()} st={{borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700}}>Ekle</Btn>
-          </div>
-        </div>
-      </div>
-    </>}
-  </>;
-}
-
 // S10: Canlı Skor + Maç Sonu (sadece bu 2 sayfa)
 function S10({onNav,onMinimize,onEndMatch}){
   const [page,setPage]=useState("live");
@@ -425,8 +295,8 @@ function S10({onNav,onMinimize,onEndMatch}){
   // ========== LIVE SCORE PAGE ==========
   if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
-      <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.arrowLeft(T.text)}</div>
-      <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
+      <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.chevDown(T.text)}</div>
+      <div onClick={()=>window.location.assign("/04_match_detail?view=S12&state=playing")} style={{display:"flex",alignItems:"center",gap:4,padding:"8px 14px",borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:12,fontWeight:600,color:T.textDim}}>{I10.settings(T.textDim)} Ayarlar</div>
     </div>
 
     <div style={{textAlign:"center",marginBottom:20}}>
@@ -727,6 +597,11 @@ export default function SporWaveMatches(){
   const [activeMatch,setActiveMatch]=useState({active:true,minimized:true,seconds:342,score:[2,1]});
 
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
+  useEffect(()=>{
+    const view=new URLSearchParams(window.location.search).get("view");
+    const allowed=["S08","S09","S10","S14","S31"];
+    if(view&&allowed.includes(view))setCur(view);
+  },[]);
 
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
@@ -748,8 +623,6 @@ export default function SporWaveMatches(){
   const pg=()=>{
     switch(cur){
       case "S08":case "S09":case "S14":return <S08 onNav={nav} showUnrated={showUnrated}/>;
-      case "S10_SETUP":return <S10Setup onNav={nav}/>;
-      case "S10_TEAMS":return <S10Teams onNav={nav}/>;
       case "S10":return <S10 onNav={nav} onMinimize={handleMinimize} onEndMatch={handleDeleteMatch}/>;
       case "S31":return <S31 onNav={nav}/>;
       default:return <S08 onNav={nav} showUnrated={showUnrated}/>;
@@ -758,7 +631,7 @@ export default function SporWaveMatches(){
 
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 60px rgba(0,0,0,.5)"}}>
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap",alignItems:"center"}}>
-      {[{p:"S08",l:"Maçlar"},{p:"S09",l:"FAB Menu"},{p:"S10_SETUP",l:"Maç Başlat"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S08",l:"Maçlar"},{p:"S09",l:"FAB Menu"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
       <span style={{marginLeft:"auto",width:1,height:16,background:T.cardBorder,flexShrink:0}}/>
       <span onClick={()=>setShowUnrated(v=>!v)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${showUnrated?T.orange:"transparent"}`,background:showUnrated?`${T.orange}15`:`${T.textDim}22`,color:showUnrated?T.orange:T.textDim,cursor:"pointer"}}>⭐ Değerlendirme Maçı: {showUnrated?"ON":"OFF"}</span>
       <span onClick={()=>setActiveMatch(prev=>({...prev,active:!prev.active,minimized:!prev.active}))} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${activeMatch.active?T.accent:"transparent"}`,background:activeMatch.active?`${T.accent}15`:`${T.textDim}22`,color:activeMatch.active?T.accent:T.textDim,cursor:"pointer"}}>▶ Aktif Maç: {activeMatch.active?"ON":"OFF"}</span>
