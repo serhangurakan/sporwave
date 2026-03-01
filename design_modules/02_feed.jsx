@@ -197,7 +197,7 @@ function MediaSlider({ photoCount, imgs, scoreContent, onMatchNav }) {
         </div>
       ))}
       {/* Scoreboard slide */}
-      <div onClick={onMatchNav} style={{ width:`${100/total}%`, height:430, borderTop:`2px solid ${T.card}`, borderBottom:`2px solid ${T.card}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:"pointer" }}>
+      <div onClick={onMatchNav} style={{ width:`${100/total}%`, height:430, borderTop:`2px solid ${T.bgAlt}`, borderBottom:`2px solid ${T.bgAlt}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:"pointer" }}>
         {scoreContent}
       </div>
     </div>
@@ -297,7 +297,7 @@ function PostCard({ post: p, onNav }) {
     <div style={{ marginTop:12 }}>
       {p.photos>0
         ? <MediaSlider photoCount={p.photos} imgs={p.imgs||[]} scoreContent={scoreOnly} onMatchNav={()=>m&&onNav("S11",m.id)}/>
-        : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", borderTop:`2px solid ${T.card}`, borderBottom:`2px solid ${T.card}`, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px 16px" }}>
+        : <div onClick={()=>m&&onNav("S11",m.id)} style={{ cursor:"pointer", borderTop:`2px solid ${T.bgAlt}`, borderBottom:`2px solid ${T.bgAlt}`, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px 16px" }}>
             {scoreOnly}
           </div>
       }
@@ -373,7 +373,7 @@ function S05({ onNav, mode, setMode }) {
       {feed.length>0 ? <>
         {/* İlk post */}
         <PostCard post={feed[0]} onNav={onNav}/>
-        {mode==="explore"&&<div style={{height:8,background:T.card}}/>}
+        {mode==="explore"&&<div style={{height:8,background:T.bgAlt}}/>}
         {/* Önerilen Kullanıcılar — ilk posttan sonra, sadece Keşfet modunda */}
         {mode==="explore"&&<div style={{padding:"16px 16px 16px"}}>
           <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:12,textTransform:"uppercase",letterSpacing:.5}}>Önerilen Kullanıcılar</div>
@@ -388,7 +388,7 @@ function S05({ onNav, mode, setMode }) {
         </div>}
         {/* Kalan postlar */}
         {feed.slice(1).map(p=><>
-          <div key={`div-${p.id}`} style={{height:8,background:T.card}}/>
+          <div key={`div-${p.id}`} style={{height:8,background:T.bgAlt}}/>
           <PostCard key={p.id} post={p} onNav={onNav}/>
         </>)}
       </> :
