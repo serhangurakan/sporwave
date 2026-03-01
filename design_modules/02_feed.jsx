@@ -7,9 +7,9 @@ import { useState, useEffect, useRef } from "react";
 // ============================================================
 
 const T = {
-  accent: "#B7F000", bg: "#0B0F14", bgAlt: "#060810",
-  card: "#141A22", cardBorder: "#1E2730",
-  text: "#F0F2F5", textDim: "#8A95A5", textMuted: "#5A6577",
+  accent: "#B7F000", bg: "#FFFFFF", bgAlt: "#F5F5F5",
+  card: "#FFFFFF", cardBorder: "#EBEBEB",
+  text: "#0D0D0D", textDim: "#555F6D", textMuted: "#8A95A5",
   red: "#FF4757", green: "#2ED573", orange: "#FF8C42", gold: "#FFD700",
 };
 const FONT_H = "'Plus Jakarta Sans', 'SF Pro Display', -apple-system, sans-serif";
@@ -143,7 +143,7 @@ function Badge({ children, c=T.accent }) {
 }
 function Btn({ children, primary, small, full, onClick, st }) {
   const [h,setH]=useState(false);
-  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:small?"6px 16px":"12px 20px", borderRadius:10, border:primary?"none":`1.5px solid ${T.cardBorder}`, background:primary?T.accent:"transparent", color:primary?T.bg:T.text, fontSize:small?12:14, fontWeight:600, cursor:"pointer", width:full?"100%":"auto", transition:"all .2s", transform:h?"translateY(-1px)":"none", display:"flex", alignItems:"center", justifyContent:"center", gap:8, ...st }}>{children}</button>;
+  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:small?"6px 16px":"12px 20px", borderRadius:10, border:primary?"none":`1.5px solid ${T.cardBorder}`, background:primary?T.accent:"transparent", color:primary?"#0D0D0D":T.text, fontSize:small?12:14, fontWeight:600, cursor:"pointer", width:full?"100%":"auto", transition:"all .2s", transform:h?"translateY(-1px)":"none", display:"flex", alignItems:"center", justifyContent:"center", gap:8, ...st }}>{children}</button>;
 }
 function InpField({ placeholder, icon, value, onChange, autoFocus }) {
   const [f,setF]=useState(false);
@@ -158,7 +158,7 @@ function TopNav({ mode, setMode, dropOpen, setDropOpen, showActions, onNav }) {
         <span style={{ fontWeight:800, fontSize:20, color:T.text, fontFamily:FONT_H }}>{mode==="home"?"Ana Sayfa":"Keşfet"}</span>
         <span style={{ display:"flex", transform:dropOpen?"rotate(180deg)":"none", transition:"transform .2s" }}>{I.chevDown(T.textDim)}</span>
       </div>
-      {dropOpen && <div style={{ position:"absolute", top:44, left:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 8px 32px rgba(0,0,0,.5)", minWidth:180 }}>
+      {dropOpen && <div style={{ position:"absolute", top:44, left:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 4px 16px rgba(0,0,0,.1)", minWidth:180 }}>
         {[{id:"home",ic:I.home,l:"Ana Sayfa"},{id:"explore",ic:I.compass,l:"Keşfet"}].map(o=><div key={o.id} onClick={()=>{setMode(o.id);setDropOpen(false);}} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12, background:"transparent" }}><span style={{ display:"flex" }}>{o.ic(mode===o.id?T.accent:T.textDim)}</span><span style={{ fontSize:14, fontWeight:mode===o.id?700:500, color:mode===o.id?T.accent:T.text, flex:1 }}>{o.l}</span>{mode===o.id&&<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20,6 9,17 4,12"/></svg>}</div>)}
       </div>}
     </div>
@@ -272,7 +272,7 @@ function PostCard({ post: p, onNav }) {
       </div>
       <div style={{ position:"relative" }}>
         <span onClick={()=>setMenuOpen(!menuOpen)} style={{ cursor:"pointer", display:"flex", padding:4 }}>{I.more()}</span>
-        {menuOpen && <div style={{ position:"absolute", top:28, right:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 8px 32px rgba(0,0,0,.5)", minWidth:160 }}>
+        {menuOpen && <div style={{ position:"absolute", top:28, right:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 4px 16px rgba(0,0,0,.1)", minWidth:160 }}>
           {isOwn ? <>
             <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.edit()}</span><span style={{ fontSize:13, color:T.text }}>Düzenle</span></div>
             <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Gizle</span></div>
@@ -545,10 +545,10 @@ export default function SporWaveFeed() {
   const showNav=cur==="S05";
   const showTabs=cur==="S05";
 
-  return <div style={{ maxWidth:430, margin:"0 auto", minHeight:"100vh", background:T.bg, color:T.text, fontFamily:FONT_B, position:"relative", boxShadow:"0 0 60px rgba(0,0,0,.5)" }}>
+  return <div style={{ maxWidth:430, margin:"0 auto", minHeight:"100vh", background:T.bg, color:T.text, fontFamily:FONT_B, position:"relative", boxShadow:"0 0 40px rgba(0,0,0,.08)" }}>
     {/* Dev ribbon */}
     <div style={{ position:"sticky", top:0, zIndex:200, background:T.bgAlt, borderBottom:`1px solid ${T.cardBorder}`, padding:"8px 8px", display:"flex", gap:4 }}>
-      {[{p:"S05",l:"Feed"},{p:"S07",l:"Arama"},{p:"S42",l:"Yorumlar",id:101},{p:"S43",l:"Beğeniler",id:101}].map(n=><span key={n.p} onClick={()=>nav(n.p,n.id)} style={{ padding:"4px 12px", borderRadius:8, fontSize:11, fontWeight:600, background:cur===n.p?T.accent:`${T.textDim}22`, color:cur===n.p?T.bg:T.textDim, cursor:"pointer" }}>{n.l}</span>)}
+      {[{p:"S05",l:"Feed"},{p:"S07",l:"Arama"},{p:"S42",l:"Yorumlar",id:101},{p:"S43",l:"Beğeniler",id:101}].map(n=><span key={n.p} onClick={()=>nav(n.p,n.id)} style={{ padding:"4px 12px", borderRadius:8, fontSize:11, fontWeight:600, background:cur===n.p?T.accent:`${T.textDim}22`, color:cur===n.p?"#0D0D0D":T.textDim, cursor:"pointer" }}>{n.l}</span>)}
     </div>
     {showNav&&<TopNav mode={mode} setMode={setMode} dropOpen={drop} setDropOpen={setDrop} showActions={showActions} onNav={nav}/>}
     <div style={{ opacity:fade?1:0, transform:fade?"translateY(0)":"translateY(8px)", transition:"all .12s ease" }}>{pg()}</div>

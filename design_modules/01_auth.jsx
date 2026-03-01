@@ -8,13 +8,13 @@ import { useState, useEffect } from "react";
 // — THEME —
 const T = {
   accent: "#B7F000",
-  bg: "#0B0F14",
-  bgAlt: "#060810",
-  card: "#141A22",
-  cardBorder: "#1E2730",
-  text: "#F0F2F5",
-  textDim: "#8A95A5",
-  textMuted: "#5A6577",
+  bg: "#FFFFFF",
+  bgAlt: "#F5F5F5",
+  card: "#FFFFFF",
+  cardBorder: "#EBEBEB",
+  text: "#0D0D0D",
+  textDim: "#555F6D",
+  textMuted: "#8A95A5",
   red: "#FF4757",
   green: "#2ED573",
   orange: "#FF8C42",
@@ -157,7 +157,7 @@ function InputField({ placeholder, type = "text", icon, value, onChange, error }
 function Button({ children, primary, danger, ghost, full, small, onClick, disabled, style: s }) {
   const [hover, setHover] = useState(false);
   const bg = danger ? T.red : primary ? T.accent : "transparent";
-  const c = danger ? "#fff" : primary ? T.bg : T.text;
+  const c = danger ? "#fff" : primary ? "#0D0D0D" : T.text;
   const border = !primary && !danger ? `1.5px solid ${ghost ? "transparent" : T.cardBorder}` : "1.5px solid transparent";
   return (
     <button
@@ -587,7 +587,7 @@ function S04({ onNavigate }) {
               {photoUploaded ? (
                 <div style={{
                   width: "100%", height: "100%",
-                  background: "linear-gradient(135deg, #1a2a3a 0%, #2a3a4a 50%, #1a2a3a 100%)",
+                  background: "linear-gradient(135deg, #E8EAED 0%, #D5D8DC 50%, #E8EAED 100%)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <span style={{ fontSize: 48 }}>🧑</span>
@@ -631,7 +631,7 @@ function S04({ onNavigate }) {
         <div
           onClick={() => setPhotoSheet(false)}
           style={{
-            position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)",
             zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center",
           }}
         >
@@ -810,7 +810,7 @@ export default function SporWaveAuth() {
       maxWidth: 430, margin: "0 auto", minHeight: "100vh",
       background: T.bg, color: T.text,
       fontFamily: FONT_BODY,
-      position: "relative", boxShadow: "0 0 60px rgba(0,0,0,.5)",
+      position: "relative", boxShadow: "0 0 40px rgba(0,0,0,.08)",
       overflow: "hidden",
     }}>
       {/* Dev nav ribbon */}
@@ -828,7 +828,7 @@ export default function SporWaveAuth() {
             padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600,
             whiteSpace: "nowrap",
             background: current === n.p ? T.accent : `${T.textDim}22`,
-            color: current === n.p ? T.bg : T.textDim,
+            color: current === n.p ? "#0D0D0D" : T.textDim,
             cursor: "pointer", transition: "all .15s",
           }}>{n.l}</span>
         ))}

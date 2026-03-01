@@ -13,7 +13,7 @@ import { useState, useRef } from "react";
 // S34: Hata Sayfası
 // ============================================================
 
-const T={accent:"#B7F000",bg:"#0B0F14",bgAlt:"#060810",card:"#141A22",cardBorder:"#1E2730",text:"#F0F2F5",textDim:"#8A95A5",textMuted:"#5A6577",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
+const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -57,9 +57,9 @@ const I={
 
 // Shared Components
 function Av({i,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?T.bg:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#0D0D0D":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>onNav(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer",padding:"6px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
-function Toggle({on,onToggle}){return <div onClick={onToggle} style={{width:44,height:24,borderRadius:12,background:on?T.accent:`${T.textMuted}44`,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0}}><div style={{position:"absolute",top:2,left:on?22:2,width:20,height:20,borderRadius:"50%",background:on?T.bg:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.3)"}}/></div>;}
+function Toggle({on,onToggle}){return <div onClick={onToggle} style={{width:44,height:24,borderRadius:12,background:on?T.accent:`${T.textMuted}44`,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0}}><div style={{position:"absolute",top:2,left:on?22:2,width:20,height:20,borderRadius:"50%",background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.3)"}}/></div>;}
 
 // MenuItem helper
 function MenuItem({icon,label,desc,onClick,danger,right,badge}){
@@ -72,7 +72,7 @@ function MenuItem({icon,label,desc,onClick,danger,right,badge}){
       <div style={{fontSize:14,fontWeight:500,color:danger?T.red:T.text}}>{label}</div>
       {desc&&<div style={{fontSize:12,color:T.textMuted,marginTop:2}}>{desc}</div>}
     </div>
-    {badge&&<span style={{background:T.accent,color:T.bg,fontSize:10,fontWeight:700,borderRadius:10,padding:"1px 6px"}}>{badge}</span>}
+    {badge&&<span style={{background:T.accent,color:"#0D0D0D",fontSize:10,fontWeight:700,borderRadius:10,padding:"1px 6px"}}>{badge}</span>}
     {right||<div style={{display:"flex"}}>{I.chevRight(T.textMuted)}</div>}
   </div>;
 }
@@ -122,7 +122,7 @@ function S20({onNav}){
     <MenuItem icon={I.logout(T.red)} label="Çıkış Yap" danger onClick={()=>setConfirmLogout(true)} right={<span/>}/>
 
     {/* Logout Confirmation Dialog */}
-    {confirmLogout&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
+    {confirmLogout&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
       <div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:24,maxWidth:320,width:"100%",textAlign:"center"}}>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Çıkış Yap</div>
         <div style={{fontSize:14,color:T.textDim,marginBottom:24}}>Hesabından çıkış yapmak istediğine emin misin?</div>
@@ -171,7 +171,7 @@ function S21({onNav,onBack}){
       </div>
       <div style={{display:"flex",background:T.card,borderRadius:8,border:`1px solid ${T.cardBorder}`,overflow:"hidden"}}>
         {[{id:"dark",label:"Koyu"},{id:"light",label:"Açık"}].map(o=>
-          <div key={o.id} onClick={()=>setTheme(o.id)} style={{padding:"6px 16px",fontSize:12,fontWeight:theme===o.id?700:500,color:theme===o.id?T.bg:T.textDim,background:theme===o.id?T.accent:"transparent",cursor:"pointer",transition:"all .2s"}}>{o.label}</div>
+          <div key={o.id} onClick={()=>setTheme(o.id)} style={{padding:"6px 16px",fontSize:12,fontWeight:theme===o.id?700:500,color:theme===o.id?"#0D0D0D":T.textDim,background:theme===o.id?T.accent:"transparent",cursor:"pointer",transition:"all .2s"}}>{o.label}</div>
         )}
       </div>
     </div>
@@ -253,7 +253,7 @@ function S21({onNav,onBack}){
     <MenuItem icon={I.trash(T.red)} label="Hesabı Sil" danger onClick={()=>setShowDeleteConfirm(true)} right={<span/>}/>
 
     {/* Delete Confirmation */}
-    {showDeleteConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
+    {showDeleteConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
       <div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:24,maxWidth:340,width:"100%",textAlign:"center"}}>
         <div style={{display:"flex",justifyContent:"center",marginBottom:12}}>{I.trash(T.red)}</div>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Hesabı Sil</div>
@@ -316,7 +316,7 @@ function S24({onBack}){
       {/* Share Buttons */}
       <div style={{width:"100%",maxWidth:360,display:"flex",flexDirection:"column",gap:12}}>
         <Btn full onClick={()=>alert("Linki kopyalandı")} primary>
-          {I.copy("#0B0F14")} Linki Kopyala
+          {I.copy(T.text)} Linki Kopyala
         </Btn>
         <Btn full onClick={()=>alert("WhatsApp ile paylaşılıyor...")} st={{background:`${T.green}18`,border:`1.5px solid ${T.green}44`,color:T.green}}>
           {I.whatsapp()} WhatsApp ile Paylaş
@@ -543,7 +543,7 @@ function S28({onClose,userName}){
   };
 
   if(submitted){
-    return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
+    return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{background:T.card,borderRadius:"20px 20px 0 0",padding:"24px 20px 32px",maxWidth:430,width:"100%",textAlign:"center"}}>
         <div style={{width:60,height:60,borderRadius:"50%",background:`${T.green}18`,border:`2px solid ${T.green}44`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px"}}>{I.check(T.green)}</div>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Rapor Gönderildi</div>
@@ -553,7 +553,7 @@ function S28({onClose,userName}){
     </div>;
   }
 
-  return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
+  return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
     <div onClick={e=>e.stopPropagation()} style={{background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",maxWidth:430,width:"100%"}}>
       {/* Handle */}
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
@@ -585,7 +585,7 @@ function S28({onClose,userName}){
 // S29: Engelle (Onay Dialog)
 // ============================================================
 function S29({userName,onConfirm,onCancel}){
-  return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}} onClick={onCancel}>
+  return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}} onClick={onCancel}>
     <div onClick={e=>e.stopPropagation()} style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:24,maxWidth:340,width:"100%",textAlign:"center"}}>
       <div style={{display:"flex",justifyContent:"center",marginBottom:12}}>{I.block(T.red)}</div>
       <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Bu kullanıcıyı engellemek istiyor musun?</div>

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 // SPORWAVE MODULE 3 — Maçlar Core (S08, S09, S10, S14, S31)
 // ============================================================
 
-const T={accent:"#B7F000",bg:"#0B0F14",bgAlt:"#060810",card:"#141A22",cardBorder:"#1E2730",text:"#F0F2F5",textDim:"#8A95A5",textMuted:"#5A6577",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
+const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -43,7 +43,7 @@ const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:
 // Icons
 const I={
   filter:c=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/></svg>,
-  plus:c=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c||T.bg} strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  plus:c=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c||"#0D0D0D"} strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
   football:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/><path d="M2 12h20"/></svg>,
   home:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>,
   user:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>,
@@ -69,7 +69,7 @@ const I={
 
 // Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?T.bg:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#0D0D0D":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function ProgressBar({current,total}){return <div style={{display:"flex",gap:6,marginBottom:24,padding:"0 4px"}}>{Array.from({length:total},(_,i)=><div key={i} style={{flex:1,height:4,borderRadius:4,background:i<current?T.accent:i===current?`${T.accent}55`:`${T.textDim}22`,transition:"background .4s"}}/>)}</div>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:"8px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
@@ -174,7 +174,7 @@ function MatchListCard({m,onNav,isMine}){
 // S09: Bottom Sheet
 function S09({onNav}){
   return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
-    <div onClick={()=>onNav("S08")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+    <div onClick={()=>onNav("S08")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
     <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",marginBottom:56,zIndex:151}}>
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:20,fontFamily:FH}}>Ne yapmak istiyorsun?</div>
@@ -258,7 +258,7 @@ function S10({onNav,onMinimize,onEndMatch}){
 
   // Shared drawer (works on both live + end pages)
   const GoalDrawerUI=()=>goalDrawer?<div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:250,display:"flex",alignItems:"flex-end"}}>
-    <div onClick={goalDrawer.phase==="scorer"?skipScorer:skipAssist} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+    <div onClick={goalDrawer.phase==="scorer"?skipScorer:skipAssist} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
     <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:251}}>
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:16,fontFamily:FH}}>
@@ -276,7 +276,7 @@ function S10({onNav,onMinimize,onEndMatch}){
 
   // Delete popup
   const DeletePopupUI=()=>deletePopup?<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
-    <div onClick={()=>setDeletePopup(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.65)"}}/>
+    <div onClick={()=>setDeletePopup(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
     <div style={{position:"relative",width:"85%",background:T.card,borderRadius:16,padding:"28px 24px",textAlign:"center",zIndex:301}}>
       <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:20,fontFamily:FH}}>Bu maçı silmek istediğinize emin misiniz?</div>
       <Btn danger full onClick={()=>{setDeletePopup(false);onNav("S08");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12,marginBottom:10}}>Maçı Sil</Btn>
@@ -317,14 +317,14 @@ function S10({onNav,onMinimize,onEndMatch}){
       <div style={{flex:1,textAlign:"center"}}>
         <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
         <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
-        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
+        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
         <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
       </div>
       <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
       <div style={{flex:1,textAlign:"center"}}>
         <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
         <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
-        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
+        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
         <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol</div>
       </div>
     </div>
@@ -352,14 +352,14 @@ function S10({onNav,onMinimize,onEndMatch}){
       <div style={{flex:1,textAlign:"center"}}>
         <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
         <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
-        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
+        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
         <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div>
       </div>
       <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
       <div style={{flex:1,textAlign:"center"}}>
         <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
         <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
-        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.bg,boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
+        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
         <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div>
       </div>
     </div>
@@ -397,7 +397,7 @@ function S14({onNav}){
     {id:"pro",icon:"🏆",label:"Profesyonel",desc:"Yarışma seviyesi",c:T.gold},
   ];
   return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
-    <div onClick={()=>onNav("S08")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+    <div onClick={()=>onNav("S08")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
     <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",marginBottom:56,zIndex:151}}>
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:4,fontFamily:FH}}>Deneyim Seviyeni Seç</div>
@@ -585,7 +585,7 @@ function ActiveMatchWidget({seconds,score,onResume,onDelete}){
       </div>
     </div>
     {deletePopup&&<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <div onClick={()=>setDeletePopup(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.65)"}}/>
+      <div onClick={()=>setDeletePopup(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
       <div style={{position:"relative",width:"85%",background:T.card,borderRadius:16,padding:"28px 24px",textAlign:"center",zIndex:301}}>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:20,fontFamily:FH}}>Bu maçı silmek istediğinize emin misiniz?</div>
         <Btn danger full onClick={()=>{setDeletePopup(false);onDelete();}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12,marginBottom:10}}>Maçı Sil</Btn>
@@ -639,9 +639,9 @@ export default function SporWaveMatches(){
     }
   };
 
-  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 60px rgba(0,0,0,.5)"}}>
+  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap",alignItems:"center"}}>
-      {[{p:"S08",l:"Maçlar"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S08",l:"Maçlar"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#0D0D0D":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
       <span style={{marginLeft:"auto",width:1,height:16,background:T.cardBorder,flexShrink:0}}/>
       <span onClick={()=>setShowUnrated(v=>!v)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${showUnrated?T.orange:"transparent"}`,background:showUnrated?`${T.orange}15`:`${T.textDim}22`,color:showUnrated?T.orange:T.textDim,cursor:"pointer"}}>⭐ Değerlendirme Maçı: {showUnrated?"ON":"OFF"}</span>
       <span onClick={()=>setActiveMatch(prev=>({...prev,active:!prev.active,minimized:!prev.active}))} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${activeMatch.active?T.accent:"transparent"}`,background:activeMatch.active?`${T.accent}15`:`${T.textDim}22`,color:activeMatch.active?T.accent:T.textDim,cursor:"pointer"}}>▶ Aktif Maç: {activeMatch.active?"ON":"OFF"}</span>
@@ -649,7 +649,7 @@ export default function SporWaveMatches(){
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {/* Fixed elements OUTSIDE transform div */}
     {isMatchesView&&!activeMatch.active&&<div style={{position:"fixed",bottom:72,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
-      <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus(T.bg)}</div>
+      <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus("#0D0D0D")}</div>
     </div>}
     {showWidget&&<ActiveMatchWidget seconds={activeMatch.seconds} score={activeMatch.score} onResume={handleResume} onDelete={handleDeleteMatch}/>}
     {cur==="S14"&&<S14 onNav={nav}/>}

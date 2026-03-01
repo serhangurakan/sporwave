@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 // S30: Shareable kart (maç sonrası)
 // ============================================================
 
-const T={accent:"#B7F000",bg:"#0B0F14",bgAlt:"#060810",card:"#141A22",cardBorder:"#1E2730",text:"#F0F2F5",textDim:"#8A95A5",textMuted:"#5A6577",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
+const T={accent:"#B7F000",bg:"#FFFFFF",bgAlt:"#F5F5F5",card:"#FFFFFF",cardBorder:"#EBEBEB",text:"#0D0D0D",textDim:"#555F6D",textMuted:"#8A95A5",red:"#FF4757",green:"#2ED573",orange:"#FF8C42",gold:"#FFD700",purple:"#A78BFA"};
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 
@@ -123,7 +123,7 @@ const I={
 
 // Shared Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?T.bg:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#0D0D0D":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}22`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textDim,fontWeight:600,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 function TabBar({active,onNav}){
@@ -393,11 +393,11 @@ function S12({onNav}){
     {/* State switcher (dev only) */}
     <div style={{background:`${T.cardBorder}44`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>STATE:</span>
-      {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?T.bg:T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
+      {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?"#0D0D0D":T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
     </div>
     <div style={{background:`${T.cardBorder}44`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>MATCH:</span>
-      {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?T.bg:T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
+      {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?"#0D0D0D":T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
     </div>
 
     {/* Header */}
@@ -520,7 +520,7 @@ function S12({onNav}){
     </div>
 
     {/* Remove player confirm modal (host) */}
-    {removeConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
+    {removeConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
       <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:360,width:"100%",border:`1px solid ${T.cardBorder}`}}>
         <div style={{fontSize:16,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:8}}>Oyuncuyu Çıkar</div>
         <div style={{fontSize:13,color:T.textDim,marginBottom:20}}><span style={{fontWeight:700,color:T.text}}>{uf(removeConfirm)?.name}</span> kişisini maçtan çıkartmak istediğinize emin misiniz?</div>
@@ -533,7 +533,7 @@ function S12({onNav}){
 
     {/* Edit Drawer (host) */}
     {showEditDrawer&&<div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
-      <div onClick={()=>setShowEditDrawer(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+      <div onClick={()=>setShowEditDrawer(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
       <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301,maxHeight:"80vh",overflowY:"auto"}}>
         <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
         <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:20}}>Maçı Düzenle</div>
@@ -560,7 +560,7 @@ function S12({onNav}){
 
     {/* Invite Drawer (host) */}
     {showInviteDrawer&&<div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
-      <div onClick={()=>setShowInviteDrawer(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+      <div onClick={()=>setShowInviteDrawer(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
       <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",maxHeight:"70vh",display:"flex",flexDirection:"column",zIndex:301}}>
         <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
         <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:16}}>Oyuncu Davet Et</div>
@@ -760,7 +760,7 @@ function S41({onNav}){
   const invite=(uid)=>{if(!sent.includes(uid))setSent(s=>[...s,uid]);};
 
   return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
-    <div onClick={()=>onNav("S12")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.6)"}}/>
+    <div onClick={()=>onNav("S12")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
     <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",maxHeight:"70vh",display:"flex",flexDirection:"column",zIndex:151}}>
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
       <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:16,fontFamily:FH}}>Oyuncu Davet Et</div>
@@ -905,10 +905,10 @@ export default function SporWaveMatchDetail(){
     }
   };
 
-  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 60px rgba(0,0,0,.5)"}}>
+  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S41",l:"Davet"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.bg:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S41",l:"Davet"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#0D0D0D":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {cur==="S41"&&<S41 onNav={nav}/>}
