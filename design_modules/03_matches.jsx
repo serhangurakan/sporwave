@@ -431,7 +431,7 @@ function BackLink({onClick}){
 
 function S31({onNav}){
   const [step,setStep]=useState(0);
-  const [fmt,setFmt]=useState("6v6");
+  const [teamSize,setTeamSize]=useState(6);
   const [locQuery,setLocQuery]=useState("");
   const [selectedLoc,setSelectedLoc]=useState(null);
   const [locSkipped,setLocSkipped]=useState(false);
@@ -440,7 +440,7 @@ function S31({onNav}){
   const [level,setLevel]=useState("Herkes");
   const [invites,setInvites]=useState([]);
 
-  const fmts=["5v5","6v6","7v7","Özel"];
+  const teamSizeOptions=[3,4,5,6,7,8,9,10,11];
   const privacyOpts=[{id:"public",l:"Herkese açık"},{id:"followers",l:"Sadece takipçilere"},{id:"invite",l:"Sadece davet ile"}];
   const locFiltered=locQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(locQuery.toLowerCase())||l.addr.toLowerCase().includes(locQuery.toLowerCase())):[];
 
@@ -476,12 +476,15 @@ function S31({onNav}){
       <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20,minHeight:72}}>
         <textarea placeholder="Açıklama" rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
       </div>
-      {/* Format */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Maç Formatı</div>
-      <div style={{display:"flex",gap:8,marginBottom:20}}>
-        {fmts.map(f=><div key={f} onClick={()=>setFmt(f)} style={{flex:1,padding:"14px 8px",borderRadius:12,background:fmt===f?`${T.accent}12`:T.card,border:`1.5px solid ${fmt===f?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
-          <div style={{fontSize:14,fontWeight:fmt===f?700:600,color:fmt===f?T.accent:T.text}}>{f}</div>
-        </div>)}
+      {/* Takım kişi sayısı */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+        <div style={{fontSize:13,color:T.textDim,fontWeight:600}}>Takımlar kaç kişilik?</div>
+        <div style={{position:"relative"}}>
+          <select value={teamSize} onChange={e=>setTeamSize(Number(e.target.value))} style={{appearance:"none",WebkitAppearance:"none",background:T.card,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 36px 10px 16px",color:T.accent,fontSize:15,fontWeight:700,cursor:"pointer",outline:"none",fontFamily:"inherit",minWidth:80,textAlign:"center"}}>
+            {teamSizeOptions.map(n=><option key={n} value={n}>{n} kişi</option>)}
+          </select>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}}><polyline points="6,9 12,15 18,9"/></svg>
+        </div>
       </div>
       {/* Tarih & Saat */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Tarih & Saat</div>
