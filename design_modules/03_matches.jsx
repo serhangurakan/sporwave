@@ -67,10 +67,10 @@ function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 
 // S08: Matches Page
-function S08({onNav,showUnrated}){
+function S08({onNav,showUnrated,hasActiveWidget}){
   const [filter,setFilter]=useState(false);
 
-  return <div style={{paddingBottom:80}}>
+  return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
     <div style={{position:"sticky",top:32,zIndex:50,padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}22`}}>
       <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
@@ -602,7 +602,7 @@ export default function SporWaveMatches(){
 
   const pg=()=>{
     switch(cur){
-      case "S08":case "S09":case "S14":return <S08 onNav={nav} showUnrated={showUnrated}/>;
+      case "S08":case "S09":case "S14":return <S08 onNav={nav} showUnrated={showUnrated} hasActiveWidget={showWidget}/>;
       case "S10":return <S10 onNav={nav} onMinimize={handleMinimize} onEndMatch={handleDeleteMatch}/>;
       case "S31":return <S31 onNav={nav}/>;
       default:return <S08 onNav={nav} showUnrated={showUnrated}/>;
