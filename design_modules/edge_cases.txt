@@ -8,4 +8,18 @@ onaylayanların maçı başlayabilir ?
 2 - Maç maximum kaç saat olmalı, maçı host veya herhangi bir kullanıcı maçı 
 bitirmez ise maç ne zaman bitecek.
 
-3 - 
+3 - Planlanan (Başlamamış) maç detail sayfasını Hem host gözünden hem katılmamış
+kullanıcı gözünden hem de katılmış kullanıcı gözünden tasarlamamız gerekiyor. Şuanki
+hali host + katılmış kullanıcı gözünden karışık. Katılmamış kullanıcı gözünden yok.
+
+4 - Maç sonu (maç bittikten sonraki) sayfasında golün dksını da editleyebilsin mi ?
+
+5 - Maç başlatırken Adımlar ve progress barı geri eklemişiz. Bunların kalkması gerekiyor.
+Çünkü Canlı Skor sayfasında sağ üstteki butonlar da bunları açıyor. soldaki geri tuşuna
+basınca logic karışıyor maç kayboluyor. Burası maç ayarları ve takım kurulumu olarak 2 
+farklı sayfa olmalı. Maç açıldığında bir kere gösterilip sonra canlı skordan editlenebilmeli.
+Geri tuşu ve adımlar kaldırılmalı. Bu sayfalara da minimize butonu ekleyebiliriz belki.
+
+6 - yorumlar sayfasındaki yorum yazma bölümü sayfanın en altına fixlenmeli.
+
+7 - profil feedinde arada Gizli diye bişey var. onu orda unutmayalım.
