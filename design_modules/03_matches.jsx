@@ -571,16 +571,16 @@ function ActiveMatchWidget({seconds,score,onResume,onDelete}){
 
   return <>
     <div style={{position:"fixed",bottom:56,left:0,right:0,maxWidth:430,margin:"0 auto",zIndex:95,padding:"8px 12px"}}>
-      <div style={{background:T.card,border:`1.5px solid ${T.accent}`,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
+      <div style={{background:T.accent,border:"none",borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
         <div onClick={onResume} style={{display:"flex",alignItems:"center",gap:12,flex:1,cursor:"pointer"}}>
-          <div style={{display:"flex"}}>{I.play(T.accent)}</div>
+          <div style={{display:"flex"}}>{I.play("#fff")}</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:14,fontWeight:700,color:T.accent}}>Maç Oynanıyor</span>
-            <span style={{fontSize:13,color:T.textDim,fontWeight:600}}>{fmtTime(seconds)}</span>
+            <span style={{fontSize:14,fontWeight:700,color:"#fff"}}>Maç Oynanıyor</span>
+            <span style={{fontSize:13,color:"#ffffffaa",fontWeight:600}}>{fmtTime(seconds)}</span>
           </div>
         </div>
-        <span onClick={onResume} style={{fontSize:16,fontWeight:900,color:T.accent,cursor:"pointer"}}>{score[0]} – {score[1]}</span>
-        <div onClick={e=>{e.stopPropagation();setDeletePopup(true);}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,cursor:"pointer",flexShrink:0}}>{I.trash(T.red)}</div>
+        <span onClick={onResume} style={{fontSize:16,fontWeight:900,color:"#fff",cursor:"pointer"}}>{score[0]} – {score[1]}</span>
+        <div onClick={e=>{e.stopPropagation();setDeletePopup(true);}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,cursor:"pointer",flexShrink:0}}>{I.trash("#fff")}</div>
       </div>
     </div>
     {deletePopup&&<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
