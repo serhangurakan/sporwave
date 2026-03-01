@@ -21,6 +21,8 @@ const labels = {
   "03_matches": "Matches & Sports",
   "04_match_detail": "Match Detail",
   "05_profile": "Profile",
+  "06_messaging": "Messaging & Notifications",
+  "07_settings": "Settings & Security",
 };
 
 const T = {
