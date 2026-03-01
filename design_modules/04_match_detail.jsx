@@ -273,8 +273,8 @@ function S12({onNav}){
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <div onClick={()=>onNav("S08")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{I.arrowLeft()}<span style={{fontSize:14,fontWeight:600,color:T.textDim}}>Maçlar</span></div>
-        <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,flex:1,textAlign:"center"}}>Maç Detay</span>
+        <div onClick={()=>window.location.assign("/03_matches")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{I.arrowLeft()}<span style={{fontSize:14,fontWeight:600,color:T.textDim}}>Maçlar</span></div>
+        <span style={{flex:1}}/>
         <span style={{cursor:"pointer",display:"flex",padding:4}}>{I.dots(T.textDim)}</span>
       </div>
     </div>
