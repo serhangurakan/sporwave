@@ -159,19 +159,19 @@ function S11({onNav}){
     const isMvp=m.mvp.includes(uid);
     const isNoShow=m.noShow.includes(uid);
     return <div onClick={()=>!u.guest&&onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,cursor:u.guest?"default":"pointer",opacity:isNoShow?.5:1}}>
-      <Av i={u.av} img={u.img} s={32} c={isMvp?T.gold:team==="A"?T.accent:T.orange}/>
+      <Av i={u.av} img={u.img} s={32} c={isMvp?T.accent:team==="A"?T.accent:T.orange}/>
       <div style={{flex:1}}>
-        <div style={{display:"flex",alignItems:"center",gap:6}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+          {isMvp&&<span style={{display:"flex",flexShrink:0}}>{I.star(T.accent)}</span>}
           <span style={{fontSize:13,fontWeight:600,color:u.guest?T.textDim:T.text}}>{u.name}</span>
-          {isMvp&&<Badge c={T.gold}>{I.star(T.gold)} MVP</Badge>}
           {u.guest&&<Badge c={T.textMuted}>Misafir</Badge>}
           {isNoShow&&<Badge c={T.red}>Katılmadı</Badge>}
         </div>
+        {s&&<div style={{display:"flex",gap:8,fontSize:11,color:T.textDim,marginTop:3}}>
+          {s.g>0&&<span style={{fontWeight:600}}>{s.g} gol</span>}
+          {s.a>0&&<span>{s.a} asist</span>}
+        </div>}
       </div>
-      {s&&<div style={{display:"flex",gap:8,fontSize:11,color:T.textDim}}>
-        {s.g>0&&<span style={{fontWeight:600}}>{s.g} gol</span>}
-        {s.a>0&&<span>{s.a} asist</span>}
-      </div>}
     </div>;
   };
 
@@ -179,7 +179,7 @@ function S11({onNav}){
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <span onClick={()=>onNav("S08")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
+        <span onClick={()=>window.location.assign("/02_feed")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
         <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>Maç Detay</span>
         <span onClick={()=>onNav("S30")} style={{cursor:"pointer",display:"flex"}}>{I.share(T.textDim)}</span>
       </div>
@@ -187,14 +187,13 @@ function S11({onNav}){
 
     {/* Title + Score */}
     <div style={{textAlign:"center",padding:"0 16px 20px"}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:12}}>
-        {I.football(T.accent)}
+      <div style={{marginBottom:12}}>
         <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>{m.title}</span>
       </div>
       <div style={{fontSize:48,fontWeight:900,fontFamily:FH,marginBottom:8}}>
-        <span style={{color:m.sc[0]>m.sc[1]?T.accent:T.text}}>{m.sc[0]}</span>
+        <span style={{color:T.text}}>{m.sc[0]}</span>
         <span style={{color:T.textMuted,margin:"0 12px",fontSize:24}}>–</span>
-        <span style={{color:m.sc[1]>m.sc[0]?T.accent:T.text}}>{m.sc[1]}</span>
+        <span style={{color:T.text}}>{m.sc[1]}</span>
       </div>
       <div style={{display:"flex",justifyContent:"center",gap:12,fontSize:12,color:T.textDim,flexWrap:"wrap"}}>
         <span style={{display:"flex",alignItems:"center",gap:4}}>{I.clock()} {m.date}, {m.time}</span>
@@ -205,12 +204,12 @@ function S11({onNav}){
     </div>
 
     {/* MVP highlight */}
-    {mvps.length>0&&<div style={{margin:"0 16px 16px",background:`${T.gold}08`,borderRadius:14,border:`1.5px solid ${T.gold}22`,padding:"14px 16px",textAlign:"center"}}>
-      <div style={{fontSize:12,fontWeight:700,color:T.gold,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{mvps.length>1?"Co-MVP":"Maçın Yıldızı"}</div>
+    {mvps.length>0&&<div style={{margin:"0 16px 16px",background:`${T.accent}08`,borderRadius:14,border:`1.5px solid ${T.accent}22`,padding:"14px 16px",textAlign:"center"}}>
+      <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{mvps.length>1?"Co-MVP":"Maçın Yıldızı"}</div>
       <div style={{display:"flex",justifyContent:"center",gap:16}}>
         {mvps.map(u=><div key={u.id} onClick={()=>onNav("S16",u.id)} style={{cursor:"pointer",textAlign:"center"}}>
-          <Av i={u.av} img={u.img} s={48} c={T.gold} st={{margin:"0 auto",border:`2px solid ${T.gold}`}}/>
-          <div style={{fontSize:13,fontWeight:700,color:T.gold,marginTop:6}}>{u.name}</div>
+          <Av i={u.av} img={u.img} s={48} c={T.accent} st={{margin:"0 auto",border:`2px solid ${T.accent}`}}/>
+          <div style={{fontSize:13,fontWeight:700,color:T.accent,marginTop:6}}>{u.name}</div>
           {stats[u.id]&&<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{stats[u.id].g} gol, {stats[u.id].a} asist</div>}
         </div>)}
       </div>
@@ -248,24 +247,6 @@ function S11({onNav}){
       </div>
     </div>
 
-    {/* Posts from this match */}
-    <div style={{padding:"0 16px"}}>
-      <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:10,textTransform:"uppercase",letterSpacing:.5}}>Bu Maçın Postları</div>
-      {m.posts.map(p=>{
-        const owner=uf(p.userId);
-        return <div key={p.id} onClick={()=>onNav("S42",p.id)} style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 14px",marginBottom:8,cursor:"pointer",display:"flex",alignItems:"center",gap:12}}>
-          <Av i={owner.av} img={owner.img} s={36}/>
-          <div style={{flex:1}}>
-            <div style={{fontSize:13,fontWeight:600,color:T.text}}>{owner.name}</div>
-            <div style={{fontSize:12,color:T.textDim,marginTop:2}}>{p.caption||"Post paylaştı"}</div>
-          </div>
-          <div style={{fontSize:11,color:T.textMuted,textAlign:"right"}}>
-            <div>{p.likes} beğeni</div>
-            <div>{p.coms} yorum</div>
-          </div>
-        </div>;
-      })}
-    </div>
   </div>;
 }
 
