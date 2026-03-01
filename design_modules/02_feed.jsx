@@ -124,7 +124,7 @@ const I = {
 
 // — COMPONENTS —
 function Av({ i, img, s = 32, c = T.accent, onClick, st }) {
-  return <div onClick={onClick} style={{ width:s, height:s, borderRadius:"50%", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", background:`${c}18`, border:`1.5px solid ${c}44`, color:c, fontSize:s*.34, fontWeight:700, cursor:onClick?"pointer":"default", flexShrink:0, ...st }}>
+  return <div onClick={onClick} style={{ width:s, height:s, borderRadius:"50%", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", background:`${c}18`, border:"none", color:c, fontSize:s*.34, fontWeight:700, cursor:onClick?"pointer":"default", flexShrink:0, ...st }}>
     {img ? <img src={img} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}/> : i}
   </div>;
 }
