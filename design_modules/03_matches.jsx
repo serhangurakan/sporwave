@@ -68,6 +68,7 @@ function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{
 // S08: Matches Page
 function S08({onNav,showUnrated}){
   const [filter,setFilter]=useState(false);
+  const [myExpanded,setMyExpanded]=useState(true);
   const myMatches=PLANNED.filter(m=>m.myMatch);
   const openMatches=PLANNED.filter(m=>!m.myMatch);
 
@@ -108,8 +109,14 @@ function S08({onNav,showUnrated}){
 
     {/* My upcoming matches */}
     {myMatches.length>0&&<div style={{padding:"12px 16px 0"}}>
-      <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Katıldığım Maçlar</div>
-      {myMatches.map(m=><MatchListCard key={m.id} m={m} onNav={onNav} isMine/>)}
+      <div onClick={()=>setMyExpanded(v=>!v)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:myExpanded?8:0,cursor:"pointer"}}>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <span style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5}}>Katıldığım Maçlar</span>
+          <span style={{fontSize:11,fontWeight:700,color:T.accent}}>({myMatches.length})</span>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textMuted} strokeWidth="2.5" strokeLinecap="round" style={{transition:"transform .2s",transform:myExpanded?"rotate(180deg)":"rotate(0deg)"}}><polyline points="6,9 12,15 18,9"/></svg>
+      </div>
+      {myExpanded&&myMatches.map(m=><MatchListCard key={m.id} m={m} onNav={onNav} isMine/>)}
     </div>}
 
     {/* Open matches */}
@@ -245,7 +252,7 @@ function S10Teams({onNav}){
 }
 
 // S10: Canlı Skor + Maç Sonu (sadece bu 2 sayfa)
-function S10({onNav,onMinimize}){
+function S10({onNav,onMinimize,onEndMatch}){
   const [page,setPage]=useState("live");
   const [fmt]=useState("5v5");
   const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
@@ -409,7 +416,7 @@ function S10({onNav,onMinimize}){
       <div style={{fontSize:13,color:T.textDim,lineHeight:1.6}}>Tüm katılımcılar için kişisel post oluşturulur. Fotoğraf ve not eklemek post üzerinden yapılır.</div>
     </div>
 
-    <Btn primary full onClick={()=>onNav("S08")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
+    <Btn primary full onClick={()=>{if(onEndMatch)onEndMatch();onNav("S08");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
     <div onClick={()=>setDeletePopup(true)} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.red,cursor:"pointer",fontWeight:600}}>Maçı Sil</div>
 
     <GoalDrawerUI/>
@@ -607,13 +614,16 @@ function ActiveMatchWidget({seconds,score,onResume,onDelete}){
 
   return <>
     <div style={{position:"fixed",bottom:56,left:0,right:0,maxWidth:430,margin:"0 auto",zIndex:95,padding:"8px 12px"}}>
-      <div onClick={onResume} style={{background:T.card,border:`1.5px solid ${T.accent}33`,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
-        <div style={{display:"flex"}}>{I.play(T.accent)}</div>
-        <div style={{flex:1,display:"flex",alignItems:"center",gap:8}}>
-          <span style={{fontSize:14,fontWeight:700,color:T.accent}}>Maç Oynanıyor</span>
-          <span style={{fontSize:13,color:T.textDim,fontWeight:600}}>{fmtTime(seconds)}</span>
+      <div style={{background:T.card,border:`1.5px solid ${T.accent}33`,borderRadius:14,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
+        <div onClick={onResume} style={{display:"flex",alignItems:"center",gap:12,flex:1,cursor:"pointer"}}>
+          <div style={{display:"flex"}}>{I.play(T.accent)}</div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:14,fontWeight:700,color:T.accent}}>Maç Oynanıyor</span>
+            <span style={{fontSize:13,color:T.textDim,fontWeight:600}}>{fmtTime(seconds)}</span>
+          </div>
         </div>
-        <span style={{fontSize:16,fontWeight:900,letterSpacing:"-0.5px",color:T.accent}}>{score[0]}–{score[1]}</span>
+        <span onClick={onResume} style={{fontSize:16,fontWeight:900,color:T.accent,cursor:"pointer"}}>{score[0]} – {score[1]}</span>
+        <div onClick={e=>{e.stopPropagation();setDeletePopup(true);}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,cursor:"pointer",flexShrink:0}}>{I.trash(T.red)}</div>
       </div>
     </div>
     {deletePopup&&<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -662,7 +672,7 @@ export default function SporWaveMatches(){
       case "S08":case "S09":case "S14":return <S08 onNav={nav} showUnrated={showUnrated}/>;
       case "S10_SETUP":return <S10Setup onNav={nav}/>;
       case "S10_TEAMS":return <S10Teams onNav={nav}/>;
-      case "S10":return <S10 onNav={nav} onMinimize={handleMinimize}/>;
+      case "S10":return <S10 onNav={nav} onMinimize={handleMinimize} onEndMatch={handleDeleteMatch}/>;
       case "S31":return <S31 onNav={nav}/>;
       default:return <S08 onNav={nav} showUnrated={showUnrated}/>;
     }

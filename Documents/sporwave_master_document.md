@@ -331,7 +331,9 @@ Ana Sayfa tab'ında:
 - Bu widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
 - Maç detay, ayarlar vb. sayfalarda görünmez
 
-**Katıldığım yaklaşan maçlar (vurgulu bölüm):**
+**Katıldığım yaklaşan maçlar (collapse/expand bölümü):**
+- Başlık tıklanabilir toggle: "Katıldığım Maçlar" + sağında maç sayısı "(X)" + chevron ikonu (▼/▲)
+- Tıklanınca maç kartları gizlenip gösterilebilir (varsayılan: açık)
 - Farklı arka plan rengi veya sol kenarda accent renk border ile ayrışır
 - Tarih sırasına göre (en yakın olan en üstte)
 - **Her kart (katılım bilgisi EN ÜSTTE):**
@@ -459,7 +461,7 @@ Ana Sayfa tab'ında:
 - **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Takım kurulumunda atlandıysa burada tamamlanmalı.
 - **Drag & drop ile takım değişikliği:** Takım kurulumu sayfası ile aynı.
 - **Maç Başlığı** input (opsiyonel, placeholder: "Kadıköy Halısaha Maçı") — maç verisinin başlığı, tüm postların varsayılan başlığı olur
-- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → S30 Shareable kart gösterilir
+- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → S30 Shareable kart gösterilir
 - **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
 - **Not:** MVP oylama ve attendance bildirimi bu sayfada yapılmaz — maç kaydedildikten sonra S40'ta 24 saat boyunca yapılır.
