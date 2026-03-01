@@ -319,7 +319,7 @@ function PostCard({ post: p, onNav }) {
     </div>}
 
     {/* Interaction row */}
-    <div style={{ padding:"12px 16px 0", display:"flex", gap:20, alignItems:"center", borderBottom:`1px solid ${T.cardBorder}44` }}>
+    <div style={{ padding:"12px 16px 0", display:"flex", gap:20, alignItems:"center" }}>
       <div onClick={toggleLike} style={{ display:"flex", alignItems:"center", gap:4, cursor:"pointer", fontSize:13, color:liked?T.red:T.textDim, fontWeight:liked?600:400 }}>
         {liked?I.heartFill():I.heart()} {lc}
       </div>
