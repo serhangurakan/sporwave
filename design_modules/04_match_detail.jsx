@@ -392,11 +392,11 @@ function S12({onNav}){
     {/* State switcher (dev only) */}
     <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>STATE:</span>
-      {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?"#0D0D0D":T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
+      {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?"#fff":T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
     </div>
     <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>MATCH:</span>
-      {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?"#0D0D0D":T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
+      {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?"#fff":T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
     </div>
 
     {/* Header */}
@@ -907,7 +907,7 @@ export default function SporWaveMatchDetail(){
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S41",l:"Davet"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#0D0D0D":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S41",l:"Davet"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {cur==="S41"&&<S41 onNav={nav}/>}

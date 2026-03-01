@@ -240,14 +240,14 @@ function PostCard({ post: p, onNav }) {
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
       <span style={{ fontSize:11, color:T.textDim, marginRight:12 }}>Takım A</span>
       <span style={{ fontSize:38, fontWeight:900, letterSpacing:"-2px", fontFamily:FONT_H }}>
-        <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
+        <span style={{ color:T.text }}>{m.sc[0]}</span>
         <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
-        <span style={{ color:m.sc[1]>m.sc[0]?T.accent:T.text }}>{m.sc[1]}</span>
+        <span style={{ color:T.text }}>{m.sc[1]}</span>
       </span>
       <span style={{ fontSize:11, color:T.textDim, marginLeft:12 }}>Takım B</span>
     </div>
     {mvp && <div onClick={e=>{e.stopPropagation();onNav("S16",mvp.id);}} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:8, cursor:"pointer" }}>
-      {I.star()} <span style={{ fontSize:12, color:T.gold, fontWeight:600 }}>{mvp.name}</span>
+      {I.star(T.accent)} <span style={{ fontSize:12, color:T.accent, fontWeight:600 }}>{mvp.name}</span>
     </div>}
   </div> : null;
 
@@ -272,6 +272,7 @@ function PostCard({ post: p, onNav }) {
             <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Gizle</span></div>
             <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.trash()}</span><span style={{ fontSize:13, color:T.red }}>Sil</span></div>
           </> : <>
+            <div onClick={()=>setMenuOpen(false)} style={{ padding:"8px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12, background:T.accent, margin:"0 0 4px" }}><span style={{ display:"flex" }}>{I.plus("#fff")}</span><span style={{ fontSize:13, color:"#fff", fontWeight:700 }}>Takip Et</span></div>
             <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.flag()}</span><span style={{ fontSize:13, color:T.text }}>Raporla</span></div>
             <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Engelle</span></div>
           </>}
@@ -444,9 +445,9 @@ function S42({ onNav, postId }) {
       {p.caption && <div style={{ fontSize:14, color:T.textDim, marginBottom:8, lineHeight:1.5 }}>{p.caption}</div>}
       {m && <div style={{ fontWeight:700, fontSize:16, color:T.text, marginBottom:8, fontFamily:FONT_H }}>{m.title}</div>}
       {m?.sc&&<div style={{ fontSize:38, fontWeight:900, fontFamily:FONT_H, marginBottom:8 }}>
-        <span style={{ color:m.sc[0]>m.sc[1]?T.accent:T.text }}>{m.sc[0]}</span>
+        <span style={{ color:T.text }}>{m.sc[0]}</span>
         <span style={{ color:T.textMuted, margin:"0 8px", fontSize:20 }}>–</span>
-        <span style={{ color:m.sc[1]>m.sc[0]?T.accent:T.text }}>{m.sc[1]}</span>
+        <span style={{ color:T.text }}>{m.sc[1]}</span>
       </div>}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
@@ -542,7 +543,7 @@ export default function SporWaveFeed() {
   return <div style={{ maxWidth:430, margin:"0 auto", minHeight:"100vh", background:T.bg, color:T.text, fontFamily:FONT_B, position:"relative", boxShadow:"0 0 40px rgba(0,0,0,.08)" }}>
     {/* Dev ribbon */}
     <div style={{ position:"sticky", top:0, zIndex:200, background:T.bgAlt, borderBottom:`1px solid ${T.cardBorder}`, padding:"8px 8px", display:"flex", gap:4 }}>
-      {[{p:"S05",l:"Feed"},{p:"S07",l:"Arama"},{p:"S42",l:"Yorumlar",id:101},{p:"S43",l:"Beğeniler",id:101}].map(n=><span key={n.p} onClick={()=>nav(n.p,n.id)} style={{ padding:"4px 12px", borderRadius:8, fontSize:11, fontWeight:600, background:cur===n.p?T.accent:`${T.textDim}22`, color:cur===n.p?"#0D0D0D":T.textDim, cursor:"pointer" }}>{n.l}</span>)}
+      {[{p:"S05",l:"Feed"},{p:"S07",l:"Arama"},{p:"S42",l:"Yorumlar",id:101},{p:"S43",l:"Beğeniler",id:101}].map(n=><span key={n.p} onClick={()=>nav(n.p,n.id)} style={{ padding:"4px 12px", borderRadius:8, fontSize:11, fontWeight:600, background:cur===n.p?T.accent:`${T.textDim}22`, color:cur===n.p?"#fff":T.textDim, cursor:"pointer" }}>{n.l}</span>)}
     </div>
     {showNav&&<TopNav mode={mode} setMode={setMode} dropOpen={drop} setDropOpen={setDrop} showActions={showActions} onNav={nav}/>}
     <div style={{ opacity:fade?1:0, transform:fade?"translateY(0)":"translateY(8px)", transition:"all .12s ease" }}>{pg()}</div>

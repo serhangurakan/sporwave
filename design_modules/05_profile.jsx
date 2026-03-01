@@ -816,7 +816,7 @@ export default function SporWaveProfile(){
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S15",l:"Kendi Profil"},{p:"S16",l:"Baskasinin Profili"},{p:"S22",l:"Takipciler"},{p:"S23",l:"Profil Duzenle"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#0D0D0D":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S15",l:"Kendi Profil"},{p:"S16",l:"Baskasinin Profili"},{p:"S22",l:"Takipciler"},{p:"S23",l:"Profil Duzenle"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
   </div>;

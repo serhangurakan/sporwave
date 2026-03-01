@@ -161,8 +161,6 @@ function MatchListCard({m,onNav,isMine}){
         <span style={{fontSize:12,color:T.textDim}}>{host?.name?.split(" ")[0]}</span>
         <span style={{fontSize:11,color:T.textMuted}}>·</span>
         <Badge c={T.textDim}>{m.fmt}</Badge>
-        <Badge c={levelColor}>{levelLabel}</Badge>
-        <Badge c={acceptColor}>{acceptLabel}</Badge>
       </div>
       {almostFull&&<span style={{fontSize:11,fontWeight:700,color:T.text}}>Son {spotsLeft} yer!</span>}
     </div>
@@ -583,7 +581,7 @@ function ActiveMatchWidget({seconds,score,onResume,onDelete}){
           </div>
         </div>
         <span onClick={onResume} style={{fontSize:16,fontWeight:900,color:"#fff",cursor:"pointer"}}>{score[0]} – {score[1]}</span>
-        <div onClick={e=>{e.stopPropagation();setDeletePopup(true);}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,cursor:"pointer",flexShrink:0}}>{I.trash("#fff")}</div>
+        <div onClick={e=>{e.stopPropagation();setDeletePopup(true);}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:8,background:"rgba(255,255,255,0.15)",cursor:"pointer",flexShrink:0}}>{I.trash(T.red)}</div>
       </div>
     </div>
     {deletePopup&&<div style={{position:"fixed",inset:0,maxWidth:430,margin:"0 auto",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -643,7 +641,7 @@ export default function SporWaveMatches(){
 
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap",alignItems:"center"}}>
-      {[{p:"S08",l:"Maçlar"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#0D0D0D":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S08",l:"Maçlar"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
       <span style={{marginLeft:"auto",width:1,height:16,background:T.cardBorder,flexShrink:0}}/>
       <span onClick={()=>setShowUnrated(v=>!v)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${showUnrated?T.orange:"transparent"}`,background:showUnrated?`${T.orange}15`:`${T.textDim}22`,color:showUnrated?T.orange:T.textDim,cursor:"pointer"}}>⭐ Değerlendirme Maçı: {showUnrated?"ON":"OFF"}</span>
       <span onClick={()=>setActiveMatch(prev=>({...prev,active:!prev.active,minimized:!prev.active}))} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${activeMatch.active?T.accent:"transparent"}`,background:activeMatch.active?`${T.accent}15`:`${T.textDim}22`,color:activeMatch.active?T.accent:T.textDim,cursor:"pointer"}}>▶ Aktif Maç: {activeMatch.active?"ON":"OFF"}</span>
