@@ -20,8 +20,6 @@ basınca logic karışıyor maç kayboluyor. Burası maç ayarları ve takım ku
 farklı sayfa olmalı. Maç açıldığında bir kere gösterilip sonra canlı skordan editlenebilmeli.
 Geri tuşu ve adımlar kaldırılmalı. Bu sayfalara da minimize butonu ekleyebiliriz belki.
 
-6 - yorumlar sayfasındaki yorum yazma bölümü sayfanın en altına fixlenmeli.
-
 7 - profil feedinde arada Gizli diye bişey var. onu orda unutmayalım.   
 
 8 - maç detay sayfasında kullanıcıların profiline gidebilmeliyim. Bunun için

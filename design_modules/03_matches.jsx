@@ -78,36 +78,43 @@ function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{
 // S08: Matches Page
 function S08({onNav,showUnrated,hasActiveWidget}){
   const [filter,setFilter]=useState(false);
-  const cities=["İstanbul","Ankara","İzmir","Bursa","Antalya","Adana","Konya","Gaziantep","Mersin","Kayseri","Eskişehir","Trabzon","Samsun","Denizli","Sakarya"];
-  const [city,setCity]=useState("İstanbul");
-  const [cityOpen,setCityOpen]=useState(false);
+  const districts=["Tümü","Kadıköy","Beşiktaş","Üsküdar","Ataşehir","Maltepe","Bakırköy","Şişli","Beylikdüzü","Kartal","Pendik","Sarıyer","Fatih","Bağcılar","Küçükçekmece"];
+  const [district,setDistrict]=useState("Tümü");
+  const [districtOpen,setDistrictOpen]=useState(false);
+  const [dateFilter,setDateFilter]=useState(null);
+  const [viewFilter,setViewFilter]=useState("Tümü");
 
   return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
     <div style={{position:"sticky",top:32,zIndex:50,padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
       <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
-      <div style={{display:"flex",alignItems:"center",gap:8}}>
-        <div onClick={()=>setCityOpen(!cityOpen)} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:4,padding:"4px 10px",borderRadius:8,border:`1px solid ${T.cardBorder}`,background:cityOpen?`${T.accent}10`:"transparent"}}>
-          {I.pin(cityOpen?T.accent:T.textDim)}<span style={{fontSize:12,fontWeight:600,color:cityOpen?T.accent:T.textDim}}>{city}</span>
-        </div>
-        <span onClick={()=>setFilter(!filter)} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
-      </div>
+      <span onClick={()=>{setFilter(!filter);setDistrictOpen(false);}} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
     </div>
-
-    {/* City picker dropdown */}
-    {cityOpen&&<div style={{position:"sticky",top:76,zIndex:49,margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:12,maxHeight:240,overflowY:"auto"}}>
-      {cities.map(c=><div key={c} onClick={()=>{setCity(c);setCityOpen(false);}} style={{padding:"10px 12px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",gap:8,background:city===c?`${T.accent}12`:"transparent",transition:"background .15s"}} onMouseEnter={e=>{if(city!==c)e.currentTarget.style.background=`${T.textDim}10`;}} onMouseLeave={e=>{if(city!==c)e.currentTarget.style.background="transparent";}}>
-        {I.pin(city===c?T.accent:T.textMuted)}<span style={{fontSize:13,fontWeight:city===c?700:500,color:city===c?T.accent:T.text}}>{c}</span>
-        {city===c&&<span style={{marginLeft:"auto",fontSize:14,color:T.accent}}>✓</span>}
-      </div>)}
-    </div>}
 
     {/* Filter popup */}
     {filter&&<div style={{margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:16}}>
-      <div style={{fontSize:13,fontWeight:700,color:T.text,marginBottom:10}}>Filtre</div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>{["Bugün","Bu hafta","Bu ay"].map(d=><Badge key={d} c={T.textDim}>{d}</Badge>)}</div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>{["Tüm Maçlar","Katıldıklarım","Açık Maçlar"].map(d=><Badge key={d} c={T.textDim}>{d}</Badge>)}</div>
-      <div style={{display:"flex",gap:8}}><Btn small primary full>Uygula</Btn><Btn small ghost onClick={()=>setFilter(false)}>Sıfırla</Btn></div>
+      {/* İlçe */}
+      <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
+      <div onClick={()=>setDistrictOpen(!districtOpen)} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",borderRadius:10,border:`1.5px solid ${districtOpen?T.accent:T.cardBorder}`,background:T.bg,marginBottom:districtOpen?0:16}}>
+        <span style={{fontSize:13,fontWeight:600,color:district==="Tümü"?T.textDim:T.accent}}>{district}</span>
+        <span style={{fontSize:11,color:T.textDim,transform:districtOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+      </div>
+      {districtOpen&&<div style={{maxHeight:180,overflowY:"auto",borderRadius:"0 0 10px 10px",border:`1px solid ${T.cardBorder}`,borderTop:"none",marginBottom:16}}>
+        {districts.map(d=><div key={d} onClick={()=>{setDistrict(d);setDistrictOpen(false);}} style={{padding:"10px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",background:district===d?`${T.accent}12`:"transparent",transition:"background .15s"}} onMouseEnter={e=>{if(district!==d)e.currentTarget.style.background=`${T.textDim}10`;}} onMouseLeave={e=>{if(district!==d)e.currentTarget.style.background=district===d?`${T.accent}12`:"transparent";}}>
+          <span style={{fontSize:13,fontWeight:district===d?700:500,color:district===d?T.accent:T.text}}>{d}</span>
+          {district===d&&<span style={{fontSize:13,color:T.accent}}>✓</span>}
+        </div>)}
+      </div>}
+
+      {/* Tarih */}
+      <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Tarih</div>
+      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{["Bugün","Bu hafta","Bu ay"].map(d=><span key={d} onClick={()=>setDateFilter(dateFilter===d?null:d)} style={{display:"inline-flex",alignItems:"center",padding:"6px 12px",borderRadius:20,fontSize:12,fontWeight:600,color:dateFilter===d?"#0D0D0D":T.textDim,background:dateFilter===d?T.accent:`${T.textDim}18`,cursor:"pointer",transition:"all .2s"}}>{d}</span>)}</div>
+
+      {/* Görünüm */}
+      <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Görünüm</div>
+      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{["Tümü","Katıldıklarım"].map(d=><span key={d} onClick={()=>setViewFilter(d)} style={{display:"inline-flex",alignItems:"center",padding:"6px 12px",borderRadius:20,fontSize:12,fontWeight:600,color:viewFilter===d?"#0D0D0D":T.textDim,background:viewFilter===d?T.accent:`${T.textDim}18`,cursor:"pointer",transition:"all .2s"}}>{d}</span>)}</div>
+
+      <div style={{display:"flex",gap:8}}><Btn small primary full onClick={()=>setFilter(false)}>Uygula</Btn><Btn small ghost onClick={()=>{setDistrict("Tümü");setDateFilter(null);setViewFilter("Tümü");}}>Sıfırla</Btn></div>
     </div>}
 
     {/* Unrated matches */}
