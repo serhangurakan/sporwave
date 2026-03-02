@@ -214,8 +214,7 @@ function MatchListCard({m,onNav,isMine}){
     {/* Date / location */}
     <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,marginBottom:8,flexWrap:"wrap",alignItems:"center",lineHeight:1.4}}>
       <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-      {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
-      {!m.loc&&<span style={{color:T.orange,fontSize:11}}>Saha belirlenecek</span>}
+      <span style={{display:"flex",alignItems:"center",gap:3,color:T.accent}}>{I.pin(T.accent)} {m.loc?m.loc.split(" ")[0]:"Saha belirlenecek"}</span>
     </div>
     {/* Host row + almost full */}
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8,lineHeight:1.4}}>

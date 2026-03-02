@@ -444,7 +444,7 @@ function S12({onNav}){
           </div>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{display:"flex",width:28}}>{I.pin(T.accent)}</span>
-            <span style={{fontSize:14,color:m.loc?T.text:T.orange,fontWeight:500}}>{m.loc||"Saha belirlenecek"}</span>
+            <span style={{fontSize:14,color:m.loc?T.text:T.accent,fontWeight:500}}>{m.loc||"Saha belirlenecek"}</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{display:"flex",width:28}}>{I.football(T.accent)}</span>
