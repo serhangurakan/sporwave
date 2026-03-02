@@ -21,24 +21,28 @@
 | **Coğrafi kapsam** | İstanbul öncelikli - sonra diğer iller ve globale açılma planı |
 | **Uygulama dili** | Türkçe (i18n altyapısı hazır olacak) |
 | **Derecelendirme** | MVP'de yok — deneyim seviyesi self-select olarak kalacak |
-| **Diğer spor dalları** | UI'da gösterilmiyor, sadece onboarding'de tercih soruluyor (data toplama amaçlı) |
+| **Diğer spor dalları** | UI'da gösterilmiyor, sadece onboarding'de tercih soruluyor (data toplama amaçlı) Alt yapıyı diğer spor dalları eklenecek şekilde yapmalıyız. Hepsinin ayrı Canlı Skor logici olacak. |
 | **Tab yapısı** | 3 tab: Ana Sayfa (sosyal) + Maçlar (aksiyon) + Profil (kişisel) |
 | **Attendance sistemi** | Yok |
 | **Keşfet algoritması** | Etkileşim skoru: Like×1 + Comment×2 + Share×3, son 7 gün göreli sıralama |
-| **Maç sohbeti** | MVP'de var — her planlanan maçın otomatik grup chat'i |
-| **Maç editlenebilirlik** | Feed'e düştükten sonra edit yok, sadece 24 saat puanlama |
-| **Host yönetimi** | Host maçtan çıkarsa yetki en erken katılana otomatik devredilir. Oylama ile devralma yok |
+| **Maç sohbeti** | MVP'de var — her planlanan maçın otomatik grup chat'i açılır. |
+| **Maç editlenebilirlik** | Feed'e düştükten skor, goller, katılımcılar editlenemez. sadece 24 saat içinde mvp puanlama.
+24 saat sonra mvp de editlenemez. Fotoğraf eklenebilir başlık ve açıklama editlenebilir. |
+| **Host yönetimi** | Host maçtan çıkarsa yetki en erken katılana otomatik devredilir. Oylama ile devralma yok.
+Maçtan son çıkan kişi hostsa maç silinir. |
 | **Maç başlatma koşulu** | Her iki takımda en az 1 oyuncu olmalı |
 | **Başlamamış maç süresi** | Maç saatinden 24 saat sonra başlamamışsa otomatik silinir |
-| **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür, S08 Maç Bul tab'ında listelenmez |
-| **Maç state machine** | 7 state: draft → open → full → started → ended → rating → archived |
+| **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür,
+S08 Maç Bul tab'ında listelenmez |
+| **Maç state machine** | 7 state: open → full → started → ended → rating → archived |
 | **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
-| **Maç sohbeti arşiv** | Maç arşivlenince mesajlar silinir (salt okunur arşiv yok), sadece metadata korunur |
+| **Maç sohbeti arşiv** | Maç arşivlenince maç sohbeti kapatılır. |
 | **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
 | **Feed modeli** | Duplicated feed — her katılımcının kendi maç postu var, feed'de ayrı ayrı görünür |
 | **Maç verisi vs Post** | Maç verisi (skor, takımlar, MVP) paylaşımlı ve immutable. Her katılımcının kişisel postu (başlık, not, fotoğraf) ayrı |
 | **Etkileşim (like/yorum)** | Post bazlı — beğeni ve yorumlar maça değil, kişinin postuna yapılır |
-| **Post gizle/sil** | İkisi de var: "Gizle" geri alınabilir, "Sil" kalıcı. İkisi de sadece kendi postunu etkiler, maç verisi ve diğer oyuncuların postları etkilenmez |
+| **Post gizle/sil** | İkisi de var: "Gizle" geri alınabilir, "Sil" kalıcı. İkisi de sadece kendi postunu etkiler,
+maç verisi ve diğer oyuncuların postları etkilenmez |
 | **Maç fotoğrafları** | Maç verisinde (Katman 1) fotoğraf yok — fotoğraflar kişisel post katmanında (Katman 2) |
 
 ---
@@ -48,12 +52,11 @@
 Bir maç şu state'lerden geçer:
 
 ```
-draft → open → full → started → ended → rating → archived
+open → full → started → ended → rating → archived
 ```
 
 | State | Açıklama | Görünürlük |
 |-------|----------|------------|
-| **draft** | Oluşturuldu ama yayınlanmadı | Sadece host |
 | **open** | Yayında, katılıma açık | Herkese (gizlilik ayarına göre) |
 | **full** | Kontenjan doldu | Sadece katılımcılara (dışarıdan görünmez) |
 | **started** | Maç başladı, skor takibi aktif | Sadece katılımcılara |
@@ -62,7 +65,7 @@ draft → open → full → started → ended → rating → archived
 | **archived** | Profil ve feed'de geçmiş maç olarak görünür | Herkese (gizlilik ayarına göre) |
 
 **Geçiş kuralları:**
-- `draft → open`: Host "Yayınla" butonuna basar
+- `open`: Host "Yayınla" butonuna basar
 - `open → full`: Kontenjan dolduğunda otomatik
 - `full → open`: Bir katılımcı ayrıldığında otomatik (kontenjan açılır)
 - `open/full → started`: Host "Maçı Başlat" butonuna basar. Koşul: her iki takımda en az 1 oyuncu
@@ -76,8 +79,9 @@ draft → open → full → started → ended → rating → archived
 - `archived` maçlar hiçbir şekilde düzenlenemez
 - Takım değişikliği SADECE `started` öncesi mümkün
 - `full` state'indeki maçlar katılımcı olmayan kullanıcılara görünmez
-- Dolu maçtan ayrılan eski katılımcılar da maçı göremez
+- Dolu maçtan ayrılan eski katılımcılar da maç tekrardan dolarsa maçı göremez
 - Arkadaş olmak `full` kısıtlamasını bypass etmez
+- Maçtan ayrılınırsa ayrılan kişi maç sohbetinden de otomatik çıkartılır.
 
 ---
 
@@ -105,6 +109,7 @@ Ana Sayfa tab'ında:
 - **⚽ Maçlar**: Katılabileceğin açık maçlar + katıldığın maçlar + sağ altta FAB "+" (oluştur/başlat)
 - **👤 Profil**: Hevy tarzı — grafik + pano + istatistikler + maç feed'i + ayarlar
 - Aktif tab accent renkle vurgulanır
+- **Sticky**: Scroll'da altta sabit kalır
 
 ---
 
@@ -192,7 +197,7 @@ Ana Sayfa tab'ında:
 - **Yapı:** Hevy'nin Ana Sayfa/Keşfet dropdown yapısıyla birebir
 - **Üstte sol:** Dropdown ile sayfa adı "Ana Sayfa ▾" → iki seçenek:
   - **🏠 Ana Sayfa (Takip edilenler)** — default: takip ettiğin kullanıcıların geçmiş maç kartları
-  - **🌐 Keşfet** — yüksek etkileşimli geçmiş maç kartları (etkileşim skoru eşiğini geçenler)
+  - **🌐 Keşfet** — yüksek etkileşimli geçmiş maç kartları (etkileşim skoru eşiğini geçen bütün kullanıcılar)
 - **Üstte sağ:** 🔍 Arama + 🔔 Bildirimler
 
 **Keşfet modundayken — Önerilen Kullanıcılar bölümü:**
@@ -215,7 +220,8 @@ Ana Sayfa tab'ında:
 
 **İki Katmanlı Veri Modeli:**
 - **Katman 1 — Maç Verisi (paylaşımlı, immutable):** Skor, takımlar, süre, konum, tarih, MVP, gol timeline. Maç arşivlendikten sonra değiştirilemez. Tüm katılımcıların postlarında aynı maç verisi görünür.
-- **Katman 2 — Kişisel Post (per player):** Her katılımcı kendi postunu düzenleyebilir:
+- **Katman 2 — Kişisel Post (per player):** Her katılımcı kendi postunu düzenleyebilir.
+**Amacı**: her kullanıcının editlediği postun sadece o kullanıcının postunu etkilemesi. Başka insanların postuna müdahaleyi engellemek
   - **Maç başlığı:** Varsayılan olarak maç başlığını alır, kişi değiştirebilir
   - **Kişisel not:** Opsiyonel açıklama (örn: "2 gol attım 🔥")
   - **Kişisel fotoğraflar:** Kendi çektiği fotoğraflar (max 4)
@@ -238,24 +244,19 @@ Ana Sayfa tab'ında:
 - Aynı maçtan birden fazla post keşfette görünebilir — hangisi daha çok etkileşim aldıysa o üstte.
 - **Not:** İlk aşamada sabit eşik yerine göreli sıralama kullanılır — uygulama büyüdükçe A/B test ile katsayılar ayarlanabilir.
 
-**Aynı maç bağlantısı:**
-- Aynı maça ait postlarda "👥 Ali ve Emre de bu maçta oynadı" bağlantı satırı gösterilir (tıklanınca o kişilerin postlarına gidilebilir).
-- Bu satır sadece takip ettiğin kişilerden birinin aynı maçta olması durumunda görünür.
-
-**Her post kartı yapısı:**
+**Her post kartı yapısı:** (Profildeki postlar dahil)
 - **Üst satır:**
-  - Post sahibi avatarı + isim
-  - Tarih/saat + ⋮ menü (Raporla / Engelle — kendi postunsa: Düzenle / Gizle / Sil)
+  - Post sahibi avatarı + isim + Tarih/saat. sağda ⋮ menü (Raporla / Engelle — kendi postunsa: Düzenle / Gizle / Sil)
   - **İsim tıklanabilir → S16 Profil**
 - **Maç başlığı** (bold): post sahibinin kişisel başlığı (varsayılan: maç başlığı)
 - **Kişisel not** (varsa): post sahibinin açıklaması
-- **Özet bilgi satırı:** Süre · Konum · Format badge · Oyuncular
+- **Özet bilgi satırı:** Süre · Konum · Format badge · Oyuncu sayısı
 - **Medya / Skor alanı (MediaSlider):**
   - **Fotoğraf yoksa:** Skor board sabit yükseklik kullanmaz, içerik kadar (hug content) yükseklik alır; Takım A **[X]** — **[Y]** Takım B (büyük, merkezi) + MVP. Tıklanınca → S11.
   - **Fotoğraf varsa:** Tam genişlikte slide gösterimi — her fotoğraf ayrı slide (max 4), son slide = skor board. Sol/sağ dokunma ile geçiş; alt-orta dot indikatörü (skor slide'ı accent renk ile vurgulanır); sağ üstte sayfa sayacı ("1/2" veya 📊).
-  - **Skor:** Kazanan takımın skoru accent renk (`#B7F000`) ile, kaybeden takımın skoru beyaz ile gösterilir. Berabere ise ikisi de beyaz.
+  - **Skor:** Light modeda Siyah Dark modeda beyaz renk ile.
   - **Maçın Yıldızı** (mvp varsa — skorun hemen altında, ortalı):
-    - ⭐ + isim — **isim tıklanabilir → S16 Profil**
+    - ⭐ + isim (accent renk)— **isim tıklanabilir → S16 Profil**
     - Eşit oy durumunda Co-MVP: birden fazla isim gösterilir (⭐ isim1, ⭐ isim2)
 - **Aynı maç bağlantısı** (varsa): "👥 Ali ve Emre de bu maçta oynadı"
 - **Etkileşim satırı:**
@@ -263,10 +264,16 @@ Ana Sayfa tab'ında:
 - **Beğenenler satırı** (beğeni varsa):
   - Avatarlar + "**İlk beğenen isim** ve X diğerleri" — **ilk isim tıklanabilir → S16 Profil**, "X diğerleri" tıklanınca → S43 Beğeniler sayfası
 - **Yorumlar** (max 2 yorum görünür):
-  - Her yorum: Avatar + kullanıcıadı + zaman + yorum metni — **kullanıcı adı tıklanabilir → S16 Profil**
+  - Her yorum: Avatar + kullanıcı adı + zaman + yorum metni — **kullanıcı adı tıklanabilir → S16 Profil**
   - 2'den fazla yorum varsa sadece ilk 2 gösterilir. Tüm yorumlara erişim etkileşim satırındaki yorum ikonundan sağlanır (→ S42)
 - **Yorum ekle:** "Bir yorum ekle..." input alanı (tıklayınca → S42 Yorumlar sayfası)
 - **Tüm kart tıklanabilir** → Maç Detay (S11)
+
+**Maç kartları:**
+- Kartlar arasında 8px `T.card` rengi divider kullanılır
+- **Kart stili:**
+  - `background: none, borderRadius: 0`
+  - Alt kenarda: `borderBottom: 1px solid T.cardBorder33`
 
 **Post yönetimi (⋮ menüsünden — kendi postun için):**
 - **Düzenle** → başlık, not, fotoğraf düzenleme ekranı
@@ -283,17 +290,18 @@ Ana Sayfa tab'ında:
 **Maç verisi editlenebilirlik kuralı:** Maç verisi (Katman 1) arşivlendikten sonra editlenemez. Kişisel post (Katman 2) her zaman düzenlenebilir (başlık, not, fotoğraf). Son maç verisi düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama yapılabilir.
 
 **Boş durum (Ana Sayfa — kimseyi takip etmiyorsan):**
-- İllüstrasyon + "Henüz kimseyi takip etmiyorsun"
+- Önce Keşfet gösterilir.
+- Ana sayfaya gelirse İllüstrasyon + "Henüz kimseyi takip etmiyorsun"
 - "Keşfet'e Git" butonu
 
 #### S07: Kullanıcı Arama Sonuçları
 - Üst navbar'daki 🔍 ikonundan erişilir
 - Arama çubuğu (üstte, aktif, otofokus)
 - **Önerilen Kullanıcılar (arama boşken):** Keşfet'teki öneri algoritmasıyla aynı kullanıcılar dikey liste halinde gösterilir.
-  - Her satır: Avatar + isim + @kullanıcıadı + maç sayısı + "Takip Et" butonu (sağda)
+  - Her satır: Avatar + isim + @kullanıcıadı + "Takip Et" butonu (sağda)
   - Tıklanınca → Kullanıcı Profili (S16)
 - **Arama sonuçları (yazı yazılınca):**
-  - Her satır: Avatar + isim + @kullanıcıadı + maç sayısı
+  - Her satır: Avatar + isim + @kullanıcıadı
   - "Takip Et" / "Takip Ediliyor" butonu (sağda)
 - Tıklanınca → Kullanıcı Profili (S16)
 - Sonuç yoksa: "Kullanıcı bulunamadı" mesajı
@@ -306,7 +314,7 @@ Ana Sayfa tab'ında:
 #### S08: Maçlar Sayfası (Maç Bul + Maçlarım)
 - **Amaç:** Katılabileceğin maçları bul + katıldığın/değerlendirmediğin maçları gör + maç oluştur
 
-**Üstte:** "Maçlar" başlığı (sticky) + şehir seçici dropdown (sağda, 1px border, pin ikonu + kullanıcının profilindeki şehir; tıklayınca şehirler listesi açılır) + filtre ikonu (toggle — sadece Maç Bul tab'ında, tıklayınca filtre paneli açılır/kapanır)
+**Üstte:** "Maçlar" başlığı (sticky) + şehir seçici dropdown (sağda, 1px border, pin ikonu + kullanıcının profilindeki şehir; tıklayınca şehirler listesi açılır) + filtre ikonu (toggle — sadece Maç Bul tab'ında, tıklayınca aşağıdan drawer filtre paneli açılır/kapanır)
 
 **İki tab: Maç Bul | Maçlarım**
 
@@ -315,7 +323,7 @@ Ana Sayfa tab'ında:
 **Maç Bul tab'ı:**
 Bütün açık maçların listesi. Tarih sırasına göre alt alta sıralanır.
 
-**Filtre paneli (collapsible, inline — sadece Maç Bul tab'ında):**
+**Filtre paneli (Aşağıdan drawer olarak açılır — sadece Maç Bul tab'ında):**
 - **İlçe:** Dropdown seçici — 15 İstanbul ilçesi (Kadıköy, Beşiktaş, Üsküdar, Sarıyer, Ataşehir, Maltepe, Kartal, Pendik, Beyoğlu, Şişli, Bakırköy, Fatih, Beykoz, Çekmeköy, Ümraniye). Tek seçim.
 - **Tarih:** Chip'ler — Bugün / Bu hafta / Bu ay (toggle — biri seçili ya da hiçbiri)
 - "Uygula" butonu + "Sıfırla" linki
@@ -333,7 +341,6 @@ Bütün açık maçların listesi. Tarih sırasına göre alt alta sıralanır.
   - Tarih/saat + Konum
   - Organizatör: avatar + isim
   - Kontenjan: "7/10 oyuncu" (progress bar — her zaman accent/primary rengi, doluluk oranından bağımsız)
-  - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
   - Tıklanınca → S12 Planlanan Maç Detay
 
 **Boş durum (Maç Bul):** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
@@ -347,7 +354,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Kullanıcının henüz MVP oylaması yapmadığı biten maçlar
 - `background:none, borderRadius:0, borderLeft: 3px solid accent` kart stili + "⭐ Bu maçı değerlendir" badge'i
 - Kartlar arasında 8px `T.card` divider
-- Tıklanınca → S40 Puanlama sayfası
+- Tıklanınca → ?
 - Puanlama yapıldıktan sonra kart buradan kalkar
 
 **Katıldığım maçlar (puanlanmamış kartlardan sonra):**
@@ -393,19 +400,21 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 **Maç başlatma koşulu:** Her iki takımda en az 1 oyuncu (uygulama kullanıcısı veya misafir) kayıtlı olmalı. Planlanan maçlarda (S31) maç saatinden sonra da başlatılabilir — 24 saat boyunca başlatma imkanı devam eder.
 
-**Sayfa yapısı (doğrudan Canlı Skor — setup adımları kaldırıldı):**
+**Sayfa yapısı (doğrudan Canlı Skor):**
 
 **Canlı Skor Sayfası:**
-- **Sol üstte ↓ aşağı ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde), Maçlar (S08) sayfasına yönlendirilir
+- **Sol üstte ↓ aşağı ok (SVG):** Tıklanırsa canlı skor minimize edilir → "Maç Oynanıyor" widget'ına dönüşür (footer üstünde), Maçlar (S08) sayfasına yönlendirilir. "Maç Oynanıyor" widgetı açıkken profil, ana sayfa ve maçlar sayfasında gezilebilir.
 - **Sağ üstte ⋮ menü:** "Ayarlar" (→ S12, match state "Maç Oynanıyor" olarak açılır) + "Maçı Bitir" (→ Maç Sonu sayfasına geçer)
 - **Büyük skor gösterimi:** Takım 1 **[X]** — **[Y]** Takım 2
-- **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır, **offline çalışmaz** (uygulama kapanırsa kronometre durur)
+- **Süre sayacı:** Kronometer (başlat/duraklat) — sadece aktif süre sayılır,
 - Her takım için **"+ Gol"** butonu (büyük, kolay tıklanabilir, takım rengiyle)
 - **Gol eklenince — Bottom Drawer akışı:**
   - Drawer açılır → golü atan takımın oyuncu listesi gösterilir
   - Başlık: "Golü kim attı?" + altta "Atla" seçeneği
   - Oyuncu seçilirse → ikinci drawer: "Asisti kim yaptı?" + aynı format + "Atla" seçeneği
   - "Golü kim attı?" atlanırsa → asist sorulmaz
+  - Takımlarda oyuncu yoksa gol asist sorulmaz.
+  - Golcü seçilen kişi o golün Asist sorunda seçeneklerde bulunmaz.
   - Golcü/asist bilgisi girilirse → gol geçmişinde takım ismi yerine oyuncu isimleri gösterilir
   - **5 saniyelik "Geri Al" toast:** "Gol eklendi — Geri Al" (tıklanırsa gol iptal)
 - **Gol geçmişi listesi** (kronolojik): "12' Berk (Asist: Ali)" formatında
@@ -440,10 +449,10 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - "Gol Ekle" butonu (maç sırasında kaçırdıysan buradan da ekleyebilirsin)
 - **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Takım kurulumunda atlandıysa burada tamamlanmalı.
 - **Drag & drop ile takım değişikliği:** Takım kurulumu sayfası ile aynı.
-- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → maçı bitiren kişi S40 Puanlama sayfasına yönlendirilir
+- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible)
 - **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
-- **Not:** Maçı bitiren kişi otomatik olarak S40 Puanlama sayfasına yönlendirilir. Diğer katılımcılar S08 Maçlarım tab'ındaki puanlanmamış maç kartı veya bildirim ile S40'a erişir (24 saat boyunca).
+- **Not:** Maçı bitiren kişi otomatik olarak S08 Maçlarım tab'ına yönlendirilir. Maçtaki bütün katılımcılar S08 Maçlarım tab'ındaki puanlanmamış maç kartı ile puanlama yapabilir.
 
 #### S11: Maç Detay Sayfası (Geçmiş — oynanmış maç)
 - **Header:** ← Geri + "Maç Detay" başlığı + ↗ Paylaş ikonu (→ S30)
@@ -472,10 +481,10 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - **⋮ Menü içeriği:**
     - **Host:** "✏️ Düzenle" (→ bottom drawer: Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük) + "Maçtan Çık"
     - **Katılımcı:** "Maçtan Çık"
-- Organizatör: avatar + isim (tıklanınca profil)
-- **Açıklama:** varsa maç açıklaması (tam metin)
-- **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye · Görünürlük (düzenle butonu yok — düzenleme ⋮ menüden yapılır)
-- Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
+- **Organizatör**: avatar + isim (tıklanınca profil)
+- **Açıklama:** maç açıklaması (tam metin)
+- **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye · Görünürlük
+- Saha belirlenmemişse: "📍 [İlçe] — Belirtilmemiş"
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
 - **Kontenjan bar'ı:** "7/12 oyuncu — 5 yer kaldı" (progress bar ile — her zaman accent/primary rengi)
 - **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (accent renk) + otomatik silinmeye kalan süre
