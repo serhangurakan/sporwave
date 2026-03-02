@@ -30,7 +30,7 @@
 | **Host yönetimi** | Host maçtan çıkarsa yetki en erken katılana otomatik devredilir. Oylama ile devralma yok |
 | **Maç başlatma koşulu** | Her iki takımda en az 1 oyuncu olmalı |
 | **Başlamamış maç süresi** | Maç saatinden 24 saat sonra başlamamışsa otomatik silinir |
-| **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür, S08'de herkese açık listelenmez |
+| **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür, S08 Maç Bul tab'ında listelenmez |
 | **Maç state machine** | 7 state: draft → open → full → started → ended → rating → archived |
 | **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
 | **Maç sohbeti arşiv** | Maç arşivlenince mesajlar silinir (salt okunur arşiv yok), sadece metadata korunur |
@@ -303,26 +303,77 @@ Ana Sayfa tab'ında:
 
 ### BÖLÜM 3: MAÇLAR — Tab 2 (6 sayfa)
 
-#### S08: Maçlar Sayfası (Açık Maçlar + Katıldıklarım)
-- **Amaç:** Katılabileceğin maçları bul + katıldığın maçları gör + maç oluştur/başlat
+#### S08: Maçlar Sayfası (Maç Bul + Maçlarım)
+- **Amaç:** Katılabileceğin maçları bul + katıldığın/değerlendirmediğin maçları gör + maç oluştur
 
-**Sayfa yapısı (tek akış, bölüm başlığı yok):**
+**Üstte:** "Maçlar" başlığı (sticky) + şehir seçici dropdown (sağda, 1px border, pin ikonu + kullanıcının profilindeki şehir; tıklayınca şehirler listesi açılır) + filtre ikonu (toggle — sadece Maç Bul tab'ında, tıklayınca filtre paneli açılır/kapanır)
 
-**Üstte:** "Maçlar" başlığı (sticky) + şehir seçici dropdown (sağda, 1px border, pin ikonu + kullanıcının profilindeki şehir; tıklayınca şehirler listesi açılır) + filtre ikonu (toggle — tıklayınca filtre paneli açılır/kapanır)
+**İki tab: Maç Bul | Maçlarım**
 
-**Filtre paneli (collapsible, inline):**
+---
+
+**Maç Bul tab'ı:**
+Bütün açık maçların listesi. Tarih sırasına göre alt alta sıralanır.
+
+**Filtre paneli (collapsible, inline — sadece Maç Bul tab'ında):**
 - **İlçe:** Dropdown seçici — 15 İstanbul ilçesi (Kadıköy, Beşiktaş, Üsküdar, Sarıyer, Ataşehir, Maltepe, Kartal, Pendik, Beyoğlu, Şişli, Bakırköy, Fatih, Beykoz, Çekmeköy, Ümraniye). Tek seçim.
 - **Tarih:** Chip'ler — Bugün / Bu hafta / Bu ay (toggle — biri seçili ya da hiçbiri)
-- **Görünüm:** Tümü / Katıldıklarım (toggle — varsayılan: Tümü)
 - "Uygula" butonu + "Sıfırla" linki
 
-**Puanlanmamış maçlar (varsayılan gizli — "Değerlendirme Maçı" toggle OFF):**
+**Maç kartları:**
+- Kartlar arasında 8px `T.card` rengi divider kullanılır
+- **Kart stili:**
+  - `background: none, borderRadius: 0`
+  - `borderLeft: 3px solid T.cardBorder44` (çok soluk — açık maç)
+  - Alt kenarda: `borderBottom: 1px solid T.cardBorder33`
+- **Her kart:**
+  - Takip edilen kişi(ler) maçtaysa: "Takip ettiğin X kişi bu maçta" badge (accent renk, users ikonu ile)
+  - Spor ikonu + Maç başlığı (bold)
+  - Açıklama (varsa, maks. 2 satır, truncate ile "...")
+  - Tarih/saat + Konum
+  - Organizatör: avatar + isim
+  - Kontenjan: "7/10 oyuncu" (progress bar — her zaman accent/primary rengi, doluluk oranından bağımsız)
+  - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
+  - Tıklanınca → S12 Planlanan Maç Detay
+
+**Boş durum (Maç Bul):** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
+
+---
+
+**Maçlarım tab'ı:**
+Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
+
+**Puanlanmamış maçlar (varsa, üstte):**
 - Kullanıcının henüz MVP oylaması yapmadığı biten maçlar
 - `background:none, borderRadius:0, borderLeft: 3px solid turuncu` kart stili + "⭐ Bu maçı değerlendir" badge'i
 - Kartlar arasında 8px `T.card` divider
 - Tıklanınca → S40 Puanlama sayfası
 - Puanlama yapıldıktan sonra kart buradan kalkar
-- Puanlanmamış kartlar bittikten sonra 8px divider ile planned kartlardan ayrılır
+
+**Katıldığım maçlar (puanlanmamış kartlardan sonra):**
+- Kullanıcının katıldığı planned maçlar, tarih sırasına göre
+- **Kart stili:** `borderLeft: 3px solid T.accent` (accent yeşil)
+- Kartın üstünde: ✓ "Katılıyorsun" badge (tick ikonu + accent renk)
+- Kart içeriği Maç Bul tab'ındaki kartlarla aynı yapıda
+- Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
+- Tıklanınca → S12 Planlanan Maç Detay
+
+**Boş durum (Maçlarım):** "Henüz bir maça katılmadın.\nAçık maçlara göz at ve ilk maçına katıl!"
+
+---
+
+**Görünürlük badge'i (her iki tab'da geçerli):**
+- Her maç kartında küçük bir görünürlük badge'i gösterilir:
+  - 👁️ "Herkese Görünür" (yeşil) — maç S08 Maç Bul tab'ında herkese görünüyor
+  - 🔒 "Sadece Katılımcılara" (gri) — maç sadece katılımcılara ve davet linkiyle görünüyor
+- Host bu bilgiyi görerek maçın keşfedilebilirlik durumunu anlayabilir
+
+**Tarihi geçmiş başlamamış maçlar:**
+- Maç saati geçtiği halde henüz başlamamış maçlar **Maç Bul tab'ında diğer kullanıcılara gösterilmez**
+- Bu maçlar yalnızca **Maçlarım tab'ında katılımcılarına** görünür (turuncu-sarı uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
+- **Davet linki** ile maç görüntülenebilir — link sahibi maçı görebilir ama Maç Bul listesinde görmez
+- Host maçın tarihini gelecek bir tarihe güncellerse → maç tekrar Maç Bul tab'ında herkese görünür olur
+- **Otomatik silme:** Maç saatinden **24 saat** geçtikten sonra hala başlamamışsa maç otomatik silinir, tüm katılımcılara bildirim gider
 
 **Devam eden maç widget'ı (varsa — footer üstünde):**
 - Footer'ın hemen üstüne sabitlenmiş kompakt widget, background her zaman accent (yeşil)
@@ -330,49 +381,12 @@ Ana Sayfa tab'ında:
 - Play/pause butonu: Kronometreyi widget üzerinden başlatır/durdurur, ikon toggle olur
 - Widget'ın geri kalan alanına tıklanırsa → S10 Canlı Skor sayfasına geri dönülür (aynı süre ve play/pause state'i korunur)
 - Çöp kutusuna tıklanırsa → "Bu maçı silmek istediğinize emin misiniz?" popup (Maçı Sil / İptal)
-- Bu widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür
+- Bu widget Ana Sayfa (S05), Maçlar (S08) ve Profil (S15) sayfalarında görünür (her iki tab'da)
 - Maç detay, ayarlar vb. sayfalarda görünmez
-
-**Tüm maç kartları (tek liste, bölüm ayrımı yok):**
-- Puanlanmamış kartlardan sonra tüm planned maçlar tek akış halinde listelenir
-- "Katıldığım Maçlar" / "Açık Maçlar" başlık ayrımı yoktur; kartlar tarih sırasına göre alt alta sıralanır
-- Kartlar arasında 8px `T.card` rengi divider kullanılır (ana sayfadaki post divider ile aynı pattern)
-- **Kart stili:**
-  - `background: none, borderRadius: 0`
-  - Katıldığın maçlar: `borderLeft: 3px solid T.accent` (accent yeşil)
-  - Diğer açık maçlar: `borderLeft: 3px solid T.cardBorder44` (çok soluk)
-  - Alt kenarda: `borderBottom: 1px solid T.cardBorder33`
-- **Her kart (katılım bilgisi EN ÜSTTE):**
-  - Katıldığın maçlarda: ✓ "Katılıyorsun" badge (tick ikonu + accent renk)
-  - Arkadaş katılıyorsa: küçük avatar + "[İsim] katılıyor" badge (accent renk)
-  - Spor ikonu + Maç başlığı (bold)
-  - Açıklama (varsa, maks. 2 satır, truncate ile "...")
-  - Tarih/saat + Konum
-  - Organizatör: avatar + isim
-  - Kontenjan: "7/10 oyuncu" (progress bar — her zaman accent/primary rengi, doluluk oranından bağımsız)
-  - Görünürlük badge'i: 👁️ veya 🔒 (küçük, sağ üstte)
-  - Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
-  - Tıklanınca → S12 Planlanan Maç Detay
-
-**Görünürlük badge'i:**
-- Her maç kartında küçük bir görünürlük badge'i gösterilir:
-  - 👁️ "Herkese Görünür" (yeşil) — maç S08'de açık maçlar listesinde herkese görünüyor
-  - 🔒 "Sadece Katılımcılara" (gri) — maç sadece katılımcılara ve davet linkiyle görünüyor
-- Bu badge, maçın Maç Bul sayfasında (S08) görünür olup olmadığını gösterir
-- Host bu bilgiyi görerek maçın keşfedilebilirlik durumunu anlayabilir
-
-**Tarihi geçmiş başlamamış maçlar:**
-- Maç saati geçtiği halde henüz başlamamış maçlar **S08'deki açık maçlar listesinde diğer kullanıcılara gösterilmez**
-- Bu maçlar yalnızca **maçın katılımcılarına** görünür (turuncu-sarı uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
-- **Davet linki** ile maç görüntülenebilir — link sahibi maçı görebilir ama S08 listesinde görmez
-- Host maçın tarihini gelecek bir tarihe güncellerse → maç tekrar S08'de herkese görünür olur ve görünürlük badge'i "👁️ Herkese Görünür" olarak güncellenir
-- **Otomatik silme:** Maç saatinden **24 saat** geçtikten sonra hala başlamamışsa maç otomatik silinir, tüm katılımcılara bildirim gider
 
 **Not:** Bu sayfada tamamlanmış geçmiş maçlar gösterilmez. Geçmiş maçlar Ana Sayfa feed'inde (S05) ve Profil'de (S15) görünür.
 
-**Boş durum:** "Şu an açık maç yok — ilk maçı sen oluştur!" + FAB'a yönlendirme
-
-**Sağ altta FAB "+" butonu** (accent bg, beyaz "+" ikonu) → tıklayınca direkt S31 Maç Oluştur sayfasına gider
+**Sağ altta FAB "+" butonu** (accent bg, beyaz "+" ikonu) → tıklayınca direkt S31 Maç Oluştur sayfasına gider (her iki tab'da görünür)
 
 #### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
@@ -429,7 +443,7 @@ Ana Sayfa tab'ında:
 - **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible) → maçı bitiren kişi S40 Puanlama sayfasına yönlendirilir
 - **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
-- **Not:** Maçı bitiren kişi otomatik olarak S40 Puanlama sayfasına yönlendirilir. Diğer katılımcılar S08'deki puanlanmamış maç kartı veya bildirim ile S40'a erişir (24 saat boyunca).
+- **Not:** Maçı bitiren kişi otomatik olarak S40 Puanlama sayfasına yönlendirilir. Diğer katılımcılar S08 Maçlarım tab'ındaki puanlanmamış maç kartı veya bildirim ile S40'a erişir (24 saat boyunca).
 
 #### S11: Maç Detay Sayfası (Geçmiş — oynanmış maç)
 - **Header:** ← Geri + "Maç Detay" başlığı + ↗ Paylaş ikonu (→ S30)
@@ -448,43 +462,67 @@ Ana Sayfa tab'ında:
 - **Not:** Geçmiş maç verisi (Katman 1) editlenemez. Kişisel postlar (Katman 2) her zaman düzenlenebilir.
 - Back butonu
 
-#### S12: Planlanan Maç Detay (Henüz oynanmamış)
-- **Header:** Geri butonu (geri ok + yazı birlikte), başlık yok, sağda menü yok
+#### S12: Planlanan Maç Detay — Maç Bilgi Sayfası (herkes görür)
+- **Header:** Geri butonu (geri ok + yazı birlikte), başlık yok
   - **Maç Planlama state'inde:** ← Maçlar (S08'e döner)
   - **Maç Oynanıyor state'inde:** ← Canlı Skor (S10'a döner)
-- Üst bölüm: Maç başlığı (ikon yok)
+
+**Üst bölüm:**
+- Maç başlığı satırı: sol tarafta başlık, sağ tarafta ↗ Paylaş butonu + ⋮ menü butonu (başlık ile aynı hizada)
+  - **⋮ Menü içeriği:**
+    - **Host:** "✏️ Düzenle" (→ bottom drawer: Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük) + "Maçtan Çık"
+    - **Katılımcı:** "Maçtan Çık"
 - Organizatör: avatar + isim (tıklanınca profil)
-- **Açıklama:** Organizatör altında, varsa maç açıklaması (tam metin)
-- **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye tercihi
-  - **Host için:** bilgi kartının sağ üstünde "✏️ Düzenle" butonu → bottom drawer (Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük alanları)
+- **Açıklama:** varsa maç açıklaması (tam metin)
+- **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye · Görünürlük (düzenle butonu yok — düzenleme ⋮ menüden yapılır)
 - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
-- **Kontenjan gösterimi:** "7/10 oyuncu" (progress bar ile — her zaman accent/primary rengi)
+- **Kontenjan bar'ı:** "7/12 oyuncu — 5 yer kaldı" (progress bar ile — her zaman accent/primary rengi)
 - **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (turuncu-sarı) + otomatik silinmeye kalan süre
-- **Takım görünümü:**
-  - Takım A (accent) | Takım B (orange) — her iki kolon 3'er grid, satır satır hizalı
-  - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
-  - Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (fmt'e göre — 6v6 ise 6 slot her takımda)
-  - **Host için:** oyuncuları sürükle-bırak veya tıkla→slot seç ile takımlara ata; hücre üzerinde gri ✕ butonu → oyuncuyu maçtan çıkar. Host'a takım grid'inin üstünde küçük bir bilgi hint'i gösterilir (ⓘ info ikonu + "Oyuncuya tıkla → boş slota yerleştir. ✕ ile maçtan çıkar." metni, accent renk kenarlıklı)
-  - **Katılımcılar** (takım seçmemiş oyuncular): takım grid'inin altında section label + liste görünümü (avatar + isim + seviye)
-  - **Host için:** her katılımcının yanında "⋮" menüsü → "Maçtan Çıkar"
-- **CTA Butonları (organizatör / host) — sırayla:**
-  1. Paylaş
-  2. Başvuruları Gör (onay modundaysa)
-  3. Oyuncu Davet Et (tıklanınca bottom drawer açılır — arkadaş listesinden davet)
-  4. Maçtan Çık
-  5. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta → S10 Maç Sonu sayfasına yönlendirir)
-- **CTA Butonları (katılımcıysan) — sırayla:**
-  1. Paylaş
-  2. Maç Sohbeti
-  3. Maçtan Çık
-  4. **Maç Planlama:** ▶ Maçı Başlat (primary, en altta) | **Maç Oynanıyor:** Maçı Bitir (kırmızı, en altta → S10 Maç Sonu sayfasına yönlendirir)
-- **CTA Butonları (katılmamışsan / misafir) — sırayla:**
-  1. Paylaş
-  2. Maça Katıl (X yer kaldı) (primary, en altta)
+
+**İki tab: Katılımcı Listesi | Takımlar**
+
+**Katılımcı Listesi tab'ı:**
+- Maçtaki tüm katılımcıların aşağı doğru listesi
+- Katılımcıya tıklanırsa → katılımcı profil sayfasına (S16) redirect
+- İlk 5 katılımcı gösterilir; daha fazlası varsa "Tümünü Göster" yazısıyla expand olabilir
+- **Host:** her katılımcının yanında siyah ✕ butonu (maçtan çıkar anlamında, siyah background, border yok)
+  - Tıklanırsa popup: "Maçtan çıkarmak istediğinize emin misiniz?" — Çıkar / Vazgeç
+
+**Takımlar tab'ı:**
+- Takım A / Takım B grid'i (her iki kolon 3'er grid, satır satır hizalı)
+- Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
+- Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (fmt'e göre — 6v6 ise 6 slot her takımda)
+- Altında: Henüz takıma yerleşmemiş oyuncular (Katılımcılar section label + liste görünümü)
+- **Sağ üstte "Düzenle" butonu** (sadece host görür — Takımlar tab'ı içinde):
+  - Düzenle'ye basılırsa: ✕ butonları ve drag-drop aktif olur, CTA butonları geçici olarak pasifleşir, butonlar "Kaydet" / "Vazgeç"a dönüşür
+- **✕ buton farkı:**
+  - Katılımcı Listesi'ndeki ✕ → siyah background (border yok) → "maçtan çıkar" anlamında
+  - Takımlar tab'ındaki ✕ → gri → "takımdan çıkar ama maçta kalır" anlamında
+
+**CTA Butonları (yeni hiyerarşi):**
+- **Compact ikon butonları** (primary CTA'nın hemen üstünde, yan yana, %50/%50 genişlik):
+  - 👤 Davet Et + 💬 Maç Sohbeti — ikisi eşit genişlikte (flex:1), tüm katılımcılar ve host görür
+- **Primary CTA** (en altta, tam genişlik):
+  - Misafir: "Maça Katıl (X yer kaldı)" → tıklayınca **Seviye Seçim bottom sheet** açılır (aşağıya bak)
+  - Misafir (başvuru gönderilmişse): "✓ Başvuru Gönderildi" (disabled, accent border)
+  - Katılımcı/host planlama aşamasında: "▶ Maçı Başlat"
+  - Maç oynanıyorken: "Maçı Bitir"
+- **Üçüncül aksiyonlar** → başlık hizasındaki ⋮ menüsüne girer:
+  - Host: "Düzenle" + "Başvurular" (sadece onay modunda, → S13) + "Maçtan Çık"
+  - Katılımcı: "Maçtan Çık"
+
+**Misafir Katılım Akışı (Seviye Seçim):**
+- Misafir "Maça Katıl" butonuna basınca → **Seviye Seçim bottom sheet** açılır
+- Bottom sheet: "Seviyeni Seç" başlığı + "Maça katılmadan önce seviyeni belirle" açıklaması
+- 4 seviye seçeneği: Başlangıç / Orta / İyi / Profesyonel (tıkla-seç, tek seçim)
+- **Seviye seçildikten sonra:**
+  - Maç modu "open" (herkese açık) ise → "Katıl" butonu, tıklayınca direkt katılır
+  - Maç modu "approval" (onay gerekli) ise → "Başvur" butonu, tıklayınca başvuru gönderilir, CTA "Başvuru Gönderildi" olur
+- Seviye seçilmeden buton disabled kalır
 
 **Host Maçtan Çıkış Kuralı:**
-- Host "Maçtan Çık" butonuna basarsa: maça katılan katılımcılar arasından **en önce katılana** otomatik olarak host yetkisi devredilir
+- Host "Maçtan Çık" butonuna basarsa (⋮ menüden): maça katılan katılımcılar arasından **en önce katılana** otomatik olarak host yetkisi devredilir
 - Devir anında hem eski host'a hem yeni host'a bildirim gönderilir
 - Eğer başka katılımcı yoksa: maç otomatik iptal edilir
 
@@ -520,11 +558,13 @@ Ana Sayfa tab'ında:
 - İlerleme çubuğu (3 adım)
 
 **Adım 1 — Maç Detayları:**
-- Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı")
-- Açıklama textarea
+- Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı") — **zorunlu**
+- Açıklama textarea (placeholder: "Açıklama (min. 30 karakter)") — **zorunlu, minimum 30 karakter**
+  - Karakter sayacı sağ altta gösterilir (ör. "12/30")
 - Takımlar kaç kişilik?: Dropdown number picker (3–11 arası)
-- Tarih picker
-- Saat picker
+- Tarih picker — **zorunlu**
+- Saat picker — **zorunlu**
+- **Validation:** "Devam" butonuna basıldığında tüm zorunlu alanlar kontrol edilir. Boş/eksik alanlarda kırmızı border + hata mesajı gösterilir. Tüm alanlar geçerli olana kadar bir sonraki adıma geçilemez.
 - **Konum seçimi (opsiyonel):** Map picker açılır, pin atılır
   - **Seçenek 1 — "Saha Biliyorum":** Pin atar + saha adı girer
   - **Seçenek 2 — "Saha Önerisine Açığım":** Sadece semt/ilçe düzeyinde pin atar, saha adı boş bırakılır. Maç kartında "📍 Kadıköy — Saha belirlenecek" şeklinde görünür. Katılımcılar maç sohbetinde (S35) sahayı birlikte belirler. Host daha sonra maçı düzenleyerek kesin sahayı ekler.
@@ -824,7 +864,7 @@ Ana Sayfa tab'ında:
 
 #### S40: Puanlama (Maç Sonrası — Login gerekli)
 - **Amaç:** Maç sonrası MVP oylama
-- **Erişim:** S08'deki puanlanmamış maç kartı (turuncu border) veya bildirim
+- **Erişim:** S08 Maçlarım tab'ındaki puanlanmamış maç kartı (turuncu border) veya bildirim
 - **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
 - **Header:** ← Geri (→ S08) + "Puanlama" başlığı
 
@@ -839,7 +879,7 @@ Ana Sayfa tab'ında:
 - Oy vermeyenler hakkını kaybeder (ceza yok)
 - MVP oylaması 24 saat sonra otomatik kapanır
 
-**"Gönder" butonu** → puanlama tamamlandı → onay ekranı ("Maçlara Dön" butonu ile S08'e yönlendirilir) → S08'deki turuncu kart kalkar
+**"Gönder" butonu** → puanlama tamamlandı → onay ekranı ("Maçlara Dön" butonu ile S08'e yönlendirilir) → S08 Maçlarım tab'ındaki turuncu kart kalkar
 
 ---
 
@@ -958,7 +998,7 @@ Maçlar tab → FAB "+" → S31
 → Maçlar sekmesinde görünür (👁️ badge) → Başvurular/katılımlar gelir
 → Maç saati → "Maçı Başlat" → Canlı skor akışına geç
 → Maç saati geçtiyse: Maç hala başlatılabilir (24 saat boyunca)
-→ S08'de diğer kullanıcılara görünmez olur (🔒 badge), sadece katılımcılara görünür
+→ S08 Maç Bul tab'ından kaldırılır (🔒 badge), sadece Maçlarım tab'ında katılımcılara görünür
 → Host tarihi güncellerse → tekrar herkese görünür (👁️ badge)
 → 24 saat geçerse başlamamışsa → otomatik silinir, bildirim gider
 ```
@@ -1001,7 +1041,7 @@ Maç sırasında app kapanır → State otomatik kaydedilmiş
 
 ### Akış 8: Maç Sonrası Puanlama
 ```
-Maç biter → Kaydet → S08'de turuncu border'lı kart çıkar
+Maç biter → Kaydet → S08 Maçlarım tab'ında turuncu border'lı kart çıkar
 → Tıkla → S40 Puanlama sayfası
 → MVP oylaması
 → Gönder → Kart S08'den kalkar
@@ -1020,7 +1060,7 @@ S12 veya S31 → "Oyuncu Davet Et" → S41
 ### Akış 10: Geçmiş Tarihli Başlamamış Maç
 ```
 Maç saati geçer → Maç hala başlamamış
-→ S08'de diğer kullanıcılara görünmez olur (🔒 badge)
+→ S08 Maç Bul tab'ından kaldırılır (🔒 badge), Maçlarım tab'ında katılımcılara görünür
 → Katılımcılar hala S12'den maçı görebilir + başlatabilir
 → Davet linki ile de erişilebilir
 → Host tarihi gelecek bir tarihe güncellerse → tekrar herkese görünür (👁️ badge)
@@ -1073,15 +1113,15 @@ Maç saati geçer → Maç hala başlamamış
 ### Başlamamış Maçların Yaşam Döngüsü
 
 **Maç saati geçmeden önce (normal durum):**
-- Maç S08'de "Açık maçlar" bölümünde herkese görünür (gizlilik ayarına göre)
+- Maç S08 Maç Bul tab'ında herkese görünür (gizlilik ayarına göre)
 - Görünürlük badge'i: 👁️ "Herkese Görünür" (veya gizlilik ayarına göre ilgili badge)
 - Host ve katılımcılar maçı düzenleyebilir, başlatabilir
 
 **Maç saati geçtikten sonra (başlamamış maç):**
-- Maç S08'deki açık maçlar listesinden **otomatik olarak kaldırılır** — diğer kullanıcılara gösterilmez
+- Maç S08 Maç Bul tab'ından **otomatik olarak kaldırılır** — diğer kullanıcılara gösterilmez
 - Görünürlük badge'i 🔒 "Sadece Katılımcılara" olarak güncellenir
 - Maç **sadece şu yollarla erişilebilir:**
-  1. Maçın katılımcıları → S08'de "Katıldığım maçlar" bölümünde turuncu-sarı uyarı border ile görünür
+  1. Maçın katılımcıları → S08 Maçlarım tab'ında turuncu-sarı uyarı border ile görünür
   2. Davet linki (deep link) ile — link sahibi maçı görüntüleyebilir
 - S12'de "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı gösterilir
 - Otomatik silinmeye kalan süre gösterilir: "Kalan süre: Xsa Xdk"
@@ -1089,7 +1129,7 @@ Maç saati geçer → Maç hala başlamamış
 
 **Host tarihi güncellerse:**
 - Host "Maçı Düzenle" ile tarihi **gelecek bir tarihe** güncellerse:
-  - Maç tekrar S08'de herkese görünür olur
+  - Maç tekrar S08 Maç Bul tab'ında herkese görünür olur
   - Görünürlük badge'i 👁️ "Herkese Görünür" olarak güncellenir
   - "⏰ Maç saati geçti" banner'ı kalkar
   - Tüm katılımcılara reschedule bildirimi gider (mevcut davranış)

@@ -31,10 +31,10 @@ const U=[
 const uf=id=>U.find(u=>u.id===id);
 
 const PLANNED=[
-  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:"Kadıköy Arena",fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendJoined:null},
-  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var.",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendJoined:"Emre"},
-  {id:103,title:"Ataşehir Turnuva",date:"5 Mar",time:"19:00",loc:null,fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendJoined:"Ali"},
-  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendJoined:null},
+  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:"Kadıköy Arena",fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendsInMatch:[]},
+  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var. Seviye fark etmez herkes gelsin.",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Emre"]},
+  {id:103,title:"Ataşehir Turnuva",desc:"Ataşehir'de düzenlenen hafta sonu turnuvası, kayıt ücretsiz.",date:"5 Mar",time:"19:00",loc:null,fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Ali","Emre"]},
+  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[]},
 ];
 
 const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:"Kadıköy Spor",sc:[3,2],host:4}];
@@ -75,24 +75,53 @@ function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{
 
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 
-// S08: Matches Page
+// S08: Matches Page (2 tabs: Maç Bul | Maçlarım)
 function S08({onNav,showUnrated,hasActiveWidget}){
+  const [activeTab,setActiveTab]=useState("find"); // "find" | "mine"
   const [filter,setFilter]=useState(false);
+  const cities=["İstanbul","Ankara","İzmir","Bursa","Antalya","Adana"];
+  const [city,setCity]=useState("İstanbul"); // default: kullanıcının profil şehri
+  const [cityOpen,setCityOpen]=useState(false);
   const districts=["Tümü","Kadıköy","Beşiktaş","Üsküdar","Ataşehir","Maltepe","Bakırköy","Şişli","Beylikdüzü","Kartal","Pendik","Sarıyer","Fatih","Bağcılar","Küçükçekmece"];
   const [district,setDistrict]=useState("Tümü");
   const [districtOpen,setDistrictOpen]=useState(false);
   const [dateFilter,setDateFilter]=useState(null);
-  const [viewFilter,setViewFilter]=useState("Tümü");
+
+  const openMatches=PLANNED.filter(m=>!m.myMatch);
+  const myMatches=PLANNED.filter(m=>m.myMatch);
 
   return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
-    <div style={{position:"sticky",top:32,zIndex:50,padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
-      <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
-      <span onClick={()=>{setFilter(!filter);setDistrictOpen(false);}} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
+    <div style={{position:"sticky",top:32,zIndex:50,background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
+      <div style={{padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
+        {activeTab==="find"&&<div style={{display:"flex",alignItems:"center",gap:8}}>
+          {/* City dropdown */}
+          <div style={{position:"relative"}}>
+            <div onClick={()=>{setCityOpen(!cityOpen);setDistrictOpen(false);}} style={{display:"flex",alignItems:"center",gap:4,padding:"6px 10px",borderRadius:8,border:`1px solid ${cityOpen?T.accent:T.cardBorder}`,cursor:"pointer",background:cityOpen?`${T.accent}08`:"transparent",transition:"all .2s"}}>
+              {I.pin(cityOpen?T.accent:T.textDim)}
+              <span style={{fontSize:12,fontWeight:600,color:cityOpen?T.accent:T.text}}>{city}</span>
+              <span style={{fontSize:9,color:T.textDim,transform:cityOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+            </div>
+            {cityOpen&&<div style={{position:"absolute",right:0,top:38,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:4,minWidth:140,zIndex:100,boxShadow:"0 8px 24px rgba(0,0,0,.25)",maxHeight:220,overflowY:"auto"}}>
+              {cities.map(c=><div key={c} onClick={()=>{setCity(c);setCityOpen(false);}} style={{padding:"10px 12px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",fontSize:13,fontWeight:city===c?700:500,color:city===c?T.accent:T.text}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                <span>{c}</span>
+                {city===c&&<span style={{fontSize:12,color:T.accent}}>✓</span>}
+              </div>)}
+            </div>}
+          </div>
+          {/* Filter icon */}
+          <span onClick={()=>{setFilter(!filter);setDistrictOpen(false);setCityOpen(false);}} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
+        </div>}
+      </div>
+      {/* Tabs */}
+      <div style={{display:"flex",padding:"0 16px"}}>
+        {[{id:"find",label:"Maç Bul"},{id:"mine",label:"Maçlarım"}].map(tab=><div key={tab.id} onClick={()=>{setActiveTab(tab.id);if(tab.id==="mine")setFilter(false);}} style={{flex:1,textAlign:"center",padding:"10px 0",fontSize:13,fontWeight:700,color:activeTab===tab.id?T.accent:T.textDim,borderBottom:activeTab===tab.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{tab.label}</div>)}
+      </div>
     </div>
 
-    {/* Filter popup */}
-    {filter&&<div style={{margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:16}}>
+    {/* Filter popup (only Maç Bul tab) */}
+    {activeTab==="find"&&filter&&<div style={{margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:16}}>
       {/* İlçe */}
       <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
       <div onClick={()=>setDistrictOpen(!districtOpen)} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",borderRadius:10,border:`1.5px solid ${districtOpen?T.accent:T.cardBorder}`,background:T.bg,marginBottom:districtOpen?0:16}}>
@@ -110,42 +139,49 @@ function S08({onNav,showUnrated,hasActiveWidget}){
       <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Tarih</div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{["Bugün","Bu hafta","Bu ay"].map(d=><span key={d} onClick={()=>setDateFilter(dateFilter===d?null:d)} style={{display:"inline-flex",alignItems:"center",padding:"6px 12px",borderRadius:20,fontSize:12,fontWeight:600,color:dateFilter===d?"#0D0D0D":T.textDim,background:dateFilter===d?T.accent:`${T.textDim}18`,cursor:"pointer",transition:"all .2s"}}>{d}</span>)}</div>
 
-      {/* Görünüm */}
-      <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Görünüm</div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{["Tümü","Katıldıklarım"].map(d=><span key={d} onClick={()=>setViewFilter(d)} style={{display:"inline-flex",alignItems:"center",padding:"6px 12px",borderRadius:20,fontSize:12,fontWeight:600,color:viewFilter===d?"#0D0D0D":T.textDim,background:viewFilter===d?T.accent:`${T.textDim}18`,cursor:"pointer",transition:"all .2s"}}>{d}</span>)}</div>
-
-      <div style={{display:"flex",gap:8}}><Btn small primary full onClick={()=>setFilter(false)}>Uygula</Btn><Btn small ghost onClick={()=>{setDistrict("Tümü");setDateFilter(null);setViewFilter("Tümü");}}>Sıfırla</Btn></div>
+      <div style={{display:"flex",gap:8}}><Btn small primary full onClick={()=>setFilter(false)}>Uygula</Btn><Btn small ghost onClick={()=>{setDistrict("Tümü");setDateFilter(null);}}>Sıfırla</Btn></div>
     </div>}
 
-    {/* Unrated matches */}
-    {showUnrated&&UNRATED.length>0&&<div>
-      {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:`${T.orange}14`,borderRadius:0,borderLeft:`4px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
-        {/* Badge */}
-        <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star("#fff")} Değerlendir</Badge></div>
-        {/* Title + skor */}
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
-          <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
-          <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.orange,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
-        </div>
-        {/* Tarih · Konum */}
-        <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
-          <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-          {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
-        </div>
-      </div>)}
-      <div style={{height:8,background:T.bgAlt}}/>
-    </div>}
-
-    {/* All matches — no section split */}
-    <div>
-      {PLANNED.length>0
-        ? PLANNED.map((m,i)=><>
+    {/* === Maç Bul tab === */}
+    {activeTab==="find"&&<div>
+      {openMatches.length>0
+        ? openMatches.map((m,i)=><>
             {i>0&&<div key={`div-${m.id}`} style={{height:8,background:T.bgAlt}}/>}
-            <MatchListCard key={m.id} m={m} onNav={onNav} isMine={m.myMatch}/>
+            <MatchListCard key={m.id} m={m} onNav={onNav} isMine={false}/>
           </>)
-        : <div style={{textAlign:"center",padding:"32px 0"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
+        : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
       }
-    </div>
+    </div>}
+
+    {/* === Maçlarım tab === */}
+    {activeTab==="mine"&&<div>
+      {/* Unrated matches (top) */}
+      {showUnrated&&UNRATED.length>0&&<div>
+        {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:`${T.orange}14`,borderRadius:0,borderLeft:`4px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
+          <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star("#fff")} Değerlendir</Badge></div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
+            <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
+            <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.orange,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
+          </div>
+          <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
+            <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
+            {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
+          </div>
+        </div>)}
+        <div style={{height:8,background:T.bgAlt}}/>
+      </div>}
+
+      {/* My matches */}
+      {myMatches.length>0
+        ? myMatches.map((m,i)=><>
+            {i>0&&<div key={`div-${m.id}`} style={{height:8,background:T.bgAlt}}/>}
+            <MatchListCard key={m.id} m={m} onNav={onNav} isMine={true}/>
+          </>)
+        : !showUnrated||UNRATED.length===0
+          ? <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:15,fontWeight:600,color:T.textDim,marginBottom:6}}>Henüz bir maça katılmadın.</div><div style={{fontSize:13,color:T.textMuted,lineHeight:1.5}}>Açık maçlara göz at ve ilk maçına katıl!</div></div>
+          : null
+      }
+    </div>}
 
   </div>;
 }
@@ -158,12 +194,17 @@ function MatchListCard({m,onNav,isMine}){
   const levelColor = m.level && m.level !== "Herkes" ? T.orange : T.textDim;
   const acceptLabel = m.mode === "approval" ? "Onay gerekli" : "Açık";
   const acceptColor = m.mode === "approval" ? T.purple : T.textDim;
+  const friends=m.friendsInMatch||[];
   const statusBadge = isMine
     ? <Badge c={T.accent}>{I.check("#fff")} Katılıyorsun</Badge>
     : null;
   return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:isMine?`${T.accent}14`:"none",borderRadius:0,borderLeft:isMine?`4px solid ${T.accent}`:`4px solid ${T.cardBorder}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
     {/* Status row */}
     {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
+    {/* Friend badge (Maç Bul tab) */}
+    {!isMine&&friends.length>0&&<div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+      <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"3px 10px",borderRadius:20,fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}14`}}>{I.users(T.accent)} Takip ettiğin {friends.length} kişi bu maçta</span>
+    </div>}
     {/* Title row */}
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
       <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
@@ -463,6 +504,10 @@ function BackLink({onClick}){
 
 function S31({onNav}){
   const [step,setStep]=useState(0);
+  const [matchName,setMatchName]=useState("");
+  const [description,setDescription]=useState("");
+  const [dateVal,setDateVal]=useState("");
+  const [timeVal,setTimeVal]=useState("");
   const [teamSize,setTeamSize]=useState(6);
   const [locQuery,setLocQuery]=useState("");
   const [selectedLoc,setSelectedLoc]=useState(null);
@@ -471,6 +516,7 @@ function S31({onNav}){
   const [accept,setAccept]=useState("open");
   const [level,setLevel]=useState("Herkes");
   const [invites,setInvites]=useState([]);
+  const [attempted,setAttempted]=useState(false);
 
   const teamSizeOptions=[3,4,5,6,7,8,9,10,11];
   const privacyOpts=[{id:"public",l:"Herkese açık"},{id:"followers",l:"Sadece takipçilere"},{id:"invite",l:"Sadece davet ile"}];
@@ -501,12 +547,17 @@ function S31({onNav}){
     {/* Step 1: Details + Date & Location (birleştirildi) */}
     {step===0&&<>
       {/* Maç adı */}
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:12}}>
-        <input placeholder="Cumartesi Halısaha Maçı" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
+      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&!matchName.trim()?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted&&!matchName.trim()?4:12}}>
+        <input value={matchName} onChange={e=>setMatchName(e.target.value)} placeholder="Cumartesi Halısaha Maçı" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
       </div>
+      {attempted&&!matchName.trim()&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:12,paddingLeft:4}}>Maç adı zorunludur</div>}
       {/* Açıklama */}
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20,minHeight:72}}>
-        <textarea placeholder="Açıklama" rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
+      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&description.trim().length<30?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted&&description.trim().length<30?4:20,minHeight:72}}>
+        <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Açıklama (min. 30 karakter)" rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:attempted&&description.trim().length<30?4:20,marginTop:attempted&&description.trim().length<30?0:-16}}>
+        {attempted&&description.trim().length<30?<div style={{fontSize:11,color:T.red,fontWeight:600,paddingLeft:4}}>Açıklama en az 30 karakter olmalı</div>:<span/>}
+        <span style={{fontSize:11,color:description.trim().length>=30?T.textMuted:T.textDim,fontWeight:500}}>{description.trim().length}/30</span>
       </div>
       {/* Takım kişi sayısı */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
@@ -520,14 +571,15 @@ function S31({onNav}){
       </div>
       {/* Tarih & Saat */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Tarih & Saat</div>
-      <div style={{display:"flex",gap:8,marginBottom:20}}>
-        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px"}}>
-          <input type="date" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
+      <div style={{display:"flex",gap:8,marginBottom:attempted&&(!dateVal||!timeVal)?4:20}}>
+        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&!dateVal?T.red:T.cardBorder}`,padding:"12px 16px"}}>
+          <input type="date" value={dateVal} onChange={e=>setDateVal(e.target.value)} style={{background:"none",border:"none",color:dateVal?T.text:T.textDim,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
         </div>
-        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px"}}>
-          <input type="time" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
+        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&!timeVal?T.red:T.cardBorder}`,padding:"12px 16px"}}>
+          <input type="time" value={timeVal} onChange={e=>setTimeVal(e.target.value)} style={{background:"none",border:"none",color:timeVal?T.text:T.textDim,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
         </div>
       </div>
+      {attempted&&(!dateVal||!timeVal)&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:20,paddingLeft:4}}>{!dateVal&&!timeVal?"Tarih ve saat zorunludur":!dateVal?"Tarih zorunludur":"Saat zorunludur"}</div>}
       {/* Konum */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Konum</div>
       {!selectedLoc&&!locSkipped?<div style={{marginBottom:28}}>
@@ -558,7 +610,7 @@ function S31({onNav}){
           <span onClick={()=>setLocSkipped(false)} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Ekle</span>
         </div>
       </div>}
-      <Btn primary full onClick={()=>setStep(1)} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
+      <Btn primary full onClick={()=>{setAttempted(true);if(matchName.trim()&&description.trim().length>=30&&dateVal&&timeVal)setStep(1);}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
       {!selectedLoc&&!locSkipped&&<div onClick={()=>setLocSkipped(true)} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500}}>Konumu sonra belirle →</div>}
     </>}
 
