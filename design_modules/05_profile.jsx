@@ -310,25 +310,35 @@ function S15({onNav}){
     </div>
 
     {/* Profile top */}
-    <div style={{padding:"8px 16px 0",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      <Av i={u.av} img={u.img} s={80} c={T.accent}/>
-      <div style={{marginTop:12,display:"flex",alignItems:"center",gap:6}}>
-        <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
-        {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
+    <div style={{padding:"12px 16px 0",display:"flex",alignItems:"flex-start",gap:16}}>
+      <Av i={u.av} img={u.img} s={80} c={T.accent} st={{flexShrink:0}}/>
+      {/* Sağ kolon: isim → stats */}
+      <div style={{flex:1,minWidth:0}}>
+        {/* İsim + username */}
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
+          <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
+          {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
+        </div>
+        {/* Stats */}
+        <div style={{display:"flex",gap:28,marginTop:8}}>
+          <div style={{textAlign:"left",cursor:"pointer"}}>
+            <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Mac</div>
+            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.matches}</div>
+          </div>
+          <div onClick={()=>onNav("S22",{tab:"followers"})} style={{textAlign:"left",cursor:"pointer"}}>
+            <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Takipci</div>
+            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.followers}</div>
+          </div>
+          <div onClick={()=>onNav("S22",{tab:"following"})} style={{textAlign:"left",cursor:"pointer"}}>
+            <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Takip Edilen</div>
+            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div>
+          </div>
+        </div>
       </div>
-      <div style={{fontSize:13,color:T.textDim,marginTop:2}}>@{u.un}</div>
-
-      {/* Stats row */}
-      <div style={{display:"flex",gap:28,marginTop:16}}>
-        <div style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.matches}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Mac</div></div>
-        <div onClick={()=>onNav("S22",{tab:"followers"})} style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.followers}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Takipci</div></div>
-        <div onClick={()=>onNav("S22",{tab:"following"})} style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Takip</div></div>
-      </div>
-
     </div>
+    {/* Bio — avatar + stats bloğunun altında */}
+    {u.bio&&<div style={{padding:"10px 16px 0",fontSize:13,color:T.textDim,lineHeight:1.5}}>{u.bio}</div>}
 
-    {/* Bio */}
-    {u.bio&&<div style={{padding:"12px 16px 0",fontSize:13,color:T.textDim,lineHeight:1.4}}>{u.bio}</div>}
 
     {/* Pano */}
     <div style={{padding:"16px 16px 0",display:"flex",gap:8}}>
@@ -336,9 +346,9 @@ function S15({onNav}){
         {id:"stats",ic:I.chart,l:"İstatistikler",c:T.accent},
         {id:"badges",ic:I.trophy,l:"Başarılar",c:T.gold},
         {id:"calendar",ic:I.calendar,l:"Takvim",c:T.purple},
-      ].map(card=><div key={card.id} onClick={()=>setPanelOpen(panelOpen===card.id?null:card.id)} style={{flex:1,background:panelOpen===card.id?`${card.c}15`:T.card,border:`1px solid ${panelOpen===card.id?card.c:T.cardBorder}`,borderRadius:12,padding:"14px 8px",textAlign:"center",cursor:"pointer",transition:"all .2s"}}>
-        <div style={{display:"flex",justifyContent:"center",marginBottom:6}}>{card.ic(card.c)}</div>
-        <div style={{fontSize:11,fontWeight:600,color:panelOpen===card.id?card.c:T.textDim}}>{card.l}</div>
+      ].map(card=><div key={card.id} onClick={()=>setPanelOpen(panelOpen===card.id?null:card.id)} style={{flex:1,background:panelOpen===card.id?`${card.c}15`:T.card,border:`1px solid ${panelOpen===card.id?card.c:T.cardBorder}`,borderRadius:12,padding:"12px 16px",cursor:"pointer",transition:"all .2s",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+        <span style={{display:"flex"}}>{card.ic(card.c)}</span>
+        <span style={{fontSize:11,fontWeight:600,color:panelOpen===card.id?card.c:T.textDim}}>{card.l}</span>
       </div>)}
     </div>
 
@@ -377,9 +387,9 @@ function S15({onNav}){
     </div>}
 
     {/* Match post feed */}
-    <div style={{padding:"20px 16px 0"}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Mac Postlari</div>
-      {posts.map((p,i)=><div key={p.id}>{i>0&&<div style={{height:8,background:T.bgAlt}}/>}<PostCard p={p} isOwn={true} onMenuAction={handlePostMenu} onNav={onNav}/></div>)}
+    <div style={{marginTop:20}}>
+      <div style={{height:8,background:T.bgAlt}}/>
+      {posts.map((p,i)=><div key={p.id}><PostCard p={p} isOwn={true} onMenuAction={handlePostMenu} onNav={onNav}/>{i<posts.length-1&&<div style={{height:8,background:T.bgAlt}}/>}</div>)}
       {posts.length===0&&<div style={{textAlign:"center",padding:40,color:T.textMuted,fontSize:13}}>Henuz post yok</div>}
     </div>
 
@@ -426,41 +436,48 @@ function S16({onNav,userId}){
     </div>
 
     {/* Profile top */}
-    <div style={{padding:"8px 16px 0",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      <Av i={u.av} img={u.img} s={80} c={T.accent}/>
-      <div style={{marginTop:12,display:"flex",alignItems:"center",gap:6}}>
-        <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
-        {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
+    <div style={{padding:"12px 16px 0",display:"flex",alignItems:"flex-start",gap:16}}>
+      <Av i={u.av} img={u.img} s={80} c={T.accent} st={{flexShrink:0}}/>
+      {/* Sağ kolon: isim → stats */}
+      <div style={{flex:1,minWidth:0}}>
+        {/* İsim + username */}
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
+          <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
+          {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
+        </div>
+        {/* Stats */}
+        <div style={{display:"flex",gap:28,marginTop:8}}>
+          <div style={{textAlign:"left"}}>
+            <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Mac</div>
+            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.matches}</div>
+          </div>
+          <div onClick={()=>onNav("S22",{tab:"followers",uid:u.id})} style={{textAlign:"left",cursor:"pointer"}}>
+            <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Takipci</div>
+            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.followers}</div>
+          </div>
+          <div onClick={()=>onNav("S22",{tab:"following",uid:u.id})} style={{textAlign:"left",cursor:"pointer"}}>
+            <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Takip Edilen</div>
+            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div>
+          </div>
+        </div>
       </div>
-      <div style={{fontSize:13,color:T.textDim,marginTop:2}}>@{u.un}</div>
-
-      {/* Stats row */}
-      <div style={{display:"flex",gap:28,marginTop:16}}>
-        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.matches}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Mac</div></div>
-        <div onClick={()=>onNav("S22",{tab:"followers",uid:u.id})} style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.followers}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Takipci</div></div>
-        <div onClick={()=>onNav("S22",{tab:"following",uid:u.id})} style={{textAlign:"center",cursor:"pointer"}}><div style={{fontSize:18,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div><div style={{fontSize:11,color:T.textDim,fontWeight:600}}>Takip</div></div>
-      </div>
-
-      {/* Mutual label */}
-      {isMutual&&followState==="following"&&<Badge c={T.green} st={{marginTop:8}}>Arkadas</Badge>}
     </div>
-
     {/* Bio */}
-    {u.bio&&<div style={{padding:"12px 16px 0",fontSize:13,color:T.textDim,lineHeight:1.4}}>{u.bio}</div>}
+    {u.bio&&<div style={{padding:"10px 16px 0",fontSize:13,color:T.textDim,lineHeight:1.5}}>{u.bio}</div>}
 
     {/* Follow + action buttons */}
-    <div style={{padding:"16px 16px 0",display:"flex",gap:8}}>
+    <div style={{padding:"16px 16px 0",display:"flex",gap:12}}>
       {followState==="not_following"?
-        <Btn full primary onClick={()=>setFollowState("following")}>{I.users(T.bg)} Takip Et</Btn>:
-        <Btn full onClick={()=>setUnfollowConfirm(true)} st={{flex:1}}>{I.check(T.accent)} Takip Ediliyor</Btn>
+        <Btn primary onClick={()=>setFollowState("following")} st={{flex:1,padding:"12px 16px"}}>{I.users(T.bg)} Takip Et</Btn>:
+        <Btn onClick={()=>setUnfollowConfirm(true)} st={{flex:1,padding:"12px 16px"}}>{I.check(T.accent)} Takip Ediliyor</Btn>
       }
-      <Btn onClick={()=>onNav("S18")} st={{flex:1}}>{I.chat(T.text)} Mesaj Gonder</Btn>
+      <Btn onClick={()=>onNav("S18")} st={{flex:1,padding:"12px 16px"}}>{I.chat(T.text)} Mesaj Gonder</Btn>
     </div>
 
     {/* Match post feed */}
-    <div style={{padding:"20px 16px 0"}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:12}}>Mac Postlari</div>
-      {userPosts.map((p,i)=><div key={p.id}>{i>0&&<div style={{height:8,background:T.bgAlt}}/>}<PostCard p={p} isOwn={false} onNav={onNav}/></div>)}
+    <div style={{marginTop:20}}>
+      <div style={{height:8,background:T.bgAlt}}/>
+      {userPosts.map((p,i)=><div key={p.id}><PostCard p={p} isOwn={false} onNav={onNav}/>{i<userPosts.length-1&&<div style={{height:8,background:T.bgAlt}}/>}</div>)}
       {userPosts.length===0&&<div style={{textAlign:"center",padding:40,color:T.textMuted,fontSize:13}}>Henuz post yok</div>}
     </div>
 
