@@ -555,44 +555,44 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 #### S31: Maç Oluştur (İleri Tarihli — Login gerekli)
 - **Amaç:** Gelecek tarihli maç planla, oyuncu topla
 - **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu ( S31'e gider)
-- İlerleme çubuğu (3 adım)
+- İlerleme çubuğu (2 adım)
 
-**Adım 1 — Maç Detayları:**
-- Maç başlığı input (placeholder: "Cumartesi Halısaha Maçı") — **zorunlu**
-- Açıklama textarea (placeholder: "Açıklama (min. 30 karakter)") — **zorunlu, minimum 30 karakter**
-  - Karakter sayacı sağ altta gösterilir (ör. "12/30")
-- Takımlar kaç kişilik?: Dropdown number picker (3–11 arası)
-- Tarih picker — **zorunlu**
-- Saat picker — **zorunlu**
-- **Validation:** "Devam" butonuna basıldığında tüm zorunlu alanlar kontrol edilir. Boş/eksik alanlarda kırmızı border + hata mesajı gösterilir. Tüm alanlar geçerli olana kadar bir sonraki adıma geçilemez.
-- **Konum seçimi (opsiyonel):** Map picker açılır, pin atılır
-  - **Seçenek 1 — "Saha Biliyorum":** Pin atar + saha adı girer
-  - **Seçenek 2 — "Saha Önerisine Açığım":** Sadece semt/ilçe düzeyinde pin atar, saha adı boş bırakılır. Maç kartında "📍 Kadıköy — Saha belirlenecek" şeklinde görünür. Katılımcılar maç sohbetinde (S35) sahayı birlikte belirler. Host daha sonra maçı düzenleyerek kesin sahayı ekler.
-  - **Seçenek 3 — "Konumsuz Devam Et":** Konum belirtmeden maç oluştur. Maç kartında konum gösterilmez, sohbette belirlenir.
-- **Buton sırası:** "Devam" birincil butonu önce, altında "Konumu sonra belirle →" ikincil link — konum seçilmemişken görünür, seçilince gizlenir
+**Adım 1 — Maç Oluştur:**
+- Sol üstte geri butonu (S08 Maçlar sayfasına döner)
+- **Konum seçimi — zorunlu:**
+  - Map picker / saha arama (isim veya adres ile arama)
+  - Seçilen konum yeşil border ile gösterilir, "Değiştir" linki ile değiştirilebilir
+  - **"Konumu sonra belirle →"** linki — sola hizalı, konum seçilmemişken görünür. Tıklanınca "Konum sonra belirlenecek" durumu gösterilir, "Ekle" linki ile geri dönülebilir (geri dönünce validation sıfırlanır)
+  - **Validation:** Konum seçilmeden veya "sonra belirle" seçilmeden "Devam"a basılırsa kırmızı hata mesajı gösterilir. "Ekle" butonuna basınca validation sıfırlanır (hata kaybolur)
+- **Tarih** (Date picker) — **zorunlu, varsayılan: bugünün tarihi**
+- **Saat** (Time picker) — **zorunlu, varsayılan: şu anki saat**
+- **Kontenjan:** Dropdown number picker — **zorunlu, varsayılan: 10 kişi**
+  - Seçenekler: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, ∞ Limitsiz
+  - Dropdown genişliği Saat input'u ile aynı (sağa hizalı, `width: calc(50% - 4px)`)
+- **Validation:** "Devam" butonuna basıldığında konum durumu kontrol edilir (tarih, saat ve kontenjan varsayılan değerle geldiği için her zaman geçerlidir). Eksik alanlarda kırmızı border + hata mesajı gösterilir.
+- **"Devam"** butonu (Adım 2'ye geçer)
 
-**Adım 2 — Katılım Ayarları:**
-- Deneyim seviyesi tercihi (pill: Herkes / Başlangıç / Orta / İyi / Profesyonel) — **varsayılan: "Herkes" seçili**
-- Kabul modu:
-  - "Herkesi Kabul Et" — ilk gelen alır
+**Adım 2 — Maç Detayları:**
+- Sol üstte geri butonu (Adım 1'e döner)
+- **Başlık** input (placeholder: "Cumartesi Halısaha Maçı") — **zorunlu**
+- **Açıklama** textarea (placeholder: "Maç hakkında detay yazın...") — **zorunlu**
+- **Kabul Modu:**
+  - "Herkesi Kabul Et" (varsayılan) — ilk gelen alır
   - "Onay ile Kabul Et" — başvuruları sen onaylarsın
-- Gizlilik ayarı (saha bilgisinden bağımsız, her durumda seçilebilir):
-  - "Herkese açık" — Maçlar sekmesinde görünür
-  - "Sadece takipçilere" — sadece takipçilerin görebilir
-  - "Sadece davet ile" — link paylaşarak katılım
-- Seviye tercihi, Kabul Modu ve Gizlilik seçim elementleri aynı stil: `borderRadius:12, padding:"10px 16px"`, seçilince accent border + accent renkli metin
-- "Devam" butonu
+- **Gizlilik:**
+  - "Herkese Açık" (varsayılan) — Maçlar sekmesinde görünür
+  - "Sadece Takipçiler" — sadece takipçilerin görebilir
+  - "Sadece Davet" — link paylaşarak katılım
+- Kabul Modu ve Gizlilik seçim elementleri aynı stil: `borderRadius:12`, seçilince accent border + accent renkli metin
+- **Gizlilik 3 seçenek yan yana:** `flex:1` ile eşit genişlikte, tek satırda (wrap yok), `fontSize:12, padding:"10px 8px", textAlign:"center"`
+- **Validation:** "Oluştur" butonuna basıldığında başlık ve açıklama kontrol edilir. Boş alanlarda kırmızı border + hata mesajı gösterilir.
+- **"Oluştur"** butonu — maç oluşturulur ve S12'ye yönlendirilir
 
-**Adım 3 — Davet (opsiyonel):**
-- "Arkadaşlarını Davet Et" — arkadaş listesi (takip edilenler), her profil yanında "Davet Et" butonu
-- Davet gönderilince buton: yeşil tik ikonu + **"Davet Edildi"** (accent renk border + accent renk metin)
-- **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez, diğer kişilere cooldown'sız davet atılabilir
-- **"Yayınla 📢"** butonu (Atla linki yok — adım atlanmak isteniyorsa direkt Yayınla'ya basılır)
-
-**Yayınla sonrası:**
+**Oluştur sonrası:**
 - Host, S12 Planlanan Maç Detay sayfasına yönlendirilir
 - Maç sohbeti (S35) otomatik oluşturulur
 - Deep link üretilir (sporwave.app/mac/XXXX) — WhatsApp, Instagram, SMS ile paylaşılabilir
+- Host, S12'deki "Davet Et" butonu ile arkadaşlarını davet edebilir (S41 drawer açılır)
 - Davet edilen kişilere bildirim + 1-1 sohbette davet kartı gider
 
 ---
@@ -883,22 +883,23 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ---
 
-### BÖLÜM 11: OYUNCU DAVET (1 sayfa)
+### BÖLÜM 11: OYUNCU DAVET (inline drawer)
 
-#### S41: Oyuncu Davet (Bottom Sheet — Login gerekli)
-- **Erişim:** S12'deki "Oyuncu Davet Et" butonu veya S31 Adım 3 (Davet adımı)
+#### S41: Oyuncu Davet (S12 içinde Inline Drawer — Login gerekli)
+- **Erişim:** S12 Planlanan Maç Detay sayfasındaki "Davet Et" butonu (bottom sheet drawer olarak açılır)
+- **Not:** Standalone sayfa değil, S12 içinde inline drawer olarak çalışır
+- Başlık: "Oyuncu Davet Et"
+- Arama çubuğu (isim/@kullanıcıadı ile filtrele)
 - Arkadaş listesi (takip edilenler + karşılıklı takipler):
-  - Her satır: Avatar + isim + @kullanıcıadı
+  - Her satır: Avatar + isim + @kullanıcıadı + katılım yüzdesi
   - "Davet Et" butonu (sağda)
-- "Davet Et"e basınca buton "Gönderildi ✓" olur
+- "Davet Et"e basınca buton "Gönderildi" olur (yeşil renk)
 - **Kullanıcı bazlı 15 sn cooldown:** Aynı kişiye 15 sn içinde tekrar davet gönderilemez. Diğer kişilere cooldown'sız davet atılabilir.
 - Davet gönderilince:
   - Davet edilen kişiye **bildirim** gider
   - Davet eden ve davet edilen kişinin **1-1 sohbetine** (S18) otomatik davet kartı düşer: "📩 Berk seni **Cumartesi Halısaha Maçı**'na davet etti — [Detayları Gör]"
   - Davet edilen kişi S12'den normal şekilde "Katıl" butonuyla katılır
 - **Not:** S12'de veya katılımcı listesinde "Davetli" statüsü gösterilmez — ya katılmıştır ya katılmamıştır.
-- Arama çubuğu (isim/@kullanıcıadı ile filtrele)
-- Back butonu
 
 ---
 
@@ -1050,7 +1051,7 @@ Maç biter → Kaydet → S08 Maçlarım tab'ında turuncu border'lı kart çık
 
 ### Akış 9: Uygulama İçi Maç Daveti
 ```
-S12 veya S31 → "Oyuncu Davet Et" → S41
+S12 → "Oyuncu Davet Et" → S41
 → Arkadaş listesinden "Davet Et" butonuna bas
 → 1-1 sohbette davet kartı düşer + bildirim gider
 → Davet edilen "Detayları Gör" → S12 → "Katıl"

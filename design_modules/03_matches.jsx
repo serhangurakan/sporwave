@@ -485,7 +485,7 @@ function S14({onNav}){
   </div>;
 }
 
-// S31: Create Match (4 Steps)
+// S31: Create Match (2 Steps)
 const LOC_RESULTS=[
   {id:"l1",name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy"},
   {id:"l2",name:"Kadıköy Arena Halısaha",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy"},
@@ -494,7 +494,9 @@ const LOC_RESULTS=[
   {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir"},
 ];
 
-const S31_STEP_TITLES=["Maç Oluştur","Katılım Ayarları","Arkadaşlarını Davet Et"];
+const S31_STEP_TITLES=["Maç Oluştur","Maç Detayları"];
+
+const QUOTA_OPTIONS=[2,4,6,8,10,12,14,16,18,20,22,"∞"];
 
 function BackLink({onClick}){
   return <div onClick={onClick} style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500,marginBottom:8,marginTop:20,padding:"4px 0"}}>
@@ -503,87 +505,57 @@ function BackLink({onClick}){
 }
 
 function S31({onNav}){
+  const now=new Date();
+  const todayStr=now.toISOString().split("T")[0];
+  const nowTime=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+
   const [step,setStep]=useState(0);
-  const [matchName,setMatchName]=useState("");
-  const [description,setDescription]=useState("");
-  const [dateVal,setDateVal]=useState("");
-  const [timeVal,setTimeVal]=useState("");
-  const [teamSize,setTeamSize]=useState(6);
   const [locQuery,setLocQuery]=useState("");
   const [selectedLoc,setSelectedLoc]=useState(null);
   const [locSkipped,setLocSkipped]=useState(false);
-  const [privacy,setPrivacy]=useState("public");
+  const [dateVal,setDateVal]=useState(todayStr);
+  const [timeVal,setTimeVal]=useState(nowTime);
+  const [quota,setQuota]=useState(10);
+  const [matchName,setMatchName]=useState("");
+  const [description,setDescription]=useState("");
   const [accept,setAccept]=useState("open");
-  const [level,setLevel]=useState("Herkes");
-  const [invites,setInvites]=useState([]);
-  const [attempted,setAttempted]=useState(false);
+  const [privacy,setPrivacy]=useState("public");
+  const [attempted1,setAttempted1]=useState(false);
+  const [attempted2,setAttempted2]=useState(false);
 
-  const teamSizeOptions=[3,4,5,6,7,8,9,10,11];
-  const privacyOpts=[{id:"public",l:"Herkese açık"},{id:"followers",l:"Sadece takipçilere"},{id:"invite",l:"Sadece davet ile"}];
+  const privacyOpts=[{id:"public",l:"Herkese Açık"},{id:"followers",l:"Sadece Takipçiler"},{id:"invite",l:"Sadece Davet"}];
   const locFiltered=locQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(locQuery.toLowerCase())||l.addr.toLowerCase().includes(locQuery.toLowerCase())):[];
+
+  const step1Valid=dateVal&&timeVal&&(selectedLoc||locSkipped);
 
   return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
 
-    {/* Progress bar — onboarding: marginTop 16 wrapper ile */}
+    {/* Progress bar */}
     <div style={{marginTop:16}}>
-      <ProgressBar current={step} total={3}/>
+      <ProgressBar current={step} total={2}/>
     </div>
 
-    {/* Back link — onboarding: step>0 ise göster, marginTop 20 */}
+    {/* Back link */}
     <BackLink onClick={step>0?()=>setStep(step-1):()=>onNav("S08")}/>
 
-    {/* Step label — onboarding: fontSize 12, uppercase, letterSpacing 1px */}
+    {/* Step label */}
     <div style={{marginBottom:8}}>
       <span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>
-        Adım {step+1}/3
+        Adım {step+1}/2
       </span>
     </div>
 
-    {/* Big title — onboarding: fontSize 24, fontWeight 800, marginBottom 24, letterSpacing -0.5px */}
+    {/* Big title */}
     <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>
       {S31_STEP_TITLES[step]}
     </div>
 
-    {/* Step 1: Details + Date & Location (birleştirildi) */}
+    {/* Step 1: Konum, Tarih/Saat, Kontenjan */}
     {step===0&&<>
-      {/* Maç adı */}
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&!matchName.trim()?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted&&!matchName.trim()?4:12}}>
-        <input value={matchName} onChange={e=>setMatchName(e.target.value)} placeholder="Cumartesi Halısaha Maçı" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-      </div>
-      {attempted&&!matchName.trim()&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:12,paddingLeft:4}}>Maç adı zorunludur</div>}
-      {/* Açıklama */}
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&description.trim().length<30?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted&&description.trim().length<30?4:20,minHeight:72}}>
-        <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Açıklama (min. 30 karakter)" rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
-      </div>
-      <div style={{display:"flex",justifyContent:"space-between",marginBottom:attempted&&description.trim().length<30?4:20,marginTop:attempted&&description.trim().length<30?0:-16}}>
-        {attempted&&description.trim().length<30?<div style={{fontSize:11,color:T.red,fontWeight:600,paddingLeft:4}}>Açıklama en az 30 karakter olmalı</div>:<span/>}
-        <span style={{fontSize:11,color:description.trim().length>=30?T.textMuted:T.textDim,fontWeight:500}}>{description.trim().length}/30</span>
-      </div>
-      {/* Takım kişi sayısı */}
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
-        <div style={{fontSize:13,color:T.textDim,fontWeight:600}}>Takımlar kaç kişilik?</div>
-        <div style={{position:"relative"}}>
-          <select value={teamSize} onChange={e=>setTeamSize(Number(e.target.value))} style={{appearance:"none",WebkitAppearance:"none",background:T.card,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 36px 10px 16px",color:T.accent,fontSize:15,fontWeight:700,cursor:"pointer",outline:"none",fontFamily:"inherit",minWidth:80,textAlign:"center"}}>
-            {teamSizeOptions.map(n=><option key={n} value={n}>{n} kişi</option>)}
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}}><polyline points="6,9 12,15 18,9"/></svg>
-        </div>
-      </div>
-      {/* Tarih & Saat */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Tarih & Saat</div>
-      <div style={{display:"flex",gap:8,marginBottom:attempted&&(!dateVal||!timeVal)?4:20}}>
-        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&!dateVal?T.red:T.cardBorder}`,padding:"12px 16px"}}>
-          <input type="date" value={dateVal} onChange={e=>setDateVal(e.target.value)} style={{background:"none",border:"none",color:dateVal?T.text:T.textDim,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
-        </div>
-        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${attempted&&!timeVal?T.red:T.cardBorder}`,padding:"12px 16px"}}>
-          <input type="time" value={timeVal} onChange={e=>setTimeVal(e.target.value)} style={{background:"none",border:"none",color:timeVal?T.text:T.textDim,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
-        </div>
-      </div>
-      {attempted&&(!dateVal||!timeVal)&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:20,paddingLeft:4}}>{!dateVal&&!timeVal?"Tarih ve saat zorunludur":!dateVal?"Tarih zorunludur":"Saat zorunludur"}</div>}
       {/* Konum */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Konum</div>
-      {!selectedLoc&&!locSkipped?<div style={{marginBottom:28}}>
-        <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
+      {!selectedLoc&&!locSkipped?<div style={{marginBottom:attempted1&&!selectedLoc&&!locSkipped?4:24}}>
+        <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted1&&!selectedLoc&&!locSkipped?T.red:locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
           {I.pin(locQuery.length>=2?T.accent:T.textDim)}
           <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
           {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
@@ -595,56 +567,78 @@ function S31({onNav}){
           </div>)}
         </div>}
         {locQuery.length>=2&&locFiltered.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+        <div onClick={()=>setLocSkipped(true)} style={{marginTop:12,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500}}>Konumu sonra belirle →</div>
       </div>
-      :selectedLoc?<div style={{marginBottom:28}}>
+      :selectedLoc?<div style={{marginBottom:24}}>
         <div style={{background:`${T.green}10`,borderRadius:12,border:`1.5px solid ${T.green}33`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
           {I.pin(T.green)}
           <div style={{flex:1}}><div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{selectedLoc.addr}</div></div>
           <span onClick={()=>{setSelectedLoc(null);setLocSkipped(false);}} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
         </div>
       </div>
-      :<div style={{marginBottom:28}}>
+      :<div style={{marginBottom:24}}>
         <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
           {I.pin(T.textMuted)}
           <span style={{fontSize:14,color:T.textDim,flex:1}}>Konum sonra belirlenecek</span>
-          <span onClick={()=>setLocSkipped(false)} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Ekle</span>
+          <span onClick={()=>{setLocSkipped(false);setSelectedLoc(null);setAttempted1(false);}} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Ekle</span>
         </div>
       </div>}
-      <Btn primary full onClick={()=>{setAttempted(true);if(matchName.trim()&&description.trim().length>=30&&dateVal&&timeVal)setStep(1);}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
-      {!selectedLoc&&!locSkipped&&<div onClick={()=>setLocSkipped(true)} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500}}>Konumu sonra belirle →</div>}
+      {attempted1&&!selectedLoc&&!locSkipped&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:20,paddingLeft:4}}>Konum seçin veya "Konumu sonra belirle" seçeneğini kullanın</div>}
+
+      {/* Tarih & Saat */}
+      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Tarih & Saat</div>
+      <div style={{display:"flex",gap:8,marginBottom:24}}>
+        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px"}}>
+          <input type="date" value={dateVal} onChange={e=>setDateVal(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
+        </div>
+        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px"}}>
+          <input type="time" value={timeVal} onChange={e=>setTimeVal(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
+        </div>
+      </div>
+
+      {/* Kontenjan */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:32}}>
+        <div style={{fontSize:13,color:T.textDim,fontWeight:600}}>Kontenjan</div>
+        <div style={{position:"relative",width:"calc(50% - 4px)"}}>
+          <select value={quota} onChange={e=>setQuota(e.target.value==="∞"?"∞":Number(e.target.value))} style={{appearance:"none",WebkitAppearance:"none",background:T.card,border:`1.5px solid ${T.cardBorder}`,borderRadius:12,padding:"12px 36px 12px 16px",color:T.accent,fontSize:14,fontWeight:700,cursor:"pointer",outline:"none",fontFamily:"inherit",width:"100%"}}>
+            {QUOTA_OPTIONS.map(n=><option key={n} value={n}>{n==="∞"?"∞ Limitsiz":`${n} kişi`}</option>)}
+          </select>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}}><polyline points="6,9 12,15 18,9"/></svg>
+        </div>
+      </div>
+
+      <Btn primary full onClick={()=>{setAttempted1(true);if(step1Valid)setStep(1);}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
     </>}
 
-    {/* Step 2: Settings */}
+    {/* Step 2: Başlık, Açıklama, Kabul Modu, Gizlilik */}
     {step===1&&<>
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Seviye Tercihi</div>
-      <div style={{display:"flex",gap:8,marginBottom:24,flexWrap:"wrap"}}>
-        {["Herkes","Başlangıç","Orta","İyi","Profesyonel"].map(l=><div key={l} onClick={()=>setLevel(l)} style={{padding:"10px 16px",borderRadius:12,background:level===l?`${T.accent}12`:T.card,border:`1.5px solid ${level===l?T.accent:T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:level===l?700:600,color:level===l?T.accent:T.textDim,transition:"all .2s"}}>{l}</div>)}
+      {/* Başlık */}
+      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Başlık</div>
+      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted2&&!matchName.trim()?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted2&&!matchName.trim()?4:16}}>
+        <input value={matchName} onChange={e=>setMatchName(e.target.value)} placeholder="Cumartesi Halısaha Maçı" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
       </div>
+      {attempted2&&!matchName.trim()&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:16,paddingLeft:4}}>Başlık zorunludur</div>}
+
+      {/* Açıklama */}
+      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Açıklama</div>
+      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted2&&!description.trim()?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted2&&!description.trim()?4:24,minHeight:72}}>
+        <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Maç hakkında detay yazın..." rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
+      </div>
+      {attempted2&&!description.trim()&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:24,paddingLeft:4}}>Açıklama zorunludur</div>}
+
+      {/* Kabul Modu */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Kabul Modu</div>
       <div style={{display:"flex",gap:8,marginBottom:24}}>
         {[{id:"open",l:"Herkesi Kabul Et"},{id:"approval",l:"Onay ile Kabul Et"}].map(a=><div key={a.id} onClick={()=>setAccept(a.id)} style={{flex:1,padding:"14px 12px",borderRadius:12,background:accept===a.id?`${T.accent}12`:T.card,border:`1.5px solid ${accept===a.id?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",fontSize:13,fontWeight:accept===a.id?700:600,color:accept===a.id?T.accent:T.textDim,transition:"all .2s"}}>{a.l}</div>)}
       </div>
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Gizlilik</div>
-      <div style={{display:"flex",gap:8,marginBottom:32,flexWrap:"wrap"}}>
-        {privacyOpts.map(p=><div key={p.id} onClick={()=>setPrivacy(p.id)} style={{padding:"10px 16px",borderRadius:12,background:privacy===p.id?`${T.accent}12`:T.card,border:`1.5px solid ${privacy===p.id?T.accent:T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:privacy===p.id?700:600,color:privacy===p.id?T.accent:T.textDim,transition:"all .2s"}}>{p.l}</div>)}
-      </div>
-      <Btn primary full onClick={()=>setStep(2)} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
-    </>}
 
-    {/* Step 3: Invite */}
-    {step===2&&<>
-      {U.filter(u=>u.follow&&u.id!==1).map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
-        <Av i={u.av} img={u.img} s={40}/>
-        <div style={{flex:1}}>
-          <div style={{fontSize:14,color:T.text,fontWeight:600}}>{u.name}</div>
-          <div style={{fontSize:12,color:T.textDim,marginTop:2}}>%{u.att} katılım</div>
-        </div>
-        <div onClick={()=>setInvites(p=>p.includes(u.id)?p:[...p,u.id])} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:10,border:`1.5px solid ${invites.includes(u.id)?T.accent:T.cardBorder}`,background:invites.includes(u.id)?`${T.accent}15`:"transparent",cursor:"pointer",fontSize:13,fontWeight:700,color:invites.includes(u.id)?T.accent:T.text,transition:"all .2s"}}>
-          {invites.includes(u.id)&&<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth="3" strokeLinecap="round"><polyline points="20,6 9,17 4,12"/></svg>}
-          {invites.includes(u.id)?"Davet Edildi":"Davet Et"}
-        </div>
-      </div>)}
-      <Btn primary full onClick={()=>window.location.assign("/04_match_detail?view=S12")} st={{marginTop:28,fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Yayınla</Btn>
+      {/* Gizlilik */}
+      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Gizlilik</div>
+      <div style={{display:"flex",gap:8,marginBottom:32}}>
+        {privacyOpts.map(p=><div key={p.id} onClick={()=>setPrivacy(p.id)} style={{flex:1,padding:"10px 8px",borderRadius:12,background:privacy===p.id?`${T.accent}12`:T.card,border:`1.5px solid ${privacy===p.id?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",fontSize:12,fontWeight:privacy===p.id?700:600,color:privacy===p.id?T.accent:T.textDim,transition:"all .2s"}}>{p.l}</div>)}
+      </div>
+
+      <Btn primary full onClick={()=>{setAttempted2(true);if(matchName.trim()&&description.trim())window.location.assign("/04_match_detail?view=S12");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Oluştur</Btn>
     </>}
   </div>;
 }

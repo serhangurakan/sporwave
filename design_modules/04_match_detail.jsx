@@ -602,7 +602,7 @@ function S12({onNav}){
       </div>
     </div>}
 
-    {/* Invite Drawer (host) */}
+    {/* S41: Oyuncu Davet Drawer (host + katılımcı) */}
     {showInviteDrawer&&<div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
       <div onClick={()=>setShowInviteDrawer(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
       <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",maxHeight:"70vh",display:"flex",flexDirection:"column",zIndex:301}}>
@@ -818,44 +818,7 @@ function S40({onNav}){
   </div>;
 }
 
-// ============================================================
-// S41: Oyuncu Davet (Bottom Sheet)
-// ============================================================
-function S41({onNav}){
-  const [q,setQ]=useState("");
-  const [sent,setSent]=useState([]);
-  const friends=U.filter(u=>u.follow&&u.id!==1);
-  const filtered=q.length>0?friends.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.un.toLowerCase().includes(q.toLowerCase())):friends;
-
-  const invite=(uid)=>{if(!sent.includes(uid))setSent(s=>[...s,uid]);};
-
-  return <div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
-    <div onClick={()=>onNav("S12")} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
-    <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",maxHeight:"70vh",display:"flex",flexDirection:"column",zIndex:151}}>
-      <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
-      <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:16,fontFamily:FH}}>Oyuncu Davet Et</div>
-
-      {/* Search */}
-      <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"10px 14px",display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        {I.search(T.textDim)}
-        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="İsim veya kullanıcı adı ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-      </div>
-
-      {/* Friend list */}
-      <div style={{flex:1,overflowY:"auto"}}>
-        {filtered.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
-          <Av i={u.av} img={u.img} s={36}/>
-          <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:500,color:T.text}}>{u.name}</div>
-            <div style={{fontSize:11,color:T.textDim}}>@{u.un} · %{u.att} katılım</div>
-          </div>
-          <Btn small primary={!sent.includes(u.id)} onClick={()=>invite(u.id)} st={sent.includes(u.id)?{background:`${T.green}22`,color:T.green,border:`1.5px solid ${T.green}44`}:{}}>{sent.includes(u.id)?"Gönderildi":"Davet Et"}</Btn>
-        </div>)}
-        {filtered.length===0&&<div style={{textAlign:"center",padding:"24px 0",color:T.textMuted,fontSize:13}}>Sonuç bulunamadı</div>}
-      </div>
-    </div>
-  </div>;
-}
+// S41: Oyuncu Davet → S12'deki inline Invite Drawer olarak taşındı (standalone kaldırıldı)
 
 // ============================================================
 // S30: Shareable Kart (Maç Sonrası)
@@ -978,10 +941,9 @@ export default function SporWaveMatchDetail(){
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S41",l:"Davet"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
-    {cur==="S41"&&<S41 onNav={nav}/>}
     <TabBar active="S08" onNav={nav}/>
   </div>;
 }
