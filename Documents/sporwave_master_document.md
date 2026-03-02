@@ -508,12 +508,12 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 **Takımlar tab'ı:**
 - Takım A / Takım B grid'i (her iki kolon 3'er grid, satır satır hizalı)
 - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
-- Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (fmt'e göre — 6v6 ise 6 slot her takımda)
-- Altında: Henüz takıma yerleşmemiş oyuncular (Katılımcılar section label + liste görünümü)
-- **Sağ üstte "Düzenle" butonu** (sadece host görür — Takımlar tab'ı içinde):
-  - Düzenle'ye basılırsa: ✕ butonları ve drag-drop aktif olur, CTA butonları geçici olarak pasifleşir, butonlar "Kaydet" / "Vazgeç"a dönüşür
+- Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (Kontenjan'a göre — 12 kişi ise 6 slot her takımda, 14 kişi ise 6 slot her takımda gibi)
+- Altında: Henüz takıma yerleşmemiş oyuncular (Yedekler section label + liste görünümü)
+- **Yedekler butonunun sağında "Düzenle" svg icon butonu** (sadece host görür — Takımlar tab'ı içinde):
+  - Düzenle'ye basılırsa: ✕ butonları ve drag-drop aktif olur, CTA butonları geçici olarak pasifleşir, düzenle iconu "Kaydet" / "Vazgeç"a dönüşür
 - **✕ buton farkı:**
-  - Katılımcı Listesi'ndeki ✕ → siyah background (border yok) → "maçtan çıkar" anlamında
+  - Katılımcı Listesi'ndeki ✕ → transparent background (border yok) → "maçtan çıkar" anlamında
   - Takımlar tab'ındaki ✕ → gri → "takımdan çıkar ama maçta kalır" anlamında
 
 **CTA Butonları (yeni hiyerarşi):**

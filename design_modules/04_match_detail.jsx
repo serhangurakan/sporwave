@@ -497,17 +497,6 @@ function S12({onNav}){
 
     {/* === Takımlar tab === */}
     {activeTab==="teams"&&<div style={{padding:"0 16px",marginBottom:16}}>
-      {/* Edit button (host only) */}
-      {isHost&&<div style={{display:"flex",justifyContent:"flex-end",marginBottom:8}}>
-        {!editMode
-          ?<span onClick={()=>setEditMode(true)} style={{fontSize:12,fontWeight:600,color:T.accent,cursor:"pointer",padding:"4px 10px",borderRadius:8,border:`1px solid ${T.accent}44`}}>Düzenle</span>
-          :<div style={{display:"flex",gap:6}}>
-            <span onClick={()=>setEditMode(false)} style={{fontSize:12,fontWeight:600,color:T.accent,cursor:"pointer",padding:"4px 10px",borderRadius:8,background:`${T.accent}14`}}>Kaydet</span>
-            <span onClick={()=>{setEditMode(false);setDragTarget(null);}} style={{fontSize:12,fontWeight:600,color:T.textDim,cursor:"pointer",padding:"4px 10px",borderRadius:8,border:`1px solid ${T.cardBorder}`}}>Vazgeç</span>
-          </div>
-        }
-      </div>}
-
       {/* Drag hint (host, edit mode) */}
       {isHost&&editMode&&<div style={{marginBottom:12,background:`${T.accent}08`,borderRadius:10,border:`1px solid ${T.accent}22`,padding:"8px 12px",display:"flex",alignItems:"center",gap:8}}>
         <span style={{display:"flex",flexShrink:0}}>{I.info(T.accent)}</span>
@@ -535,28 +524,38 @@ function S12({onNav}){
         </div>;
       })}
 
-      {/* Unassigned players */}
-      {unassigned.length>0&&<>
-        <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginTop:16,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Katılımcılar ({unassigned.length})</div>
-        {unassigned.map(uid=>{
-          const u=uf(uid);if(!u)return null;
-          const lv=LEVELS[u.level];
-          const isDragging=dragTarget===uid;
-          return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:isHost&&editMode?"pointer":"default"}} onClick={isHost&&editMode?()=>setDragTarget(isDragging?null:uid):()=>onNav("S16",uid)}>
-            <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:T.textDim}/>
-            <div style={{flex:1}}>
-              <div style={{display:"flex",alignItems:"center",gap:6}}>
-                <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
-                {uid===m.host&&<Badge c={T.accent}>{I.crown(T.accent)} Host</Badge>}
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
-                {lv&&<span style={{fontSize:11,color:T.accent,fontWeight:600}}>{lv.l}</span>}
-              </div>
+      {/* Yedekler header + Düzenle butonu (host her zaman görür) */}
+      {(isHost||unassigned.length>0)&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16,marginBottom:8}}>
+        <span style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5}}>Yedekler ({unassigned.length})</span>
+        {isHost&&<>
+          {!editMode
+            ?<span onClick={()=>setEditMode(true)} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:4,padding:"3px 8px",borderRadius:8,border:`1px solid ${T.accent}44`}}>{I.edit(T.accent)}</span>
+            :<div style={{display:"flex",gap:6}}>
+              <span onClick={()=>setEditMode(false)} style={{fontSize:11,fontWeight:600,color:T.accent,cursor:"pointer",padding:"3px 10px",borderRadius:8,background:`${T.accent}14`}}>Kaydet</span>
+              <span onClick={()=>{setEditMode(false);setDragTarget(null);}} style={{fontSize:11,fontWeight:600,color:T.textDim,cursor:"pointer",padding:"3px 10px",borderRadius:8,border:`1px solid ${T.cardBorder}`}}>Vazgeç</span>
             </div>
-            {isDragging&&<span style={{fontSize:10,color:T.accent,fontWeight:600}}>→ Takım seç</span>}
-          </div>;
-        })}
-      </>}
+          }
+        </>}
+      </div>}
+      {/* Yedek oyuncu listesi */}
+      {unassigned.map(uid=>{
+        const u=uf(uid);if(!u)return null;
+        const lv=LEVELS[u.level];
+        const isDragging=dragTarget===uid;
+        return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:isHost&&editMode?"pointer":"default"}} onClick={isHost&&editMode?()=>setDragTarget(isDragging?null:uid):()=>onNav("S16",uid)}>
+          <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:T.textDim}/>
+          <div style={{flex:1}}>
+            <div style={{display:"flex",alignItems:"center",gap:6}}>
+              <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
+              {uid===m.host&&<Badge c={T.accent}>{I.crown(T.accent)} Host</Badge>}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
+              {lv&&<span style={{fontSize:11,color:T.accent,fontWeight:600}}>{lv.l}</span>}
+            </div>
+          </div>
+          {isDragging&&<span style={{fontSize:10,color:T.accent,fontWeight:600}}>→ Takım seç</span>}
+        </div>;
+      })}
     </div>}
 
     {/* Remove player confirm modal (host) */}
@@ -645,28 +644,22 @@ function S12({onNav}){
     </div>}
 
     {/* CTA Buttons — new hierarchy */}
-    <div style={{padding:"0 16px"}}>
+    <div style={{padding:"0 16px",opacity:editMode?.4:1,pointerEvents:editMode?"none":"auto",transition:"opacity .2s"}}>
       {/* Compact icon buttons (above primary) */}
-      {isPlayer&&!editMode&&<div style={{display:"flex",gap:8,marginBottom:10}}>
+      {isPlayer&&<div style={{display:"flex",gap:8,marginBottom:10}}>
         <div onClick={()=>setShowInviteDrawer(true)} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text}}>{I.addUser?.(T.text)||<span style={{fontSize:16}}>👤</span>} Davet Et</div>
         <div onClick={()=>window.location.assign("/06_messaging?view=S35")} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text}}>{I.chat(T.text)} Maç Sohbeti</div>
       </div>}
 
-      {/* Edit mode buttons */}
-      {editMode?<div style={{display:"flex",gap:8}}>
-        <Btn full primary onClick={()=>setEditMode(false)} st={{flex:1}}>Kaydet</Btn>
-        <Btn full onClick={()=>{setEditMode(false);setDragTarget(null);}} st={{flex:1}}>Vazgeç</Btn>
-      </div>:<>
-        {/* Primary CTA */}
-        {viewMode==="guest"
-          ?joinApplied
-            ?<Btn full disabled st={{marginBottom:8,background:`${T.accent}18`,color:T.accent,border:`1.5px solid ${T.accent}44`}}>{I.check(T.accent)} Başvuru Gönderildi</Btn>
-            :<Btn full primary onClick={joinMatch} st={{marginBottom:8}}>Maça Katıl ({m.max-joined} yer kaldı)</Btn>
-          :matchState==="playing"
-            ?<Btn full onClick={()=>window.location.assign("/03_matches?view=S10&page=end")} st={{marginBottom:8,background:T.red,color:"#fff"}}>Maçı Bitir</Btn>
-            :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
-        }
-      </>}
+      {/* Primary CTA */}
+      {viewMode==="guest"
+        ?joinApplied
+          ?<Btn full disabled st={{marginBottom:8,background:`${T.accent}18`,color:T.accent,border:`1.5px solid ${T.accent}44`}}>{I.check(T.accent)} Başvuru Gönderildi</Btn>
+          :<Btn full primary onClick={joinMatch} st={{marginBottom:8}}>Maça Katıl ({m.max-joined} yer kaldı)</Btn>
+        :matchState==="playing"
+          ?<Btn full onClick={()=>window.location.assign("/03_matches?view=S10&page=end")} st={{marginBottom:8,background:T.red,color:"#fff"}}>Maçı Bitir</Btn>
+          :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
+      }
     </div>
   </div>;
 }
