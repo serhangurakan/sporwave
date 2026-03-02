@@ -356,7 +356,7 @@ function S12({onNav}){
       onClick={isHost&&editMode?()=>setDragTarget(isDragging?null:uid):()=>onNav("S16",uid)}
     >
       <div style={{height:BADGE_H,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-        {isHostUser&&<Badge c={T.gold} st={{fontSize:8,padding:"1px 5px",lineHeight:1.2}}>{I.crown(T.gold)}</Badge>}
+        {isHostUser&&<Badge c={T.accent} st={{fontSize:8,padding:"1px 5px",lineHeight:1.2}}>{I.crown(T.accent)}</Badge>}
       </div>
       <div style={{position:"relative"}}>
         <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:teamColor}/>
@@ -551,10 +551,10 @@ function S12({onNav}){
             <div style={{flex:1}}>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
-                {uid===m.host&&<Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>}
+                {uid===m.host&&<Badge c={T.accent}>{I.crown(T.accent)} Host</Badge>}
               </div>
               <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
-                {lv&&<span style={{fontSize:11,color:lv.c,fontWeight:600}}>{lv.l}</span>}
+                {lv&&<span style={{fontSize:11,color:T.accent,fontWeight:600}}>{lv.l}</span>}
               </div>
             </div>
             {isDragging&&<span style={{fontSize:10,color:T.accent,fontWeight:600}}>→ Takım seç</span>}
