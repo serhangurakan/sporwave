@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import T from "./theme.js";
 
 // ============================================================
-// SPORWAVE MODULE 4 — Maç Detay (S11, S12, S13, S40, S41, S30)
+// SPORWAVE MODULE 4 — Maç Detay (S11, S12, S13, S41, S30)
 // S11: Geçmiş maç detay (oynanmış)
 // S12: Planlanan maç detay (henüz oynanmamış)
 // S13: Başvuru yönetimi (host)
-// S40: Puanlama & Attendance (maç sonrası)
-// S41: Oyuncu davet (bottom sheet)
+// S41: Oyuncu Davet → S12'deki inline Invite Drawer olarak taşındı (standalone kaldırıldı)
 // S30: Shareable kart (maç sonrası)
+// S40: Kaldırıldı — MVP oylama S08 Maçlarım tab'ında inline olarak yapılıyor
 // ============================================================
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
@@ -81,11 +81,7 @@ const APPROVAL_MATCH={
   approved:[1,2,4],
 };
 
-// Mock: Unrated match (S40)
-const UNRATED_MATCH={
-  id:201,title:"Perşembe Maçı",date:"27 Şub",time:"19:00",sc:[3,2],fmt:"5v5",
-  players:[1,2,3,4,5,6,7,8],
-};
+// S40 mock data kaldırıldı — MVP oylama S08'de inline
 
 // Levels
 const LEVELS={beginner:{l:"Başlangıç",c:T.green},mid:{l:"Orta",c:T.accent},good:{l:"İyi",c:T.orange},pro:{l:"Profesyonel",c:T.gold}};
@@ -737,86 +733,7 @@ function S13({onNav}){
   </div>;
 }
 
-// ============================================================
-// S40: Puanlama & Attendance (Maç Sonrası)
-// ============================================================
-function S40({onNav}){
-  const m=UNRATED_MATCH;
-  const [mvpVote,setMvpVote]=useState(null);
-  const [attendance,setAttendance]=useState({});
-  const [submitted,setSubmitted]=useState(false);
-
-  const toggleAtt=(uid,val)=>{setAttendance(a=>({...a,[uid]:a[uid]===val?null:val}));};
-
-  if(submitted){
-    return <div style={{padding:"60px 16px",textAlign:"center"}}>
-      <div style={{fontSize:48,marginBottom:16}}>{I.check(T.accent)}</div>
-      <div style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:8}}>Gönderildi</div>
-      <div style={{fontSize:14,color:T.textDim,marginBottom:24}}>MVP oyun ve katılım bildirimin kaydedildi.</div>
-      <Btn primary onClick={()=>onNav("S08")}>Maçlara Dön</Btn>
-    </div>;
-  }
-
-  return <div style={{paddingBottom:80}}>
-    {/* Header */}
-    <div style={{padding:"12px 16px 0"}}>
-      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <span onClick={()=>onNav("S08")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
-        <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH}}>Puanlama</span>
-      </div>
-    </div>
-
-    {/* Match summary */}
-    <div style={{textAlign:"center",padding:"0 16px 20px",borderBottom:`1px solid ${T.cardBorder}`}}>
-      <div style={{fontSize:16,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:8}}>{m.title}</div>
-      <div style={{fontSize:36,fontWeight:900,fontFamily:FH,marginBottom:4}}>
-        <span style={{color:m.sc[0]>m.sc[1]?T.accent:T.text}}>{m.sc[0]}</span>
-        <span style={{color:T.textMuted,margin:"0 8px",fontSize:20}}>–</span>
-        <span style={{color:m.sc[1]>m.sc[0]?T.accent:T.text}}>{m.sc[1]}</span>
-      </div>
-      <div style={{fontSize:12,color:T.textDim}}>{m.date} · {m.fmt}</div>
-    </div>
-
-    {/* MVP Vote */}
-    <div style={{padding:"16px 16px 0"}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,marginBottom:4,fontFamily:FH}}>Maçın Yıldızını Seç</div>
-      <div style={{fontSize:12,color:T.textDim,marginBottom:12}}>En iyi oynayan kişiyi seç (1 oy hakkın var)</div>
-      <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:20}}>
-        {m.players.filter(uid=>uid!==1).map(uid=>{
-          const u=uf(uid);if(!u)return null;
-          const sel=mvpVote===uid;
-          return <div key={uid} onClick={()=>setMvpVote(sel?null:uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:sel?`${T.gold}10`:T.card,border:`1.5px solid ${sel?T.gold:T.cardBorder}`,cursor:"pointer",transition:"all .2s"}}>
-            <Av i={u.av} img={u.img} s={32} c={sel?T.gold:T.accent}/>
-            <span style={{fontSize:13,fontWeight:sel?700:500,color:sel?T.gold:T.text,flex:1}}>{u.name}</span>
-            {sel&&<span style={{display:"flex"}}>{I.star(T.gold)}</span>}
-          </div>;
-        })}
-      </div>
-    </div>
-
-    {/* Attendance */}
-    <div style={{padding:"0 16px"}}>
-      <div style={{fontSize:14,fontWeight:700,color:T.text,marginBottom:4,fontFamily:FH}}>Katılım Durumunu Bildir</div>
-      <div style={{fontSize:12,color:T.textDim,marginBottom:12}}>Her oyuncu için katılıp katılmadığını bildir</div>
-      <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:20}}>
-        {m.players.filter(uid=>uid!==1).map(uid=>{
-          const u=uf(uid);if(!u)return null;
-          const val=attendance[uid];
-          return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`}}>
-            <Av i={u.av} img={u.img} s={28}/>
-            <span style={{fontSize:13,color:T.text,flex:1,fontWeight:500}}>{u.name}</span>
-            <div style={{display:"flex",gap:4}}>
-              <div onClick={()=>toggleAtt(uid,"yes")} style={{padding:"4px 10px",borderRadius:8,background:val==="yes"?`${T.green}20`:"transparent",border:`1.5px solid ${val==="yes"?T.green:T.cardBorder}`,cursor:"pointer",fontSize:11,fontWeight:600,color:val==="yes"?T.green:T.textMuted}}>Geldi</div>
-              <div onClick={()=>toggleAtt(uid,"no")} style={{padding:"4px 10px",borderRadius:8,background:val==="no"?`${T.red}20`:"transparent",border:`1.5px solid ${val==="no"?T.red:T.cardBorder}`,cursor:"pointer",fontSize:11,fontWeight:600,color:val==="no"?T.red:T.textMuted}}>Gelmedi</div>
-            </div>
-          </div>;
-        })}
-      </div>
-
-      <Btn primary full onClick={()=>setSubmitted(true)}>Gönder</Btn>
-    </div>
-  </div>;
-}
+// S40: Kaldırıldı — MVP oylama S08 Maçlarım tab'ında inline olarak yapılıyor
 
 // S41: Oyuncu Davet → S12'deki inline Invite Drawer olarak taşındı (standalone kaldırıldı)
 
@@ -921,7 +838,7 @@ export default function SporWaveMatchDetail(){
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
   useEffect(()=>{
     const view=new URLSearchParams(window.location.search).get("view");
-    const allowed=["S11","S12","S13","S40","S30"];
+    const allowed=["S11","S12","S13","S30"];
     if(view&&allowed.includes(view))setCur(view);
   },[]);
 
@@ -932,7 +849,6 @@ export default function SporWaveMatchDetail(){
       case "S11":return <S11 onNav={nav}/>;
       case "S12":return <S12 onNav={nav}/>;
       case "S13":return <S13 onNav={nav}/>;
-      case "S40":return <S40 onNav={nav}/>;
       case "S30":return <S30 onNav={nav}/>;
       default:return <S11 onNav={nav}/>;
     }
@@ -941,7 +857,7 @@ export default function SporWaveMatchDetail(){
   return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S40",l:"Puanlama"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     <TabBar active="S08" onNav={nav}/>

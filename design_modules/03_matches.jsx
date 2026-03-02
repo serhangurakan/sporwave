@@ -37,7 +37,7 @@ const PLANNED=[
   {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[]},
 ];
 
-const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:"Kadıköy Spor",sc:[3,2],host:4}];
+const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:"Kadıköy Spor",sc:[3,2],host:4,players:[2,3,4,5,6,7]}];
 
 // Icons
 const I={
@@ -86,6 +86,10 @@ function S08({onNav,showUnrated,hasActiveWidget}){
   const [district,setDistrict]=useState("Tümü");
   const [districtOpen,setDistrictOpen]=useState(false);
   const [dateFilter,setDateFilter]=useState(null);
+  // Inline MVP voting state
+  const [expandedRating,setExpandedRating]=useState(null);
+  const [mvpVote,setMvpVote]=useState(null);
+  const [mvpSubmitted,setMvpSubmitted]=useState({});
 
   const openMatches=PLANNED.filter(m=>!m.myMatch);
   const myMatches=PLANNED.filter(m=>m.myMatch);
@@ -120,26 +124,32 @@ function S08({onNav,showUnrated,hasActiveWidget}){
       </div>
     </div>
 
-    {/* Filter popup (only Maç Bul tab) */}
-    {activeTab==="find"&&filter&&<div style={{margin:"0 16px 12px",background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:16}}>
-      {/* İlçe */}
-      <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
-      <div onClick={()=>setDistrictOpen(!districtOpen)} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",borderRadius:10,border:`1.5px solid ${districtOpen?T.accent:T.cardBorder}`,background:T.bg,marginBottom:districtOpen?0:16}}>
-        <span style={{fontSize:13,fontWeight:600,color:district==="Tümü"?T.textDim:T.accent}}>{district}</span>
-        <span style={{fontSize:11,color:T.textDim,transform:districtOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+    {/* Filter drawer (only Maç Bul tab) */}
+    {activeTab==="find"&&filter&&<div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
+      <div onClick={()=>{setFilter(false);setDistrictOpen(false);}} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
+      <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",marginBottom:56,zIndex:151}}>
+        <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+        <div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:20,fontFamily:FH}}>Filtrele</div>
+
+        {/* İlçe */}
+        <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
+        <div onClick={()=>setDistrictOpen(!districtOpen)} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",borderRadius:10,border:`1.5px solid ${districtOpen?T.accent:T.cardBorder}`,background:T.bg,marginBottom:districtOpen?0:16}}>
+          <span style={{fontSize:13,fontWeight:600,color:district==="Tümü"?T.textDim:T.accent}}>{district}</span>
+          <span style={{fontSize:11,color:T.textDim,transform:districtOpen?"rotate(180deg)":"none",transition:"transform .2s"}}>▼</span>
+        </div>
+        {districtOpen&&<div style={{maxHeight:180,overflowY:"auto",borderRadius:"0 0 10px 10px",border:`1px solid ${T.cardBorder}`,borderTop:"none",marginBottom:16}}>
+          {districts.map(d=><div key={d} onClick={()=>{setDistrict(d);setDistrictOpen(false);}} style={{padding:"10px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",background:district===d?`${T.accent}12`:"transparent",transition:"background .15s"}} onMouseEnter={e=>{if(district!==d)e.currentTarget.style.background=`${T.textDim}10`;}} onMouseLeave={e=>{if(district!==d)e.currentTarget.style.background=district===d?`${T.accent}12`:"transparent";}}>
+            <span style={{fontSize:13,fontWeight:district===d?700:500,color:district===d?T.accent:T.text}}>{d}</span>
+            {district===d&&<span style={{fontSize:13,color:T.accent}}>✓</span>}
+          </div>)}
+        </div>}
+
+        {/* Tarih */}
+        <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Tarih</div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{["Bugün","Bu hafta","Bu ay"].map(d=><span key={d} onClick={()=>setDateFilter(dateFilter===d?null:d)} style={{display:"inline-flex",alignItems:"center",padding:"6px 12px",borderRadius:20,fontSize:12,fontWeight:600,color:dateFilter===d?"#0D0D0D":T.textDim,background:dateFilter===d?T.accent:`${T.textDim}18`,cursor:"pointer",transition:"all .2s"}}>{d}</span>)}</div>
+
+        <div style={{display:"flex",gap:8}}><Btn small primary full onClick={()=>{setFilter(false);setDistrictOpen(false);}}>Uygula</Btn><Btn small ghost onClick={()=>{setDistrict("Tümü");setDateFilter(null);}}>Sıfırla</Btn></div>
       </div>
-      {districtOpen&&<div style={{maxHeight:180,overflowY:"auto",borderRadius:"0 0 10px 10px",border:`1px solid ${T.cardBorder}`,borderTop:"none",marginBottom:16}}>
-        {districts.map(d=><div key={d} onClick={()=>{setDistrict(d);setDistrictOpen(false);}} style={{padding:"10px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",background:district===d?`${T.accent}12`:"transparent",transition:"background .15s"}} onMouseEnter={e=>{if(district!==d)e.currentTarget.style.background=`${T.textDim}10`;}} onMouseLeave={e=>{if(district!==d)e.currentTarget.style.background=district===d?`${T.accent}12`:"transparent";}}>
-          <span style={{fontSize:13,fontWeight:district===d?700:500,color:district===d?T.accent:T.text}}>{d}</span>
-          {district===d&&<span style={{fontSize:13,color:T.accent}}>✓</span>}
-        </div>)}
-      </div>}
-
-      {/* Tarih */}
-      <div style={{fontSize:12,fontWeight:700,color:T.textDim,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>Tarih</div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>{["Bugün","Bu hafta","Bu ay"].map(d=><span key={d} onClick={()=>setDateFilter(dateFilter===d?null:d)} style={{display:"inline-flex",alignItems:"center",padding:"6px 12px",borderRadius:20,fontSize:12,fontWeight:600,color:dateFilter===d?"#0D0D0D":T.textDim,background:dateFilter===d?T.accent:`${T.textDim}18`,cursor:"pointer",transition:"all .2s"}}>{d}</span>)}</div>
-
-      <div style={{display:"flex",gap:8}}><Btn small primary full onClick={()=>setFilter(false)}>Uygula</Btn><Btn small ghost onClick={()=>{setDistrict("Tümü");setDateFilter(null);}}>Sıfırla</Btn></div>
     </div>}
 
     {/* === Maç Bul tab === */}
@@ -155,20 +165,47 @@ function S08({onNav,showUnrated,hasActiveWidget}){
 
     {/* === Maçlarım tab === */}
     {activeTab==="mine"&&<div>
-      {/* Unrated matches (top) */}
+      {/* Unrated matches (top) — inline MVP voting */}
       {showUnrated&&UNRATED.length>0&&<div>
-        {UNRATED.map(m=><div key={m.id} onClick={()=>{}} style={{background:`${T.orange}14`,borderRadius:0,borderLeft:`4px solid ${T.orange}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"default"}}>
-          <div style={{marginBottom:6}}><Badge c={T.orange}>{I.star("#fff")} Değerlendir</Badge></div>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
-            <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
-            <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.orange,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
-          </div>
-          <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
-            <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-            {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
-          </div>
-        </div>)}
-        <div style={{height:8,background:T.bgAlt}}/>
+        {UNRATED.filter(m=>!mvpSubmitted[m.id]).map(m=>{
+          const isExpanded=expandedRating===m.id;
+          const players=(m.players||[]).filter(pid=>pid!==1).map(pid=>uf(pid)).filter(Boolean);
+          return <div key={m.id}>
+            <div onClick={()=>{setExpandedRating(isExpanded?null:m.id);setMvpVote(null);}} style={{background:isExpanded?`${T.accent}14`:`${T.accent}08`,borderRadius:0,borderLeft:`4px solid ${T.accent}`,borderBottom:isExpanded?"none":`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
+              <div style={{marginBottom:6}}><Badge c={T.accent}>{I.star("#fff")} Bu maçı değerlendir</Badge></div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
+                <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
+                <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.accent,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
+              </div>
+              <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
+                <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
+                {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
+              </div>
+            </div>
+            {/* Inline MVP voting panel */}
+            {isExpanded&&<div style={{background:`${T.accent}08`,borderLeft:`4px solid ${T.accent}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"0 16px 16px"}}>
+              <div style={{fontSize:13,fontWeight:700,color:T.text,marginBottom:8,fontFamily:FH}}>Maçın Yıldızını Seç</div>
+              <div style={{fontSize:11,color:T.textDim,marginBottom:12}}>En iyi oynayan kişiyi seç (1 oy hakkın var)</div>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:mvpVote?12:0}}>
+                {players.map(u=>{
+                  const sel=mvpVote===u.id;
+                  return <div key={u.id} onClick={e=>{e.stopPropagation();setMvpVote(sel?null:u.id);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:6,borderRadius:12,background:sel?`${T.accent}18`:"transparent",border:sel?`1.5px solid ${T.accent}`:"1.5px solid transparent",transition:"all .2s",minWidth:56}}>
+                    <Av i={u.av} img={u.img} s={40} c={sel?T.accent:T.textDim}/>
+                    <span style={{fontSize:10,fontWeight:sel?700:500,color:sel?T.accent:T.textDim,textAlign:"center",lineHeight:1.2,maxWidth:60,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name.split(" ")[0]}</span>
+                  </div>;
+                })}
+              </div>
+              {mvpVote&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.card,borderRadius:12,padding:"10px 16px",border:`1.5px solid ${T.accent}`}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  {I.star(T.accent)}
+                  <span style={{fontSize:14,fontWeight:700,color:T.accent}}>{uf(mvpVote)?.name}</span>
+                </div>
+                <div onClick={e=>{e.stopPropagation();setMvpSubmitted(prev=>({...prev,[m.id]:true}));setExpandedRating(null);setMvpVote(null);}} style={{width:36,height:36,borderRadius:10,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.check("#fff")}</div>
+              </div>}
+            </div>}
+          </div>;
+        })}
+        {UNRATED.some(m=>!mvpSubmitted[m.id])&&<div style={{height:8,background:T.bgAlt}}/>}
       </div>}
 
       {/* My matches */}
@@ -450,7 +487,7 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
       <div style={{fontSize:13,color:T.textDim,lineHeight:1.6}}>Tüm katılımcılar için kişisel post oluşturulur. Fotoğraf ve not eklemek post üzerinden yapılır.</div>
     </div>
 
-    <Btn primary full onClick={()=>{if(onEndMatch)onEndMatch();window.location.assign("/04_match_detail?view=S40");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
+    <Btn primary full onClick={()=>{if(onEndMatch)onEndMatch();window.location.assign("/03_matches?view=S08&tab=mine");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
     <div onClick={()=>setDeletePopup(true)} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.red,cursor:"pointer",fontWeight:600}}>Maçı Sil</div>
 
     <GoalDrawerUI/>

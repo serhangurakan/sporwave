@@ -496,7 +496,7 @@ function S19({onNav,onBack}){
     else if(n.target==="chat"&&n.userId) onNav?.("S18",{convId:"c3",userId:n.userId});
     else if(n.target==="post") onNav?.("S05");
     else if(n.target==="comments") onNav?.("S42");
-    else if(n.target==="rating") onNav?.("S40");
+    else if(n.target==="rating") onNav?.("S08"); // MVP oylama artık S08 Maçlarım'da inline
     // "none" — bildirim sayfasında kalır
   };
 
@@ -588,7 +588,7 @@ export default function MessagingModule(){
     else if(target==="S15")alert("→ Kendi Profilin");
     else if(target==="S05")alert("→ Ana Sayfa / Feed");
     else if(target==="S42")alert("→ Yorumlar");
-    else if(target==="S40")alert("→ Puanlama");
+    else if(target==="S08")alert("→ Maçlar (MVP oylama inline)");
     else alert(`→ ${target}: ${JSON.stringify(data)}`);
   };
 

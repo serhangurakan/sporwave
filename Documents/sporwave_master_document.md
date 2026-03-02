@@ -34,7 +34,7 @@ Maçtan son çıkan kişi hostsa maç silinir. |
 | **Başlamamış maç süresi** | Maç saatinden 24 saat sonra başlamamışsa otomatik silinir |
 | **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür,
 S08 Maç Bul tab'ında listelenmez |
-| **Maç state machine** | 7 state: open → full → started → ended → rating → archived |
+| **Maç state machine** | 6 state: open → full → started → ended → rating → archived |
 | **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
 | **Maç sohbeti arşiv** | Maç arşivlenince maç sohbeti kapatılır. |
 | **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
@@ -65,7 +65,7 @@ open → full → started → ended → rating → archived
 | **archived** | Profil ve feed'de geçmiş maç olarak görünür | Herkese (gizlilik ayarına göre) |
 
 **Geçiş kuralları:**
-- `open`: Host "Yayınla" butonuna basar
+- S31'den maç oluşturulunca direkt `open` state'ine düşer
 - `open → full`: Kontenjan dolduğunda otomatik
 - `full → open`: Bir katılımcı ayrıldığında otomatik (kontenjan açılır)
 - `open/full → started`: Host "Maçı Başlat" butonuna basar. Koşul: her iki takımda en az 1 oyuncu
@@ -113,7 +113,7 @@ Ana Sayfa tab'ında:
 
 ---
 
-## SAYFA HARİTASI — TOPLAM 37 SAYFA
+## SAYFA HARİTASI — TOPLAM 36 SAYFA
 
 ---
 
@@ -350,12 +350,18 @@ Bütün açık maçların listesi. Tarih sırasına göre alt alta sıralanır.
 **Maçlarım tab'ı:**
 Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
-**Puanlanmamış maçlar (varsa, üstte):**
+**Puanlanmamış maçlar (varsa, üstte) — Inline MVP Oylama:**
 - Kullanıcının henüz MVP oylaması yapmadığı biten maçlar
-- `background:none, borderRadius:0, borderLeft: 3px solid accent` kart stili + "⭐ Bu maçı değerlendir" badge'i
+- `background:accent08, borderRadius:0, borderLeft: 4px solid accent` kart stili + "⭐ Bu maçı değerlendir" badge'i
 - Kartlar arasında 8px `T.card` divider
-- Tıklanınca → ?
-- Puanlama yapıldıktan sonra kart buradan kalkar
+- **Tıklanınca kart expand olur** ve altında inline MVP oylama paneli açılır:
+  - "Maçın Yıldızını Seç" başlığı + "1 oy hakkın var" notu
+  - Katılımcıların profil fotoğrafları yatay sırada (kendisi hariç), her biri tıklanabilir
+  - Oyuncu seçilince ismi ve accent border ile vurgulanır
+  - Seçilen oyuncunun yanında submit (check) ikonu → tıklanınca MVP oyu gönderilir
+  - Oy gönderildikten sonra kart listeden kalkar
+- **Co-MVP:** Eşit oy durumunda birden fazla oyuncu MVP olarak gösterilir
+- MVP oylaması 24 saat sonra otomatik kapanır, oy vermeyenler hakkını kaybeder (ceza yok)
 
 **Katıldığım maçlar (puanlanmamış kartlardan sonra):**
 - Kullanıcının katıldığı planned maçlar, tarih sırasına göre
@@ -449,7 +455,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - "Gol Ekle" butonu (maç sırasında kaçırdıysan buradan da ekleyebilirsin)
 - **Kadro düzenleme (ZORUNLU):** "Kaydet" butonuna basmadan önce en az 2 oyuncu (her takımdan 1) eklenmiş olmalı. Takım kurulumunda atlandıysa burada tamamlanmalı.
 - **Drag & drop ile takım değişikliği:** Takım kurulumu sayfası ile aynı.
-- **"Kaydet & Paylaş"** butonu → maç arşivlenir (Katman 1 kilitlenir) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible)
+- **"Kaydet & Paylaş"** butonu → maç `rating` state'ine geçer (Katman 1 kilitlenir, 24 saat MVP oylama penceresi başlar) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible)
 - **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
 - **Not:** Maçı bitiren kişi otomatik olarak S08 Maçlarım tab'ına yönlendirilir. Maçtaki bütün katılımcılar S08 Maçlarım tab'ındaki puanlanmamış maç kartı ile puanlama yapabilir.
@@ -763,7 +769,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - 📩 "Berk seni Cumartesi Halısaha Maçı'na davet etti" → S12 Planlanan Maç
 - 📅 "Maç Pazar'a alındı" → S12 (reschedule bildirimi)
 - 🚫 "Cumartesi Halısaha Maçı iptal edildi" → bildirim sayfasında kalır
-- ⭐ "Maçını değerlendir!" → S40 Puanlama (24 saat hatırlatıcı)
+- ⭐ "Maçını değerlendir!" → S08 Maçlarım tab'ı (inline MVP oylama, 24 saat hatırlatıcı)
 - ❌ "Ali seni Cumartesi Halısaha Maçı'ndan çıkardı" → bildirim sayfasında kalır
 - 🗑️ "Cumartesi Halısaha Maçı başlatılmadığı için silindi" → bildirim sayfasında kalır
 
@@ -863,30 +869,9 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ---
 
-### BÖLÜM 10: PUANLAMA (1 sayfa)
+### BÖLÜM 10: OYUNCU DAVET (inline drawer)
 
-#### S40: Puanlama (Maç Sonrası)
-- **Amaç:** Maç sonrası MVP oylama
-- **Erişim:** S08 Maçlarım tab'ındaki puanlanmamış maç kartı (accent border) veya bildirim
-- **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
-- **Header:** ← Geri (→ S08) + "Puanlama" başlığı
-
-**Üst bölüm:** Maç başlığı + skor (kazanan accent renk) + tarih/format (salt okunur özet)
-
-**MVP Oylaması:**
-- "Maçın Yıldızını Seç" başlığı
-- Katılımcı listesi (kendisi hariç) — her biri tıklanabilir, tek bir kişi seçilir (altın vurgu)
-- "1 oy hakkın var" notu
-- Her kullanıcı 1 oy verir, en çok oy alan MVP olur
-- **Co-MVP:** Eşit oy durumunda (beraberlik) birden fazla oyuncu MVP olarak gösterilir
-- Oy vermeyenler hakkını kaybeder (ceza yok)
-- MVP oylaması 24 saat sonra otomatik kapanır
-
-**"Gönder" butonu** → puanlama tamamlandı → onay ekranı ("Maçlara Dön" butonu ile S08'e yönlendirilir) → S08 Maçlarım tab'ındaki puanlama kartı kalkar
-
----
-
-### BÖLÜM 11: OYUNCU DAVET (inline drawer)
+> **Not:** S40 Puanlama sayfası kaldırıldı. MVP oylama artık S08 Maçlarım tab'ındaki puanlanmamış maç kartında inline olarak yapılıyor (detay: S08 Maçlarım bölümüne bakınız).
 
 #### S41: Oyuncu Davet (S12 içinde Inline Drawer)
 - **Erişim:** S12 Planlanan Maç Detay sayfasındaki "Davet Et" butonu (bottom sheet drawer olarak açılır)
@@ -965,10 +950,9 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 | Bildirimler | 1 | S19 |
 | Menü & Ayarlar | 6 | S20-S22, S24-S26 |
 | Güvenlik & Moderasyon | 4 | S27-S30 |
-| Puanlama | 1 | S40 |
 | Oyuncu Davet | 1 | S41 |
 | Ek Sayfalar | 5 | S32-S34, S42, S43 |
-| **TOPLAM** | **37** |
+| **TOPLAM** | **36** |
 
 ---
 
@@ -986,18 +970,18 @@ Planlanan maç (S12) → "Maçı Başlat" → Canlı skor ekranı (S10) → Gol 
 → Herhangi bir katılımcı skor güncelleyebilir (çoklu cihaz sync)
 → Maçı bitir (⋮ menüden veya S12'den) → Maç Sonu sayfası
 → Kaydet & Paylaş → Maç verisi kilitlenir + tüm katılımcılar için post oluşur
-→ S40 Puanlama (MVP + katılım) → Her katılımcının kendi postu feed'de ve profilinde görünür
+→ S08 Maçlarım tab'ına yönlendirilir → puanlanmamış maç kartı görünür
+→ Karta tıkla → inline MVP oylama paneli açılır → oyuncu seç → submit
 → Her katılımcı kendi postunu profilinden düzenleyebilir (başlık, not, fotoğraf)
-→ 24 saat içinde S40'ta MVP oyla
+→ 24 saat içinde S08 Maçlarım'da inline MVP oyla
 ```
 
 ### Akış 3: Maç Oluştur (Planlama)
 ```
-Maçlar tab → FAB "+" → S31 
-→ Adım 1: Maç adı + açıklama + format + tarih/saat + konum
-→ Adım 2: Katılım ayarları (seviye + kabul modu + gizlilik)
-→ Adım 3: Arkadaşları davet et (opsiyonel)
-→ Yayınla → S12 Planlanan Maç Detay'a yönlendirilir (host olarak) + Deep link üretilir + Maç sohbeti otomatik oluşur
+Maçlar tab → FAB "+" → S31
+→ Adım 1: Konum + Tarih/Saat + Kontenjan
+→ Adım 2: Başlık + Açıklama + Kabul modu + Gizlilik
+→ Oluştur → S12 Planlanan Maç Detay'a yönlendirilir (host olarak) + Deep link üretilir + Maç sohbeti otomatik oluşur
 → Maçlar sekmesinde görünür (👁️ badge) → Başvurular/katılımlar gelir
 → Maç saati → "Maçı Başlat" → Canlı skor akışına geç
 → Maç saati geçtiyse: Maç hala başlatılabilir (24 saat boyunca)
@@ -1042,12 +1026,13 @@ Maç sırasında app kapanır → State otomatik kaydedilmiş
 → 24 saatten fazla geçtiyse: "Tamamla mı iptal mi?"
 ```
 
-### Akış 8: Maç Sonrası Puanlama
+### Akış 8: Maç Sonrası Puanlama (Inline)
 ```
-Maç biter → Kaydet → S08 Maçlarım tab'ında accent border'lı kart çıkar
-→ Tıkla → S40 Puanlama sayfası
-→ MVP oylaması
-→ Gönder → Kart S08'den kalkar
+Maç biter → Kaydet → S08 Maçlarım tab'ına yönlendirilir
+→ Accent border'lı "⭐ Bu maçı değerlendir" kartı görünür
+→ Karta tıkla → altında oyuncu avatarları açılır (inline MVP oylama)
+→ Oyuncu seç → submit ikonu ile oyu gönder
+→ Kart S08'den kalkar
 → 24 saat geçerse puanlama kapanır
 ```
 
