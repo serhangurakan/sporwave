@@ -316,22 +316,22 @@ function S15({onNav}){
       <div style={{flex:1,minWidth:0}}>
         {/* İsim + username */}
         <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
-          <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
+          <span style={{fontSize:18,fontWeight:700,fontFamily:FH,color:T.text}}>{u.name}</span>
           {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
         </div>
         {/* Stats */}
         <div style={{display:"flex",gap:28,marginTop:8}}>
           <div style={{textAlign:"left",cursor:"pointer"}}>
             <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Mac</div>
-            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.matches}</div>
+            <div style={{fontSize:16,fontWeight:700,fontFamily:FH,color:T.text}}>{u.matches}</div>
           </div>
           <div onClick={()=>onNav("S22",{tab:"followers"})} style={{textAlign:"left",cursor:"pointer"}}>
             <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Takipci</div>
-            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.followers}</div>
+            <div style={{fontSize:16,fontWeight:700,fontFamily:FH,color:T.text}}>{u.followers}</div>
           </div>
           <div onClick={()=>onNav("S22",{tab:"following"})} style={{textAlign:"left",cursor:"pointer"}}>
             <div style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:2}}>Takip Edilen</div>
-            <div style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.following}</div>
+            <div style={{fontSize:16,fontWeight:700,fontFamily:FH,color:T.text}}>{u.following}</div>
           </div>
         </div>
       </div>
@@ -442,7 +442,7 @@ function S16({onNav,userId}){
       <div style={{flex:1,minWidth:0}}>
         {/* İsim + username */}
         <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
-          <span style={{fontSize:20,fontWeight:800,fontFamily:FH,color:T.text}}>{u.name}</span>
+          <span style={{fontSize:18,fontWeight:700,fontFamily:FH,color:T.text}}>{u.name}</span>
           {u.verified&&<span style={{display:"flex"}}>{I.check(T.accent)}</span>}
         </div>
         {/* Stats */}
