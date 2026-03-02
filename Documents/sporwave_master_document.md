@@ -23,7 +23,7 @@
 | **Derecelendirme** | MVP'de yok — deneyim seviyesi self-select olarak kalacak |
 | **Diğer spor dalları** | UI'da gösterilmiyor, sadece onboarding'de tercih soruluyor (data toplama amaçlı) |
 | **Tab yapısı** | 3 tab: Ana Sayfa (sosyal) + Maçlar (aksiyon) + Profil (kişisel) |
-| **Attendance sistemi** | MVP'de yok — kaldırıldı |
+| **Attendance sistemi** | Yok |
 | **Keşfet algoritması** | Etkileşim skoru: Like×1 + Comment×2 + Share×3, son 7 gün göreli sıralama |
 | **Maç sohbeti** | MVP'de var — her planlanan maçın otomatik grup chat'i |
 | **Maç editlenebilirlik** | Feed'e düştükten sonra edit yok, sadece 24 saat puanlama |
@@ -34,7 +34,6 @@
 | **Maç state machine** | 7 state: draft → open → full → started → ended → rating → archived |
 | **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
 | **Maç sohbeti arşiv** | Maç arşivlenince mesajlar silinir (salt okunur arşiv yok), sadece metadata korunur |
-| **Katılım bildirimi** | Maç sonrası puanlama ekranında (S40) her oyuncu için "Geldi" / "Gelmedi" toggle |
 | **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
 | **Feed modeli** | Duplicated feed — her katılımcının kendi maç postu var, feed'de ayrı ayrı görünür |
 | **Maç verisi vs Post** | Maç verisi (skor, takımlar, MVP) paylaşımlı ve immutable. Her katılımcının kişisel postu (başlık, not, fotoğraf) ayrı |
@@ -309,7 +308,7 @@ Ana Sayfa tab'ında:
 
 **Sayfa yapısı (tek akış, bölüm başlığı yok):**
 
-**Üstte:** "Maçlar" başlığı (sticky) + filtre ikonu (toggle — tıklayınca filtre paneli açılır/kapanır)
+**Üstte:** "Maçlar" başlığı (sticky) + şehir seçici dropdown (sağda, 1px border, pin ikonu + kullanıcının profilindeki şehir; tıklayınca şehirler listesi açılır) + filtre ikonu (toggle — tıklayınca filtre paneli açılır/kapanır)
 
 **Filtre paneli (collapsible, inline):**
 - **İlçe:** Dropdown seçici — 15 İstanbul ilçesi (Kadıköy, Beşiktaş, Üsküdar, Sarıyer, Ataşehir, Maltepe, Kartal, Pendik, Beyoğlu, Şişli, Bakırköy, Fatih, Beykoz, Çekmeköy, Ümraniye). Tek seçim.
@@ -497,7 +496,7 @@ Ana Sayfa tab'ında:
 
 #### S13: Başvuru Yönetimi (Organizatör için — Login gerekli)
 - **Header:** ← Geri (→ S12) + "Başvuru Yönetimi" başlığı + maç başlığı (alt satırda)
-- **Bekleyen başvurular:** Her başvuru kartı: avatar + isim + seviye badge'i + katılım yüzdesi + başvuru tarihi + Onayla (yeşil tik) + Reddet (kırmızı X)
+- **Bekleyen başvurular:** Her başvuru kartı: avatar + isim + seviye badge'i + başvuru tarihi + Onayla (yeşil tik) + Reddet (kırmızı X)
 - **Onaylı katılımcılar** (altta): avatar + isim + "Onaylı" yeşil badge
 - Sadece "Onay ile kabul et" modundaki maçlarda görünür
 
@@ -824,7 +823,7 @@ Ana Sayfa tab'ında:
 ### BÖLÜM 10: PUANLAMA (1 sayfa)
 
 #### S40: Puanlama (Maç Sonrası — Login gerekli)
-- **Amaç:** Maç sonrası MVP oylama + katılım bildirimi
+- **Amaç:** Maç sonrası MVP oylama
 - **Erişim:** S08'deki puanlanmamış maç kartı (turuncu border) veya bildirim
 - **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
 - **Header:** ← Geri (→ S08) + "Puanlama" başlığı
@@ -839,11 +838,6 @@ Ana Sayfa tab'ında:
 - **Co-MVP:** Eşit oy durumunda (beraberlik) birden fazla oyuncu MVP olarak gösterilir
 - Oy vermeyenler hakkını kaybeder (ceza yok)
 - MVP oylaması 24 saat sonra otomatik kapanır
-
-**Katılım Durumu Bildirimi:**
-- "Katılım Durumunu Bildir" başlığı
-- Her oyuncu satırında: avatar + isim + "Geldi" (yeşil) / "Gelmedi" (kırmızı) toggle butonları
-- Oyuncu başına tek seçim (ya Geldi ya Gelmedi)
 
 **"Gönder" butonu** → puanlama tamamlandı → onay ekranı ("Maçlara Dön" butonu ile S08'e yönlendirilir) → S08'deki turuncu kart kalkar
 
