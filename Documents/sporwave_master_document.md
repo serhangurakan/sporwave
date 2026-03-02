@@ -1,9 +1,9 @@
 # SPORWAVE v2 — Sayfa Haritası & Bilgi Mimarisi
 
-> Bu doküman, SporWave'in yeni vizyonu (Hevy/Strava kalitesinde spor sosyal platformu + partner matching) için
+> Bu doküman, SporWave'in yeni vizyonu (partner matching + Hevy/Strava kalitesinde spor sosyal platformu) için
 > tüm sayfa yapısını, navigasyonu, her sayfanın detaylı içeriğini ve sayfa arası geçişleri tanımlar.
 > MVP odağı: Halısaha/futbol. Mimari spor-agnostik olacak şekilde tasarlanmıştır.
-> Uygulama dili: Türkçe. Tema: Koyu (default) / Açık (toggle ile değiştirilebilir).
+> Uygulama dili: Türkçe. Tema: Koyu / Açık (default) (toggle ile değiştirilebilir).
 > Son güncelleme: 2 Mart 2026 (oturum 6)
 
 ---
@@ -13,12 +13,12 @@
 | Karar | Seçim |
 |-------|-------|
 | **MVP spor dalı** | Halısaha/Futbol (mimari spor-agnostik) |
-| **Tema** | Koyu (default) + Açık tema toggle (Ayarlar'dan) |
-| **Login yaklaşımı** | Gecikmeli login — uygulama login olmadan gezilir |
+| **Tema** | Koyu + Açık (default) tema toggle (Ayarlar'dan) |
+| **Login yaklaşımı** | Zorunlu login — uygulama ilk açılışta Login sayfasını gösterir, giriş veya onboarding sonrası erişilir |
 | **Kayıt yöntemleri** | E-posta/şifre + Google + Apple |
-| **Mesajlaşma** | Uygulama içi 1-1 mesajlaşma + grup chat (maç sohbeti) + WhatsApp butonu |
-| **Saha rezervasyonu** | MVP'de yok — sonra eklenecek |
-| **Coğrafi kapsam** | İstanbul öncelikli |
+| **Mesajlaşma** | Uygulama içi 1-1 mesajlaşma + grup chat (maç sohbeti) |
+| **Saha rezervasyonu** | MVP'de yok — sonra eklenebilir |
+| **Coğrafi kapsam** | İstanbul öncelikli - sonra diğer iller ve globale açılma planı |
 | **Uygulama dili** | Türkçe (i18n altyapısı hazır olacak) |
 | **Derecelendirme** | MVP'de yok — deneyim seviyesi self-select olarak kalacak |
 | **Diğer spor dalları** | UI'da gösterilmiyor, sadece onboarding'de tercih soruluyor (data toplama amaçlı) |
@@ -124,7 +124,7 @@ Ana Sayfa tab'ında:
 - "Google ile devam et" butonu (Google ikonu)
 - "Apple ile devam et" butonu (Apple ikonu)
 - "Hesabın yok mu? **Kayıt Ol**" linki
-- **Tetiklenme:** Login gerektiren herhangi bir işlem yapılmak istendiğinde (katıl, oluştur, mesaj, profil vb.)
+- **Tetiklenme:** Uygulama ilk açıldığında gösterilir. Kullanıcı giriş yapmadan uygulamaya erişemez.
 
 #### S02: Kayıt Ol Sayfası
 - Uygulama logosu (küçük, üstte)
@@ -388,7 +388,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 **Sağ altta FAB "+" butonu** (accent bg, beyaz "+" ikonu) → tıklayınca direkt S31 Maç Oluştur sayfasına gider (her iki tab'da görünür)
 
-#### S10: Maç Başlat (Canlı Skor Takibi — Login gerekli)
+#### S10: Maç Başlat (Canlı Skor Takibi)
 - **Amaç:** Maçı o an oynuyorken başlat, canlı skor tut, bitince kaydet
 
 **Maç başlatma koşulu:** Her iki takımda en az 1 oyuncu (uygulama kullanıcısı veya misafir) kayıtlı olmalı. Planlanan maçlarda (S31) maç saatinden sonra da başlatılabilir — 24 saat boyunca başlatma imkanı devam eder.
@@ -533,7 +533,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - **Maç saatinden sonra da başlatılabilir** — maç geçmiş tarihe düşse bile 24 saat boyunca başlatma imkanı devam eder
 - Maç saatinden **24 saat** geçtikten sonra başlamamışsa → maç otomatik olarak silinir ve tüm katılımcılara bildirim gider
 
-#### S13: Başvuru Yönetimi (Organizatör için — Login gerekli)
+#### S13: Başvuru Yönetimi (Organizatör için)
 - **Header:** ← Geri (→ S12) + "Başvuru Yönetimi" başlığı + maç başlığı (alt satırda)
 - **Bekleyen başvurular:** Her başvuru kartı: avatar + isim + seviye badge'i (accent renk) + başvuru tarihi + Onayla (yeşil tik) + Reddet (X)
 - **Onaylı katılımcılar** (altta): avatar + isim + "Onaylı" yeşil badge
@@ -553,7 +553,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 4: MAÇ OLUŞTUR (1 sayfa)
 
-#### S31: Maç Oluştur (İleri Tarihli — Login gerekli)
+#### S31: Maç Oluştur (İleri Tarihli)
 - **Amaç:** Gelecek tarihli maç planla, oyuncu topla
 - **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu ( S31'e gider)
 - İlerleme çubuğu (2 adım)
@@ -600,8 +600,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 5: PROFİL — Tab 3 (3 sayfa)
 
-#### S15: Kendi Profilin (Login gerekli)
-- **Yapı:** Hevy profil sayfasının SporWave adaptasyonu
+#### S15: Kendi Profilin- **Yapı:** Hevy profil sayfasının SporWave adaptasyonu
 
 **Üst bölüm:**
 - Profil fotoğrafı (80px, yuvarlak)
@@ -659,8 +658,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Arama sonuçlarında (S07): satır
 - Yorum/beğeni listelerinde (S42/S43): avatar/kullanıcıadı
 
-#### S23: Profil Düzenle (Login gerekli)
-- **Header:** ← Geri (→ S15) + "Profili Düzenle" başlığı (ortalı)
+#### S23: Profil Düzenle- **Header:** ← Geri (→ S15) + "Profili Düzenle" başlığı (ortalı)
 - **Fotoğraf bölümü:** Avatar (80px) + kamera ikonu overlay + "Değiştir" linki
   - Tıklayınca bottom sheet: "Fotoğraf Çek" / "Galeriden Seç" / "Fotoğrafı Kaldır" (kırmızı)
 - **Form alanları:**
@@ -678,7 +676,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 6: MESAJLAŞMA (3 sayfa)
 
-#### S17: Mesajlar Listesi (Inbox — Login gerekli)
+#### S17: Mesajlar Listesi (Inbox)
 - Üst navbar'daki 💬 ikonundan erişilir
 - **Header:** ← Geri + "Mesajlar" başlığı
 - Arama çubuğu (konuşma ara — isim/kullanıcıadı/maç başlığı ile filtrele)
@@ -695,7 +693,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Konuşmalar son mesaj tarihine göre sıralı
 - Boş durum: Inbox ikonu + "Henüz mesajın yok" + "Maça katıl veya birini takip et, sohbet başlat!"
 
-#### S18: Sohbet Sayfası (1-1 — Login gerekli)
+#### S18: Sohbet Sayfası (1-1)
 - **Üst bar:** ← Geri (→ S17) + avatar (36px, tıklanınca → S16) + isim + @kullanıcıadı (tıklanınca → S16) + WhatsApp ikonu (numara varsa) + ⋮ menü
 - Mesaj balonları (klasik chat UI):
   - Gönderilen: sağ, accent arka plan, siyah metin, yuvarlak köşeler (16-16-4-16)
@@ -711,7 +709,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Enter tuşu ile mesaj gönderilir, yeni mesaj anında listeye eklenir, otomatik scroll
 - ⋮ Menü: WhatsApp'a Geç (numara varsa) / Engelle (kırmızı) / Raporla (kırmızı)
 
-#### S35: Maç Sohbeti (Grup Chat — Login gerekli)
+#### S35: Maç Sohbeti (Grup Chat)
 - **Amaç:** Planlanan maçın katılımcıları arasında koordinasyon sağlamak
 - **Oluşturulma:** Maç oluşturulduğunda (S31) otomatik oluşur
 - **Erişim:** S12'deki "💬 Maç Sohbeti" butonu veya S17 Maç Sohbetleri tab'ından
@@ -736,8 +734,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 7: BİLDİRİMLER (1 sayfa)
 
-#### S19: Bildirimler (Login gerekli)
-- Üst navbar'daki 🔔 ikonundan erişilir
+#### S19: Bildirimler- Üst navbar'daki 🔔 ikonundan erişilir
 - **Header:** ← Geri (→ S05) + "Bildirimler" başlığı + "Tümünü Okundu İşaretle" butonu (okunmamış varsa)
 - **Bölüm başlıkları:** "Yeni (sayı)" (okunmamışlar) / "Önceki" (okunmuşlar) — divider ile ayrılır
 - Her bildirim satırı: Avatar (40px) + avatar üzerinde bildirim türü ikonu badge overlay + metin + zaman + okunmamış accent nokta
@@ -776,8 +773,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - 📱 Hesabını Doğrula → S27 (doğrulanmamışsa)
 - Alt kısım: "Çıkış Yap" (kırmızı)
 
-#### S21: Ayarlar (Login gerekli)
-- **Görünüm:**
+#### S21: Ayarlar- **Görünüm:**
   - Tema: Koyu / Açık (toggle switch)
 - **Hesap:**
   - Şifre Değiştir
@@ -798,15 +794,13 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - Uygulama Versiyonu
 - **Hesabı Sil** (kırmızı, en altta, onay dialog'u ile)
 
-#### S22: Takipçiler & Takip Listesi (Login gerekli)
-- **Header:** ← Geri (→ S15) + "@kullanıcıadı" başlığı
+#### S22: Takipçiler & Takip Listesi- **Header:** ← Geri (→ S15) + "@kullanıcıadı" başlığı
 - **İki sekme:** "Takipçiler (sayı)" / "Takip (sayı)" — aktif tab accent alt çizgi
 - Arama çubuğu (isim/kullanıcıadı ile filtrele)
 - Her satır: avatar (40px) + isim + @kullanıcıadı + "Takip Et" / "Takip Ediliyor" toggle buton (sağda)
 - Tıklanınca → S16 Profil
 
-#### S24: Arkadaşlarını Davet Et (Login gerekli)
-- Davet illüstrasyonu
+#### S24: Arkadaşlarını Davet Et- Davet illüstrasyonu
 - Kişiye özel referans linki (örn: sporwave.app/davet/berk2026)
 - "Linki Kopyala" butonu
 - "WhatsApp ile Paylaş" butonu
@@ -829,8 +823,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 9: GÜVENLİK & MODERASYON (4 sayfa)
 
-#### S27: Kullanıcı Doğrulama Akışı (Login gerekli)
-- **Adım 1:** Telefon numarası girişi (+90)
+#### S27: Kullanıcı Doğrulama Akışı- **Adım 1:** Telefon numarası girişi (+90)
 - **Adım 2:** SMS OTP (6 haneli kod) → "Doğrula" butonu
 - **Sonrası:** Profilde "✓ Doğrulanmış" rozeti, menüde "✅ Doğrulandı" etiketi
 
@@ -863,7 +856,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 10: PUANLAMA (1 sayfa)
 
-#### S40: Puanlama (Maç Sonrası — Login gerekli)
+#### S40: Puanlama (Maç Sonrası)
 - **Amaç:** Maç sonrası MVP oylama
 - **Erişim:** S08 Maçlarım tab'ındaki puanlanmamış maç kartı (accent border) veya bildirim
 - **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
@@ -886,7 +879,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 11: OYUNCU DAVET (inline drawer)
 
-#### S41: Oyuncu Davet (S12 içinde Inline Drawer — Login gerekli)
+#### S41: Oyuncu Davet (S12 içinde Inline Drawer)
 - **Erişim:** S12 Planlanan Maç Detay sayfasındaki "Davet Et" butonu (bottom sheet drawer olarak açılır)
 - **Not:** Standalone sayfa değil, S12 içinde inline drawer olarak çalışır
 - Başlık: "Oyuncu Davet Et"
@@ -974,9 +967,8 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### Akış 1: İlk Kez Gelen Kullanıcı
 ```
-Splash → Ana Sayfa/Keşfet (login gerekmez) → Maç kartlarına göz at
-→ "Katıl" veya "Maç Başlat" → Login'e yönlendirilir → Kayıt
-→ Onboarding (4 adım) → Kaldığı yere döner
+Splash → Login sayfası (S01) → Kayıt Ol (S02)
+→ Onboarding (S04, 4 adım) → Ana Sayfa (S05)
 ```
 
 ### Akış 2: Maç Başlat (Canlı Skor Takibi)
