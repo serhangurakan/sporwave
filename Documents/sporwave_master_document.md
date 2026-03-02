@@ -276,7 +276,7 @@ Ana Sayfa tab'ında:
   - Alt kenarda: `borderBottom: 1px solid T.cardBorder33`
 
 **Post yönetimi (⋮ menüsünden — kendi postun için):**
-- **Düzenle** → başlık, not, fotoğraf düzenleme ekranı
+- **Düzenle** → bottom drawer: "Post Düzenle" başlık + maç referans bilgisi (maç başlığı · tarih, read-only) + Başlık input (placeholder: maç başlığı) + Açıklama textarea + Fotoğraflar (mevcut thumbnail'lar + "Ekle" butonu, kamera ikonu ile) + Kaydet butonu
 - **Profilimden Gizle** → post feed ve profilden kaybolur, geri getirilebilir
 - **Postu Sil** → onay dialog'u: "Bu maçın senin profilindeki postu kalıcı olarak silinir. Maç verisi ve diğer oyuncuların postları etkilenmez." Silinen postun beğeni ve yorumları da silinir.
 
@@ -637,7 +637,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Her post kartı tıklanabilir → S11 Maç Detay sayfasına gider
 - Post sahibinin kişisel başlığı, notu ve fotoğrafları görünür
 - **Post yönetimi (her karttaki ⋮ menüsünden):**
-  - **Düzenle** → başlık, not, fotoğraf düzenleme
+  - **Düzenle** → bottom drawer: "Post Düzenle" başlık + maç referans bilgisi (read-only) + Başlık input + Açıklama textarea + Fotoğraflar (thumbnail'lar + Ekle) + Kaydet
   - **Gizle** / **Gizliliği Kaldır** (toggle) → geri alınabilir
   - **Sil** → onay dialog'u: "Bu post kalıcı olarak silinecek. Bu işlem geri alınamaz." + "Evet, Sil" (kırmızı) + "İptal"
 - **Gizli postlar:** Sadece sana görünür (kilit ikonu + "Gizli" etiketi), başkaları göremez

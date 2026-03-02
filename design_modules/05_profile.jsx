@@ -53,31 +53,31 @@ const mf=id=>M.find(m=>m.id===id);
 
 // Mock: Match posts (two-layer: match data + personal post)
 const POSTS=[
-  {id:1,matchId:1,userId:1,caption:"Ev sahibi olarak güzel bir maçtı!",photos:2,imgs:["/assets/images/posts/sporwave_sample_photo_01.jpeg","/assets/images/posts/sporwave_sample_photo_02.jpeg"],likes:8,coms:3,likedByMe:false,status:"visible",
+  {id:1,matchId:1,userId:1,title:"Ev sahibi olarak harika bir gece!",caption:"Ev sahibi olarak güzel bir maçtı!",photos:2,imgs:["/assets/images/posts/sporwave_sample_photo_01.jpeg","/assets/images/posts/sporwave_sample_photo_02.jpeg"],likes:8,coms:3,likedByMe:false,status:"visible",
     likers:[4,2,3,5,6,7,8],
     comments:[{uid:4,text:"Süper organizasyondu 👏",t:"2sa"},{uid:2,text:"Tekrar yapalım!",t:"1sa"}]},
-  {id:2,matchId:3,userId:1,caption:"Beraberlik de güzel",photos:0,likes:4,coms:1,likedByMe:false,status:"visible",
+  {id:2,matchId:3,userId:1,title:null,caption:"Beraberlik de güzel",photos:0,likes:4,coms:1,likedByMe:false,status:"visible",
     likers:[2,6,5,8],
     comments:[{uid:6,text:"Hakem kötüydü ama olsun",t:"4sa"}]},
-  {id:3,matchId:6,userId:1,caption:null,photos:1,imgs:["/assets/images/posts/sporwave_sample_photo_03.jpeg"],likes:6,coms:2,likedByMe:false,status:"hidden",
+  {id:3,matchId:6,userId:1,title:null,caption:null,photos:1,imgs:["/assets/images/posts/sporwave_sample_photo_03.jpeg"],likes:6,coms:2,likedByMe:false,status:"hidden",
     likers:[3,7,8,5,6,2],
     comments:[{uid:3,text:"Kalede sağlamdım",t:"1g"},{uid:8,text:"Güzel maçtı",t:"1g"}]},
-  {id:4,matchId:7,userId:1,caption:"Çok zevkli maçtı!",photos:0,likes:11,coms:5,likedByMe:false,status:"visible",
+  {id:4,matchId:7,userId:1,title:"Derbi keyfi!",caption:"Çok zevkli maçtı!",photos:0,likes:11,coms:5,likedByMe:false,status:"visible",
     likers:[4,2,6,3,8,5,7],
     comments:[{uid:4,text:"Hat-trick yaptım!",t:"3g"},{uid:6,text:"Müthiş maçtı",t:"3g"}]},
-  {id:5,matchId:1,userId:4,caption:"MVP seçilmek güzel hissettirdi",photos:0,likes:12,coms:4,likedByMe:false,status:"visible",
+  {id:5,matchId:1,userId:4,title:null,caption:"MVP seçilmek güzel hissettirdi",photos:0,likes:12,coms:4,likedByMe:false,status:"visible",
     likers:[1,2,3,5,6,7,8,4],
     comments:[{uid:1,text:"Hak ettin MVP'yi 👏",t:"2sa"},{uid:3,text:"Skor gerçekçi değil 😂",t:"45dk"}]},
-  {id:6,matchId:8,userId:4,caption:"Hat-trick! Formun zirvesi.",photos:1,imgs:["/assets/images/posts/sporwave_sample_photo_04.jpeg"],likes:18,coms:7,likedByMe:false,status:"visible",
+  {id:6,matchId:8,userId:4,title:null,caption:"Hat-trick! Formun zirvesi.",photos:1,imgs:["/assets/images/posts/sporwave_sample_photo_04.jpeg"],likes:18,coms:7,likedByMe:false,status:"visible",
     likers:[1,2,3,5,6,7,8],
     comments:[{uid:1,text:"Durdurulamıyorsun",t:"5sa"},{uid:8,text:"Asistler de güzeldi",t:"4sa"}]},
-  {id:7,matchId:9,userId:4,caption:null,photos:0,likes:5,coms:2,likedByMe:false,status:"visible",
+  {id:7,matchId:9,userId:4,title:null,caption:null,photos:0,likes:5,coms:2,likedByMe:false,status:"visible",
     likers:[6,3,5],
     comments:[{uid:6,text:"Pazar maçları harika",t:"1hf"}]},
-  {id:8,matchId:1,userId:2,caption:null,photos:0,likes:4,coms:1,likedByMe:false,status:"visible",
+  {id:8,matchId:1,userId:2,title:null,caption:null,photos:0,likes:4,coms:1,likedByMe:false,status:"visible",
     likers:[1,4,3,6],
     comments:[{uid:1,text:"Güzel oynadın",t:"2sa"}]},
-  {id:9,matchId:3,userId:2,caption:"Defansta sağlam durduk",photos:0,likes:3,coms:0,likedByMe:false,status:"visible",
+  {id:9,matchId:3,userId:2,title:null,caption:"Defansta sağlam durduk",photos:0,likes:3,coms:0,likedByMe:false,status:"visible",
     likers:[1,6,8],comments:[]},
 ];
 
@@ -217,8 +217,8 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
 
     {/* Title + Caption + Meta + Score — tıklanabilir alan */}
     <div onClick={()=>m&&window.location.assign("/04_match_detail?view=S11")} style={{cursor:m?"pointer":"default"}}>
-      {/* Title */}
-      {m&&<div style={{padding:"12px 16px 0",fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>{m.title}</div>}
+      {/* Title — post title varsa onu göster, yoksa maç title */}
+      {m&&<div style={{padding:"12px 16px 0",fontWeight:700,fontSize:16,color:T.text,fontFamily:FH}}>{p.title||m.title}</div>}
 
       {/* Caption */}
       {p.caption&&<div style={{padding:"6px 16px 0",fontSize:14,color:T.textDim,lineHeight:1.5}}>{p.caption}</div>}
@@ -292,6 +292,8 @@ function S15({onNav}){
   const [deleteConfirm,setDeleteConfirm]=useState(null);
   const [posts,setPosts]=useState(POSTS.filter(p=>p.userId===u.id));
   const [panelOpen,setPanelOpen]=useState(null);
+  const [editPostId,setEditPostId]=useState(null);
+  const [editForm,setEditForm]=useState({title:"",caption:""});
   const winRate=u.matches>0?Math.round((u.wins/u.matches)*100):0;
   const calDays=[...Array(28)].map((_,i)=>{const hasMatch=[2,5,8,12,15,18,22,25].includes(i+1);return{day:i+1,match:hasMatch};});
 
@@ -299,6 +301,13 @@ function S15({onNav}){
     if(action==="hide"){setPosts(ps=>ps.map(p=>p.id===postId?{...p,status:"hidden"}:p));}
     if(action==="unhide"){setPosts(ps=>ps.map(p=>p.id===postId?{...p,status:"visible"}:p));}
     if(action==="delete"){setDeleteConfirm(postId);}
+    if(action==="edit"){
+      const post=posts.find(p=>p.id===postId);
+      if(post){
+        setEditForm({title:post.title||"",caption:post.caption||""});
+        setEditPostId(postId);
+      }
+    }
   };
 
   return <div style={{paddingBottom:72}}>
@@ -402,6 +411,48 @@ function S15({onNav}){
         <Btn full onClick={()=>setDeleteConfirm(null)}>Vazgec</Btn>
       </div>
     </div>}
+
+    {/* Edit Post Drawer */}
+    {editPostId!==null&&(()=>{
+      const ep=posts.find(p=>p.id===editPostId);
+      const em=ep?mf(ep.matchId):null;
+      return <div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+        <div onClick={()=>setEditPostId(null)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
+        <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301,maxHeight:"80vh",overflowY:"auto"}}>
+          <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+          <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:4}}>Post Düzenle</div>
+          {em&&<div style={{fontSize:12,color:T.textDim,marginBottom:20}}>{em.title} · {em.date}</div>}
+
+          {/* Title */}
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Başlık</div>
+            <input value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))} placeholder={em?.title||"Post başlığı"} style={{width:"100%",background:T.bg,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+          </div>
+
+          {/* Caption */}
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Açıklama</div>
+            <textarea value={editForm.caption} onChange={e=>setEditForm(f=>({...f,caption:e.target.value}))} placeholder="Maç hakkında bir şeyler yaz..." rows={3} style={{width:"100%",background:T.bg,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:14,outline:"none",boxSizing:"border-box",resize:"vertical",fontFamily:FB,lineHeight:1.5}}/>
+          </div>
+
+          {/* Photos */}
+          <div style={{marginBottom:20}}>
+            <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Fotoğraflar</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              {ep?.imgs?.map((img,i)=><div key={i} style={{width:72,height:72,borderRadius:10,overflow:"hidden",position:"relative",border:`1px solid ${T.cardBorder}`}}>
+                <img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+              </div>)}
+              <div style={{width:72,height:72,borderRadius:10,border:`1.5px dashed ${T.cardBorder}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,cursor:"pointer",background:`${T.textDim}08`}}>
+                {I.camera(T.textDim)}
+                <span style={{fontSize:9,color:T.textMuted,fontWeight:600}}>Ekle</span>
+              </div>
+            </div>
+          </div>
+
+          <Btn full primary onClick={()=>{setPosts(ps=>ps.map(p=>p.id===editPostId?{...p,title:editForm.title||null,caption:editForm.caption||null}:p));setEditPostId(null);}}>Kaydet</Btn>
+        </div>
+      </div>;
+    })()}
 
     <TabBar active="S15" onNav={onNav}/>
   </div>;
