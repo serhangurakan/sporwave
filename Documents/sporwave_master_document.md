@@ -345,7 +345,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 **Puanlanmamış maçlar (varsa, üstte):**
 - Kullanıcının henüz MVP oylaması yapmadığı biten maçlar
-- `background:none, borderRadius:0, borderLeft: 3px solid turuncu` kart stili + "⭐ Bu maçı değerlendir" badge'i
+- `background:none, borderRadius:0, borderLeft: 3px solid accent` kart stili + "⭐ Bu maçı değerlendir" badge'i
 - Kartlar arasında 8px `T.card` divider
 - Tıklanınca → S40 Puanlama sayfası
 - Puanlama yapıldıktan sonra kart buradan kalkar
@@ -355,7 +355,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - **Kart stili:** `borderLeft: 3px solid T.accent` (accent yeşil)
 - Kartın üstünde: ✓ "Katılıyorsun" badge (tick ikonu + accent renk)
 - Kart içeriği Maç Bul tab'ındaki kartlarla aynı yapıda
-- Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (turuncu-sarı)
+- Tarihi geçmiş başlamamış maçlarda: "⏰ Maç saati geçti" etiketi (accent renk)
 - Tıklanınca → S12 Planlanan Maç Detay
 
 **Boş durum (Maçlarım):** "Henüz bir maça katılmadın.\nAçık maçlara göz at ve ilk maçına katıl!"
@@ -370,7 +370,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 **Tarihi geçmiş başlamamış maçlar:**
 - Maç saati geçtiği halde henüz başlamamış maçlar **Maç Bul tab'ında diğer kullanıcılara gösterilmez**
-- Bu maçlar yalnızca **Maçlarım tab'ında katılımcılarına** görünür (turuncu-sarı uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
+- Bu maçlar yalnızca **Maçlarım tab'ında katılımcılarına** görünür (accent uyarı border ile "⏰ Maç saati geçti — Başlatılmayı bekliyor" etiketi)
 - **Davet linki** ile maç görüntülenebilir — link sahibi maçı görebilir ama Maç Bul listesinde görmez
 - Host maçın tarihini gelecek bir tarihe güncellerse → maç tekrar Maç Bul tab'ında herkese görünür olur
 - **Otomatik silme:** Maç saatinden **24 saat** geçtikten sonra hala başlamamışsa maç otomatik silinir, tüm katılımcılara bildirim gider
@@ -478,7 +478,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Saha belirlenmemişse: "📍 [İlçe] — Saha belirlenecek"
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
 - **Kontenjan bar'ı:** "7/12 oyuncu — 5 yer kaldı" (progress bar ile — her zaman accent/primary rengi)
-- **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (turuncu-sarı) + otomatik silinmeye kalan süre
+- **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (accent renk) + otomatik silinmeye kalan süre
 
 **İki tab: Katılımcı Listesi | Takımlar**
 
@@ -486,7 +486,8 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Maçtaki tüm katılımcıların aşağı doğru listesi
 - Katılımcıya tıklanırsa → katılımcı profil sayfasına (S16) redirect
 - İlk 5 katılımcı gösterilir; daha fazlası varsa "Tümünü Göster" yazısıyla expand olabilir
-- **Host:** her katılımcının yanında siyah ✕ butonu (maçtan çıkar anlamında, siyah background, border yok)
+- Her katılımcı satırında: avatar + isim + host ise "Host" badge (accent renk, crown ikonu) + seviye badge (accent renk)
+- **Host:** her katılımcının yanında ✕ butonu (maçtan çıkar anlamında, transparent background, border yok)
   - Tıklanırsa popup: "Maçtan çıkarmak istediğinize emin misiniz?" — Çıkar / Vazgeç
 
 **Takımlar tab'ı:**
@@ -534,7 +535,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 #### S13: Başvuru Yönetimi (Organizatör için — Login gerekli)
 - **Header:** ← Geri (→ S12) + "Başvuru Yönetimi" başlığı + maç başlığı (alt satırda)
-- **Bekleyen başvurular:** Her başvuru kartı: avatar + isim + seviye badge'i + başvuru tarihi + Onayla (yeşil tik) + Reddet (kırmızı X)
+- **Bekleyen başvurular:** Her başvuru kartı: avatar + isim + seviye badge'i (accent renk) + başvuru tarihi + Onayla (yeşil tik) + Reddet (X)
 - **Onaylı katılımcılar** (altta): avatar + isim + "Onaylı" yeşil badge
 - Sadece "Onay ile kabul et" modundaki maçlarda görünür
 
@@ -864,7 +865,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 #### S40: Puanlama (Maç Sonrası — Login gerekli)
 - **Amaç:** Maç sonrası MVP oylama
-- **Erişim:** S08 Maçlarım tab'ındaki puanlanmamış maç kartı (turuncu border) veya bildirim
+- **Erişim:** S08 Maçlarım tab'ındaki puanlanmamış maç kartı (accent border) veya bildirim
 - **Erişim süresi:** Maç kaydedildikten sonra **24 saat boyunca** tüm katılımcılar erişebilir
 - **Header:** ← Geri (→ S08) + "Puanlama" başlığı
 
@@ -879,7 +880,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Oy vermeyenler hakkını kaybeder (ceza yok)
 - MVP oylaması 24 saat sonra otomatik kapanır
 
-**"Gönder" butonu** → puanlama tamamlandı → onay ekranı ("Maçlara Dön" butonu ile S08'e yönlendirilir) → S08 Maçlarım tab'ındaki turuncu kart kalkar
+**"Gönder" butonu** → puanlama tamamlandı → onay ekranı ("Maçlara Dön" butonu ile S08'e yönlendirilir) → S08 Maçlarım tab'ındaki puanlama kartı kalkar
 
 ---
 
@@ -1042,7 +1043,7 @@ Maç sırasında app kapanır → State otomatik kaydedilmiş
 
 ### Akış 8: Maç Sonrası Puanlama
 ```
-Maç biter → Kaydet → S08 Maçlarım tab'ında turuncu border'lı kart çıkar
+Maç biter → Kaydet → S08 Maçlarım tab'ında accent border'lı kart çıkar
 → Tıkla → S40 Puanlama sayfası
 → MVP oylaması
 → Gönder → Kart S08'den kalkar
@@ -1094,7 +1095,7 @@ Maç saati geçer → Maç hala başlamamış
 - **İstisna:** S12 Planlanan Maç Detay'da geri butonu match state'ine göre değişir: Maç Planlama → S08 Maçlar, Maç Oynanıyor → S10 Canlı Skor
 
 **Özel renk kuralları:**
-- Puanlanmamış maç kartı: turuncu border
+- Puanlanmamış maç kartı: accent border
 - Devam eden maç banner'ı: accent renk arka plan
 
 **Çok adımlı form UI standartları (S04 Onboarding baz alınarak — S10, S31 dahil tüm çok adımlı akışlar):**
@@ -1122,7 +1123,7 @@ Maç saati geçer → Maç hala başlamamış
 - Maç S08 Maç Bul tab'ından **otomatik olarak kaldırılır** — diğer kullanıcılara gösterilmez
 - Görünürlük badge'i 🔒 "Sadece Katılımcılara" olarak güncellenir
 - Maç **sadece şu yollarla erişilebilir:**
-  1. Maçın katılımcıları → S08 Maçlarım tab'ında turuncu-sarı uyarı border ile görünür
+  1. Maçın katılımcıları → S08 Maçlarım tab'ında accent uyarı border ile görünür
   2. Davet linki (deep link) ile — link sahibi maçı görüntüleyebilir
 - S12'de "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı gösterilir
 - Otomatik silinmeye kalan süre gösterilir: "Kalan süre: Xsa Xdk"

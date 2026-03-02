@@ -487,11 +487,11 @@ function S12({onNav}){
               <div style={{flex:1}}>
                 <div style={{display:"flex",alignItems:"center",gap:6}}>
                   <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
-                  {isHostUser&&<Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>}
+                  {isHostUser&&<Badge c={T.accent}>{I.crown(T.accent)} Host</Badge>}
                 </div>
-                {lv&&<div style={{fontSize:11,color:lv.c,fontWeight:600,marginTop:2}}>{lv.l}</div>}
+                {lv&&<div style={{fontSize:11,color:T.accent,fontWeight:600,marginTop:2}}>{lv.l}</div>}
               </div>
-              {isHost&&!isHostUser&&<span onClick={e=>{e.stopPropagation();setRemoveConfirm(uid);}} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",background:"#000",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
+              {isHost&&!isHostUser&&<span onClick={e=>{e.stopPropagation();setRemoveConfirm(uid);}} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",background:"transparent",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
             </div>;
           })}
           {players.length>5&&!showAllPlayers&&<div onClick={()=>setShowAllPlayers(true)} style={{textAlign:"center",padding:"12px 0",fontSize:13,fontWeight:600,color:T.accent,cursor:"pointer"}}>Tümünü Göster ({players.length})</div>}
