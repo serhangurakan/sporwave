@@ -70,7 +70,7 @@ const I={
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:"none",color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
 function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:"#fff",background:c,whiteSpace:"nowrap",...st}}>{children}</span>;}
-function ProgressBar({current,total}){return <div style={{display:"flex",gap:6,marginBottom:24,padding:"0 4px"}}>{Array.from({length:total},(_,i)=><div key={i} style={{flex:1,height:4,borderRadius:4,background:i<current?T.accent:i===current?`${T.accent}55`:`${T.textDim}22`,transition:"background .4s"}}/>)}</div>;}
+
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}if(tabId==="S15"){window.location.assign("/05_profile");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:"8px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
 
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
@@ -541,7 +541,7 @@ function S14({onNav}){
   </div>;
 }
 
-// S31: Create Match (2 Steps)
+// S31: Maç Oluştur (Tek Sayfa + Drawer)
 const LOC_RESULTS=[
   {id:"l1",name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287},
   {id:"l2",name:"Kadıköy Arena Halısaha",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy",lat:40.9901,lng:29.0234},
@@ -549,176 +549,213 @@ const LOC_RESULTS=[
   {id:"l4",name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046},
   {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir",lat:40.9923,lng:29.1145},
 ];
-const CITIES=["İstanbul","Ankara","İzmir","Bursa","Antalya"];
-const DISTRICTS={"İstanbul":["Kadıköy","Beşiktaş","Üsküdar","Ataşehir","Bakırköy","Şişli","Maltepe","Kartal"],"Ankara":["Çankaya","Keçiören","Yenimahalle"],"İzmir":["Konak","Karşıyaka","Bornova"],"Bursa":["Osmangazi","Nilüfer"],"Antalya":["Muratpaşa","Konyaaltı"]};
-
-const S31_STEP_TITLES=["Maç Oluştur","Maç Detayları"];
-
 const QUOTA_OPTIONS=[2,4,6,8,10,12,14,16,18,20,22,"∞"];
-
-function BackLink({onClick}){
-  return <div onClick={onClick} style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500,marginBottom:8,marginTop:20,padding:"4px 0"}}>
-    {I.arrowLeft(T.textDim)} Geri
-  </div>;
-}
+const TR_DAYS=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const TR_MONTHS_SHORT=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
 
 function S31({onNav}){
-  const now=new Date();
-  const todayStr=now.toISOString().split("T")[0];
-  const nowTime=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
-
-  const [step,setStep]=useState(0);
-  const [locQuery,setLocQuery]=useState("");
+  // Form state
+  const [dateVal,setDateVal]=useState(null);
+  const [timeVal,setTimeVal]=useState(null);
   const [selectedLoc,setSelectedLoc]=useState(null);
-  const [locMode,setLocMode]=useState("search"); // "search" | "area"
-  const [selCity,setSelCity]=useState(null);
-  const [selDistrict,setSelDistrict]=useState(null);
-  const [dateVal,setDateVal]=useState(todayStr);
-  const [timeVal,setTimeVal]=useState(nowTime);
+  const [locQuery,setLocQuery]=useState("");
   const [quota,setQuota]=useState(10);
   const [matchName,setMatchName]=useState("");
+  const [titleEdited,setTitleEdited]=useState(false);
   const [description,setDescription]=useState("");
   const [accept,setAccept]=useState("open");
   const [privacy,setPrivacy]=useState("public");
-  const [attempted1,setAttempted1]=useState(false);
-  const [attempted2,setAttempted2]=useState(false);
 
-  const privacyOpts=[{id:"public",l:"Herkese Açık"},{id:"followers",l:"Sadece Takipçiler"},{id:"invite",l:"Sadece Davet"}];
+  // UI state
+  const [drawer,setDrawer]=useState(null);
+  const [showAdvanced,setShowAdvanced]=useState(false);
+  const [attempted,setAttempted]=useState(false);
+
+  // Drawer temp state
+  const [tmpDate,setTmpDate]=useState("");
+  const [tmpTime,setTmpTime]=useState("");
+  const [tmpTitle,setTmpTitle]=useState("");
+  const [tmpDesc,setTmpDesc]=useState("");
+
+  // Auto title
+  const locShort=selectedLoc?selectedLoc.name.split(" ").slice(0,2).join(" "):"";
+  const autoTitle=(()=>{
+    if(!dateVal||!timeVal)return locShort?`${locShort} Halısaha Maçı`:"Halısaha Maçı";
+    const d=new Date(dateVal+"T"+timeVal);const day=TR_DAYS[d.getDay()];
+    return `${day} ${timeVal}${locShort?" "+locShort:""} Halısaha Maçı`;
+  })();
+  const displayTitle=titleEdited&&matchName?matchName:autoTitle;
+
+  // Location
   const locFiltered=locQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(locQuery.toLowerCase())||l.addr.toLowerCase().includes(locQuery.toLowerCase())):[];
+  const locDisplay=selectedLoc?selectedLoc.name:null;
 
-  const step1Valid=dateVal&&timeVal&&selectedLoc;
+  // Date/time display
+  const dateDisplay=dateVal?(()=>{const d=new Date(dateVal+"T00:00");return `${d.getDate()} ${TR_MONTHS_SHORT[d.getMonth()]}, ${TR_DAYS[d.getDay()]}`;})():null;
+  const timeDisplay=timeVal||null;
 
-  return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+  // Validation
+  const locValid=!!selectedLoc;
+  const dateValid=!!dateVal;
+  const timeValid=!!timeVal;
+  const locError=attempted&&!locValid;
+  const dateError=attempted&&!dateValid;
+  const timeError=attempted&&!timeValid;
 
-    {/* Progress bar */}
-    <div style={{marginTop:16}}>
-      <ProgressBar current={step} total={2}/>
+  // Publish
+  const handlePublish=()=>{
+    setAttempted(true);
+    if(!locValid||!dateValid||!timeValid)return;
+    window.location.assign("/04_match_detail?view=S12");
+  };
+
+  // Validation message
+  const errFields=[];
+  if(attempted&&!locValid)errFields.push("konum");
+  if(attempted&&!dateValid)errFields.push("tarih");
+  if(attempted&&!timeValid)errFields.push("saat");
+  const errMsg=errFields.length>0?`${errFields.join(", ")} seçin`.replace(/^./,c=>c.toUpperCase()):null;
+
+  // Sub-components
+  const FieldRow=({icon,label,value,placeholder,onClick,error})=><div onClick={onClick} style={{display:"flex",alignItems:"center",height:56,cursor:"pointer",borderBottom:`1px solid ${error?T.red+"66":T.cardBorder+"33"}`}}>
+    <span style={{marginRight:12,fontSize:16,display:"flex",flexShrink:0}}>{icon}</span>
+    <span style={{fontSize:14,fontWeight:600,color:T.text,whiteSpace:"nowrap"}}>{label}</span>
+    <span style={{marginLeft:"auto",fontSize:13,fontWeight:500,color:value?T.accent:T.textMuted,maxWidth:"50%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textAlign:"right"}}>{value||placeholder}</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft:8,flexShrink:0}}><polyline points="9,6 15,12 9,18"/></svg>
+  </div>;
+
+  const DrawerWrap=({children})=><div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+    <div onClick={()=>setDrawer(null)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
+    <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301,maxHeight:"80vh",overflowY:"auto"}}>
+      <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+      {children}
+    </div>
+  </div>;
+
+  return <div style={{padding:"24px 20px",paddingBottom:100,minHeight:"100vh",display:"flex",flexDirection:"column",position:"relative"}}>
+
+    {/* Back */}
+    <div onClick={()=>onNav("S08")} style={{display:"inline-flex",alignItems:"center",gap:4,cursor:"pointer",marginTop:16,marginBottom:20,padding:"4px 0",alignSelf:"flex-start"}}>
+      {I.arrowLeft(T.textDim)}
     </div>
 
-    {/* Back link */}
-    <BackLink onClick={step>0?()=>setStep(step-1):()=>onNav("S08")}/>
+    {/* Title */}
+    <div style={{fontSize:24,fontWeight:800,color:T.text,letterSpacing:"-0.5px",fontFamily:FH,marginBottom:24}}>Maç Oluştur</div>
 
-    {/* Step label */}
-    <div style={{marginBottom:8}}>
-      <span style={{fontSize:12,color:T.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"1px"}}>
-        Adım {step+1}/2
-      </span>
+    {/* Field rows — ordered: Konum, Tarih, Saat, Kontenjan, Başlık */}
+    <FieldRow icon="📍" label="Konum" value={locDisplay} placeholder="Seçilmedi" onClick={()=>setDrawer("location")} error={locError}/>
+    <FieldRow icon="📅" label="Tarih" value={dateDisplay} placeholder="Seçilmedi" onClick={()=>{setTmpDate(dateVal||"");setDrawer("date");}} error={dateError}/>
+    <FieldRow icon="🕐" label="Saat" value={timeDisplay} placeholder="Seçilmedi" onClick={()=>{setTmpTime(timeVal||"");setDrawer("time");}} error={timeError}/>
+    <FieldRow icon="👥" label="Kontenjan" value={quota==="∞"?"Limitsiz":`${quota} kişi`} onClick={()=>setDrawer("quota")}/>
+    <FieldRow icon="✏️" label="Maç Başlığı" value={displayTitle} onClick={()=>{setTmpTitle(displayTitle);setDrawer("title");}}/>
+
+    {/* Validation errors */}
+    {errMsg&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginTop:8,paddingLeft:4}}>{errMsg}</div>}
+
+    {/* Gelişmiş Ayarlar */}
+    <div onClick={()=>setShowAdvanced(!showAdvanced)} style={{display:"flex",alignItems:"center",height:56,cursor:"pointer",borderTop:`1px solid ${T.cardBorder}33`,marginTop:8}}>
+      <span style={{marginRight:12,fontSize:16,display:"flex",flexShrink:0}}>⚙️</span>
+      <span style={{fontSize:14,fontWeight:600,color:T.textDim}}>Gelişmiş Ayarlar</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft:"auto",transition:"transform .2s",transform:showAdvanced?"rotate(90deg)":"rotate(0deg)"}}><polyline points="9,6 15,12 9,18"/></svg>
     </div>
+    {showAdvanced&&<>
+      <FieldRow icon="📝" label="Açıklama" value={description||null} placeholder="Opsiyonel" onClick={()=>{setTmpDesc(description);setDrawer("desc");}}/>
+      <FieldRow icon="🔓" label="Kabul Modu" value={accept==="open"?"Herkesi Kabul Et":"Onay ile Kabul Et"} onClick={()=>setDrawer("accept")}/>
+      <FieldRow icon="👁️" label="Gizlilik" value={privacy==="public"?"Herkese Açık":"Sadece Davet"} onClick={()=>setDrawer("privacy")}/>
+    </>}
 
-    {/* Big title */}
-    <div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:24,letterSpacing:"-0.5px",fontFamily:FH}}>
-      {S31_STEP_TITLES[step]}
-    </div>
+    {/* Spacer */}
+    <div style={{flex:1}}/>
 
-    {/* Step 1: Konum, Tarih/Saat, Kontenjan */}
-    {step===0&&<>
-      {/* Konum */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Konum</div>
-      {selectedLoc?<div style={{marginBottom:24}}>
-        <div style={{background:`${T.green}10`,borderRadius:12,border:`1.5px solid ${T.green}33`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
-          {I.pin(T.green)}
-          <div style={{flex:1}}>
-            {selectedLoc.type==="place"
-              ?<><div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{selectedLoc.addr}</div></>
-              :<div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.city}, {selectedLoc.district}</div>}
-          </div>
-          <span onClick={()=>{setSelectedLoc(null);setSelCity(null);setSelDistrict(null);setLocQuery("");}} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
-        </div>
+    {/* Yayınla CTA */}
+    <Btn primary full onClick={handlePublish} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12,marginTop:32}}>Yayınla</Btn>
+
+    {/* ===== DRAWERS ===== */}
+
+    {/* Tarih Drawer */}
+    {drawer==="date"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Tarih Seç</div>
+      <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.accent}`,padding:"14px 16px",marginBottom:20}}>
+        <input type="date" value={tmpDate} onChange={e=>setTmpDate(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:16,width:"100%",outline:"none",fontWeight:600,fontFamily:"inherit"}}/>
       </div>
-      :<div style={{marginBottom:attempted1&&!selectedLoc?4:24}}>
-        {/* Tab bar: Saha Ara | İl / İlçe */}
-        <div style={{display:"flex",gap:0,marginBottom:12,borderBottom:`1px solid ${T.cardBorder}`}}>
-          {[{id:"search",l:"📍 Saha Ara"},{id:"area",l:"🏙 İl / İlçe"}].map(t=><div key={t.id} onClick={()=>setLocMode(t.id)} style={{flex:1,textAlign:"center",padding:"8px 0",fontSize:13,fontWeight:600,color:locMode===t.id?T.accent:T.textDim,borderBottom:locMode===t.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{t.l}</div>)}
-        </div>
+      <Btn primary full disabled={!tmpDate} onClick={()=>{if(tmpDate){setDateVal(tmpDate);setDrawer(null);}}} st={{borderRadius:12}}>Tamam</Btn>
+    </DrawerWrap>}
 
-        {/* Tab 1: Saha Ara */}
-        {locMode==="search"&&<>
-          <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted1&&!selectedLoc?T.red:locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
-            {I.pin(locQuery.length>=2?T.accent:T.textDim)}
-            <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-            {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
-          </div>
-          {locFiltered.length>0&&<div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 12px 12px",overflow:"hidden"}}>
-            {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");}} style={{padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
-              <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
-            </div>)}
-          </div>}
-          {locQuery.length>=2&&locFiltered.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
-        </>}
+    {/* Saat Drawer */}
+    {drawer==="time"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Saat Seç</div>
+      <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.accent}`,padding:"14px 16px",marginBottom:20}}>
+        <input type="time" value={tmpTime} onChange={e=>setTmpTime(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:16,width:"100%",outline:"none",fontWeight:600,fontFamily:"inherit"}}/>
+      </div>
+      <Btn primary full disabled={!tmpTime} onClick={()=>{if(tmpTime){setTimeVal(tmpTime);setDrawer(null);}}} st={{borderRadius:12}}>Tamam</Btn>
+    </DrawerWrap>}
 
-        {/* Tab 2: İl / İlçe */}
-        {locMode==="area"&&<>
-          <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>İl</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:selCity?12:0}}>
-            {CITIES.map(c=><span key={c} onClick={()=>{setSelCity(c);setSelDistrict(null);}} style={{padding:"6px 14px",borderRadius:20,fontSize:13,fontWeight:600,cursor:"pointer",background:selCity===c?`${T.accent}18`:`${T.textDim}12`,color:selCity===c?T.accent:T.textDim,border:`1.5px solid ${selCity===c?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{c}</span>)}
-          </div>
-          {selCity&&<>
-            <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:8,marginTop:4,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-              {(DISTRICTS[selCity]||[]).map(d=><span key={d} onClick={()=>{setSelDistrict(d);setSelectedLoc({city:selCity,district:d,type:"area"});}} style={{padding:"6px 14px",borderRadius:20,fontSize:13,fontWeight:600,cursor:"pointer",background:selDistrict===d?`${T.accent}18`:`${T.textDim}12`,color:selDistrict===d?T.accent:T.textDim,border:`1.5px solid ${selDistrict===d?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{d}</span>)}
-            </div>
-          </>}
-        </>}
-
+    {/* Konum Drawer */}
+    {drawer==="location"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Konum Seç</div>
+      <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
+        {I.search(locQuery.length>=2?T.accent:T.textDim)}
+        <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
+        {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
+      </div>
+      {locFiltered.length>0&&<div style={{background:T.bg,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 12px 12px",overflow:"hidden"}}>
+        {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");setDrawer(null);}} style={{padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+          <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
+          <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
+        </div>)}
       </div>}
-      {attempted1&&!selectedLoc&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:20,paddingLeft:4}}>Lütfen bir konum seçin</div>}
+      {locQuery.length>=2&&locFiltered.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+      {locQuery.length<2&&<div style={{padding:"20px 0 4px",textAlign:"center",fontSize:13,color:T.textMuted}}>Saha veya adres aramaya başlayın</div>}
+    </DrawerWrap>}
 
-      {/* Tarih & Saat */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Tarih & Saat</div>
-      <div style={{display:"flex",gap:8,marginBottom:24}}>
-        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px"}}>
-          <input type="date" value={dateVal} onChange={e=>setDateVal(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
+    {/* Kontenjan Drawer */}
+    {drawer==="quota"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Kontenjan</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+        {QUOTA_OPTIONS.map(n=>{const val=n==="∞"?"∞":n;const sel=quota===val;return <div key={n} onClick={()=>{setQuota(val);setDrawer(null);}} style={{padding:"14px 0",borderRadius:12,textAlign:"center",cursor:"pointer",fontSize:15,fontWeight:sel?700:600,background:sel?`${T.accent}15`:T.bg,color:sel?T.accent:T.textDim,border:`1.5px solid ${sel?T.accent:T.cardBorder}`,transition:"all .15s"}}>{n==="∞"?"∞":n}</div>;})}
+      </div>
+    </DrawerWrap>}
+
+    {/* Maç Başlığı Drawer */}
+    {drawer==="title"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Maç Başlığı</div>
+      <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:16}}>
+        <input value={tmpTitle} onChange={e=>setTmpTitle(e.target.value)} placeholder={autoTitle} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
+      </div>
+      <Btn primary full onClick={()=>{if(tmpTitle.trim()&&tmpTitle.trim()!==autoTitle){setMatchName(tmpTitle.trim());setTitleEdited(true);}else{setMatchName("");setTitleEdited(false);}setDrawer(null);}} st={{borderRadius:12}}>Tamam</Btn>
+    </DrawerWrap>}
+
+    {/* Açıklama Drawer */}
+    {drawer==="desc"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Açıklama</div>
+      <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:16,minHeight:100}}>
+        <textarea value={tmpDesc} onChange={e=>setTmpDesc(e.target.value)} placeholder="Maç hakkında detay yazın..." rows={4} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
+      </div>
+      <Btn primary full onClick={()=>{setDescription(tmpDesc);setDrawer(null);}} st={{borderRadius:12}}>Tamam</Btn>
+    </DrawerWrap>}
+
+    {/* Kabul Modu Drawer */}
+    {drawer==="accept"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Kabul Modu</div>
+      {[{id:"open",l:"Herkesi Kabul Et",d:"İlk gelen alır"},{id:"approval",l:"Onay ile Kabul Et",d:"Başvuruları sen onaylarsın"}].map(a=><div key={a.id} onClick={()=>{setAccept(a.id);setDrawer(null);}} style={{padding:"14px 16px",borderRadius:12,marginBottom:8,cursor:"pointer",background:accept===a.id?`${T.accent}12`:T.bg,border:`1.5px solid ${accept===a.id?T.accent:T.cardBorder}`,transition:"all .15s"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:20,height:20,borderRadius:"50%",border:`2px solid ${accept===a.id?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{accept===a.id&&<div style={{width:10,height:10,borderRadius:"50%",background:T.accent}}/>}</div>
+          <div><div style={{fontSize:14,fontWeight:600,color:accept===a.id?T.accent:T.text}}>{a.l}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{a.d}</div></div>
         </div>
-        <div style={{flex:1,background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px"}}>
-          <input type="time" value={timeVal} onChange={e=>setTimeVal(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,colorScheme:"dark"}}/>
+      </div>)}
+    </DrawerWrap>}
+
+    {/* Gizlilik Drawer */}
+    {drawer==="privacy"&&<DrawerWrap>
+      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Gizlilik</div>
+      {[{id:"public",l:"Herkese Açık",d:"Maçlar sekmesinde görünür"},{id:"invite",l:"Sadece Davet",d:"Link paylaşarak katılım"}].map(p=><div key={p.id} onClick={()=>{setPrivacy(p.id);setDrawer(null);}} style={{padding:"14px 16px",borderRadius:12,marginBottom:8,cursor:"pointer",background:privacy===p.id?`${T.accent}12`:T.bg,border:`1.5px solid ${privacy===p.id?T.accent:T.cardBorder}`,transition:"all .15s"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:20,height:20,borderRadius:"50%",border:`2px solid ${privacy===p.id?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{privacy===p.id&&<div style={{width:10,height:10,borderRadius:"50%",background:T.accent}}/>}</div>
+          <div><div style={{fontSize:14,fontWeight:600,color:privacy===p.id?T.accent:T.text}}>{p.l}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{p.d}</div></div>
         </div>
-      </div>
+      </div>)}
+    </DrawerWrap>}
 
-      {/* Kontenjan */}
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:32}}>
-        <div style={{fontSize:13,color:T.textDim,fontWeight:600}}>Kontenjan</div>
-        <div style={{position:"relative",width:"calc(50% - 4px)"}}>
-          <select value={quota} onChange={e=>setQuota(e.target.value==="∞"?"∞":Number(e.target.value))} style={{appearance:"none",WebkitAppearance:"none",background:T.card,border:`1.5px solid ${T.cardBorder}`,borderRadius:12,padding:"12px 36px 12px 16px",color:T.accent,fontSize:14,fontWeight:700,cursor:"pointer",outline:"none",fontFamily:"inherit",width:"100%"}}>
-            {QUOTA_OPTIONS.map(n=><option key={n} value={n}>{n==="∞"?"∞ Limitsiz":`${n} kişi`}</option>)}
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}}><polyline points="6,9 12,15 18,9"/></svg>
-        </div>
-      </div>
-
-      <Btn primary full onClick={()=>{setAttempted1(true);if(step1Valid)setStep(1);}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Devam</Btn>
-    </>}
-
-    {/* Step 2: Başlık, Açıklama, Kabul Modu, Gizlilik */}
-    {step===1&&<>
-      {/* Başlık */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Başlık</div>
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted2&&!matchName.trim()?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted2&&!matchName.trim()?4:16}}>
-        <input value={matchName} onChange={e=>setMatchName(e.target.value)} placeholder="Cumartesi Halısaha Maçı" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-      </div>
-      {attempted2&&!matchName.trim()&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:16,paddingLeft:4}}>Başlık zorunludur</div>}
-
-      {/* Açıklama */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Açıklama</div>
-      <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted2&&!description.trim()?T.red:T.cardBorder}`,padding:"12px 16px",marginBottom:attempted2&&!description.trim()?4:24,minHeight:72}}>
-        <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Maç hakkında detay yazın..." rows={3} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
-      </div>
-      {attempted2&&!description.trim()&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:24,paddingLeft:4}}>Açıklama zorunludur</div>}
-
-      {/* Kabul Modu */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Kabul Modu</div>
-      <div style={{display:"flex",gap:8,marginBottom:24}}>
-        {[{id:"open",l:"Herkesi Kabul Et"},{id:"approval",l:"Onay ile Kabul Et"}].map(a=><div key={a.id} onClick={()=>setAccept(a.id)} style={{flex:1,padding:"14px 12px",borderRadius:12,background:accept===a.id?`${T.accent}12`:T.card,border:`1.5px solid ${accept===a.id?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",fontSize:13,fontWeight:accept===a.id?700:600,color:accept===a.id?T.accent:T.textDim,transition:"all .2s"}}>{a.l}</div>)}
-      </div>
-
-      {/* Gizlilik */}
-      <div style={{fontSize:13,color:T.textDim,marginBottom:12,fontWeight:600}}>Gizlilik</div>
-      <div style={{display:"flex",gap:8,marginBottom:32}}>
-        {privacyOpts.map(p=><div key={p.id} onClick={()=>setPrivacy(p.id)} style={{flex:1,padding:"10px 8px",borderRadius:12,background:privacy===p.id?`${T.accent}12`:T.card,border:`1.5px solid ${privacy===p.id?T.accent:T.cardBorder}`,textAlign:"center",cursor:"pointer",fontSize:12,fontWeight:privacy===p.id?700:600,color:privacy===p.id?T.accent:T.textDim,transition:"all .2s"}}>{p.l}</div>)}
-      </div>
-
-      <Btn primary full onClick={()=>{setAttempted2(true);if(matchName.trim()&&description.trim())window.location.assign("/04_match_detail?view=S12");}} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Oluştur</Btn>
-    </>}
   </div>;
 }
 

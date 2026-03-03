@@ -617,44 +617,56 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ### BÖLÜM 4: MAÇ OLUŞTUR (1 sayfa)
 
-#### S31: Maç Oluştur (İleri Tarihli)
+#### S31: Maç Oluştur (Tek Sayfa)
 - **Amaç:** Gelecek tarihli maç planla, oyuncu topla
-- **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu ( S31'e gider)
-- İlerleme çubuğu (2 adım)
+- **Erişim:** S08 Maçlar tab'ındaki FAB "+" butonu (S31'e gider)
+- Tek sayfa, çok adımlı form yok. Her alan bir satır, tıklayınca bottom drawer açılır.
 
-**Adım 1 — Maç Oluştur:**
-- Sol üstte geri butonu (S08 Maçlar sayfasına döner)
-- **Konum seçimi — zorunlu (2 seçenek, serbest geçiş):**
-  - Tab bar: "📍 Saha Ara" | "🏙 İl / İlçe" — iki seçenek arasında serbest geçiş
-  - **Saha Ara tab:** Google Maps API ile saha/tesis arama (isim veya adres). Seçilince `{name, addr, lat, lng, type:"place"}` kaydedilir.
-  - **İl / İlçe tab:** İl listesinden seç → ilçe listesinden seç (chip-list). Seçilince `{city, district, type:"area"}` kaydedilir.
-  - Seçim sonrası yeşil border kutu + "Değiştir" linki (tıklayınca tab bar'a dön, diğer seçeneğe geçiş serbest)
-  - **Validation:** Konum seçilmeden "Devam"a basılırsa kırmızı hata mesajı gösterilir (konum zorunlu)
-- **Tarih** (Date picker) — **zorunlu, varsayılan: bugünün tarihi**
-- **Saat** (Time picker) — **zorunlu, varsayılan: şu anki saat**
-- **Kontenjan:** Dropdown number picker — **zorunlu, varsayılan: 10 kişi**
-  - Seçenekler: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, ∞ Limitsiz
-  - Dropdown genişliği Saat input'u ile aynı (sağa hizalı, `width: calc(50% - 4px)`)
-- **Validation:** "Devam" butonuna basıldığında konum durumu kontrol edilir (tarih, saat ve kontenjan varsayılan değerle geldiği için her zaman geçerlidir). Eksik alanlarda kırmızı border + hata mesajı gösterilir.
-- **"Devam"** butonu (Adım 2'ye geçer)
+**Sayfa Yapısı:**
+- Sol üstte ← geri butonu (S08 Maçlar sayfasına döner)
+- "Maç Oluştur" büyük başlık (`fontSize:24, fontWeight:800`)
+- Altında dikey alan satırları (her biri `1px separator` ile ayrılır)
+- Her alan satırı: Sol'da ikon + alan adı (bold), sağ'da seçilen değer (accent) veya placeholder (soluk), chevron ikonu. Satır yüksekliği 56px, tıklayınca drawer açılır.
+- En altta "Yayınla" CTA butonu (accent, tam genişlik)
 
-**Adım 2 — Maç Detayları:**
-- Sol üstte geri butonu (Adım 1'e döner)
-- **Başlık** input (placeholder: "Cumartesi Halısaha Maçı") — **zorunlu**
-- **Açıklama** textarea (placeholder: "Maç hakkında detay yazın...") — **zorunlu**
-- **Kabul Modu:**
-  - "Herkesi Kabul Et" (varsayılan) — ilk gelen alır
-  - "Onay ile Kabul Et" — başvuruları sen onaylarsın
-- **Gizlilik:**
-  - "Herkese Açık" (varsayılan) — Maçlar sekmesinde görünür
-  - "Sadece Takipçiler" — sadece takipçilerin görebilir
-  - "Sadece Davet" — link paylaşarak katılım
-- Kabul Modu ve Gizlilik seçim elementleri aynı stil: `borderRadius:12`, seçilince accent border + accent renkli metin
-- **Gizlilik 3 seçenek yan yana:** `flex:1` ile eşit genişlikte, tek satırda (wrap yok), `fontSize:12, padding:"10px 8px", textAlign:"center"`
-- **Validation:** "Oluştur" butonuna basıldığında başlık ve açıklama kontrol edilir. Boş alanlarda kırmızı border + hata mesajı gösterilir.
-- **"Oluştur"** butonu — maç oluşturulur ve S12'ye yönlendirilir
+**Zorunlu Alanlar (sırasıyla):**
 
-**Oluştur sonrası:**
+1. **📍 Konum** — Zorunlu. Sağda: seçilen mekan adı veya "Seçilmedi"
+   - Drawer: Google Places Autocomplete arama input + sonuç listesi. Seçilince `{name, addr, lat, lng, type:"place"}` kaydedilir, drawer kapanır.
+   - Arama başlamadan "Saha veya adres aramaya başlayın" bilgi metni gösterilir.
+2. **📅 Tarih** — Zorunlu, varsayılan yok. Sağda: "3 Mar, Cumartesi" formatı veya "Seçilmedi"
+   - Drawer: Native date picker (`<input type="date">`, accent border, `fontSize:16, fontWeight:600`) + "Tamam" butonu
+   - "Tamam" butonu tarih seçilmeden disabled.
+3. **🕐 Saat** — Zorunlu, varsayılan yok. Sağda: "20:00" formatı veya "Seçilmedi"
+   - Drawer: Native time picker (`<input type="time">`, accent border, `fontSize:16, fontWeight:600`) + "Tamam" butonu
+   - "Tamam" butonu saat seçilmeden disabled.
+4. **👥 Kontenjan** — Varsayılan: 10 kişi. Sağda: "10 kişi"
+   - Drawer: 4 sütunlu grid (2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, ∞). Seçilince drawer kapanır.
+5. **✏️ Maç Başlığı** — Otomatik üretilir, sağda gösterilir (truncated)
+   - Otomatik başlık: "[GünAdı] [HH:MM] [KonumKısa] Halısaha Maçı"
+   - KonumKısa: Saha adının ilk 2 kelimesi, konum yok → boş
+   - Tarih/saat seçilmediyse: "[KonumKısa] Halısaha Maçı" veya sadece "Halısaha Maçı"
+   - Drawer: Text input (önceden doldurulmuş) + "Tamam" butonu
+   - Kullanıcı düzenlemediyse tarih/konum değişince otomatik güncellenir, düzenlediyse güncelleme durur
+
+**Gelişmiş Ayarlar (collapsed, tıklayınca expand):**
+- "⚙️ Gelişmiş Ayarlar" satırı + chevron ikonu (rotate animasyonu)
+
+6. **📝 Açıklama** — Opsiyonel. Drawer: Textarea + "Tamam"
+7. **🔓 Kabul Modu** — Varsayılan: "Herkesi Kabul Et". Drawer: Radio seçenekler
+   - "Herkesi Kabul Et" — ilk gelen alır
+   - "Onay ile Kabul Et" — başvuruları sen onaylarsın
+8. **👁️ Gizlilik** — Varsayılan: "Herkese Açık". Drawer: Radio seçenekler
+   - "Herkese Açık" — Maçlar sekmesinde görünür
+   - "Sadece Davet" — link paylaşarak katılım
+
+**Yayınla CTA:**
+- Tam genişlik, accent renk, beyaz text
+- Validation: Konum + Tarih + Saat seçilmiş mi? (kontenjan varsayılanla gelir, her zaman geçerli)
+- Hata: Eksik alanların listesi kırmızı border + hata mesajı (ör. "Konum, tarih, saat seçin")
+- Başarılı → S12 Planlanan Maç Detay'a yönlendirilir. Başlık boşsa otomatik başlık kullanılır.
+
+**Yayınla sonrası:**
 - Host, S12 Planlanan Maç Detay sayfasına yönlendirilir
 - Maç sohbeti (S35) otomatik oluşturulur
 - Deep link üretilir (sporwave.app/mac/XXXX) — paylaş butonu ile dış uygulamalara gönderilebilir
@@ -1033,9 +1045,9 @@ Planlanan maç (S12) → "Maçı Başlat" → Canlı skor ekranı (S10) → Gol 
 ### Akış 3: Maç Oluştur (Planlama)
 ```
 Maçlar tab → FAB "+" → S31
-→ Adım 1: Konum + Tarih/Saat + Kontenjan
-→ Adım 2: Başlık + Açıklama + Kabul modu + Gizlilik
-→ Oluştur → S12 Planlanan Maç Detay'a yönlendirilir (host olarak) + Deep link üretilir + Maç sohbeti otomatik oluşur
+→ Tek sayfa: Konum + Tarih + Saat + Kontenjan + Maç Başlığı (otomatik) + Gelişmiş Ayarlar (Açıklama, Kabul modu, Gizlilik)
+→ Her alan satıra tıklayınca bottom drawer açılır
+→ Yayınla → S12 Planlanan Maç Detay'a yönlendirilir (host olarak) + Deep link üretilir + Maç sohbeti otomatik oluşur
 → Maçlar sekmesinde görünür (👁️ badge) → Başvurular/katılımlar gelir
 → Maç saati → "Maçı Başlat" → Canlı skor akışına geç
 → Maç saati geçtiyse: Maç hala başlatılabilir (24 saat boyunca)
@@ -1138,10 +1150,11 @@ Maç saati geçer → Maç hala başlamamış
 - Puanlanmamış maç kartı: accent border
 - Devam eden maç banner'ı: accent renk arka plan
 
-**Çok adımlı form UI standartları (S04 Onboarding baz alınarak — S10, S31 dahil tüm çok adımlı akışlar):**
+**Çok adımlı form UI standartları (S04 Onboarding baz alınarak — S10 dahil tüm çok adımlı akışlar):**
 - **Sayfa padding:** `24px 20px` (PageShell)
 - **ProgressBar:** Sayfa en üstünde, `marginTop:16` wrapper içinde, `marginBottom:24`; çubuk yüksekliği 4px, `borderRadius:4`, aralarında `gap:6`
-- **BackLink (← Geri):** ProgressBar'ın hemen altında, `fontSize:14, color:T.textDim, marginTop:20, marginBottom:8`; adım > 0 ise bir önceki adıma döner, adım === 0 ise akışın başladığı sayfaya döner (S31 için S08 Maçlar)
+- **BackLink (← Geri):** ProgressBar'ın hemen altında, `fontSize:14, color:T.textDim, marginTop:20, marginBottom:8`; adım > 0 ise bir önceki adıma döner, adım === 0 ise akışın başladığı sayfaya döner
+- **Not:** S31 artık tek sayfa formudur (ProgressBar/BackLink kullanmaz), her alan satır + bottom drawer mimarisiyle çalışır
 - **Adım etiketi:** `fontSize:12, fontWeight:600, color:T.textMuted, textTransform:"uppercase", letterSpacing:"1px"`
 - **Büyük başlık:** `fontSize:24, fontWeight:800, color:T.text, marginBottom:24, letterSpacing:"-0.5px"`, Plus Jakarta Sans font
 - **Birincil buton:** `fontSize:15, fontWeight:700, padding:"14px 24px", borderRadius:12`, tam genişlik, **text rengi beyaz (#fff)**
