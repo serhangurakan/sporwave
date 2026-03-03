@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import T from "./theme.js";
 
 // ============================================================
@@ -8,7 +8,6 @@ import T from "./theme.js";
 // S24: Arkadaşlarını Davet Et
 // S25: Topluluk Kuralları
 // S26: Yardım & SSS
-// S27: Kullanıcı Doğrulama
 // S28: Raporla (Bottom Sheet)
 // S29: Engelle (Onay Dialog)
 // S34: Hata Sayfası
@@ -111,8 +110,6 @@ function S20({onNav}){
       <MenuItem icon={I.scroll(T.textDim)} label="Topluluk Kuralları" onClick={()=>onNav?.("S25")}/>
       <MenuItem icon={I.settings(T.textDim)} label="Ayarlar" onClick={()=>onNav?.("S21")}/>
       <MenuItem icon={I.help(T.textDim)} label="Yardım & SSS" onClick={()=>onNav?.("S26")}/>
-      {!ME.verified&&<MenuItem icon={I.shield(T.orange)} label="Hesabını Doğrula" desc="Profilinde doğrulanmış rozeti kazan" onClick={()=>onNav?.("S27")}/>}
-      {ME.verified&&<MenuItem icon={I.shield(T.green)} label="Hesap Doğrulandı" right={<span style={{fontSize:12,color:T.green,fontWeight:600}}>Doğrulanmış</span>}/>}
     </div>
 
     <div style={{height:1,background:T.cardBorder,margin:"8px 16px"}}/>
@@ -427,95 +424,6 @@ function S26({onBack}){
 }
 
 // ============================================================
-// S27: Kullanıcı Doğrulama Akışı
-// ============================================================
-function S27({onBack}){
-  const[step,setStep]=useState(1);
-  const[phone,setPhone]=useState("+90");
-  const[otp,setOtp]=useState(["","","","","",""]);
-  const[verified,setVerified]=useState(false);
-  const[timer,setTimer]=useState(0);
-  const otpRefs=useRef([]);
-
-  const sendOtp=()=>{
-    if(phone.length<13)return;
-    setStep(2);
-    setTimer(60);
-    const iv=setInterval(()=>setTimer(t=>{if(t<=1){clearInterval(iv);return 0;}return t-1;}),1000);
-  };
-
-  const handleOtpChange=(i,v)=>{
-    if(v.length>1)v=v.slice(-1);
-    const next=[...otp];
-    next[i]=v;
-    setOtp(next);
-    if(v&&i<5)otpRefs.current[i+1]?.focus();
-  };
-
-  const handleOtpKey=(i,e)=>{
-    if(e.key==="Backspace"&&!otp[i]&&i>0)otpRefs.current[i-1]?.focus();
-  };
-
-  const verifyOtp=()=>{
-    const code=otp.join("");
-    if(code.length===6){setVerified(true);}
-  };
-
-  return <div style={{minHeight:"100vh",background:T.bg,fontFamily:FB}}>
-    <div style={{position:"sticky",top:0,zIndex:50,background:T.bg,borderBottom:`1px solid ${T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12}}>
-      <div onClick={onBack} style={{cursor:"pointer",display:"flex",padding:4}}>{I.arrowLeft(T.text)}</div>
-      <h1 style={{fontFamily:FH,fontSize:20,fontWeight:800,color:T.text,margin:0}}>Hesap Doğrulama</h1>
-    </div>
-
-    <div style={{padding:"40px 20px",display:"flex",flexDirection:"column",alignItems:"center"}}>
-      {verified?(
-        <div style={{textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:16}}>
-          <div style={{width:80,height:80,borderRadius:"50%",background:`${T.green}18`,border:`2px solid ${T.green}44`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            {I.check(T.green)}
-          </div>
-          <div style={{fontSize:20,fontWeight:700,color:T.text,fontFamily:FH}}>Doğrulandı!</div>
-          <div style={{fontSize:14,color:T.textDim,lineHeight:1.5}}>Profilinde artık "Doğrulanmış" rozeti görünecek.</div>
-          <Btn primary onClick={onBack} st={{marginTop:16}}>Geri Dön</Btn>
-        </div>
-      ):step===1?(
-        <>
-          <div style={{width:80,height:80,borderRadius:"50%",background:`${T.accent}12`,border:`2px solid ${T.accent}33`,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:24}}>
-            {I.phone(T.accent)}
-          </div>
-          <div style={{fontSize:18,fontWeight:700,color:T.text,fontFamily:FH,textAlign:"center",marginBottom:8}}>Telefon Numaranı Doğrula</div>
-          <div style={{fontSize:14,color:T.textDim,textAlign:"center",marginBottom:32,lineHeight:1.5}}>SMS ile doğrulama kodu göndereceğiz.</div>
-
-          <div style={{width:"100%",maxWidth:320}}>
-            <label style={{fontSize:12,fontWeight:600,color:T.textDim,marginBottom:6,display:"block"}}>Telefon Numarası</label>
-            <input value={phone} onChange={e=>setPhone(e.target.value)} placeholder="+90 5XX XXX XX XX" style={{width:"100%",padding:"12px 14px",borderRadius:10,border:`1.5px solid ${T.cardBorder}`,background:T.card,color:T.text,fontSize:16,fontFamily:FB,outline:"none",boxSizing:"border-box",letterSpacing:1}} onFocus={e=>e.target.style.borderColor=T.accent} onBlur={e=>e.target.style.borderColor=T.cardBorder}/>
-            <Btn full primary onClick={sendOtp} disabled={phone.length<13} st={{marginTop:16}}>Doğrulama Kodu Gönder</Btn>
-          </div>
-        </>
-      ):(
-        <>
-          <div style={{width:80,height:80,borderRadius:"50%",background:`${T.accent}12`,border:`2px solid ${T.accent}33`,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:24}}>
-            {I.shield(T.accent)}
-          </div>
-          <div style={{fontSize:18,fontWeight:700,color:T.text,fontFamily:FH,textAlign:"center",marginBottom:8}}>Doğrulama Kodu</div>
-          <div style={{fontSize:14,color:T.textDim,textAlign:"center",marginBottom:32,lineHeight:1.5}}>{phone} numarasına gönderilen 6 haneli kodu gir.</div>
-
-          <div style={{display:"flex",gap:8,marginBottom:24}}>
-            {otp.map((d,i)=><input key={i} ref={el=>otpRefs.current[i]=el} value={d} onChange={e=>handleOtpChange(i,e.target.value)} onKeyDown={e=>handleOtpKey(i,e)} maxLength={1} style={{width:44,height:52,borderRadius:10,border:`1.5px solid ${d?T.accent:T.cardBorder}`,background:T.card,color:T.text,fontSize:22,fontWeight:700,textAlign:"center",fontFamily:FH,outline:"none",transition:"border-color .2s"}} onFocus={e=>e.target.style.borderColor=T.accent} onBlur={e=>{if(!d)e.target.style.borderColor=T.cardBorder;}}/>)}
-          </div>
-
-          <Btn full primary onClick={verifyOtp} disabled={otp.join("").length<6} st={{maxWidth:320}}>Doğrula</Btn>
-
-          <div style={{marginTop:20,fontSize:13,color:T.textMuted,textAlign:"center"}}>
-            {timer>0?<span>{timer}sn sonra tekrar gönderebilirsin</span>:<span onClick={()=>{setTimer(60);const iv=setInterval(()=>setTimer(t=>{if(t<=1){clearInterval(iv);return 0;}return t-1;}),1000);}} style={{color:T.accent,cursor:"pointer",fontWeight:600}}>Tekrar Gönder</span>}
-          </div>
-          <div onClick={()=>{setStep(1);setOtp(["","","","","",""]);}} style={{marginTop:12,fontSize:13,color:T.textDim,cursor:"pointer"}}>Numarayı Değiştir</div>
-        </>
-      )}
-    </div>
-  </div>;
-}
-
-// ============================================================
 // S28: Raporla (Bottom Sheet)
 // ============================================================
 function S28({onClose,userName}){
@@ -618,8 +526,8 @@ function S34({onRetry,onHome}){
 // Dev Ribbon
 // ============================================================
 function DevRibbon({page,setPage}){
-  const pages=["S20","S21","S24","S25","S26","S27","S28","S29","S34"];
-  const labels={S20:"Menü",S21:"Ayarlar",S24:"Davet",S25:"Kurallar",S26:"SSS",S27:"Doğrulama",S28:"Raporla",S29:"Engelle",S34:"Hata"};
+  const pages=["S20","S21","S24","S25","S26","S28","S29","S34"];
+  const labels={S20:"Menü",S21:"Ayarlar",S24:"Davet",S25:"Kurallar",S26:"SSS",S28:"Raporla",S29:"Engelle",S34:"Hata"};
   return <div style={{position:"fixed",top:0,left:0,right:0,zIndex:999,background:"rgba(11,15,20,.92)",backdropFilter:"blur(8px)",borderBottom:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",gap:0,padding:"0 4px",maxWidth:430,margin:"0 auto",height:36,overflowX:"auto"}}>
     <style>{`::-webkit-scrollbar{display:none}`}</style>
     {pages.map(p=><div key={p} onClick={()=>setPage(p)} style={{padding:"8px 8px",fontSize:10,fontWeight:page===p?700:500,color:page===p?T.accent:T.textDim,cursor:"pointer",borderBottom:page===p?`2px solid ${T.accent}`:"2px solid transparent",transition:"all .15s",whiteSpace:"nowrap",flexShrink:0}}>{p} {labels[p]}</div>)}
@@ -635,7 +543,7 @@ export default function SettingsModule(){
   const[showBlock,setShowBlock]=useState(false);
 
   const nav=(target,data)=>{
-    if(["S20","S21","S24","S25","S26","S27"].includes(target)){setPage(target);}
+    if(["S20","S21","S24","S25","S26"].includes(target)){setPage(target);}
     else if(target==="S28"){setShowReport(true);}
     else if(target==="S29"){setShowBlock(true);}
     else if(target==="S34"){setPage("S34");}
@@ -655,7 +563,7 @@ export default function SettingsModule(){
       {page==="S24"&&<S24 onBack={goBack}/>}
       {page==="S25"&&<S25 onBack={goBack}/>}
       {page==="S26"&&<S26 onBack={goBack}/>}
-      {page==="S27"&&<S27 onBack={goBack}/>}
+
       {page==="S28"&&<S28 onClose={()=>setPage("S20")} userName="Ali Demir"/>}
       {page==="S29"&&<S29 userName="Ali Demir" onConfirm={()=>{alert("Engellendi");setPage("S20");}} onCancel={()=>setPage("S20")}/>}
       {page==="S34"&&<S34 onRetry={()=>alert("Tekrar deneniyor...")} onHome={()=>setPage("S20")}/>}

@@ -847,7 +847,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - 📜 Topluluk Kuralları → S25
   - ⚙️ Ayarlar → S21
   - ❓ Yardım & SSS → S26
-  - 📱 Hesabını Doğrula → S27 (doğrulanmamışsa)
+
 - Alt kısım: "Çıkış Yap" (kırmızı)
 
 #### S21: Ayarlar- **Görünüm:**
@@ -897,11 +897,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 ---
 
-### BÖLÜM 9: GÜVENLİK & MODERASYON (4 sayfa)
-
-#### S27: Kullanıcı Doğrulama Akışı- **Adım 1:** Telefon numarası girişi (+90)
-- **Adım 2:** SMS OTP (6 haneli kod) → "Doğrula" butonu
-- **Sonrası:** Profilde "✓ Doğrulanmış" rozeti, menüde "✅ Doğrulandı" etiketi
+### BÖLÜM 9: GÜVENLİK & MODERASYON (3 sayfa)
 
 #### S28: Raporla (Bottom Sheet)
 - Rapor kategorileri:
@@ -1015,10 +1011,10 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 | Mesajlaşma | 3 | S17, S18, S35 |
 | Bildirimler | 1 | S19 |
 | Menü & Ayarlar | 6 | S20-S22, S24-S26 |
-| Güvenlik & Moderasyon | 4 | S27-S30 |
+| Güvenlik & Moderasyon | 3 | S28-S30 |
 | Oyuncu Davet | 1 | S41 |
 | Ek Sayfalar | 5 | S32-S34, S42, S43 |
-| **TOPLAM** | **36** |
+| **TOPLAM** | **35** |
 
 ---
 
