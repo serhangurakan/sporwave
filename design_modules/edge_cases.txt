@@ -24,3 +24,8 @@ Geri tuşu ve adımlar kaldırılmalı. Bu sayfalara da minimize butonu ekleyebi
 
 8 - maç detay sayfasında kullanıcıların profiline gidebilmeliyim. Bunun için
 kişi listesi bölümü gerekiyor.
+
+9 - WhatsApp — Mevcut Paylaş Butonu Yeterli mi?
+Evet, mevcut yapı MVP için yeterli. Araştırmada bahsettiğim "WhatsApp entegrasyonu" zaten senin paylaş butonunun yaptığı şey — native share sheet üzerinden WhatsApp'a deep link göndermek.
+Ekstra yapman gereken tek şey: paylaşılan linkin WhatsApp'ta güzel görünmesi için Open Graph meta tag'leri. Yani sporwave.app/mac/XXXX linki WhatsApp'ta paylaşıldığında otomatik olarak maç adı, tarih, skor (bitmişse) ve küçük bir SporWave logosu gösteren zengin önizleme kartı çıkmalı. Bu bir frontend/backend işi, ekstra API entegrasyonu değil.
+Uygulama içi WhatsApp sohbeti veya WhatsApp Business API gerekmez. Paylaş butonu + güzel deep link önizlemesi yeterli.

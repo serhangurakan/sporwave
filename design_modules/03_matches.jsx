@@ -303,7 +303,7 @@ const I10={
 function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
   const [page,setPage]=useState(()=>{const p=new URLSearchParams(window.location.search).get("page");return p==="end"?"end":"live";});
   const [fmt]=useState("5v5");
-  const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
+  const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"},{id:"g1",name:"Tolga",av:"T",guest:true}]);
   const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
   const initEnd=page==="end";
   const [score,setScore]=useState(initEnd?[3,2]:[0,0]);
@@ -326,7 +326,7 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
 
   const fmtTime=s=>{const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec<10?"0":""}${sec}`;};
   const getPlayerName=(id,team)=>{const list=team==="A"?teamA:teamB;const p=list.find(x=>x.id===id);return p?p.name:null;};
-  const drawerPlayers=goalDrawer?(goalDrawer.team==="A"?teamA:teamB):[];
+  const drawerPlayers=goalDrawer?(()=>{const list=goalDrawer.team==="A"?teamA:teamB;if(goalDrawer.phase==="assist"){const g=goals.find(x=>x.id===goalDrawer.goalId);return g?.scorer!=null?list.filter(p=>p.id!==g.scorer):list;}return list;})():[];
 
   const addGoal=(team)=>{
     const min=Math.floor(seconds/60);
@@ -362,10 +362,30 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
         {goalDrawer.phase==="scorer"?"Golü kim attı?":"Asisti kim yaptı?"}
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:4}}>
-        {drawerPlayers.map(p=><div key={p.id} onClick={()=>goalDrawer.phase==="scorer"?selectScorer(p.id):selectAssist(p.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderRadius:12,background:T.bg,border:`1px solid ${T.cardBorder}`,cursor:"pointer",transition:"border-color .15s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=T.accent} onMouseLeave={e=>e.currentTarget.style.borderColor=T.cardBorder}>
-          <Av i={p.av} img={p.img} s={36}/>
-          <span style={{fontSize:14,fontWeight:600,color:T.text}}>{p.name}</span>
-        </div>)}
+        {(()=>{
+          const reg=drawerPlayers.filter(p=>!p.guest);
+          const gst=drawerPlayers.filter(p=>p.guest);
+          return <>
+            {reg.map(p=><div key={p.id} onClick={()=>goalDrawer.phase==="scorer"?selectScorer(p.id):selectAssist(p.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderRadius:12,background:T.bg,border:`1px solid ${T.cardBorder}`,cursor:"pointer",transition:"border-color .15s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=T.accent} onMouseLeave={e=>e.currentTarget.style.borderColor=T.cardBorder}>
+              <Av i={p.av} img={p.img} s={36}/>
+              <span style={{fontSize:14,fontWeight:600,color:T.text}}>{p.name}</span>
+            </div>)}
+            {gst.length>0&&<div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 0"}}>
+              <div style={{flex:1,height:1,background:T.cardBorder}}/>
+              <span style={{fontSize:10,fontWeight:600,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5}}>Misafirler</span>
+              <div style={{flex:1,height:1,background:T.cardBorder}}/>
+            </div>}
+            {gst.map(p=><div key={p.id} onClick={()=>goalDrawer.phase==="scorer"?selectScorer(p.id):selectAssist(p.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderRadius:12,background:T.bg,border:`1px solid ${T.cardBorder}`,cursor:"pointer",transition:"border-color .15s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=T.accent} onMouseLeave={e=>e.currentTarget.style.borderColor=T.cardBorder}>
+              <div style={{position:"relative"}}>
+                <Av i={p.av} s={36} c={T.textDim} st={{background:"#6B7280",color:"#fff"}}/>
+                <div style={{position:"absolute",bottom:-2,right:-2,width:14,height:14,borderRadius:"50%",background:T.textMuted,display:"flex",alignItems:"center",justifyContent:"center",border:`1.5px solid ${T.card}`}}>
+                  <span style={{color:"#fff",fontSize:8,fontWeight:700}}>M</span>
+                </div>
+              </div>
+              <span style={{fontSize:14,fontWeight:600,color:T.text}}>{p.name}</span>
+            </div>)}
+          </>;
+        })()}
       </div>
       <div onClick={goalDrawer.phase==="scorer"?skipScorer:skipAssist} style={{textAlign:"center",marginTop:16,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:600}}>Atla</div>
     </div>

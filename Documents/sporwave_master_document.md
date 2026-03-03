@@ -289,6 +289,22 @@ Ana Sayfa tab'ında:
 
 **Maç verisi editlenebilirlik kuralı:** Maç verisi (Katman 1) arşivlendikten sonra editlenemez. Kişisel post (Katman 2) her zaman düzenlenebilir (başlık, not, fotoğraf). Son maç verisi düzenleme noktası S10 Adım 4'tür. Sonrasında sadece 24 saat boyunca MVP oylama yapılabilir.
 
+**Misafir Oyuncu (Guest Player) Sistemi:**
+Uygulamayı kullanmayan oyuncular için maç bazlı "misafir oyuncu" sistemi. Misafirler sadece isimle eklenir, profilleri yoktur, sadece maç bağlamında var olurlar.
+- **Veri modeli:** `guest_players` koleksiyonu — `id` (auto), `match_id`, `name` (string, min 2 karakter), `team_id` ("A" | "B" | null), `added_by` (user_id), `created_at` (timestamp)
+- **Kurallar:**
+  - Sadece host misafir ekleyebilir/silebilir
+  - Misafir eklenince oyuncu sayısı artar (kontenjan doluluk hesabına dahil)
+  - Misafir silinince oyuncu sayısı azalır
+  - Misafir takıma atanabilir (Takım A veya Takım B)
+  - Maç "started" olduktan sonra da misafir eklenebilir/silinebilir (son dakika gelenlere izin ver)
+- **Misafir silinme durumu:**
+  - Misafir silinirse attığı goller event log'da kalır
+  - Silinen misafirin gollerinde golcü/asist "Belirtilmemiş" olarak gösterilir
+  - S10 Maç Sonu sayfasında golcü/asist düzenlenebilir — silinmiş misafirin golleri başka birine atanabilir
+- **MVP oylama:** Misafir oyuncular MVP oylamasında GÖRÜNMEZ (oy alamaz, oy kullanamaz). MVP oylama sadece kayıtlı kullanıcılar arasında yapılır.
+- **Feed:** Misafir oyuncular için post OLUŞTURULMAZ. Maç verisinde (Katman 1) misafir oyuncular kadro listesinde görünür.
+
 **Boş durum (Ana Sayfa — kimseyi takip etmiyorsan):**
 - Önce Keşfet gösterilir.
 - Ana sayfaya gelirse İllüstrasyon + "Henüz kimseyi takip etmiyorsun"
@@ -420,8 +436,9 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - Oyuncu seçilirse → ikinci drawer: "Asisti kim yaptı?" + aynı format + "Atla" seçeneği
   - "Golü kim attı?" atlanırsa → asist sorulmaz
   - Takımlarda oyuncu yoksa gol asist sorulmaz.
-  - Golcü seçilen kişi o golün Asist sorunda seçeneklerde bulunmaz.
+  - Golcü seçilen kişi (misafir dahil) o golün Asist sorunda seçeneklerde bulunmaz.
   - Golcü/asist bilgisi girilirse → gol geçmişinde takım ismi yerine oyuncu isimleri gösterilir
+  - **Misafir oyuncular drawer'da:** Kayıtlı oyuncular üstte, misafir oyuncular altta (ayırıcı ile "MİSAFİRLER" etiketi). Misafir oyuncular harf avatarıyla gösterilir (ismin ilk harfi, gri #6B7280 arka plan, beyaz text, "M" badge avatar'ın sağ altında)
   - **5 saniyelik "Geri Al" toast:** "Gol eklendi — Geri Al" (tıklanırsa gol iptal)
 - **Gol geçmişi listesi** (kronolojik): "12' Berk (Asist: Ali)" formatında
   - Her gol satırında **sola kaydır (swipe) → "Sil"** aksiyonu
@@ -468,8 +485,8 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - **Takım kadroları (yan yana iki kolon):**
   - Takım 1 listesi: avatar + isim + gol/asist sayısı + MVP yıldızı (varsa) — **her oyuncu tıklanabilir → S16 Profil**
   - Takım 2 listesi: aynı format
-  - Misafir oyuncular gri tonunda, profil linki yok
-- **Gol zaman çizelgesi:** Kronolojik gol listesi — **gol atan ve asist yapan isimler tıklanabilir → S16 Profil**
+  - Misafir oyuncular: harf avatar (gri #6B7280 arka plan, beyaz text) + isim (dim renk) + "Misafir" badge. Profil linki yok, tıklanamaz
+- **Gol zaman çizelgesi:** Kronolojik gol listesi — **gol atan ve asist yapan isimler tıklanabilir → S16 Profil** (misafir isimleri tıklanamaz)
 - **Maçın Yıldızı:** MVP seçilen oyuncu vurgulu gösterim (altın çerçeve). Eşit oy durumunda Co-MVP olarak birden fazla oyuncu gösterilir.
 - **Not:** S11 maç verisini (Katman 1) gösterir — fotoğraf ve kişisel notlar burada yoktur, bunlar post kartlarında görünür.
 - **Etkileşim:** S11'de beğeni/yorum yapılmaz — etkileşim post bazlıdır. S11 salt okunur maç detayıdır.
@@ -504,19 +521,28 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Katılımcıya tıklanırsa → katılımcı profil sayfasına (S16) redirect
 - İlk 5 katılımcı gösterilir; daha fazlası varsa "Tümünü Göster" yazısıyla expand olabilir
 - Her katılımcı satırında: avatar + isim + host ise "Host" badge (accent renk, crown ikonu) + seviye badge (accent renk)
+- **Misafir oyuncular:** Kayıtlı oyuncuların altında listelenir. Harf avatar (gri #6B7280, beyaz text) + isim + "Misafir" badge (muted renk). Tıklanamaz (profil yok)
 - **Host:** her katılımcının yanında ✕ butonu (maçtan çıkar anlamında, transparent background, border yok)
   - Tıklanırsa popup: "Maçtan çıkarmak istediğinize emin misiniz?" — Çıkar / Vazgeç
+  - Misafir ✕ butonu: "Misafiri silmek istediğinize emin misiniz?" popup — Sil / İptal
 
 **Takımlar tab'ı:**
 - Takım A / Takım B grid'i (her iki kolon 3'er grid, satır satır hizalı)
 - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
 - Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (Kontenjan'a göre — 12 kişi ise 6 slot her takımda, 14 kişi ise 6 slot her takımda gibi)
 - Altında: Henüz takıma yerleşmemiş oyuncular (Yedekler section label + liste görünümü)
+  - Misafir oyuncular da Yedekler'de görünür: harf avatar (gri #6B7280, beyaz text) + isim + "Misafir" badge + ✕ silme butonu (host, edit mode dışında)
+- **Yedekler bölümünün altında "👤+ Misafir Ekle" butonu** (sadece host görür, her zaman):
+  - Tıklanınca inline text input açılır: placeholder "Misafir adı" + "Ekle" butonu + ✕ iptal
+  - Min 2 karakter zorunlu, Enter ile de eklenebilir
+  - Eklenen misafir Yedekler listesine düşer, kontenjan sayısı artar
 - **Yedekler butonunun sağında "Düzenle" svg icon butonu** (sadece host görür — Takımlar tab'ı içinde):
   - Düzenle'ye basılırsa: ✕ butonları ve drag-drop aktif olur, CTA butonları geçici olarak pasifleşir, düzenle iconu "Kaydet" / "Vazgeç"a dönüşür
+  - Edit mode'da misafir oyuncular da takıma drag-drop ile atanabilir (aynı mekanizma)
 - **✕ buton farkı:**
   - Katılımcı Listesi'ndeki ✕ → transparent background (border yok) → "maçtan çıkar" anlamında
-  - Takımlar tab'ındaki ✕ → gri → "takımdan çıkar ama maçta kalır" anlamında
+  - Takımlar tab'ındaki ✕ (edit mode) → gri → "takımdan çıkar ama maçta kalır" anlamında
+  - Misafir ✕ (edit mode dışı) → "misafiri sil" (confirmation popup ile)
 
 **CTA Butonları (yeni hiyerarşi):**
 - **Compact ikon butonları** (primary CTA'nın hemen üstünde, yan yana, %50/%50 genişlik):
