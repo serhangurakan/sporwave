@@ -93,7 +93,7 @@ function S08({onNav,hasActiveWidget}){
     <div style={{position:"sticky",top:32,zIndex:50,background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
       <div style={{padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçlar</span>
-        {activeTab==="find"&&<div style={{display:"flex",alignItems:"center",gap:8}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,visibility:activeTab==="find"?"visible":"hidden"}}>
           {/* City dropdown */}
           <div style={{position:"relative"}}>
             <div onClick={()=>{setCityOpen(!cityOpen);setDistrictOpen(false);}} style={{display:"flex",alignItems:"center",gap:4,padding:"6px 10px",borderRadius:8,border:`1px solid ${cityOpen?T.accent:T.cardBorder}`,cursor:"pointer",background:cityOpen?`${T.accent}08`:"transparent",transition:"all .2s"}}>
@@ -110,7 +110,7 @@ function S08({onNav,hasActiveWidget}){
           </div>
           {/* Filter icon */}
           <span onClick={()=>{setFilter(!filter);setDistrictOpen(false);setCityOpen(false);}} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
-        </div>}
+        </div>
       </div>
       {/* Tabs */}
       <div style={{display:"flex",padding:"0 16px"}}>
