@@ -28,8 +28,7 @@
 | **Maç sohbeti** | MVP'de var — her planlanan maçın otomatik grup chat'i açılır. |
 | **Maç editlenebilirlik** | Feed'e düştükten skor, goller, katılımcılar editlenemez. sadece 24 saat içinde mvp puanlama.
 24 saat sonra mvp de editlenemez. Fotoğraf eklenebilir başlık ve açıklama editlenebilir. |
-| **Host yönetimi** | Host maçtan çıkarsa yetki en erken katılana otomatik devredilir. Oylama ile devralma yok.
-Maçtan son çıkan kişi hostsa maç silinir. |
+| **Host yönetimi** | Host maçtan çıkarsa yetki en erken katılana otomatik devredilir. Oylama ile devralma yok. Maçtan son çıkan kişi hostsa maç silinir. "Host Yanıt Vermiyor" talebi ile maç öncesi host devri mümkün (6 saat kuralı). Maç saati +30dk'da host başlatmamışsa tüm katılımcılar başlatabilir. |
 | **Maç başlatma koşulu** | Her iki takımda en az 1 oyuncu olmalı |
 | **Başlamamış maç süresi** | Maç saatinden 24 saat sonra başlamamışsa otomatik silinir |
 | **Maç görünürlük (geçmiş tarih)** | Tarihi geçmiş başlamamış maçlar sadece katılımcılara ve davet linkiyle görünür,
@@ -38,6 +37,8 @@ S08 Maç Bul tab'ında listelenmez |
 | **Co-MVP** | Eşit oy durumunda birden fazla MVP gösterilir (Co-MVP) |
 | **Maç sohbeti arşiv** | Maç arşivlenince maç sohbeti kapatılır. |
 | **Skor güncelleme** | Last write wins (MVP basitliği), goal rate limit: aynı kullanıcı saniyede max 1 gol |
+| **Skor tutma yetkisi** | Sadece host skor tutabilir (gol ekleme/silme). Maç saati +30dk kuralıyla maçı başlatan kişi de skor tutma yetkisi alır. Diğer katılımcılar skor tutamaz. |
+| **Host AFK talebi** | Maça 6 saat veya daha az kala gönderilebilir. Host'a 2 saat süre verilir. Son 10 dakikada hatırlatma bildirimi. Host onaylamazsa talep gönderen yeni host olur, eski host maçtan çıkarılır. |
 | **Feed modeli** | Duplicated feed — her katılımcının kendi maç postu var, feed'de ayrı ayrı görünür |
 | **Maç verisi vs Post** | Maç verisi (skor, takımlar, MVP) paylaşımlı ve immutable. Her katılımcının kişisel postu (başlık, not, fotoğraf) ayrı |
 | **Etkileşim (like/yorum)** | Post bazlı — beğeni ve yorumlar maça değil, kişinin postuna yapılır |
@@ -82,6 +83,59 @@ open → full → started → ended → rating → archived
 - Dolu maçtan ayrılan eski katılımcılar da maç tekrardan dolarsa maçı göremez
 - Arkadaş olmak `full` kısıtlamasını bypass etmez
 - Maçtan ayrılınırsa ayrılan kişi maç sohbetinden de otomatik çıkartılır.
+
+---
+
+## HOST AFK & YETKİ DEVRİ SİSTEMİ
+
+SporWave'de maç yönetimi (başlatma, skor tutma, misafir ekleme, katılımcı çıkarma) host'a aittir. Host'un AFK (yanıt vermiyor) kalması durumunda iki mekanizma devreye girer:
+
+### Mekanizma 1: "Host Yanıt Vermiyor" Talebi (Maç Öncesi)
+
+**Amaç:** Maç saatinden önce host'un AFK olduğu durumlarda hem kontenjanı açmak hem yetki devrini sağlamak.
+
+**Tetikleme koşulu:** Herhangi bir katılımcı, maça kalan süre 6 saat veya daha az olduğunda S12'deki ⋮ menüsünden "Host Yanıt Vermiyor" seçeneğine basabilir. Maça 6 saatten fazla varsa bu seçenek menüde görünmez.
+
+**Akış:**
+1. Katılımcı "Host Yanıt Vermiyor" seçeneğine basar
+2. Host'a push bildirim + uygulama içi bildirim gider: "Katılımcılar seni bekliyor — 2 saat içinde onayla"
+3. 2 saatlik sürenin son 10 dakikasında host hâlâ onaylamamışsa ikinci bir hatırlatma push bildirimi gider: "Host onayı için 10 dakikan kaldı"
+4. Host 2 saat içinde bildirimdeki "Buradayım" butonuna tıklarsa → talep düşer, hiçbir şey olmaz
+5. Host 2 saat içinde onaylamazsa → talep gönderen kişi otomatik olarak yeni host olur, eski host maçtan çıkarılır ve kontenjan açılır
+
+**Kötüye kullanım koruması:**
+- Aynı maçta aynı anda sadece 1 aktif talep olabilir (aktif talep varken yenisi gönderilemez)
+- Host onaylarsa bir sonraki talep aynı maç için en erken 24 saat sonra gönderilebilir
+- Talep gönderen kişi kendisi maçtan çıkarsa talep otomatik düşer
+
+**Bildirimler:**
+- Host'a: "⚠️ [Talep gönderen isim] seni yanıt vermiyorsun olarak bildirdi — 2 saat içinde onayla" → tıklayınca S12 + "Buradayım" butonu
+- Host'a (hatırlatma, son 10dk): "⏰ Host onayı için 10 dakikan kaldı!"
+- Host onaylarsa → talep gönderene: "Host yanıt verdi, talep kapandı"
+- Host onaylamazsa → tüm katılımcılara: "🔄 [Yeni host isim] yeni host olarak atandı"
+- Eski host'a: "Yanıt vermediğin için [Maç adı] maçından çıkarıldın ve host yetkin devredildi"
+
+### Mekanizma 2: Maç Saati +30 Dakika Kuralı (Maç Anında)
+
+**Amaç:** Maç saati geldiğinde host hâlâ maçı başlatmamışsa, sahada bekleyen katılımcıların maçı başlatabilmesini sağlamak.
+
+**Tetikleme koşulu:** Maç saatinden 30 dakika geçtiğinde host "Maçı Başlat" butonuna basmamışsa, S12'deki "Maçı Başlat" butonu tüm katılımcılara aktif olur.
+
+**Akış:**
+1. Maç saati + 30 dakika geçer, host başlatmamış
+2. S12'de tüm katılımcılara "▶ Maçı Başlat" butonu aktif olur (öncesinde sadece host görüyordu)
+3. Butona basan ilk katılımcı maçı başlatır ve o maç için skor tutma yetkisi alır
+4. Host hâlâ host'tur, yetkilerini korur — host geri gelirse ikisi de skor tutabilir
+
+**Not:** Bu mekanizma host'u cezalandırmaz, sadece maçın başlatılamaması sorununu çözer.
+
+### Skor Tutma Yetki Matrisi
+
+| Rol | Maçı başlatma | Gol ekleme/silme | Misafir ekleme | Katılımcı çıkarma | Maç düzenleme |
+|-----|--------------|-----------------|----------------|-------------------|---------------|
+| **Host** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **+30dk kuralıyla başlatan** | ✅ (bir kez) | ✅ | ❌ | ❌ | ❌ |
+| **Katılımcı** | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
 
@@ -431,7 +485,7 @@ Kullanıcının katıldığı maçlar.
 - **Gol geçmişi listesi** (kronolojik): "12' Berk (Asist: Ali)" formatında
   - Her gol satırında **sola kaydır (swipe) → "Sil"** aksiyonu
 - **Otomatik kaydetme:** Her gol ekleme/silme anında state local storage + backend'e kaydedilir
-- **Çoklu kullanıcı skor güncelleme:** Maçtaki **tüm katılımcılar** gol ekleyebilir/silebilir — sadece host değil. Skor real-time sync olur (backend üzerinden).
+- **Skor tutma yetkisi:** Gol ekleme/silme yetkisi sadece host'a aittir. Maç saati +30dk kuralıyla maçı başlatan katılımcı da skor tutma yetkisi alır. Diğer katılımcılar canlı skor sayfasını görebilir ama gol ekleyemez/silemez. Yetkisiz kullanıcılar "+" butonlarını disabled (muted renk, tıklanamaz) olarak görür.
 - **Skor kuralları:**
   - **Last write wins** — çakışma durumunda son yazılan geçerli (MVP basitliği)
   - **Goal rate limit:** Aynı kullanıcı saniyede 1'den fazla gol eventi oluşturamaz (≥1 saniye aralık zorunlu)
@@ -463,7 +517,7 @@ Kullanıcının katıldığı maçlar.
 - **"Kaydet & Paylaş"** butonu → maç `rating` state'ine geçer (Katman 1 kilitlenir, 24 saat MVP oylama penceresi başlar) → aktif maç widget'ı kapanır (toggle off) → tüm katılımcılar için otomatik post oluşturulur (Katman 2, visible)
 - **"Maçı Sil"** butonu (Kaydet & Paylaş altında, kırmızı text) → popup: "Bu maçı silmek istediğinize emin misiniz?" + "Maçı Sil" (kırmızı) + "İptal" butonları
 - **Not:** Fotoğraf ve kişisel not bu ekranda eklenmez — bunlar kişisel post katmanındadır. Her katılımcı kendi postunu profilinden düzenleyerek not, fotoğraf ve başlık ekleyebilir.
-- **Not:** Maçı bitiren kişi otomatik olarak S08 Maçlarım tab'ına yönlendirilir. Maçtaki bütün katılımcılar S08 Maçlarım tab'ındaki puanlanmamış maç kartı ile puanlama yapabilir.
+- **Not:** Maçı bitiren kişi otomatik olarak S08 Maçlarım tab'ına yönlendirilir. Maçtaki bütün katılımcılar S15 Profil'deki değerlendirilmemiş maç kartı ile puanlama yapabilir.
 
 #### S11: Maç Detay Sayfası (Geçmiş — oynanmış maç)
 - **Header:** ← Geri + "Maç Detay" başlığı + ↗ Paylaş ikonu (→ S30)
@@ -491,7 +545,7 @@ Kullanıcının katıldığı maçlar.
 - Maç başlığı satırı: sol tarafta başlık, sağ tarafta ↗ Paylaş butonu (herkes görür, misafir dahil) + ⋮ menü butonu (başlık ile aynı hizada)
   - **⋮ Menü içeriği:**
     - **Host:** "✏️ Düzenle" (→ bottom drawer: Maç Başlığı, Tarih, Saat, **Konum (2 seçenek tab UI: Saha Ara / İl-İlçe, serbest geçiş)**, Format, Seviye, Görünürlük) + "Maçtan Çık"
-    - **Katılımcı:** "Maçtan Çık"
+    - **Katılımcı:** "Host Yanıt Vermiyor" (maça ≤6 saat kala görünür, aktif talep yoksa) + "Maçtan Çık"
 - **Organizatör**: avatar + isim (tıklanınca profil)
 - **Açıklama:** maç açıklaması (tam metin)
 - **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye · Görünürlük
@@ -559,7 +613,7 @@ Kullanıcının katıldığı maçlar.
 - **Primary CTA** (en altta, tam genişlik):
   - Misafir: "Maça Katıl (X yer kaldı)" → tıklayınca **Seviye Seçim bottom sheet** açılır (aşağıya bak)
   - Misafir (başvuru gönderilmişse): "✓ Başvuru Gönderildi" (disabled, accent border)
-  - Katılımcı/host planlama aşamasında: "▶ Maçı Başlat"
+  - Katılımcı/host planlama aşamasında: "▶ Maçı Başlat" (sadece host görür; maç saati +30dk geçtiyse tüm katılımcılar görür)
   - Maç oynanıyorken: "Maçı Bitir"
 - **Üçüncül aksiyonlar** → başlık hizasındaki ⋮ menüsüne girer:
   - Host: "Düzenle" + "Başvurular" (sadece onay modunda, → S13) + "Maçtan Çık"
@@ -832,9 +886,14 @@ Kullanıcının katıldığı maçlar.
 - 📩 "Berk seni Cumartesi Halısaha Maçı'na davet etti" → S12 Planlanan Maç
 - 📅 "Maç Pazar'a alındı" → S12 (reschedule bildirimi)
 - 🚫 "Cumartesi Halısaha Maçı iptal edildi" → bildirim sayfasında kalır
-- ⭐ "Maçını değerlendir!" → S08 Maçlarım tab'ı (inline MVP oylama, 24 saat hatırlatıcı)
+- ⭐ "Maçını değerlendir!" → S15 Profil (inline MVP oylama, 24 saat hatırlatıcı)
 - ❌ "Ali seni Cumartesi Halısaha Maçı'ndan çıkardı" → bildirim sayfasında kalır
 - 🗑️ "Cumartesi Halısaha Maçı başlatılmadığı için silindi" → bildirim sayfasında kalır
+- ⚠️ "[İsim] seni yanıt vermiyorsun olarak bildirdi — 2 saat içinde onayla" → S12 + "Buradayım" butonu
+- ⏰ "Host onayı için 10 dakikan kaldı!" → S12 + "Buradayım" butonu
+- ✅ "Host yanıt verdi, talep kapandı" → bildirim sayfasında kalır
+- 🔄 "[İsim] yeni host olarak atandı" → S12
+- ❌ "Yanıt vermediğin için [Maç adı] maçından çıkarıldın ve host yetkin devredildi" → bildirim sayfasında kalır
 
 ---
 
@@ -921,12 +980,12 @@ Kullanıcının katıldığı maçlar.
   - Skor bilgisi (Takım A / Takım B, büyük font)
   - MVP oyuncusu (gold renk, yıldız ikonu)
   - Kişisel istatistikler (gol, asist — ortalanmış, accent bg kutu)
-  - SporWave branding + QR kod
+  - SporWave branding
 - **Planlanan maç davet kartı (S12 → Paylaş):**
   - Maç başlığı (büyük, bold)
   - Tarih/saat (saat ikonu), konum (pin ikonu), format/seviye (futbol ikonu)
   - Kontenjan durumu: "X yer kaldı!" + CapacityBar (accent bg kutu)
-  - SporWave branding + QR kod
+  - SporWave branding
 - Her iki modda sadece "Paylaş" butonu (Kaydet ve Atla kaldırıldı)
 - Geri butonu: bitmiş maç → S11'e, planlanan maç → S12'ye döner
 
@@ -934,7 +993,7 @@ Kullanıcının katıldığı maçlar.
 
 ### BÖLÜM 10: OYUNCU DAVET (inline drawer)
 
-> **Not:** S40 Puanlama sayfası kaldırıldı. MVP oylama artık S08 Maçlarım tab'ındaki puanlanmamış maç kartında inline olarak yapılıyor (detay: S08 Maçlarım bölümüne bakınız).
+> **Not:** S40 Puanlama sayfası kaldırıldı. MVP oylama artık S15 Profil sayfasındaki değerlendirilmemiş maç kartında inline olarak yapılıyor (detay: S15 bölümüne bakınız).
 
 #### S41: Oyuncu Davet (S12 içinde Inline Drawer)
 - **Erişim:** S12 Planlanan Maç Detay sayfasındaki "Davet Et" butonu (bottom sheet drawer olarak açılır)
@@ -1030,13 +1089,13 @@ Splash → Login sayfası (S01) → Kayıt Ol (S02)
 ### Akış 2: Maç Başlat (Canlı Skor Takibi)
 ```
 Planlanan maç (S12) → "Maçı Başlat" → Canlı skor ekranı (S10) → Gol ekle (geri alınabilir)
-→ Herhangi bir katılımcı skor güncelleyebilir (çoklu cihaz sync)
+→ Sadece host (ve yetkili katılımcı) skor güncelleyebilir
 → Maçı bitir (⋮ menüden veya S12'den) → Maç Sonu sayfası
 → Kaydet & Paylaş → Maç verisi kilitlenir + tüm katılımcılar için post oluşur
-→ S08 Maçlarım tab'ına yönlendirilir → puanlanmamış maç kartı görünür
+→ S15 Profil'de değerlendirilmemiş maç kartı görünür
 → Karta tıkla → inline MVP oylama paneli açılır → oyuncu seç → submit
 → Her katılımcı kendi postunu profilinden düzenleyebilir (başlık, not, fotoğraf)
-→ 24 saat içinde S08 Maçlarım'da inline MVP oyla
+→ 24 saat içinde S15 Profil'de inline MVP oyla
 ```
 
 ### Akış 3: Maç Oluştur (Planlama)
@@ -1073,8 +1132,8 @@ Ana Sayfa feed'de post kartı gör → Beğen / Yorum yap (post bazlı)
 ### Akış 6: Viral Paylaşım Döngüsü
 ```
 Maç kaydedilir → Her katılımcı için post oluşur → Shareable kart otomatik oluşur
-→ Instagram Stories'e paylaş (SporWave branding + QR)
-→ Arkadaşlar QR'ı tarar / linke tıklar → Uygulamayı indirir
+→ Instagram Stories'e paylaş (SporWave branding + deep link)
+→ Arkadaşlar linke tıklar → Uygulamayı indirir
 → Kendi maçlarını başlatır → Döngü tekrarlanır
 ```
 
@@ -1148,6 +1207,21 @@ Senaryo C — Kayıtlı ve giriş yapmış (referans):
 - **Maç archived (geçmiş maç):** S11 Bitmiş Maç Detay sayfasına yönlendirilir
 - **Deep link context korunması:** Deferred deep linking mekanizması kullanılır — kayıt/onboarding süresince match_id kaybolmaz. App store yönlendirmesi sonrası bile context korunur (attribution SDK veya clipboard-based fallback).
 - **Onboarding sırasında çıkış:** Kullanıcı onboarding'i yarıda bırakırsa match_id local'de saklanır, bir sonraki açılışta onboarding tamamlandığında yönlendirme yapılır
+
+### Akış 12: Host AFK — Yetki Devri
+```
+Maça ≤6 saat kala host sessiz → Katılımcı S12 ⋮ menüden "Host Yanıt Vermiyor"
+→ Host'a push bildirim: "2 saat içinde onayla"
+→ 1 saat 50 dk sonra hâlâ onaylamadıysa → ikinci push: "10 dakikan kaldı"
+→ Host "Buradayım" tıklarsa → talep düşer, herşey normal devam eder
+→ Host 2 saat içinde onaylamazsa → talep gönderen yeni host olur, eski host maçtan çıkarılır
+→ Tüm katılımcılara bildirim: "Yeni host atandı"
+VEYA
+Maç saati + 30 dakika geçer, host başlatmamış
+→ Tüm katılımcılara "Maçı Başlat" butonu aktif olur
+→ İlk tıklayan maçı başlatır + skor tutma yetkisi alır
+→ Host geri gelirse ikisi de skor tutabilir
+```
 
 ---
 

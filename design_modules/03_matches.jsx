@@ -252,6 +252,7 @@ const I10={
 function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
   const [page,setPage]=useState(()=>{const p=new URLSearchParams(window.location.search).get("page");return p==="end"?"end":"live";});
   const [fmt]=useState("5v5");
+  const [canScore,setCanScore]=useState(true); // host veya +30dk yetkili
   const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"},{id:"g1",name:"Tolga",av:"T",guest:true}]);
   const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
   const initEnd=page==="end";
@@ -361,12 +362,15 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
         {assistName&&<span style={{fontSize:11,color:T.textDim}}>(Asist: {assistName})</span>}
         {showEdit&&<span onClick={()=>editGoal(g)} style={{cursor:"pointer",display:"flex",marginLeft:4}}>{I10.edit(T.accent)}</span>}
       </div>
-      <span onClick={()=>removeGoal(g.id)} style={{cursor:"pointer",display:"flex"}}>{I.trash()}</span>
+      {canScore&&<span onClick={()=>removeGoal(g.id)} style={{cursor:"pointer",display:"flex"}}>{I.trash()}</span>}
     </div>;
   };
 
   // ========== LIVE SCORE PAGE ==========
   if(page==="live") return <div style={{padding:"0 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",margin:"0 -20px",display:"flex",gap:6,alignItems:"center"}}>
+      <span onClick={()=>setCanScore(!canScore)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",border:`1.5px solid ${canScore?T.accent:"transparent"}`,background:canScore?`${T.accent}15`:`${T.textDim}22`,color:canScore?T.accent:T.textDim}}>🎯 Skor Yetkisi: {canScore?"ON":"OFF"}</span>
+    </div>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 0 12px"}}>
       <div onClick={()=>{setRunning(false);if(onMinimize)onMinimize(seconds,score);}} style={{width:40,height:40,borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I10.chevDown(T.text)}</div>
       <div style={{position:"relative"}}>
@@ -394,12 +398,12 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
     </div>
 
     <div style={{display:"flex",gap:12,marginBottom:20}}>
-      <div onClick={()=>addGoal("A")} style={{flex:1,padding:"24px 0",borderRadius:16,background:T.accent,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 16px ${T.accent}44`,transition:"transform .1s",gap:4}} onMouseDown={e=>e.currentTarget.style.transform="scale(0.97)"} onMouseUp={e=>e.currentTarget.style.transform="scale(1)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+      <div onClick={canScore?()=>addGoal("A"):undefined} style={{flex:1,padding:"24px 0",borderRadius:16,background:canScore?T.accent:`${T.textMuted}44`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:canScore?"pointer":"not-allowed",boxShadow:canScore?`0 4px 16px ${T.accent}44`:"none",transition:"transform .1s",gap:4,opacity:canScore?1:.5}} onMouseDown={canScore?e=>{e.currentTarget.style.transform="scale(0.97)"}:undefined} onMouseUp={canScore?e=>{e.currentTarget.style.transform="scale(1)"}:undefined} onMouseLeave={canScore?e=>{e.currentTarget.style.transform="scale(1)"}:undefined}>
         <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.8}}>Takım A</div>
         <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:"#fff",lineHeight:1}}>{score[0]}</div>
         <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.7,marginTop:2}}>+ Gol</div>
       </div>
-      <div onClick={()=>addGoal("B")} style={{flex:1,padding:"24px 0",borderRadius:16,background:T.orange,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 16px ${T.orange}44`,transition:"transform .1s",gap:4}} onMouseDown={e=>e.currentTarget.style.transform="scale(0.97)"} onMouseUp={e=>e.currentTarget.style.transform="scale(1)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+      <div onClick={canScore?()=>addGoal("B"):undefined} style={{flex:1,padding:"24px 0",borderRadius:16,background:canScore?T.orange:`${T.textMuted}44`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",cursor:canScore?"pointer":"not-allowed",boxShadow:canScore?`0 4px 16px ${T.orange}44`:"none",transition:"transform .1s",gap:4,opacity:canScore?1:.5}} onMouseDown={canScore?e=>{e.currentTarget.style.transform="scale(0.97)"}:undefined} onMouseUp={canScore?e=>{e.currentTarget.style.transform="scale(1)"}:undefined} onMouseLeave={canScore?e=>{e.currentTarget.style.transform="scale(1)"}:undefined}>
         <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.8}}>Takım B</div>
         <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:"#fff",lineHeight:1}}>{score[1]}</div>
         <div style={{fontSize:12,fontWeight:700,color:"#fff",opacity:.7,marginTop:2}}>+ Gol</div>
@@ -429,15 +433,15 @@ function S10({onNav,onMinimize,onEndMatch,initialSeconds,initialRunning}){
       <div style={{flex:1,textAlign:"center"}}>
         <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
         <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
-        <div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
-        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div>
+        {canScore&&<><div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
+        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div></>}
       </div>
       <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
       <div style={{flex:1,textAlign:"center"}}>
         <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
         <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
-        <div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
-        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div>
+        {canScore&&<><div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:"#0D0D0D",boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
+        <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div></>}
       </div>
     </div>
 

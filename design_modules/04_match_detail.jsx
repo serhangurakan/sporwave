@@ -273,6 +273,7 @@ function S12({onNav}){
   const [matchState,setMatchState]=useState(()=>{const s=new URLSearchParams(window.location.search).get("state");return s==="playing"?"playing":"planning";}); // "planning" | "playing"
   const isHost=viewMode==="host";
   const isPlayer=viewMode==="host"||viewMode==="player";
+  const [hostAfk30,setHostAfk30]=useState(false); // +30dk kuralı simülasyonu
   const remaining=m.max-m.joined;
   const [players,setPlayers]=useState(m.players);
   const [joined,setJoined]=useState(m.joined);
@@ -450,6 +451,9 @@ function S12({onNav}){
       <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>MATCH:</span>
       {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?"#fff":T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
     </div>
+    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
+      <span onClick={()=>setHostAfk30(!hostAfk30)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",border:`1.5px solid ${hostAfk30?T.orange:"transparent"}`,background:hostAfk30?`${T.orange}15`:`${T.textDim}22`,color:hostAfk30?T.orange:T.textDim}}>⏰ +30dk Kuralı: {hostAfk30?"ON":"OFF"}</span>
+    </div>
 
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
@@ -472,6 +476,7 @@ function S12({onNav}){
           {showDotsMenu&&<div style={{position:"absolute",right:0,top:42,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:4,minWidth:160,zIndex:100,boxShadow:"0 8px 24px rgba(0,0,0,.25)"}}>
             {isHost&&<div onClick={()=>{setShowDotsMenu(false);setShowEditDrawer(true);}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>{I.edit(T.textDim)} Düzenle</div>}
             {isHost&&m.mode==="approval"&&<div onClick={()=>{setShowDotsMenu(false);onNav("S13");}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>{I.users(T.textDim)} Başvurular</div>}
+            {!isHost&&isPlayer&&<div onClick={()=>{setShowDotsMenu(false);setToast("Host'a bildirim gönderildi — 2 saat içinde yanıt vermezse host yetkin olacak");setTimeout(()=>setToast(null),4000);}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.orange,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.orange}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>⚠️ Host Yanıt Vermiyor</div>}
             <div onClick={()=>{setShowDotsMenu(false);isHost?hostLeave():leaveMatch();}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.red,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Maçtan Çık</div>
           </div>}
         </div>}
@@ -805,7 +810,7 @@ function S12({onNav}){
           :<Btn full primary onClick={joinMatch} st={{marginBottom:8}}>Maça Katıl ({m.max-joined} yer kaldı)</Btn>
         :matchState==="playing"
           ?<Btn full onClick={()=>window.location.assign("/03_matches?view=S10&page=end")} st={{marginBottom:8,background:T.red,color:"#fff"}}>Maçı Bitir</Btn>
-          :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
+          :(isHost||hostAfk30)?<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>:null
       }
     </div>
 
@@ -986,8 +991,6 @@ function S30({onNav,mode}){
         <span>{m.fmt}</span>
       </div>
 
-      {/* QR placeholder */}
-      <div style={{position:"absolute",bottom:20,right:20,width:48,height:48,borderRadius:8,background:`${T.textDim}22`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:T.textMuted,fontWeight:600}}>QR</div>
     </div>
 
     {/* Share button */}
