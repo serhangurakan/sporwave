@@ -158,6 +158,7 @@ Ana Sayfa tab'ında:
 - ← Geri butonu (ilerleme çubuğunun altında, adım 2-4'te görünür — BackLink bileşeni)
 
 **Adım 1 — Temel Bilgiler:**
+- Kullanıcı adı input (@ prefix, en üstte) — unique kontrol: "Bu kullanıcı adı alınmış" hatası (gerçek zamanlı)
 - İsim input
 - Soyisim input
 - Doğum tarihi picker
@@ -233,7 +234,7 @@ Ana Sayfa tab'ında:
 - Post sahibi postunu gizlemiş/silmişse → o post feed'de görünmez, diğerlerininki etkilenmez.
 
 **Ana Sayfa post kartı üst satırı:**
-- Post sahibinin avatarı + ismi + tarih/saat + ⋮ menü
+- Post sahibinin avatarı + ismi + tarih/saat + "Takip Et" text butonu (takip etmiyorsan, accent renk, background yok) + ⋮ menü
 - **İsim tıklanabilir → S16 Profil**
 
 **Keşfet — Görünürlük ve sıralama kuralı:**
@@ -246,7 +247,7 @@ Ana Sayfa tab'ında:
 
 **Her post kartı yapısı:** (Profildeki postlar dahil)
 - **Üst satır:**
-  - Post sahibi avatarı + isim + Tarih/saat. sağda ⋮ menü (Raporla / Engelle — kendi postunsa: Düzenle / Gizle / Sil)
+  - Post sahibi avatarı + isim + Tarih/saat. Sağda: takip etmiyorsan **"Takip Et"** text butonu (accent renk, background yok) + ⋮ menü (Raporla / Engelle — kendi postunsa: Düzenle / Gizle / Sil)
   - **İsim tıklanabilir → S16 Profil**
 - **Maç başlığı** (bold): post sahibinin kişisel başlığı (varsayılan: maç başlığı)
 - **Kişisel not** (varsa): post sahibinin açıklaması
@@ -364,22 +365,9 @@ Bütün açık maçların listesi. Tarih sırasına göre alt alta sıralanır.
 ---
 
 **Maçlarım tab'ı:**
-Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
+Kullanıcının katıldığı maçlar.
 
-**Puanlanmamış maçlar (varsa, üstte) — Inline MVP Oylama:**
-- Kullanıcının henüz MVP oylaması yapmadığı biten maçlar
-- `background:accent08, borderRadius:0, borderLeft: 4px solid accent` kart stili + "⭐ Bu maçı değerlendir" badge'i
-- Kartlar arasında 8px `T.card` divider
-- **Tıklanınca kart expand olur** ve altında inline MVP oylama paneli açılır:
-  - "Maçın Yıldızını Seç" başlığı + "1 oy hakkın var" notu
-  - Katılımcıların profil fotoğrafları yatay sırada (kendisi hariç), her biri tıklanabilir
-  - Oyuncu seçilince ismi ve accent border ile vurgulanır
-  - Seçilen oyuncunun yanında submit (check) ikonu → tıklanınca MVP oyu gönderilir
-  - Oy gönderildikten sonra kart listeden kalkar
-- **Co-MVP:** Eşit oy durumunda birden fazla oyuncu MVP olarak gösterilir
-- MVP oylaması 24 saat sonra otomatik kapanır, oy vermeyenler hakkını kaybeder (ceza yok)
-
-**Katıldığım maçlar (puanlanmamış kartlardan sonra):**
+**Katıldığım maçlar:**
 - Kullanıcının katıldığı planned maçlar, tarih sırasına göre
 - **Kart stili:** `borderLeft: 3px solid T.accent` (accent yeşil)
 - Kartın üstünde: ✓ "Katılıyorsun" badge (tick ikonu + accent renk)
@@ -693,6 +681,18 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 2. **Başarılar** (gold kupa ikonu): "Yakında" etiketi gösterilir (MVP'de aktif değil)
 3. **Takvim** (mor takvim ikonu): Ay takvimi görünümü (7×4 grid) — maç oynanan günler accent renk ile vurgulanır
 
+**Değerlendirilmemiş Maçlar (varsa, pano altında):**
+- MVP oylaması yapılmamış biten maçlar — Inline MVP Oylama
+- `background:accent08, borderRadius:0, borderLeft: 4px solid accent` kart stili + "⭐ Bu maçı değerlendir" badge'i
+- **Tıklanınca kart expand olur** ve altında inline MVP oylama paneli açılır:
+  - "Maçın Yıldızını Seç" başlığı + "1 oy hakkın var" notu
+  - Katılımcıların profil fotoğrafları yatay sırada (kendisi hariç), her biri tıklanabilir
+  - Oyuncu seçilince ismi ve accent border ile vurgulanır
+  - Seçilen oyuncunun yanında submit (check) ikonu → tıklanınca MVP oyu gönderilir
+  - Oy gönderildikten sonra kart listeden kalkar
+- **Co-MVP:** Eşit oy durumunda birden fazla oyuncu MVP olarak gösterilir
+- MVP oylaması 24 saat sonra otomatik kapanır, oy vermeyenler hakkını kaybeder (ceza yok)
+
 **Maç post feed'i:**
 - "Maç Postları" bölüm başlığı
 - Kullanıcının **kişisel maç postları** (S05 post kartı formatında, feed ile birebir aynı tasarım)
@@ -724,8 +724,9 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - "💬 Mesaj Gönder" → S18 Sohbet
 
 **⋮ Menü:** Raporla / Engelle / Takipten Çık (takip ediyorsan)
+**Not:** "Takip Et" butonu ⋮ menüsünün içinde değil, menünün solunda bağımsız text buton olarak görünür (accent renk, background yok).
 
-**Maç post feed'i:** Kullanıcının herkese açık **kişisel maç postları** — kendi başlıkları, notları ve fotoğraflarıyla (tıklanınca Maç Detay S11'e gider). Gizli/silinmiş postlar başkalarına görünmez. Post kartı ⋮ menüsünden: Raporla / Engelle.
+**Maç post feed'i:** Kullanıcının herkese açık **kişisel maç postları** — kendi başlıkları, notları ve fotoğraflarıyla (tıklanınca Maç Detay S11'e gider). Gizli/silinmiş postlar başkalarına görünmez. Post kartı: "Takip Et" text butonu (accent, background yok) + ⋮ menü (Raporla / Engelle).
 
 **Erişim noktaları (avatar/isim tıklanınca S16 açılır):**
 - Maç kartlarında (feed): post sahibi avatarı
@@ -1117,6 +1118,37 @@ Maç saati geçer → Maç hala başlamamış
 → 24 saat geçerse başlamamışsa → maç otomatik silinir
 → Tüm katılımcılara "🗑️ Maç başlatılmadığı için silindi" bildirimi
 ```
+
+### Akış 11: Deep Link ile Gelen Kayıtsız Kullanıcı
+```
+Dış platform (WhatsApp, Instagram, SMS vb.) → sporwave.app/mac/XXXX linkine tıklar
+
+Senaryo A — App yüklü değil:
+→ Universal link / App Link → App Store / Play Store'a yönlendirilir
+→ Uygulama indirilir ve açılır (deferred deep linking ile match_id context korunur)
+→ S01 Login ekranı görünür → Kayıt Ol veya Giriş Yap
+→ Kayıt seçildiyse → S02 Kayıt → S04 Onboarding (4 adım) tamamlanır
+→ Otomatik olarak deep link context'teki match_id ile S12 Planlanan Maç Detay sayfasına yönlendirilir
+→ Kullanıcı "Maça Katıl" butonuyla katılabilir
+
+Senaryo B — App yüklü, giriş yapmamış:
+→ Universal link / App Link → Uygulama açılır (match_id context korunur)
+→ S01 Login ekranı görünür → Kayıt Ol veya Giriş Yap
+→ Login/kayıt + onboarding tamamlanır
+→ Otomatik olarak S12 Planlanan Maç Detay sayfasına yönlendirilir
+
+Senaryo C — Kayıtlı ve giriş yapmış (referans):
+→ Universal link / App Link → Uygulama açılır
+→ Direkt S12 Planlanan Maç Detay sayfasına gider (login/onboarding atlanır)
+```
+
+**Edge case'ler:**
+- **Maç silinmiş / bulunamıyor:** match_id geçersizse → S08 Maçlar sekmesi (Maç Bul tab'ı) açılır
+- **Kontenjan dolu (full state):** S12 açılır, "Maça Katıl" butonu yerine "Kontenjan Dolu" gösterilir (mevcut S12 davranışı)
+- **Maç archived (geçmiş maç):** S11 Bitmiş Maç Detay sayfasına yönlendirilir
+- **Deep link context korunması:** Deferred deep linking mekanizması kullanılır — kayıt/onboarding süresince match_id kaybolmaz. App store yönlendirmesi sonrası bile context korunur (attribution SDK veya clipboard-based fallback).
+- **Onboarding sırasında çıkış:** Kullanıcı onboarding'i yarıda bırakırsa match_id local'de saklanır, bir sonraki açılışta onboarding tamamlandığında yönlendirme yapılır
+
 ---
 
 ## DESIGN SİSTEM NOTLARI

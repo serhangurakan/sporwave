@@ -262,19 +262,21 @@ function PostCard({ post: p, onNav }) {
           <div style={{ fontSize:12, color:T.textMuted, marginTop:2 }}>@{owner.un} · {p.date}</div>
         </div>
       </div>
-      <div style={{ position:"relative" }}>
-        <span onClick={()=>setMenuOpen(!menuOpen)} style={{ cursor:"pointer", display:"flex", padding:4 }}>{I.more()}</span>
-        {menuOpen && <div style={{ position:"absolute", top:28, right:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 4px 16px rgba(0,0,0,.1)", minWidth:160 }}>
-          {isOwn ? <>
-            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.edit()}</span><span style={{ fontSize:13, color:T.text }}>Düzenle</span></div>
-            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Gizle</span></div>
-            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.trash()}</span><span style={{ fontSize:13, color:T.red }}>Sil</span></div>
-          </> : <>
-            <div onClick={()=>setMenuOpen(false)} style={{ padding:"8px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12, background:T.accent, margin:"0 0 4px" }}><span style={{ display:"flex" }}>{I.plus("#fff")}</span><span style={{ fontSize:13, color:"#fff", fontWeight:700 }}>Takip Et</span></div>
-            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.flag()}</span><span style={{ fontSize:13, color:T.text }}>Raporla</span></div>
-            <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Engelle</span></div>
-          </>}
-        </div>}
+      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+        {!isOwn && <span onClick={()=>{}} style={{ cursor:"pointer", fontSize:13, fontWeight:700, color:T.accent }}>Takip Et</span>}
+        <div style={{ position:"relative" }}>
+          <span onClick={()=>setMenuOpen(!menuOpen)} style={{ cursor:"pointer", display:"flex", padding:4 }}>{I.more()}</span>
+          {menuOpen && <div style={{ position:"absolute", top:28, right:0, background:T.card, border:`1px solid ${T.cardBorder}`, borderRadius:12, padding:8, zIndex:60, boxShadow:"0 4px 16px rgba(0,0,0,.1)", minWidth:160 }}>
+            {isOwn ? <>
+              <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.edit()}</span><span style={{ fontSize:13, color:T.text }}>Düzenle</span></div>
+              <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Gizle</span></div>
+              <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.trash()}</span><span style={{ fontSize:13, color:T.red }}>Sil</span></div>
+            </> : <>
+              <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.flag()}</span><span style={{ fontSize:13, color:T.text }}>Raporla</span></div>
+              <div onClick={()=>setMenuOpen(false)} style={{ padding:"12px 16px", borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}><span style={{ display:"flex" }}>{I.eyeOff()}</span><span style={{ fontSize:13, color:T.text }}>Engelle</span></div>
+            </>}
+          </div>}
+        </div>
       </div>
     </div>
 

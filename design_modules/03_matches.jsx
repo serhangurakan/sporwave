@@ -37,8 +37,6 @@ const PLANNED=[
   {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:{name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046,type:"place"},fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[]},
 ];
 
-const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:{name:"Kadıköy Spor",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},sc:[3,2],host:4,players:[2,3,4,5,6,7]}];
-
 // Icons
 const I={
   filter:c=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/></svg>,
@@ -76,7 +74,7 @@ function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}18`}}><div style={{height:4,borderRadius:2,background:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textMuted,fontWeight:500,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 
 // S08: Matches Page (2 tabs: Maç Bul | Maçlarım)
-function S08({onNav,showUnrated,hasActiveWidget}){
+function S08({onNav,hasActiveWidget}){
   const [activeTab,setActiveTab]=useState("find"); // "find" | "mine"
   const [filter,setFilter]=useState(false);
   const cities=["İstanbul","Ankara","İzmir","Bursa","Antalya","Adana"];
@@ -86,10 +84,6 @@ function S08({onNav,showUnrated,hasActiveWidget}){
   const [district,setDistrict]=useState("Tümü");
   const [districtOpen,setDistrictOpen]=useState(false);
   const [dateFilter,setDateFilter]=useState(null);
-  // Inline MVP voting state
-  const [expandedRating,setExpandedRating]=useState(null);
-  const [mvpVote,setMvpVote]=useState(null);
-  const [mvpSubmitted,setMvpSubmitted]=useState({});
 
   const openMatches=PLANNED.filter(m=>!m.myMatch);
   const myMatches=PLANNED.filter(m=>m.myMatch);
@@ -165,58 +159,13 @@ function S08({onNav,showUnrated,hasActiveWidget}){
 
     {/* === Maçlarım tab === */}
     {activeTab==="mine"&&<div>
-      {/* Unrated matches (top) — inline MVP voting */}
-      {showUnrated&&UNRATED.length>0&&<div>
-        {UNRATED.filter(m=>!mvpSubmitted[m.id]).map(m=>{
-          const isExpanded=expandedRating===m.id;
-          const players=(m.players||[]).filter(pid=>pid!==1).map(pid=>uf(pid)).filter(Boolean);
-          return <div key={m.id}>
-            <div onClick={()=>{setExpandedRating(isExpanded?null:m.id);setMvpVote(null);}} style={{background:isExpanded?`${T.accent}14`:`${T.accent}08`,borderRadius:0,borderLeft:`4px solid ${T.accent}`,borderBottom:isExpanded?"none":`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
-              <div style={{marginBottom:6}}><Badge c={T.accent}>{I.star("#fff")} Bu maçı değerlendir</Badge></div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
-                <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
-                <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.accent,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
-              </div>
-              <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
-                <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-                {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.name?.split(" ")[0]||m.loc.district}</span>}
-              </div>
-            </div>
-            {/* Inline MVP voting panel */}
-            {isExpanded&&<div style={{background:`${T.accent}08`,borderLeft:`4px solid ${T.accent}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"0 16px 16px"}}>
-              <div style={{fontSize:13,fontWeight:700,color:T.text,marginBottom:8,fontFamily:FH}}>Maçın Yıldızını Seç</div>
-              <div style={{fontSize:11,color:T.textDim,marginBottom:12}}>En iyi oynayan kişiyi seç (1 oy hakkın var)</div>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:mvpVote?12:0}}>
-                {players.map(u=>{
-                  const sel=mvpVote===u.id;
-                  return <div key={u.id} onClick={e=>{e.stopPropagation();setMvpVote(sel?null:u.id);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:6,borderRadius:12,background:sel?`${T.accent}18`:"transparent",border:sel?`1.5px solid ${T.accent}`:"1.5px solid transparent",transition:"all .2s",minWidth:56}}>
-                    <Av i={u.av} img={u.img} s={40} c={sel?T.accent:T.textDim}/>
-                    <span style={{fontSize:10,fontWeight:sel?700:500,color:sel?T.accent:T.textDim,textAlign:"center",lineHeight:1.2,maxWidth:60,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name.split(" ")[0]}</span>
-                  </div>;
-                })}
-              </div>
-              {mvpVote&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.card,borderRadius:12,padding:"10px 16px",border:`1.5px solid ${T.accent}`}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  {I.star(T.accent)}
-                  <span style={{fontSize:14,fontWeight:700,color:T.accent}}>{uf(mvpVote)?.name}</span>
-                </div>
-                <div onClick={e=>{e.stopPropagation();setMvpSubmitted(prev=>({...prev,[m.id]:true}));setExpandedRating(null);setMvpVote(null);}} style={{width:36,height:36,borderRadius:10,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.check("#fff")}</div>
-              </div>}
-            </div>}
-          </div>;
-        })}
-        {UNRATED.some(m=>!mvpSubmitted[m.id])&&<div style={{height:8,background:T.bgAlt}}/>}
-      </div>}
-
       {/* My matches */}
       {myMatches.length>0
         ? myMatches.map((m,i)=><>
             {i>0&&<div key={`div-${m.id}`} style={{height:8,background:T.bgAlt}}/>}
             <MatchListCard key={m.id} m={m} onNav={onNav} isMine={true}/>
           </>)
-        : !showUnrated||UNRATED.length===0
-          ? <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:15,fontWeight:600,color:T.textDim,marginBottom:6}}>Henüz bir maça katılmadın.</div><div style={{fontSize:13,color:T.textMuted,lineHeight:1.5}}>Açık maçlara göz at ve ilk maçına katıl!</div></div>
-          : null
+        : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:15,fontWeight:600,color:T.textDim,marginBottom:6}}>Henüz bir maça katılmadın.</div><div style={{fontSize:13,color:T.textMuted,lineHeight:1.5}}>Açık maçlara göz at ve ilk maçına katıl!</div></div>
       }
     </div>}
 
@@ -807,7 +756,6 @@ export default function SporWaveMatches(){
   const [cur,setCur]=useState("S08");
   const [curId,setCurId]=useState(null);
   const [fade,setFade]=useState(true);
-  const [showUnrated,setShowUnrated]=useState(false);
   // Active match minimize state
   const [activeMatch,setActiveMatch]=useState({active:false,minimized:false,seconds:0,score:[0,0]});
 
@@ -837,10 +785,10 @@ export default function SporWaveMatches(){
 
   const pg=()=>{
     switch(cur){
-      case "S08":case "S14":return <S08 onNav={nav} showUnrated={showUnrated} hasActiveWidget={showWidget}/>;
+      case "S08":case "S14":return <S08 onNav={nav} hasActiveWidget={showWidget}/>;
       case "S10":return <S10 onNav={nav} onMinimize={handleMinimize} onEndMatch={handleDeleteMatch} initialSeconds={activeMatch.seconds} initialRunning={activeMatch.running}/>;
       case "S31":return <S31 onNav={nav}/>;
-      default:return <S08 onNav={nav} showUnrated={showUnrated}/>;
+      default:return <S08 onNav={nav}/>;
     }
   };
 
@@ -848,7 +796,6 @@ export default function SporWaveMatches(){
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap",alignItems:"center"}}>
       {[{p:"S08",l:"Maçlar"},{p:"S10",l:"Canlı Skor"},{p:"S14",l:"Seviye"},{p:"S31",l:"Oluştur"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
       <span style={{marginLeft:"auto",width:1,height:16,background:T.cardBorder,flexShrink:0}}/>
-      <span onClick={()=>setShowUnrated(v=>!v)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${showUnrated?T.orange:"transparent"}`,background:showUnrated?`${T.orange}15`:`${T.textDim}22`,color:showUnrated?T.orange:T.textDim,cursor:"pointer"}}>⭐ Değerlendirme Maçı: {showUnrated?"ON":"OFF"}</span>
       <span onClick={()=>setActiveMatch(prev=>({...prev,active:!prev.active,minimized:!prev.active}))} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,border:`1.5px solid ${activeMatch.active?T.accent:"transparent"}`,background:activeMatch.active?`${T.accent}15`:`${T.textDim}22`,color:activeMatch.active?T.accent:T.textDim,cursor:"pointer"}}>▶ Aktif Maç: {activeMatch.active?"ON":"OFF"}</span>
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>

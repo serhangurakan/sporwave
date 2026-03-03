@@ -82,6 +82,9 @@ const POSTS=[
 ];
 
 
+// Mock: Unrated matches (MVP oylama yapılmamış)
+const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:{name:"Kadıköy Spor",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},sc:[3,2],host:4,players:[2,3,4,5,6,7]}];
+
 // Icons
 const I={
   arrowLeft:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2" strokeLinecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>,
@@ -294,6 +297,10 @@ function S15({onNav}){
   const [panelOpen,setPanelOpen]=useState(null);
   const [editPostId,setEditPostId]=useState(null);
   const [editForm,setEditForm]=useState({title:"",caption:""});
+  // Inline MVP voting state
+  const [expandedRating,setExpandedRating]=useState(null);
+  const [mvpVote,setMvpVote]=useState(null);
+  const [mvpSubmitted,setMvpSubmitted]=useState({});
   const winRate=u.matches>0?Math.round((u.wins/u.matches)*100):0;
   const calDays=[...Array(28)].map((_,i)=>{const hasMatch=[2,5,8,12,15,18,22,25].includes(i+1);return{day:i+1,match:hasMatch};});
 
@@ -393,6 +400,48 @@ function S15({onNav}){
         {["Pt","Sa","Ça","Pe","Cu","Ct","Pa"].map(d=><div key={d} style={{fontSize:10,color:T.textMuted,fontWeight:600,padding:4}}>{d}</div>)}
         {calDays.map((d,i)=><div key={i} style={{width:32,height:32,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:d.match?700:500,color:d.match?T.bg:T.textDim,background:d.match?T.accent:"transparent",margin:"0 auto"}}>{d.day}</div>)}
       </div>
+    </div>}
+
+    {/* Unrated matches — inline MVP voting */}
+    {UNRATED.filter(m=>!mvpSubmitted[m.id]).length>0&&<div style={{marginTop:16}}>
+      <div style={{height:8,background:T.bgAlt}}/>
+      {UNRATED.filter(m=>!mvpSubmitted[m.id]).map(m=>{
+        const isExpanded=expandedRating===m.id;
+        const players=(m.players||[]).filter(pid=>pid!==1).map(pid=>uf(pid)).filter(Boolean);
+        return <div key={m.id}>
+          <div onClick={()=>{setExpandedRating(isExpanded?null:m.id);setMvpVote(null);}} style={{background:isExpanded?`${T.accent}14`:`${T.accent}08`,borderRadius:0,borderLeft:`4px solid ${T.accent}`,borderBottom:isExpanded?"none":`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
+            <div style={{marginBottom:6}}><Badge c={T.accent}>{I.star(T.accent)} Bu maçı değerlendir</Badge></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
+              <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
+              <div style={{fontSize:14,fontWeight:900,letterSpacing:"-0.5px",fontFamily:FH,color:T.accent,flexShrink:0}}>{m.sc[0]}–{m.sc[1]}</div>
+            </div>
+            <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
+              <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
+              {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{m.loc.name?.split(" ")[0]||m.loc.district}</span>}
+            </div>
+          </div>
+          {isExpanded&&<div style={{background:`${T.accent}08`,borderLeft:`4px solid ${T.accent}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"0 16px 16px"}}>
+            <div style={{fontSize:13,fontWeight:700,color:T.text,marginBottom:8,fontFamily:FH}}>Maçın Yıldızını Seç</div>
+            <div style={{fontSize:11,color:T.textDim,marginBottom:12}}>En iyi oynayan kişiyi seç (1 oy hakkın var)</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:mvpVote?12:0}}>
+              {players.map(u=>{
+                const sel=mvpVote===u.id;
+                return <div key={u.id} onClick={e=>{e.stopPropagation();setMvpVote(sel?null:u.id);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:6,borderRadius:12,background:sel?`${T.accent}18`:"transparent",border:sel?`1.5px solid ${T.accent}`:"1.5px solid transparent",transition:"all .2s",minWidth:56}}>
+                  <Av i={u.av} img={u.img} s={40} c={sel?T.accent:T.textDim}/>
+                  <span style={{fontSize:10,fontWeight:sel?700:500,color:sel?T.accent:T.textDim,textAlign:"center",lineHeight:1.2,maxWidth:60,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name.split(" ")[0]}</span>
+                </div>;
+              })}
+            </div>
+            {mvpVote&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.card,borderRadius:12,padding:"10px 16px",border:`1.5px solid ${T.accent}`}}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                {I.star(T.accent)}
+                <span style={{fontSize:14,fontWeight:700,color:T.accent}}>{uf(mvpVote)?.name}</span>
+              </div>
+              <div onClick={e=>{e.stopPropagation();setMvpSubmitted(prev=>({...prev,[m.id]:true}));setExpandedRating(null);setMvpVote(null);}} style={{width:36,height:36,borderRadius:10,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.check("#fff")}</div>
+            </div>}
+          </div>}
+        </div>;
+      })}
     </div>}
 
     {/* Match post feed */}

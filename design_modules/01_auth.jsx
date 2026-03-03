@@ -486,6 +486,9 @@ function S03({ onNavigate }) {
   );
 }
 
+// Mock: taken usernames (for unique check demo)
+const TAKEN_USERNAMES = ["berk26","alidemir","mkaya","emrecelik","canyildiz","oguzhan","keremm","buraksen"];
+
 // S04: Onboarding (4 steps)
 function S04({ onNavigate }) {
   const [step, setStep] = useState(0);
@@ -495,6 +498,19 @@ function S04({ onNavigate }) {
   const [birthDate, setBirthDate] = useState("");
   const [photoSheet, setPhotoSheet] = useState(false);
   const [photoUploaded, setPhotoUploaded] = useState(false);
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [unFocused, setUnFocused] = useState(false);
+
+  const handleUsername = (val) => {
+    const clean = val.toLowerCase().replace(/[^a-z0-9._]/g, "");
+    setUsername(clean);
+    if (clean.length > 0 && TAKEN_USERNAMES.includes(clean)) {
+      setUsernameError("Bu kullanıcı adı alınmış");
+    } else {
+      setUsernameError("");
+    }
+  };
 
   const sportsList = [
     { label: "Futbol", icon: "⚽" }, { label: "Basketbol", icon: "🏀" },
@@ -533,6 +549,26 @@ function S04({ onNavigate }) {
       {/* Step 1 */}
       {step === 0 && (
         <>
+          {/* Username */}
+          <div style={{ marginBottom: usernameError ? 4 : 12 }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 0, background: T.card,
+              border: `1.5px solid ${usernameError ? T.red : unFocused ? T.accent : T.cardBorder}`,
+              borderRadius: 12, transition: "border-color .2s, box-shadow .2s",
+              boxShadow: unFocused ? `0 0 0 3px ${T.accent}18` : "none",
+            }}>
+              <span style={{ padding: "12px 0 12px 16px", color: T.textMuted, fontSize: 14, fontWeight: 500 }}>@</span>
+              <input
+                placeholder="kullaniciadi"
+                value={username}
+                onChange={e => handleUsername(e.target.value)}
+                onFocus={() => setUnFocused(true)}
+                onBlur={() => setUnFocused(false)}
+                style={{ background: "none", border: "none", color: T.text, fontSize: 14, width: "100%", outline: "none", fontWeight: 500, padding: "12px 16px 12px 4px" }}
+              />
+            </div>
+            {usernameError && <div style={{ fontSize: 11, color: T.red, padding: "4px 16px 8px", fontWeight: 500 }}>{usernameError}</div>}
+          </div>
           <InputField placeholder="İsim" icon={Icons.user} />
           <InputField placeholder="Soyisim" icon={Icons.user} />
           <InputField placeholder="Doğum Tarihi" icon={Icons.calendar} type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} />
