@@ -511,7 +511,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
     - type==="place": Saha adı + adres + "Yol Tarifi →" (tıklanınca Google Maps navigasyon açılır)
     - type==="area": "İl, İlçe" gösterilir (tıklanamaz, navigasyon yok)
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
-- **Kontenjan bar'ı:** "7/12 oyuncu — 5 yer kaldı" (progress bar ile — her zaman accent/primary rengi)
+- **Kontenjan bar'ı:** "7/12 oyuncu — 5 yer kaldı" (progress bar ile — accent renk, %90+ dolulukta turuncu/orange uyarı rengi)
 - **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (accent renk) + otomatik silinmeye kalan süre
 
 **İki tab: Katılımcı Listesi | Takımlar**
@@ -521,28 +521,49 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Katılımcıya tıklanırsa → katılımcı profil sayfasına (S16) redirect
 - İlk 5 katılımcı gösterilir; daha fazlası varsa "Tümünü Göster" yazısıyla expand olabilir
 - Her katılımcı satırında: avatar + isim + host ise "Host" badge (accent renk, crown ikonu) + seviye badge (accent renk)
-- **Misafir oyuncular:** Kayıtlı oyuncuların altında listelenir. Harf avatar (gri #6B7280, beyaz text) + isim + "Misafir" badge (muted renk). Tıklanamaz (profil yok)
+- **Misafir oyuncular:** Kayıtlı oyuncularla aynı listede gösterilir (ayrı bölüm değil, sıraya dahil). Harf avatar (gri #6B7280, beyaz text) + isim + "Misafir" badge (muted renk). Tıklanamaz (profil yok). "Tümünü Göster" sayısı misafirleri de kapsar
 - **Host:** her katılımcının yanında ✕ butonu (maçtan çıkar anlamında, transparent background, border yok)
   - Tıklanırsa popup: "Maçtan çıkarmak istediğinize emin misiniz?" — Çıkar / Vazgeç
   - Misafir ✕ butonu: "Misafiri silmek istediğinize emin misiniz?" popup — Sil / İptal
 
-**Takımlar tab'ı:**
+**Takımlar tab'ı (Hibrit Takım Kurulumu):**
 - Takım A / Takım B grid'i (her iki kolon 3'er grid, satır satır hizalı)
 - Her hücre: host badge üstte (sabit yükseklik alanı) + avatar + isim
-- Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (Kontenjan'a göre — 12 kişi ise 6 slot her takımda, 14 kişi ise 6 slot her takımda gibi)
+- Boş slotlar kesik daire + "Boş" placeholder olarak gösterilir (Kontenjan'a göre — 12 kişi ise 6 slot her takımda)
 - Altında: Henüz takıma yerleşmemiş oyuncular (Yedekler section label + liste görünümü)
-  - Misafir oyuncular da Yedekler'de görünür: harf avatar (gri #6B7280, beyaz text) + isim + "Misafir" badge + ✕ silme butonu (host, edit mode dışında)
-- **Yedekler bölümünün altında "👤+ Misafir Ekle" butonu** (sadece host görür, her zaman):
+  - Misafir oyuncular da Yedekler'de görünür: harf avatar (gri #6B7280, beyaz text) + isim + "Misafir" badge + ✕ silme butonu (sadece host)
+- **Yedekler bölümünün altında "👤+ Misafir Ekle" butonu** (sadece host görür, kontenjan doluysa gizlenir):
   - Tıklanınca inline text input açılır: placeholder "Misafir adı" + "Ekle" butonu + ✕ iptal
   - Min 2 karakter zorunlu, Enter ile de eklenebilir
   - Eklenen misafir Yedekler listesine düşer, kontenjan sayısı artar
-- **Yedekler butonunun sağında "Düzenle" svg icon butonu** (sadece host görür — Takımlar tab'ı içinde):
-  - Düzenle'ye basılırsa: ✕ butonları ve drag-drop aktif olur, CTA butonları geçici olarak pasifleşir, düzenle iconu "Kaydet" / "Vazgeç"a dönüşür
-  - Edit mode'da misafir oyuncular da takıma drag-drop ile atanabilir (aynı mekanizma)
+- **Katılımcı self-assign:**
+  - Katılımcı (kayıtlı oyuncu) boş slota dokunarak takıma katılabilir
+  - Boş slotlar katılımcılar için her zaman interaktif görünür (accent border, pointer cursor)
+  - Zaten bir takımdaysa ve diğer takımda boş slot varsa, dokunarak geçebilir (otomatik eski takımdan çıkar)
+  - Dolu takıma dokunulursa "Bu takım dolu" toast mesajı gösterilir (2sn sonra otomatik kaybolur)
+  - Misafir oyuncuları SADECE host takıma atayabilir (self-assign yok)
+- **Host her zaman override yapabilir** (edit mode/buton yok, Takımlar tab'ı her zaman interaktif):
+  - Oyuncuya tıkla → seçili hale gelir (accent highlight, opacity 0.6). Boş slota tıkla → seçili oyuncu oraya atanır
+  - Seçili oyuncuya tekrar tıkla → yedeklere geri döner
+  - Yedekler listesinde seçili oyuncu: accent border, "→ Takım seç" yazısı
+  - Misafir oyuncular da aynı mekanizma ile takıma atanabilir
+  - Info banner (host, sadece unlocked): "Oyuncuya tıkla → boş slota yerleştir. Tekrar tıkla → yedeklere al."
+- **"🔀 Rastgele Yerleştir" butonu** (sadece host görür, takım header'larının üstünde sağa hizalı):
+  - Sadece yedeklerdeki oyuncuları (kayıtlı + misafir) rastgele Takım A ve Takım B'ye eşit dağıtır
+  - Zaten bir takımda olan oyuncuları yerinden oynatmaz
+  - Tek sayı yedek varsa rastgele bir takıma 1 fazla düşer
+  - Onay yok, direkt dağıtır. Tekrar basılırsa yeniden karıştırır (sadece yedekleri)
+  - Yedekte oyuncu yoksa disabled (muted renk, tıklanamaz)
+- **State kilitleme (maç başlayınca):**
+  - matchState === "playing" olduğunda takım değişikliği kilitlenir
+  - "🔒 Takımlar kilitlendi" banner'ı gösterilir
+  - Boş slotlar tıklanamaz (self-assign + host drag devre dışı), rastgele yerleştir gizlenir
+  - Host drag hint gizlenir
+  - Misafir ekleme hala mümkün (yedeklere düşer, takıma atanamaz)
+  - matchState === "planning" iken tüm işlemler açık
 - **✕ buton farkı:**
   - Katılımcı Listesi'ndeki ✕ → transparent background (border yok) → "maçtan çıkar" anlamında
-  - Takımlar tab'ındaki ✕ (edit mode) → gri → "takımdan çıkar ama maçta kalır" anlamında
-  - Misafir ✕ (edit mode dışı) → "misafiri sil" (confirmation popup ile)
+  - Yedekler'deki misafir ✕ → "misafiri sil" (confirmation popup ile)
 
 **CTA Butonları (yeni hiyerarşi):**
 - **Compact ikon butonları** (primary CTA'nın hemen üstünde, yan yana, %50/%50 genişlik):
@@ -885,15 +906,20 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Açıklama: "Engellenmiş kullanıcı seni göremez, sana mesaj atamaz, maçlarında görünmez."
 - "Engelle" (kırmızı) + "İptal" butonları
 
-#### S30: Maç Sonrası Shareable Kartı (Otomatik Oluşturulur)
-- **Tetikleyici:** Maç kaydedildikten sonra host'a otomatik gösterilir. Diğer katılımcılar kendi postlarının ⋮ menüsünden "Paylaş" ile erişebilir.
-- **İçerik:** Paylaşılabilir görsel kart
-  - Skor bilgisi (maç verisinden)
-  - MVP oyuncusu
-  - Kişisel istatistikler (gol, asist — o kullanıcıya özel)
+#### S30: Paylaş Kartı (2 Mod)
+- **Bitmiş maç kartı (S11 → Paylaş):**
+  - Tetikleyici: Maç kaydedildikten sonra host'a otomatik gösterilir. Diğer katılımcılar kendi postlarının ⋮ menüsünden "Paylaş" ile erişebilir.
+  - Skor bilgisi (Takım A / Takım B, büyük font)
+  - MVP oyuncusu (gold renk, yıldız ikonu)
+  - Kişisel istatistikler (gol, asist — ortalanmış, accent bg kutu)
   - SporWave branding + QR kod
-- "Paylaş" + "Kaydet" butonları
-- "Atla" linki
+- **Planlanan maç davet kartı (S12 → Paylaş):**
+  - Maç başlığı (büyük, bold)
+  - Tarih/saat (saat ikonu), konum (pin ikonu), format/seviye (futbol ikonu)
+  - Kontenjan durumu: "X yer kaldı!" + CapacityBar (accent bg kutu)
+  - SporWave branding + QR kod
+- Her iki modda sadece "Paylaş" butonu (Kaydet ve Atla kaldırıldı)
+- Geri butonu: bitmiş maç → S11'e, planlanan maç → S12'ye döner
 
 ---
 

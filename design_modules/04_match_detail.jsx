@@ -193,7 +193,7 @@ function S11({onNav}){
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
         <span onClick={()=>window.location.assign("/02_feed")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
         <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>Maç Detay</span>
-        <span onClick={()=>onNav("S30")} style={{cursor:"pointer",display:"flex"}}>{I.share(T.textDim)}</span>
+        <span onClick={()=>onNav("S30","past")} style={{cursor:"pointer",display:"flex"}}>{I.share(T.textDim)}</span>
       </div>
     </div>
 
@@ -284,7 +284,7 @@ function S12({onNav}){
   const [removeConfirm,setRemoveConfirm]=useState(null); // uid to confirm removal
   const [activeTab,setActiveTab]=useState("players"); // "players" | "teams"
   const [showDotsMenu,setShowDotsMenu]=useState(false);
-  const [editMode,setEditMode]=useState(false);
+
   const [showAllPlayers,setShowAllPlayers]=useState(false);
   const [showLevelSheet,setShowLevelSheet]=useState(false);
   const [selectedLevel,setSelectedLevel]=useState(null);
@@ -304,8 +304,11 @@ function S12({onNav}){
   const [guestInput,setGuestInput]=useState("");
   const [showGuestInput,setShowGuestInput]=useState(false);
   const [guestConfirm,setGuestConfirm]=useState(null);
+  const [toast,setToast]=useState(null);
+  useEffect(()=>{if(toast){const t=setTimeout(()=>setToast(null),2000);return()=>clearTimeout(t);}},[toast]);
   const gf=(id)=>{const g=guests.find(x=>x.id===id);return g?{id:g.id,name:g.name,av:g.name[0].toUpperCase(),guest:true}:null;};
   const pf=(id)=>typeof id==="string"?gf(id):uf(id);
+  const isLocked=matchState==="playing";
 
   const guestIds=guests.map(g=>g.id);
   const allIds=[...players,...guestIds];
@@ -318,6 +321,18 @@ function S12({onNav}){
     if(team==="A"&&tA.length<teamSize){setTA(a=>[...a.filter(x=>x!==uid),uid]);setTB(b=>b.filter(x=>x!==uid));}
     else if(team==="B"&&tB.length<teamSize){setTB(b=>[...b.filter(x=>x!==uid),uid]);setTA(a=>a.filter(x=>x!==uid));}
     setDragTarget(null);
+  };
+  // Host: randomly assign unassigned players to teams
+  const randomAssign=()=>{
+    const shuffled=[...unassigned].sort(()=>Math.random()-0.5);
+    let newA=[...tA],newB=[...tB];
+    shuffled.forEach(id=>{
+      const aSpace=teamSize-newA.length,bSpace=teamSize-newB.length;
+      if(aSpace>0&&bSpace>0){if(newA.length<=newB.length)newA.push(id);else newB.push(id);}
+      else if(aSpace>0)newA.push(id);
+      else if(bSpace>0)newB.push(id);
+    });
+    setTA(newA);setTB(newB);
   };
   // Host: unassign player from team (move back to Katılımcılar)
   const unassignPlayer=(uid)=>{
@@ -379,35 +394,45 @@ function S12({onNav}){
     const u=pf(uid);if(!u)return null;
     const isHostUser=uid===m.host;
     const isDragging=dragTarget===uid;
+    const hostClick=isHost&&!isLocked?()=>{if(isDragging){unassignPlayer(uid);setDragTarget(null);}else{setDragTarget(uid);}}:undefined;
+    const otherClick=u.guest?undefined:()=>onNav("S16",uid);
     return <div
-      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"4px 4px 8px",cursor:isHost&&editMode?"grab":(u.guest?"default":"pointer"),opacity:isDragging?.6:1,transition:"opacity .15s"}}
-      onClick={isHost&&editMode?()=>setDragTarget(isDragging?null:uid):(u.guest?undefined:()=>onNav("S16",uid))}
+      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"4px 4px 8px",cursor:(isHost&&!isLocked)?"pointer":(u.guest?"default":"pointer"),opacity:isDragging?.6:1,transition:"opacity .15s"}}
+      onClick={isHost?hostClick:otherClick}
     >
       <div style={{height:BADGE_H,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
         {isHostUser&&<Badge c={T.accent} st={{fontSize:8,padding:"1px 5px",lineHeight:1.2}}>{I.crown(T.accent)}</Badge>}
       </div>
       <div style={{position:"relative"}}>
         <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:teamColor} st={u.guest?{background:"#6B7280",color:"#fff"}:{}}/>
-        {isHost&&editMode&&uid!==m.host&&<div
-          onClick={e=>{e.stopPropagation();unassignPlayer(uid);}}
-          style={{position:"absolute",top:-4,right:-4,width:16,height:16,borderRadius:"50%",background:T.textMuted,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}
-        ><span style={{color:"#fff",fontSize:9,fontWeight:700,lineHeight:1}}>✕</span></div>}
       </div>
       <span style={{fontSize:10,fontWeight:600,color:T.text,textAlign:"center",maxWidth:56,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{u.name.split(" ")[0]}</span>
       {u.guest&&<span style={{fontSize:7,color:T.textMuted,fontWeight:500,marginTop:-1}}>Misafir</span>}
     </div>;
   };
 
-  const EmptySlot=({team})=><div
-    style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"4px 4px 8px",cursor:dragTarget&&isHost&&editMode?"pointer":"default"}}
-    onClick={dragTarget&&isHost&&editMode?()=>assignToTeam(dragTarget,team):undefined}
-  >
-    <div style={{height:BADGE_H}}/>
-    <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px dashed ${dragTarget&&isHost&&editMode?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",background:dragTarget&&isHost&&editMode?`${T.accent}10`:"transparent",transition:"all .2s"}}>
-      <span style={{fontSize:16,color:dragTarget&&isHost&&editMode?T.accent:T.textMuted,lineHeight:1}}>+</span>
-    </div>
-    <span style={{fontSize:10,color:dragTarget&&isHost&&editMode?T.accent:T.textMuted}}>Boş</span>
-  </div>;
+  const slotActive=!isLocked&&((dragTarget&&isHost)||(isPlayer&&!isHost));
+  const EmptySlot=({team})=>{
+    const isFull=team==="A"?tA.length>=teamSize:tB.length>=teamSize;
+    const handleClick=()=>{
+      if(isLocked)return;
+      if(isHost&&dragTarget)return assignToTeam(dragTarget,team);
+      if(isPlayer&&!isHost){
+        if(isFull)return setToast("Bu takım dolu");
+        assignToTeam(1,team); // 1 = current user mock id
+      }
+    };
+    return <div
+      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"4px 4px 8px",cursor:slotActive?"pointer":"default"}}
+      onClick={slotActive?handleClick:undefined}
+    >
+      <div style={{height:BADGE_H}}/>
+      <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px dashed ${slotActive?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",background:slotActive?`${T.accent}10`:"transparent",transition:"all .2s"}}>
+        <span style={{fontSize:16,color:slotActive?T.accent:T.textMuted,lineHeight:1}}>+</span>
+      </div>
+      <span style={{fontSize:10,color:slotActive?T.accent:T.textMuted}}>Boş</span>
+    </div>;
+  };
 
   const emptyA=teamSize-tA.length;
   const emptyB=teamSize-tB.length;
@@ -438,7 +463,7 @@ function S12({onNav}){
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
         <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>{m.title}</span>
         {/* Share button */}
-        <div onClick={()=>onNav("S30")} style={{width:36,height:36,borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.share(T.textDim)}</div>
+        <div onClick={()=>onNav("S30","planned")} style={{width:36,height:36,borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.share(T.textDim)}</div>
         {/* ⋮ Dots menu (katılımcı/host) */}
         {isPlayer&&<div style={{position:"relative"}}>
           <div onClick={()=>setShowDotsMenu(!showDotsMenu)} style={{width:36,height:36,borderRadius:10,background:showDotsMenu?`${T.accent}10`:T.card,border:`1px solid ${showDotsMenu?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
@@ -503,15 +528,31 @@ function S12({onNav}){
 
     {/* Tab bar */}
     <div style={{display:"flex",margin:"0 16px",borderBottom:`1px solid ${T.cardBorder}`,marginBottom:16}}>
-      {["players","teams"].map(tab=><div key={tab} onClick={()=>{setActiveTab(tab);if(tab==="players")setEditMode(false);}} style={{flex:1,textAlign:"center",padding:"10px 0",fontSize:13,fontWeight:700,color:activeTab===tab?T.accent:T.textDim,borderBottom:activeTab===tab?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{tab==="players"?"Katılımcı Listesi":"Takımlar"}</div>)}
+      {["players","teams"].map(tab=><div key={tab} onClick={()=>setActiveTab(tab)} style={{flex:1,textAlign:"center",padding:"10px 0",fontSize:13,fontWeight:700,color:activeTab===tab?T.accent:T.textDim,borderBottom:activeTab===tab?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{tab==="players"?"Katılımcı Listesi":"Takımlar"}</div>)}
     </div>
 
     {/* === Katılımcı Listesi tab === */}
     {activeTab==="players"&&<div style={{padding:"0 16px",marginBottom:16}}>
       {(()=>{
-        const visiblePlayers=showAllPlayers?players:players.slice(0,5);
+        const allItems=[...players,...guestIds];
+        const visible=showAllPlayers?allItems:allItems.slice(0,5);
         return <>
-          {visiblePlayers.map(uid=>{
+          {visible.map(id=>{
+            const isGuest=typeof id==="string";
+            if(isGuest){
+              const g=guests.find(x=>x.id===id);if(!g)return null;
+              return <div key={g.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
+                <Av i={g.name[0].toUpperCase()} s={36} c={T.textDim} st={{background:"#6B7280",color:"#fff"}}/>
+                <div style={{flex:1}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    <span style={{fontSize:13,fontWeight:600,color:T.text}}>{g.name}</span>
+                    <Badge c={T.textMuted}>Misafir</Badge>
+                  </div>
+                </div>
+                {isHost&&<span onClick={()=>setGuestConfirm(g.id)} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
+              </div>;
+            }
+            const uid=id;
             const u=uf(uid);if(!u)return null;
             const isHostUser=uid===m.host;
             const lv=LEVELS[u.level];
@@ -527,28 +568,27 @@ function S12({onNav}){
               {isHost&&!isHostUser&&<span onClick={e=>{e.stopPropagation();setRemoveConfirm(uid);}} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",background:"transparent",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
             </div>;
           })}
-          {players.length>5&&!showAllPlayers&&<div onClick={()=>setShowAllPlayers(true)} style={{textAlign:"center",padding:"12px 0",fontSize:13,fontWeight:600,color:T.accent,cursor:"pointer"}}>Tümünü Göster ({players.length})</div>}
-          {/* Misafir oyuncular */}
-          {guests.length>0&&guests.map(g=><div key={g.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
-            <Av i={g.name[0].toUpperCase()} s={36} c={T.textDim} st={{background:"#6B7280",color:"#fff"}}/>
-            <div style={{flex:1}}>
-              <div style={{display:"flex",alignItems:"center",gap:6}}>
-                <span style={{fontSize:13,fontWeight:600,color:T.text}}>{g.name}</span>
-                <Badge c={T.textMuted}>Misafir</Badge>
-              </div>
-            </div>
-            {isHost&&<span onClick={()=>setGuestConfirm(g.id)} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
-          </div>)}
+          {allItems.length>5&&!showAllPlayers&&<div onClick={()=>setShowAllPlayers(true)} style={{textAlign:"center",padding:"12px 0",fontSize:13,fontWeight:600,color:T.accent,cursor:"pointer"}}>Tümünü Göster ({allItems.length})</div>}
         </>;
       })()}
     </div>}
 
     {/* === Takımlar tab === */}
     {activeTab==="teams"&&<div style={{padding:"0 16px",marginBottom:16}}>
-      {/* Drag hint (host, edit mode) */}
-      {isHost&&editMode&&<div style={{marginBottom:12,background:`${T.accent}08`,borderRadius:10,border:`1px solid ${T.accent}22`,padding:"8px 12px",display:"flex",alignItems:"center",gap:8}}>
+      {/* Lock banner (playing) */}
+      {isLocked&&<div style={{marginBottom:12,background:T.card,borderRadius:10,border:`1px solid ${T.cardBorder}`,padding:"10px 12px",display:"flex",alignItems:"center",gap:8}}>
+        <span style={{fontSize:14}}>🔒</span>
+        <span style={{fontSize:12,color:T.textMuted,fontWeight:600}}>Takımlar kilitlendi</span>
+      </div>}
+      {/* Drag hint (host, unlocked) */}
+      {isHost&&!isLocked&&<div style={{marginBottom:12,background:`${T.accent}08`,borderRadius:10,border:`1px solid ${T.accent}22`,padding:"8px 12px",display:"flex",alignItems:"center",gap:8}}>
         <span style={{display:"flex",flexShrink:0}}>{I.info(T.accent)}</span>
-        <span style={{fontSize:11,color:T.textDim}}>Oyuncuya tıkla → boş slota yerleştir. ✕ ile takımdan çıkar.</span>
+        <span style={{fontSize:11,color:T.textDim}}>Oyuncuya tıkla → boş slota yerleştir. Tekrar tıkla → yedeklere al.</span>
+      </div>}
+
+      {/* Rastgele Yerleştir (host, unlocked) */}
+      {isHost&&!isLocked&&<div style={{display:"flex",justifyContent:"flex-end",marginBottom:8}}>
+        <span onClick={unassigned.length>0?randomAssign:undefined} style={{fontSize:12,fontWeight:600,color:unassigned.length>0?T.accent:T.textMuted,cursor:unassigned.length>0?"pointer":"default",opacity:unassigned.length>0?1:.45}}>🔀 Rastgele Yerleştir</span>
       </div>}
 
       {/* Team header row */}
@@ -572,25 +612,16 @@ function S12({onNav}){
         </div>;
       })}
 
-      {/* Yedekler header + Düzenle butonu (host her zaman görür) */}
-      {(isHost||unassigned.length>0)&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16,marginBottom:8}}>
+      {/* Yedekler header */}
+      {(isHost||unassigned.length>0)&&<div style={{display:"flex",alignItems:"center",marginTop:16,marginBottom:8}}>
         <span style={{fontSize:11,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5}}>Yedekler ({unassigned.length})</span>
-        {isHost&&<>
-          {!editMode
-            ?<span onClick={()=>setEditMode(true)} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:4,padding:"3px 8px",borderRadius:8,border:`1px solid ${T.accent}44`}}>{I.edit(T.accent)}</span>
-            :<div style={{display:"flex",gap:6}}>
-              <span onClick={()=>setEditMode(false)} style={{fontSize:11,fontWeight:600,color:T.accent,cursor:"pointer",padding:"3px 10px",borderRadius:8,background:`${T.accent}14`}}>Kaydet</span>
-              <span onClick={()=>{setEditMode(false);setDragTarget(null);}} style={{fontSize:11,fontWeight:600,color:T.textDim,cursor:"pointer",padding:"3px 10px",borderRadius:8,border:`1px solid ${T.cardBorder}`}}>Vazgeç</span>
-            </div>
-          }
-        </>}
       </div>}
       {/* Yedek oyuncu listesi */}
       {unassigned.map(id=>{
         const u=pf(id);if(!u)return null;
         const lv=u.guest?null:LEVELS[u.level];
         const isDragging=dragTarget===id;
-        return <div key={id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:isHost&&editMode?"pointer":(u.guest?"default":"pointer")}} onClick={isHost&&editMode?()=>setDragTarget(isDragging?null:id):(u.guest?undefined:()=>onNav("S16",id))}>
+        return <div key={id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,background:isDragging?`${T.accent}08`:"transparent",borderRadius:isDragging?8:0,cursor:(isHost&&!isLocked)?"pointer":(u.guest?"default":"pointer")}} onClick={isHost&&!isLocked?()=>setDragTarget(isDragging?null:id):(u.guest?undefined:()=>onNav("S16",id))}>
           <Av i={u.av} img={u.img} s={36} c={isDragging?T.accent:T.textDim} st={u.guest?{background:"#6B7280",color:"#fff"}:{}}/>
           <div style={{flex:1}}>
             <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -603,11 +634,11 @@ function S12({onNav}){
             </div>
           </div>
           {isDragging&&<span style={{fontSize:10,color:T.accent,fontWeight:600}}>→ Takım seç</span>}
-          {u.guest&&isHost&&!editMode&&<span onClick={e=>{e.stopPropagation();setGuestConfirm(id);}} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
+          {u.guest&&isHost&&<span onClick={e=>{e.stopPropagation();setGuestConfirm(id);}} style={{cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:"50%",color:T.textDim,fontSize:14,fontWeight:700}}>✕</span>}
         </div>;
       })}
-      {/* Misafir Ekle (host only) */}
-      {isHost&&<div style={{marginTop:8}}>
+      {/* Misafir Ekle (host only, kontenjan varsa) */}
+      {isHost&&joined<m.max&&<div style={{marginTop:8}}>
         {showGuestInput?<div style={{display:"flex",gap:8,alignItems:"center"}}>
           <input value={guestInput} onChange={e=>setGuestInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&guestInput.trim().length>=2)addGuest(guestInput);}} placeholder="Misafir adı" style={{flex:1,background:T.bg,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"8px 12px",color:T.text,fontSize:13,outline:"none"}}/>
           <Btn small primary disabled={guestInput.trim().length<2} onClick={()=>addGuest(guestInput)}>Ekle</Btn>
@@ -760,7 +791,7 @@ function S12({onNav}){
     </div>}
 
     {/* CTA Buttons — new hierarchy */}
-    <div style={{padding:"0 16px",opacity:editMode?.4:1,pointerEvents:editMode?"none":"auto",transition:"opacity .2s"}}>
+    <div style={{padding:"0 16px"}}>
       {/* Compact icon buttons (above primary) */}
       <div style={{display:"flex",gap:8,marginBottom:10}}>
         <div onClick={isPlayer?()=>setShowInviteDrawer(true):undefined} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:isPlayer?"pointer":"not-allowed",fontSize:13,fontWeight:600,color:isPlayer?T.text:T.textMuted,opacity:isPlayer?1:.45}}>{I.addUser?.(isPlayer?T.text:T.textMuted)||<span style={{fontSize:16}}>👤</span>} Davet Et</div>
@@ -777,6 +808,11 @@ function S12({onNav}){
           :<Btn full primary onClick={()=>window.location.assign("/03_matches?view=S10")} st={{marginBottom:8}}>{I.play(T.bg)} Maçı Başlat</Btn>
       }
     </div>
+
+    {/* Toast */}
+    {toast&&<div style={{position:"fixed",bottom:100,left:"50%",transform:"translateX(-50%)",background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:"10px 20px",zIndex:400,boxShadow:"0 4px 16px rgba(0,0,0,.3)"}}>
+      <span style={{fontSize:13,fontWeight:600,color:T.text}}>{toast}</span>
+    </div>}
   </div>;
 }
 
@@ -847,19 +883,21 @@ function S13({onNav}){
 // S41: Oyuncu Davet → S12'deki inline Invite Drawer olarak taşındı (standalone kaldırıldı)
 
 // ============================================================
-// S30: Shareable Kart (Maç Sonrası)
+// S30: Paylaş Kartı (Bitmiş Maç + Planlanan Maç)
 // ============================================================
-function S30({onNav}){
-  const m=PAST_MATCH;
+function S30({onNav,mode}){
+  const isPast=mode==="past"||!mode;
+  const m=isPast?PAST_MATCH:PLANNED_MATCH;
   const me=uf(1);
-  const myStats=m.goals.reduce((acc,g)=>{if(g.scorer===1)acc.g++;if(g.assist===1)acc.a++;return acc;},{g:0,a:0});
-  const mvps=m.mvp.map(id=>uf(id));
+  const myStats=isPast?m.goals.reduce((acc,g)=>{if(g.scorer===1)acc.g++;if(g.assist===1)acc.a++;return acc;},{g:0,a:0}):null;
+  const mvps=isPast?m.mvp.map(id=>uf(id)):[];
+  const locName=isPast?m.loc:(m.loc?.type==="place"?m.loc.name:`${m.loc?.city}, ${m.loc?.district}`);
 
   return <div style={{paddingBottom:80}}>
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <span onClick={()=>onNav("S11")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
+        <span onClick={()=>onNav(isPast?"S11":"S12")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
         <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH}}>Paylaş</span>
       </div>
     </div>
@@ -875,49 +913,75 @@ function S30({onNav}){
       {/* Match title */}
       <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:16}}>{m.title}</div>
 
-      {/* Score */}
-      <div style={{textAlign:"center",marginBottom:20}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
-          <div style={{flex:1,textAlign:"center"}}>
-            <div style={{fontSize:11,fontWeight:700,color:T.accent,marginBottom:4,textTransform:"uppercase"}}>Takım A</div>
-            <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:m.sc[0]>m.sc[1]?T.accent:T.text}}>{m.sc[0]}</div>
+      {isPast?<>
+        {/* === Bitmiş maç kartı === */}
+        {/* Score */}
+        <div style={{textAlign:"center",marginBottom:20}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0}}>
+            <div style={{flex:1,textAlign:"center"}}>
+              <div style={{fontSize:11,fontWeight:700,color:T.accent,marginBottom:4,textTransform:"uppercase"}}>Takım A</div>
+              <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:m.sc[0]>m.sc[1]?T.accent:T.text}}>{m.sc[0]}</div>
+            </div>
+            <div style={{fontSize:20,color:T.textMuted,fontWeight:300}}>–</div>
+            <div style={{flex:1,textAlign:"center"}}>
+              <div style={{fontSize:11,fontWeight:700,color:T.orange,marginBottom:4,textTransform:"uppercase"}}>Takım B</div>
+              <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:m.sc[1]>m.sc[0]?T.accent:T.text}}>{m.sc[1]}</div>
+            </div>
           </div>
-          <div style={{fontSize:20,color:T.textMuted,fontWeight:300}}>–</div>
-          <div style={{flex:1,textAlign:"center"}}>
-            <div style={{fontSize:11,fontWeight:700,color:T.orange,marginBottom:4,textTransform:"uppercase"}}>Takım B</div>
-            <div style={{fontSize:48,fontWeight:900,fontFamily:FH,color:m.sc[1]>m.sc[0]?T.accent:T.text}}>{m.sc[1]}</div>
+        </div>
+
+        {/* MVP */}
+        {mvps.length>0&&<div style={{textAlign:"center",marginBottom:16}}>
+          <div style={{fontSize:11,fontWeight:700,color:T.gold,textTransform:"uppercase",marginBottom:6}}>{mvps.length>1?"Co-MVP":"MVP"}</div>
+          <div style={{display:"flex",justifyContent:"center",gap:8}}>
+            {mvps.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:6}}>
+              {I.star(T.gold)}
+              <span style={{fontSize:14,fontWeight:700,color:T.gold}}>{u.name}</span>
+            </div>)}
+          </div>
+        </div>}
+
+        {/* My stats (centered) */}
+        <div style={{background:`${T.accent}08`,borderRadius:12,padding:"12px 16px",border:`1px solid ${T.accent}22`,textAlign:"center"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:8}}>
+            <Av i={me.av} img={me.img} s={28} c={T.accent}/>
+            <span style={{fontSize:14,fontWeight:700,color:T.text}}>{me.name}</span>
+          </div>
+          <div style={{display:"flex",justifyContent:"center",gap:16}}>
+            <div><div style={{fontSize:20,fontWeight:900,color:T.accent,fontFamily:FH}}>{myStats.g}</div><div style={{fontSize:10,color:T.textDim,fontWeight:600}}>GOL</div></div>
+            <div><div style={{fontSize:20,fontWeight:900,color:T.accent,fontFamily:FH}}>{myStats.a}</div><div style={{fontSize:10,color:T.textDim,fontWeight:600}}>ASİST</div></div>
           </div>
         </div>
-      </div>
+      </>:<>
+        {/* === Planlanan maç davet kartı === */}
+        {/* Info rows */}
+        <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:20}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <span style={{display:"flex",width:20}}>{I.clock(T.accent)}</span>
+            <span style={{fontSize:14,color:T.text,fontWeight:500}}>{m.date}, {m.time}</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <span style={{display:"flex",width:20}}>{I.pin(T.accent)}</span>
+            <span style={{fontSize:14,color:T.text,fontWeight:500}}>{locName}</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <span style={{display:"flex",width:20}}>{I.football(T.accent)}</span>
+            <span style={{fontSize:14,color:T.text,fontWeight:500}}>{m.fmt} · {m.level}</span>
+          </div>
+        </div>
 
-      {/* MVP */}
-      {mvps.length>0&&<div style={{textAlign:"center",marginBottom:16}}>
-        <div style={{fontSize:11,fontWeight:700,color:T.gold,textTransform:"uppercase",marginBottom:6}}>{mvps.length>1?"Co-MVP":"MVP"}</div>
-        <div style={{display:"flex",justifyContent:"center",gap:8}}>
-          {mvps.map(u=><div key={u.id} style={{display:"flex",alignItems:"center",gap:6}}>
-            {I.star(T.gold)}
-            <span style={{fontSize:14,fontWeight:700,color:T.gold}}>{u.name}</span>
-          </div>)}
+        {/* Capacity */}
+        <div style={{background:`${T.accent}08`,borderRadius:12,padding:"12px 16px",border:`1px solid ${T.accent}22`}}>
+          <div style={{fontSize:14,fontWeight:700,color:T.accent,marginBottom:8,textAlign:"center"}}>{m.max-m.joined} yer kaldı!</div>
+          <CapacityBar joined={m.joined} max={m.max}/>
         </div>
-      </div>}
-
-      {/* My stats */}
-      <div style={{background:`${T.accent}08`,borderRadius:12,padding:"12px 16px",border:`1px solid ${T.accent}22`}}>
-        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-          <Av i={me.av} img={me.img} s={28} c={T.accent}/>
-          <span style={{fontSize:14,fontWeight:700,color:T.text}}>{me.name}</span>
-        </div>
-        <div style={{display:"flex",gap:16}}>
-          <div><div style={{fontSize:20,fontWeight:900,color:T.accent,fontFamily:FH}}>{myStats.g}</div><div style={{fontSize:10,color:T.textDim,fontWeight:600}}>GOL</div></div>
-          <div><div style={{fontSize:20,fontWeight:900,color:T.accent,fontFamily:FH}}>{myStats.a}</div><div style={{fontSize:10,color:T.textDim,fontWeight:600}}>ASİST</div></div>
-        </div>
-      </div>
+      </>}
 
       {/* Meta */}
       <div style={{display:"flex",gap:8,marginTop:16,fontSize:11,color:T.textDim,flexWrap:"wrap"}}>
         <span>{m.date}</span>
         <span>·</span>
-        <span>{m.loc}</span>
+        <span>{locName}</span>
         <span>·</span>
         <span>{m.fmt}</span>
       </div>
@@ -926,11 +990,9 @@ function S30({onNav}){
       <div style={{position:"absolute",bottom:20,right:20,width:48,height:48,borderRadius:8,background:`${T.textDim}22`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:T.textMuted,fontWeight:600}}>QR</div>
     </div>
 
-    {/* Share buttons */}
-    <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",gap:8}}>
+    {/* Share button */}
+    <div style={{padding:"20px 16px"}}>
       <Btn full primary>{I.share(T.bg)} Paylaş</Btn>
-      <Btn full>{I.download(T.text)} Kaydet</Btn>
-      <div onClick={()=>onNav("S11")} style={{textAlign:"center",marginTop:4,fontSize:13,color:T.textDim,cursor:"pointer"}}>Atla</div>
     </div>
   </div>;
 }
@@ -957,7 +1019,7 @@ export default function SporWaveMatchDetail(){
       case "S11":return <S11 onNav={nav}/>;
       case "S12":return <S12 onNav={nav}/>;
       case "S13":return <S13 onNav={nav}/>;
-      case "S30":return <S30 onNav={nav}/>;
+      case "S30":return <S30 onNav={nav} mode={curId}/>;
       default:return <S11 onNav={nav}/>;
     }
   };
