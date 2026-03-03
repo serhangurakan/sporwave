@@ -483,14 +483,16 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - **Maç Oynanıyor state'inde:** ← Canlı Skor (S10'a döner)
 
 **Üst bölüm:**
-- Maç başlığı satırı: sol tarafta başlık, sağ tarafta ↗ Paylaş butonu + ⋮ menü butonu (başlık ile aynı hizada)
+- Maç başlığı satırı: sol tarafta başlık, sağ tarafta ↗ Paylaş butonu (herkes görür, misafir dahil) + ⋮ menü butonu (başlık ile aynı hizada)
   - **⋮ Menü içeriği:**
-    - **Host:** "✏️ Düzenle" (→ bottom drawer: Maç Başlığı, Tarih, Saat, Konum, Format, Seviye, Görünürlük) + "Maçtan Çık"
+    - **Host:** "✏️ Düzenle" (→ bottom drawer: Maç Başlığı, Tarih, Saat, **Konum (2 seçenek tab UI: Saha Ara / İl-İlçe, serbest geçiş)**, Format, Seviye, Görünürlük) + "Maçtan Çık"
     - **Katılımcı:** "Maçtan Çık"
 - **Organizatör**: avatar + isim (tıklanınca profil)
 - **Açıklama:** maç açıklaması (tam metin)
 - **Bilgi kartı:** Tarih/saat · Konum · Format · Seviye · Görünürlük
-- Saha belirlenmemişse: "📍 [İlçe] — Belirtilmemiş"
+  - **Konum gösterimi:**
+    - type==="place": Saha adı + adres + "Yol Tarifi →" (tıklanınca Google Maps navigasyon açılır)
+    - type==="area": "İl, İlçe" gösterilir (tıklanamaz, navigasyon yok)
 - **Görünürlük badge'i:** 👁️ "Herkese Görünür" (yeşil) veya 🔒 "Sadece Katılımcılara" (gri)
 - **Kontenjan bar'ı:** "7/12 oyuncu — 5 yer kaldı" (progress bar ile — her zaman accent/primary rengi)
 - **Tarihi geçmiş uyarısı** (maç saati geçmişse ve başlamamışsa): "⏰ Maç saati geçti — Başlatılmayı bekliyor" banner'ı (accent renk) + otomatik silinmeye kalan süre
@@ -518,7 +520,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 **CTA Butonları (yeni hiyerarşi):**
 - **Compact ikon butonları** (primary CTA'nın hemen üstünde, yan yana, %50/%50 genişlik):
-  - 👤 Davet Et + 💬 Maç Sohbeti — ikisi eşit genişlikte (flex:1), tüm katılımcılar ve host görür
+  - 👤 Davet Et + 💬 Maç Sohbeti — ikisi eşit genişlikte (flex:1), herkes görür. Misafir (katılmamış) ise disabled: opacity 0.45, tıklanamaz, muted renk; katılımcı/host ise aktif
 - **Primary CTA** (en altta, tam genişlik):
   - Misafir: "Maça Katıl (X yer kaldı)" → tıklayınca **Seviye Seçim bottom sheet** açılır (aşağıya bak)
   - Misafir (başvuru gönderilmişse): "✓ Başvuru Gönderildi" (disabled, accent border)
@@ -575,11 +577,12 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 **Adım 1 — Maç Oluştur:**
 - Sol üstte geri butonu (S08 Maçlar sayfasına döner)
-- **Konum seçimi — zorunlu:**
-  - Map picker / saha arama (isim veya adres ile arama)
-  - Seçilen konum yeşil border ile gösterilir, "Değiştir" linki ile değiştirilebilir
-  - **"Konumu sonra belirle →"** linki — sola hizalı, konum seçilmemişken görünür. Tıklanınca "Konum sonra belirlenecek" durumu gösterilir, "Ekle" linki ile geri dönülebilir (geri dönünce validation sıfırlanır)
-  - **Validation:** Konum seçilmeden veya "sonra belirle" seçilmeden "Devam"a basılırsa kırmızı hata mesajı gösterilir. "Ekle" butonuna basınca validation sıfırlanır (hata kaybolur)
+- **Konum seçimi — zorunlu (2 seçenek, serbest geçiş):**
+  - Tab bar: "📍 Saha Ara" | "🏙 İl / İlçe" — iki seçenek arasında serbest geçiş
+  - **Saha Ara tab:** Google Maps API ile saha/tesis arama (isim veya adres). Seçilince `{name, addr, lat, lng, type:"place"}` kaydedilir.
+  - **İl / İlçe tab:** İl listesinden seç → ilçe listesinden seç (chip-list). Seçilince `{city, district, type:"area"}` kaydedilir.
+  - Seçim sonrası yeşil border kutu + "Değiştir" linki (tıklayınca tab bar'a dön, diğer seçeneğe geçiş serbest)
+  - **Validation:** Konum seçilmeden "Devam"a basılırsa kırmızı hata mesajı gösterilir (konum zorunlu)
 - **Tarih** (Date picker) — **zorunlu, varsayılan: bugünün tarihi**
 - **Saat** (Time picker) — **zorunlu, varsayılan: şu anki saat**
 - **Kontenjan:** Dropdown number picker — **zorunlu, varsayılan: 10 kişi**
@@ -607,7 +610,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 **Oluştur sonrası:**
 - Host, S12 Planlanan Maç Detay sayfasına yönlendirilir
 - Maç sohbeti (S35) otomatik oluşturulur
-- Deep link üretilir (sporwave.app/mac/XXXX) — WhatsApp, Instagram, SMS ile paylaşılabilir
+- Deep link üretilir (sporwave.app/mac/XXXX) — paylaş butonu ile dış uygulamalara gönderilebilir
 - Host, S12'deki "Davet Et" butonu ile arkadaşlarını davet edebilir (S41 drawer açılır)
 - Davet edilen kişilere bildirim + 1-1 sohbette davet kartı gider
 
@@ -709,7 +712,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 - Boş durum: Inbox ikonu + "Henüz mesajın yok" + "Maça katıl veya birini takip et, sohbet başlat!"
 
 #### S18: Sohbet Sayfası (1-1)
-- **Üst bar:** ← Geri (→ S17) + avatar (36px, tıklanınca → S16) + isim + @kullanıcıadı (tıklanınca → S16) + WhatsApp ikonu (numara varsa) + ⋮ menü
+- **Üst bar:** ← Geri (→ S17) + avatar (36px, tıklanınca → S16) + isim + @kullanıcıadı (tıklanınca → S16) + ⋮ menü
 - Mesaj balonları (klasik chat UI):
   - Gönderilen: sağ, accent arka plan, siyah metin, yuvarlak köşeler (16-16-4-16)
   - Alınan: sol, kart arka planı, border, yuvarlak köşeler (16-16-16-4)
@@ -722,7 +725,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
   - "Detayları Gör" butonu → S12 Planlanan Maç Detay
 - **Alt kısım (fixed):** 📎 ek ikonu (fotoğraf) + mesaj input alanı + gönder butonu (accent, boşken soluk)
 - Enter tuşu ile mesaj gönderilir, yeni mesaj anında listeye eklenir, otomatik scroll
-- ⋮ Menü: WhatsApp'a Geç (numara varsa) / Engelle (kırmızı) / Raporla (kırmızı)
+- ⋮ Menü: Engelle (kırmızı) / Raporla (kırmızı)
 
 #### S35: Maç Sohbeti (Grup Chat)
 - **Amaç:** Planlanan maçın katılımcıları arasında koordinasyon sağlamak
@@ -818,8 +821,7 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 #### S24: Arkadaşlarını Davet Et- Davet illüstrasyonu
 - Kişiye özel referans linki (örn: sporwave.app/davet/berk2026)
 - "Linki Kopyala" butonu
-- "WhatsApp ile Paylaş" butonu
-- "Instagram ile Paylaş" butonu
+- "Paylaş" butonu (sistem paylaşım sheet'i)
 
 #### S25: Topluluk Kuralları
 - No-show yasağı ve yaptırımları
@@ -859,12 +861,12 @@ Kullanıcının değerlendirmediği maçlar + katıldığı maçlar.
 
 #### S30: Maç Sonrası Shareable Kartı (Otomatik Oluşturulur)
 - **Tetikleyici:** Maç kaydedildikten sonra host'a otomatik gösterilir. Diğer katılımcılar kendi postlarının ⋮ menüsünden "Paylaş" ile erişebilir.
-- **İçerik:** Instagram Stories / WhatsApp formatında paylaşılabilir görsel kart
+- **İçerik:** Paylaşılabilir görsel kart
   - Skor bilgisi (maç verisinden)
   - MVP oyuncusu
   - Kişisel istatistikler (gol, asist — o kullanıcıya özel)
   - SporWave branding + QR kod
-- "Instagram'da Paylaş" + "WhatsApp'ta Paylaş" + "Kaydet" butonları
+- "Paylaş" + "Kaydet" butonları
 - "Atla" linki
 
 ---
@@ -1003,7 +1005,7 @@ Maçlar tab'da açık maçı gör → Detaya git → "Katıl"
 ```
 Ana Sayfa feed'de post kartı gör → Beğen / Yorum yap (post bazlı)
 → Post sahibinin profiline git → Takip et
-→ Karşılıklı takip = "Arkadaş" → Mesaj gönder / WhatsApp'a geç
+→ Karşılıklı takip = "Arkadaş" → Mesaj gönder
 → Aynı maçtan başka arkadaşının postu da feed'de → farklı perspektif, ayrı etkileşim
 ```
 

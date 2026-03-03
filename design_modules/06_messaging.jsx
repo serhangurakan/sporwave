@@ -304,13 +304,9 @@ function S18({userId,convId,onNav,onBack}){
         <div style={{fontSize:11,color:T.textMuted}}>@{other.un}</div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:8}}>
-        {other.phone&&<div onClick={()=>alert(`WhatsApp: ${other.phone}`)} style={{cursor:"pointer",display:"flex",padding:4}} title="WhatsApp'a Geç">{I.whatsapp()}</div>}
         <div onClick={()=>setMenuOpen(!menuOpen)} style={{cursor:"pointer",display:"flex",padding:4,position:"relative"}}>
           {I.dots(T.textDim)}
           {menuOpen&&<div style={{position:"absolute",top:28,right:0,background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:4,minWidth:180,boxShadow:"0 4px 16px rgba(0,0,0,.1)",zIndex:60}}>
-            {other.phone&&<div onClick={()=>{alert(`WhatsApp: ${other.phone}`);setMenuOpen(false);}} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,color:T.text}} onMouseEnter={e=>e.currentTarget.style.background=`${T.cardBorder}66`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              {I.whatsapp()}<span>WhatsApp'a Geç</span>
-            </div>}
             <div onClick={()=>{alert("Kullanıcı engellendi");setMenuOpen(false);}} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,color:T.red}} onMouseEnter={e=>e.currentTarget.style.background=`${T.cardBorder}66`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
               {I.block()}<span>Engelle</span>
             </div>

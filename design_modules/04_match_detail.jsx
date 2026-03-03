@@ -63,7 +63,7 @@ const PAST_MATCH={
 
 // Mock: Planned match (S12)
 const PLANNED_MATCH={
-  id:101,title:"Cumartesi Akşam Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",
+  id:101,title:"Cumartesi Akşam Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"1 Mar",time:"20:00",loc:{name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},fmt:"6v6",
   host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",
   players:[2,1,4,3,7,8,5],
   tA:[2,1,4], // Takım A (atanmış)
@@ -74,7 +74,7 @@ const PLANNED_MATCH={
 
 // Mock: Planned match with approval mode (S13)
 const APPROVAL_MATCH={
-  id:102,title:"Pazar Sabah Maçı",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",
+  id:102,title:"Pazar Sabah Maçı",date:"2 Mar",time:"10:00",loc:{name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046,type:"place"},fmt:"5v5",
   host:1,joined:6,max:10,level:"Orta+",mode:"approval",vis:"public",
   players:[1,2,4],
   pending:[{uid:6,level:"mid",date:"Bugün"},{uid:7,level:"beginner",date:"Dün"},{uid:5,level:"beginner",date:"Dün"}],
@@ -82,6 +82,17 @@ const APPROVAL_MATCH={
 };
 
 // S40 mock data kaldırıldı — MVP oylama S08'de inline
+
+// Location data (shared with S31)
+const LOC_RESULTS=[
+  {id:"l1",name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287},
+  {id:"l2",name:"Kadıköy Arena Halısaha",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy",lat:40.9901,lng:29.0234},
+  {id:"l3",name:"Kadıköy Sahil Halısaha",addr:"Osmanağa Mah. Bahariye Cad. No:78, Kadıköy",lat:40.9845,lng:29.0312},
+  {id:"l4",name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046},
+  {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir",lat:40.9923,lng:29.1145},
+];
+const CITIES=["İstanbul","Ankara","İzmir","Bursa","Antalya"];
+const DISTRICTS={"İstanbul":["Kadıköy","Beşiktaş","Üsküdar","Ataşehir","Bakırköy","Şişli","Maltepe","Kartal"],"Ankara":["Çankaya","Keçiören","Yenimahalle"],"İzmir":["Konak","Karşıyaka","Bornova"],"Bursa":["Osmangazi","Nilüfer"],"Antalya":["Muratpaşa","Konyaaltı"]};
 
 // Levels
 const LEVELS={beginner:{l:"Başlangıç",c:T.green},mid:{l:"Orta",c:T.accent},good:{l:"İyi",c:T.orange},pro:{l:"Profesyonel",c:T.gold}};
@@ -276,8 +287,14 @@ function S12({onNav}){
   const [editForm,setEditForm]=useState({title:m.title,date:m.date,time:m.time,loc:m.loc,fmt:m.fmt,level:m.level,vis:m.vis});
   const [inviteQ,setInviteQ]=useState("");
   const [inviteSent,setInviteSent]=useState([]);
+  const [editLocMode,setEditLocMode]=useState("search");
+  const [editLocQuery,setEditLocQuery]=useState("");
+  const [editSelectedLoc,setEditSelectedLoc]=useState(m.loc);
+  const [editSelCity,setEditSelCity]=useState(m.loc?.type==="area"?m.loc.city:null);
+  const [editSelDistrict,setEditSelDistrict]=useState(m.loc?.type==="area"?m.loc.district:null);
   const friends=U.filter(u=>u.follow&&u.id!==1);
   const filteredFriends=inviteQ.length>0?friends.filter(u=>u.name.toLowerCase().includes(inviteQ.toLowerCase())||u.un.toLowerCase().includes(inviteQ.toLowerCase())):friends;
+  const editLocFiltered=editLocQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(editLocQuery.toLowerCase())||l.addr.toLowerCase().includes(editLocQuery.toLowerCase())):[];
 
   const assigned=new Set([...tA,...tB]);
   const unassigned=players.filter(uid=>!assigned.has(uid));
@@ -405,7 +422,7 @@ function S12({onNav}){
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
         <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>{m.title}</span>
         {/* Share button */}
-        {isPlayer&&<div onClick={()=>onNav("S30")} style={{width:36,height:36,borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.share(T.textDim)}</div>}
+        <div onClick={()=>onNav("S30")} style={{width:36,height:36,borderRadius:10,background:T.card,border:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.share(T.textDim)}</div>
         {/* ⋮ Dots menu (katılımcı/host) */}
         {isPlayer&&<div style={{position:"relative"}}>
           <div onClick={()=>setShowDotsMenu(!showDotsMenu)} style={{width:36,height:36,borderRadius:10,background:showDotsMenu?`${T.accent}10`:T.card,border:`1px solid ${showDotsMenu?T.accent:T.cardBorder}`,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
@@ -438,9 +455,13 @@ function S12({onNav}){
             <span style={{display:"flex",width:28}}>{I.clock(T.accent)}</span>
             <span style={{fontSize:14,color:T.text,fontWeight:500}}>{m.date}, {m.time}</span>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div onClick={m.loc.lat?()=>window.open(`https://www.google.com/maps/dir/?api=1&destination=${m.loc.lat},${m.loc.lng}`,"_blank"):undefined} style={{display:"flex",alignItems:"center",gap:10,cursor:m.loc.lat?"pointer":"default"}}>
             <span style={{display:"flex",width:28}}>{I.pin(T.accent)}</span>
-            <span style={{fontSize:14,color:m.loc?T.text:T.accent,fontWeight:500}}>{m.loc||"Saha belirlenecek"}</span>
+            <div style={{flex:1}}>
+              <span style={{fontSize:14,color:T.text,fontWeight:500}}>{m.loc.type==="place"?m.loc.name:`${m.loc.city}, ${m.loc.district}`}</span>
+              {m.loc.addr&&<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{m.loc.addr}</div>}
+            </div>
+            {m.loc.lat&&<span style={{fontSize:11,color:T.accent,fontWeight:600,whiteSpace:"nowrap"}}>Yol Tarifi →</span>}
           </div>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{display:"flex",width:28}}>{I.football(T.accent)}</span>
@@ -580,20 +601,63 @@ function S12({onNav}){
           {label:"Maç Başlığı",key:"title",placeholder:"ör. Cuma Akşamı Maçı"},
           {label:"Tarih",key:"date",placeholder:"ör. 8 Mar"},
           {label:"Saat",key:"time",placeholder:"ör. 20:00"},
-          {label:"Konum",key:"loc",placeholder:"Saha adı"},
           {label:"Format",key:"fmt",placeholder:"ör. 6v6"},
           {label:"Seviye",key:"level",placeholder:"ör. Herkes"},
         ].map(f=><div key={f.key} style={{marginBottom:14}}>
           <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>{f.label}</div>
           <input value={editForm[f.key]} onChange={e=>setEditForm(prev=>({...prev,[f.key]:e.target.value}))} placeholder={f.placeholder} style={{width:"100%",background:T.bg,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:14,outline:"none",boxSizing:"border-box"}}/>
         </div>)}
+        {/* Konum düzenleme */}
+        <div style={{marginBottom:14}}>
+          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Konum</div>
+          {editSelectedLoc?<div style={{background:`${T.green}10`,borderRadius:10,border:`1.5px solid ${T.green}33`,padding:"12px 14px",display:"flex",alignItems:"center",gap:10}}>
+            {I.pin(T.green)}
+            <div style={{flex:1}}>
+              {editSelectedLoc.type==="place"
+                ?<><div style={{fontSize:13,fontWeight:600,color:T.text}}>{editSelectedLoc.name}</div><div style={{fontSize:11,color:T.textDim,marginTop:2}}>{editSelectedLoc.addr}</div></>
+                :<div style={{fontSize:13,fontWeight:600,color:T.text}}>{editSelectedLoc.city}, {editSelectedLoc.district}</div>}
+            </div>
+            <span onClick={()=>{setEditSelectedLoc(null);setEditSelCity(null);setEditSelDistrict(null);setEditLocQuery("");}} style={{fontSize:12,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
+          </div>
+          :<div>
+            <div style={{display:"flex",gap:0,marginBottom:10,borderBottom:`1px solid ${T.cardBorder}`}}>
+              {[{id:"search",l:"📍 Saha Ara"},{id:"area",l:"🏙 İl / İlçe"}].map(t=><div key={t.id} onClick={()=>setEditLocMode(t.id)} style={{flex:1,textAlign:"center",padding:"7px 0",fontSize:12,fontWeight:600,color:editLocMode===t.id?T.accent:T.textDim,borderBottom:editLocMode===t.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{t.l}</div>)}
+            </div>
+            {editLocMode==="search"&&<>
+              <div style={{background:T.bg,borderRadius:10,border:`1.5px solid ${editLocQuery.length>=2?T.accent:T.cardBorder}`,padding:"10px 14px",display:"flex",alignItems:"center",gap:10,transition:"border-color .2s"}}>
+                {I.search(editLocQuery.length>=2?T.accent:T.textDim)}
+                <input value={editLocQuery} onChange={e=>setEditLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:13,width:"100%",outline:"none",fontWeight:500}}/>
+                {editLocQuery.length>0&&<span onClick={()=>setEditLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
+              </div>
+              {editLocFiltered.length>0&&<div style={{background:T.bg,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 10px 10px",overflow:"hidden"}}>
+                {editLocFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setEditSelectedLoc({...loc,type:"place"});setEditLocQuery("");}} style={{padding:"10px 14px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:10,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                  <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
+                  <div><div style={{fontSize:13,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:11,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
+                </div>)}
+              </div>}
+              {editLocQuery.length>=2&&editLocFiltered.length===0&&<div style={{padding:"10px 0",textAlign:"center",fontSize:12,color:T.textMuted}}>Sonuç bulunamadı</div>}
+            </>}
+            {editLocMode==="area"&&<>
+              <div style={{fontSize:11,fontWeight:600,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>İl</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:editSelCity?10:0}}>
+                {CITIES.map(c=><span key={c} onClick={()=>{setEditSelCity(c);setEditSelDistrict(null);}} style={{padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:editSelCity===c?`${T.accent}18`:`${T.textDim}12`,color:editSelCity===c?T.accent:T.textDim,border:`1.5px solid ${editSelCity===c?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{c}</span>)}
+              </div>
+              {editSelCity&&<>
+                <div style={{fontSize:11,fontWeight:600,color:T.textMuted,marginBottom:6,marginTop:4,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {(DISTRICTS[editSelCity]||[]).map(d=><span key={d} onClick={()=>{setEditSelDistrict(d);setEditSelectedLoc({city:editSelCity,district:d,type:"area"});}} style={{padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:editSelDistrict===d?`${T.accent}18`:`${T.textDim}12`,color:editSelDistrict===d?T.accent:T.textDim,border:`1.5px solid ${editSelDistrict===d?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{d}</span>)}
+                </div>
+              </>}
+            </>}
+          </div>}
+        </div>
         <div style={{marginBottom:14}}>
           <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Görünürlük</div>
           <div style={{display:"flex",gap:8}}>
             {["public","private"].map(v=><div key={v} onClick={()=>setEditForm(prev=>({...prev,vis:v}))} style={{flex:1,padding:"10px 0",textAlign:"center",borderRadius:10,border:`1.5px solid ${editForm.vis===v?T.accent:T.cardBorder}`,background:editForm.vis===v?`${T.accent}10`:"transparent",fontSize:13,fontWeight:600,color:editForm.vis===v?T.accent:T.textDim,cursor:"pointer"}}>{v==="public"?"Herkese Açık":"Sadece Katılımcılar"}</div>)}
           </div>
         </div>
-        <Btn full primary onClick={()=>setShowEditDrawer(false)} st={{marginTop:8}}>Kaydet</Btn>
+        <Btn full primary onClick={()=>{setEditForm(prev=>({...prev,loc:editSelectedLoc}));setShowEditDrawer(false);}} st={{marginTop:8}}>Kaydet</Btn>
       </div>
     </div>}
 
@@ -646,10 +710,10 @@ function S12({onNav}){
     {/* CTA Buttons — new hierarchy */}
     <div style={{padding:"0 16px",opacity:editMode?.4:1,pointerEvents:editMode?"none":"auto",transition:"opacity .2s"}}>
       {/* Compact icon buttons (above primary) */}
-      {isPlayer&&<div style={{display:"flex",gap:8,marginBottom:10}}>
-        <div onClick={()=>setShowInviteDrawer(true)} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text}}>{I.addUser?.(T.text)||<span style={{fontSize:16}}>👤</span>} Davet Et</div>
-        <div onClick={()=>window.location.assign("/06_messaging?view=S35")} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text}}>{I.chat(T.text)} Maç Sohbeti</div>
-      </div>}
+      <div style={{display:"flex",gap:8,marginBottom:10}}>
+        <div onClick={isPlayer?()=>setShowInviteDrawer(true):undefined} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:isPlayer?"pointer":"not-allowed",fontSize:13,fontWeight:600,color:isPlayer?T.text:T.textMuted,opacity:isPlayer?1:.45}}>{I.addUser?.(isPlayer?T.text:T.textMuted)||<span style={{fontSize:16}}>👤</span>} Davet Et</div>
+        <div onClick={isPlayer?()=>window.location.assign("/06_messaging?view=S35"):undefined} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:12,background:T.card,border:`1px solid ${T.cardBorder}`,cursor:isPlayer?"pointer":"not-allowed",fontSize:13,fontWeight:600,color:isPlayer?T.text:T.textMuted,opacity:isPlayer?1:.45}}>{I.chat(isPlayer?T.text:T.textMuted)} Maç Sohbeti</div>
+      </div>
 
       {/* Primary CTA */}
       {viewMode==="guest"
@@ -812,8 +876,7 @@ function S30({onNav}){
 
     {/* Share buttons */}
     <div style={{padding:"20px 16px",display:"flex",flexDirection:"column",gap:8}}>
-      <Btn full primary>{I.instagram(T.bg)} Instagram'da Paylaş</Btn>
-      <Btn full st={{background:`${T.green}15`,border:`1.5px solid ${T.green}33`,color:T.green}}>{I.whatsapp(T.green)} WhatsApp'ta Paylaş</Btn>
+      <Btn full primary>{I.share(T.bg)} Paylaş</Btn>
       <Btn full>{I.download(T.text)} Kaydet</Btn>
       <div onClick={()=>onNav("S11")} style={{textAlign:"center",marginTop:4,fontSize:13,color:T.textDim,cursor:"pointer"}}>Atla</div>
     </div>

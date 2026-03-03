@@ -31,13 +31,13 @@ const U=[
 const uf=id=>U.find(u=>u.id===id);
 
 const PLANNED=[
-  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:"Kadıköy Arena",fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendsInMatch:[]},
-  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var. Seviye fark etmez herkes gelsin.",date:"1 Mar",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Emre"]},
-  {id:103,title:"Ataşehir Turnuva",desc:"Ataşehir'de düzenlenen hafta sonu turnuvası, kayıt ücretsiz.",date:"5 Mar",time:"19:00",loc:null,fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Ali","Emre"]},
-  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:"Beşiktaş Halısaha",fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[]},
+  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:{name:"Kadıköy Arena",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy",lat:40.9901,lng:29.0234,type:"place"},fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendsInMatch:[]},
+  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var. Seviye fark etmez herkes gelsin.",date:"1 Mar",time:"20:00",loc:{name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Emre"]},
+  {id:103,title:"Ataşehir Turnuva",desc:"Ataşehir'de düzenlenen hafta sonu turnuvası, kayıt ücretsiz.",date:"5 Mar",time:"19:00",loc:{city:"İstanbul",district:"Ataşehir",type:"area"},fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Ali","Emre"]},
+  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:{name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046,type:"place"},fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[]},
 ];
 
-const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:"Kadıköy Spor",sc:[3,2],host:4,players:[2,3,4,5,6,7]}];
+const UNRATED=[{id:201,title:"Perşembe Maçı",date:"27 Şub",time:"20:00",loc:{name:"Kadıköy Spor",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},sc:[3,2],host:4,players:[2,3,4,5,6,7]}];
 
 // Icons
 const I={
@@ -179,7 +179,7 @@ function S08({onNav,showUnrated,hasActiveWidget}){
               </div>
               <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,alignItems:"center",flexWrap:"wrap"}}>
                 <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-                {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.split(" ")[0]}</span>}
+                {m.loc&&<span style={{display:"flex",alignItems:"center",gap:3}}>{I.pin()} {m.loc.name?.split(" ")[0]||m.loc.district}</span>}
               </div>
             </div>
             {/* Inline MVP voting panel */}
@@ -251,7 +251,7 @@ function MatchListCard({m,onNav,isMine}){
     {/* Date / location */}
     <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,marginBottom:8,flexWrap:"wrap",alignItems:"center",lineHeight:1.4}}>
       <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-      <span style={{display:"flex",alignItems:"center",gap:3,color:T.accent}}>{I.pin(T.accent)} {m.loc?m.loc.split(" ")[0]:"Saha belirlenecek"}</span>
+      <span style={{display:"flex",alignItems:"center",gap:3,color:T.accent}}>{I.pin(T.accent)} {m.loc.name?.split(" ")[0]||m.loc.district}</span>
     </div>
     {/* Host row + almost full */}
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8,lineHeight:1.4}}>
@@ -523,12 +523,14 @@ function S14({onNav}){
 
 // S31: Create Match (2 Steps)
 const LOC_RESULTS=[
-  {id:"l1",name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy"},
-  {id:"l2",name:"Kadıköy Arena Halısaha",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy"},
-  {id:"l3",name:"Kadıköy Sahil Halısaha",addr:"Osmanağa Mah. Bahariye Cad. No:78, Kadıköy"},
-  {id:"l4",name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş"},
-  {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir"},
+  {id:"l1",name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287},
+  {id:"l2",name:"Kadıköy Arena Halısaha",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy",lat:40.9901,lng:29.0234},
+  {id:"l3",name:"Kadıköy Sahil Halısaha",addr:"Osmanağa Mah. Bahariye Cad. No:78, Kadıköy",lat:40.9845,lng:29.0312},
+  {id:"l4",name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046},
+  {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir",lat:40.9923,lng:29.1145},
 ];
+const CITIES=["İstanbul","Ankara","İzmir","Bursa","Antalya"];
+const DISTRICTS={"İstanbul":["Kadıköy","Beşiktaş","Üsküdar","Ataşehir","Bakırköy","Şişli","Maltepe","Kartal"],"Ankara":["Çankaya","Keçiören","Yenimahalle"],"İzmir":["Konak","Karşıyaka","Bornova"],"Bursa":["Osmangazi","Nilüfer"],"Antalya":["Muratpaşa","Konyaaltı"]};
 
 const S31_STEP_TITLES=["Maç Oluştur","Maç Detayları"];
 
@@ -548,7 +550,9 @@ function S31({onNav}){
   const [step,setStep]=useState(0);
   const [locQuery,setLocQuery]=useState("");
   const [selectedLoc,setSelectedLoc]=useState(null);
-  const [locSkipped,setLocSkipped]=useState(false);
+  const [locMode,setLocMode]=useState("search"); // "search" | "area"
+  const [selCity,setSelCity]=useState(null);
+  const [selDistrict,setSelDistrict]=useState(null);
   const [dateVal,setDateVal]=useState(todayStr);
   const [timeVal,setTimeVal]=useState(nowTime);
   const [quota,setQuota]=useState(10);
@@ -562,7 +566,7 @@ function S31({onNav}){
   const privacyOpts=[{id:"public",l:"Herkese Açık"},{id:"followers",l:"Sadece Takipçiler"},{id:"invite",l:"Sadece Davet"}];
   const locFiltered=locQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(locQuery.toLowerCase())||l.addr.toLowerCase().includes(locQuery.toLowerCase())):[];
 
-  const step1Valid=dateVal&&timeVal&&(selectedLoc||locSkipped);
+  const step1Valid=dateVal&&timeVal&&selectedLoc;
 
   return <div style={{padding:"24px 20px",paddingBottom:56,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
 
@@ -590,36 +594,55 @@ function S31({onNav}){
     {step===0&&<>
       {/* Konum */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Konum</div>
-      {!selectedLoc&&!locSkipped?<div style={{marginBottom:attempted1&&!selectedLoc&&!locSkipped?4:24}}>
-        <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted1&&!selectedLoc&&!locSkipped?T.red:locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
-          {I.pin(locQuery.length>=2?T.accent:T.textDim)}
-          <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
-          {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
-        </div>
-        {locFiltered.length>0&&<div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 12px 12px",overflow:"hidden"}}>
-          {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc(loc);setLocQuery("");}} style={{padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-            <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
-            <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
-          </div>)}
-        </div>}
-        {locQuery.length>=2&&locFiltered.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
-        <div onClick={()=>setLocSkipped(true)} style={{marginTop:12,fontSize:14,color:T.textDim,cursor:"pointer",fontWeight:500}}>Konumu sonra belirle →</div>
-      </div>
-      :selectedLoc?<div style={{marginBottom:24}}>
+      {selectedLoc?<div style={{marginBottom:24}}>
         <div style={{background:`${T.green}10`,borderRadius:12,border:`1.5px solid ${T.green}33`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
           {I.pin(T.green)}
-          <div style={{flex:1}}><div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{selectedLoc.addr}</div></div>
-          <span onClick={()=>{setSelectedLoc(null);setLocSkipped(false);}} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
+          <div style={{flex:1}}>
+            {selectedLoc.type==="place"
+              ?<><div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{selectedLoc.addr}</div></>
+              :<div style={{fontSize:14,fontWeight:600,color:T.text}}>{selectedLoc.city}, {selectedLoc.district}</div>}
+          </div>
+          <span onClick={()=>{setSelectedLoc(null);setSelCity(null);setSelDistrict(null);setLocQuery("");}} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
         </div>
       </div>
-      :<div style={{marginBottom:24}}>
-        <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12}}>
-          {I.pin(T.textMuted)}
-          <span style={{fontSize:14,color:T.textDim,flex:1}}>Konum sonra belirlenecek</span>
-          <span onClick={()=>{setLocSkipped(false);setSelectedLoc(null);setAttempted1(false);}} style={{fontSize:13,color:T.accent,fontWeight:600,cursor:"pointer"}}>Ekle</span>
+      :<div style={{marginBottom:attempted1&&!selectedLoc?4:24}}>
+        {/* Tab bar: Saha Ara | İl / İlçe */}
+        <div style={{display:"flex",gap:0,marginBottom:12,borderBottom:`1px solid ${T.cardBorder}`}}>
+          {[{id:"search",l:"📍 Saha Ara"},{id:"area",l:"🏙 İl / İlçe"}].map(t=><div key={t.id} onClick={()=>setLocMode(t.id)} style={{flex:1,textAlign:"center",padding:"8px 0",fontSize:13,fontWeight:600,color:locMode===t.id?T.accent:T.textDim,borderBottom:locMode===t.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{t.l}</div>)}
         </div>
+
+        {/* Tab 1: Saha Ara */}
+        {locMode==="search"&&<>
+          <div style={{background:T.card,borderRadius:12,border:`1.5px solid ${attempted1&&!selectedLoc?T.red:locQuery.length>=2?T.accent:T.cardBorder}`,padding:"12px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
+            {I.pin(locQuery.length>=2?T.accent:T.textDim)}
+            <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500}}/>
+            {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
+          </div>
+          {locFiltered.length>0&&<div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 12px 12px",overflow:"hidden"}}>
+            {locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");}} style={{padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+              <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
+              <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
+            </div>)}
+          </div>}
+          {locQuery.length>=2&&locFiltered.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+        </>}
+
+        {/* Tab 2: İl / İlçe */}
+        {locMode==="area"&&<>
+          <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>İl</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:selCity?12:0}}>
+            {CITIES.map(c=><span key={c} onClick={()=>{setSelCity(c);setSelDistrict(null);}} style={{padding:"6px 14px",borderRadius:20,fontSize:13,fontWeight:600,cursor:"pointer",background:selCity===c?`${T.accent}18`:`${T.textDim}12`,color:selCity===c?T.accent:T.textDim,border:`1.5px solid ${selCity===c?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{c}</span>)}
+          </div>
+          {selCity&&<>
+            <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:8,marginTop:4,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+              {(DISTRICTS[selCity]||[]).map(d=><span key={d} onClick={()=>{setSelDistrict(d);setSelectedLoc({city:selCity,district:d,type:"area"});}} style={{padding:"6px 14px",borderRadius:20,fontSize:13,fontWeight:600,cursor:"pointer",background:selDistrict===d?`${T.accent}18`:`${T.textDim}12`,color:selDistrict===d?T.accent:T.textDim,border:`1.5px solid ${selDistrict===d?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{d}</span>)}
+            </div>
+          </>}
+        </>}
+
       </div>}
-      {attempted1&&!selectedLoc&&!locSkipped&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:20,paddingLeft:4}}>Konum seçin veya "Konumu sonra belirle" seçeneğini kullanın</div>}
+      {attempted1&&!selectedLoc&&<div style={{fontSize:11,color:T.red,fontWeight:600,marginBottom:20,paddingLeft:4}}>Lütfen bir konum seçin</div>}
 
       {/* Tarih & Saat */}
       <div style={{fontSize:13,color:T.textDim,marginBottom:10,fontWeight:600}}>Tarih & Saat</div>

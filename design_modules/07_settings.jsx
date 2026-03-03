@@ -317,11 +317,8 @@ function S24({onBack}){
         <Btn full onClick={()=>alert("Linki kopyalandı")} primary>
           {I.copy(T.text)} Linki Kopyala
         </Btn>
-        <Btn full onClick={()=>alert("WhatsApp ile paylaşılıyor...")} st={{background:`${T.green}18`,border:`1.5px solid ${T.green}44`,color:T.green}}>
-          {I.whatsapp()} WhatsApp ile Paylaş
-        </Btn>
-        <Btn full onClick={()=>alert("Instagram ile paylaşılıyor...")} st={{background:`${T.purple}18`,border:`1.5px solid ${T.purple}44`,color:T.purple}}>
-          {I.instagram()} Instagram ile Paylaş
+        <Btn full onClick={()=>alert("Paylaşılıyor...")} st={{background:`${T.accent}18`,border:`1.5px solid ${T.accent}44`,color:T.accent}}>
+          {I.share(T.accent)} Paylaş
         </Btn>
       </div>
     </div>
