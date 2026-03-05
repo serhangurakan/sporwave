@@ -100,7 +100,7 @@ function S08({hasActiveWidget}){
 
   return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
-    <div style={{position:"sticky",top:32,zIndex:50,background:`${T.bg}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${T.cardBorder}`}}>
+    <div style={{position:"sticky",top:32,zIndex:50,background:`${T.bg}ee`,backdropFilter:"blur(12px)"}}>
       <div style={{padding:"8px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         {/* Mode dropdown — feed TopNav stili */}
         <div style={{position:"relative"}}>
@@ -136,9 +136,12 @@ function S08({hasActiveWidget}){
         </div>
       </div>
       {/* Tabs — sadece Maçlar modunda */}
-      {pageMode==="matches"&&<div style={{display:"flex",padding:"0 16px"}}>
-        {[{id:"find",label:"Maç Bul"},{id:"mine",label:"Maçlarım"}].map(tab=><div key={tab.id} onClick={()=>{setActiveTab(tab.id);if(tab.id==="mine")setFilter(false);}} style={{flex:1,textAlign:"center",padding:"10px 0",fontSize:13,fontWeight:700,color:activeTab===tab.id?T.accent:T.textDim,borderBottom:activeTab===tab.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{tab.label}</div>)}
-      </div>}
+      {pageMode==="matches"
+        ? <div style={{display:"flex",padding:"8px 16px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
+            {[{id:"find",label:"Maç Bul"},{id:"mine",label:"Maçlarım"}].map(tab=><div key={tab.id} onClick={()=>{setActiveTab(tab.id);if(tab.id==="mine")setFilter(false);}} style={{flex:1,textAlign:"center",padding:"10px 0",fontSize:13,fontWeight:700,color:activeTab===tab.id?T.accent:T.textDim,borderBottom:activeTab===tab.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{tab.label}</div>)}
+          </div>
+        : <div style={{borderBottom:`1px solid ${T.cardBorder}`}}/>
+      }
     </div>
 
     {/* Filter drawer (only Maç Bul tab) */}
@@ -217,7 +220,7 @@ function S08({hasActiveWidget}){
     </div>}
 
     {/* === Maçlar modu === */}
-    {pageMode==="matches"&&<div>
+    {pageMode==="matches"&&<div style={{paddingTop:16}}>
       {/* === Maç Bul tab === */}
       {activeTab==="find"&&<div>
         {openMatches.length>0
@@ -254,7 +257,7 @@ function MatchListCard({m,isMine}){
     onTouchStart={()=>setPressed(true)}
     onTouchEnd={()=>setPressed(false)}
     style={{
-      margin:"0 16px 12px",
+      margin:"0 16px 16px",
       background:T.card,
       borderRadius:16,
       border:`1px solid rgba(0,0,0,.06)`,
@@ -310,7 +313,7 @@ function MatchListCard({m,isMine}){
     </div>
 
     {/* Capacity bar + single-line count */}
-    <div style={{display:"flex",flexDirection:"column",gap:5}}>
+    <div style={{display:"flex",flexDirection:"column",gap:6}}>
       <div style={{height:4,borderRadius:2,background:`${T.textDim}18`,overflow:"hidden"}}>
         <div style={{height:4,borderRadius:2,background:spotsLeft<=2?T.orange:T.accent,width:`${m.joined/m.max*100}%`,transition:"width .3s"}}/>
       </div>
