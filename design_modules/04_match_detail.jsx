@@ -462,7 +462,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
       </div>
 
       <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:12,marginBottom:12}}>
-        <div onClick={()=>onNav("S16",host.id)} style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
           <Av i={host.av} img={host.img} s={28}/>
           <div style={{flex:1}}>
             <div style={{fontSize:13,fontWeight:700,color:T.text}}>{host.name}</div>
@@ -476,12 +476,12 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
           <Badge c={T.textDim}>{I.users(T.textDim)} {joined}/{m.max}</Badge>
         </div>
       </div>
-      <div onClick={()=>setShowParticipantsSheet(true)} style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:"10px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,cursor:"pointer"}}>
+      <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:"10px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           {visibleParticipantIds.map(uid=>{
             const u=uf(uid);
             if(!u)return null;
-            return <div key={uid} onClick={e=>{e.stopPropagation();onNav("S16",uid);}} style={{display:"flex"}}>
+            return <div key={uid} style={{display:"flex"}}>
               <Av i={u.av} img={u.img} s={32}/>
             </div>;
           })}
@@ -643,7 +643,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
           {players.map(uid=>{
             const u=uf(uid);
             if(!u)return null;
-            return <div key={uid} onClick={()=>onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
+            return <div key={uid} style={{display:"flex",alignItems:"center",gap:10}}>
               <Av i={u.av} img={u.img} s={32}/>
               <div style={{flex:1}}>
                 <div style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</div>
