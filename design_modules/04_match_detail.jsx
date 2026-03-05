@@ -12,6 +12,9 @@ import T from "./theme.js";
 // ============================================================
 const FH="'Plus Jakarta Sans','SF Pro Display',-apple-system,sans-serif";
 const FB="'SF Pro Display','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+const IS_DEV =
+  (typeof process !== "undefined" && process.env?.NODE_ENV === "development") ||
+  (typeof import.meta !== "undefined" && import.meta.env?.DEV);
 
 // Mock Users (same as other modules)
 const AVATARS=[
@@ -115,6 +118,9 @@ const LEVELS={beginner:{l:"Başlangıç",c:T.green},mid:{l:"Orta",c:T.accent},go
 const I={
   arrowLeft:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2" strokeLinecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>,
   star:c=><svg width="16" height="16" viewBox="0 0 24 24" fill={c||T.gold} stroke={c||T.gold} strokeWidth="1"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>,
+  undo:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.text} strokeWidth="2" strokeLinecap="round"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>,
+  trash:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.red} strokeWidth="2" strokeLinecap="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>,
+  calendar:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
   clock:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>,
   pin:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>,
   users:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.textMuted} strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,
@@ -145,7 +151,7 @@ const I={
 
 // Shared Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?T.white:primary?T.onAccent:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function CapacityBar({joined,max}){const pct=joined/max*100;return <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{flex:1,height:4,borderRadius:2,background:`${T.textDim}22`}}><div style={{height:4,borderRadius:2,background:pct>=90?T.orange:T.accent,width:`${pct}%`,transition:"width .3s"}}/></div><span style={{fontSize:11,color:T.textDim,fontWeight:600,whiteSpace:"nowrap"}}>{joined}/{max}</span></div>;}
 function TabBar({active,onNav}){
@@ -184,7 +190,7 @@ function S11({onNav}){
     const isMvp=m.mvp.includes(uid);
     const isNoShow=m.noShow.includes(uid);
     return <div onClick={()=>!u.guest&&onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,cursor:u.guest?"default":"pointer",opacity:isNoShow?.5:1}}>
-      <Av i={u.av} img={u.img} s={32} c={isMvp?T.accent:team==="A"?T.accent:T.orange} st={u.guest?{background:"#6B7280",color:"#fff"}:{}}/>
+      <Av i={u.av} img={u.img} s={32} c={isMvp?T.accent:team==="A"?T.accent:T.orange} st={u.guest?{background:T.guestBg,color:T.white}:{}}/>
       <div style={{flex:1}}>
         <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
           {isMvp&&<span style={{display:"flex",flexShrink:0}}>{I.star(T.accent)}</span>}
@@ -278,7 +284,7 @@ function S11({onNav}){
 // ============================================================
 // InlineChat — S12 içinde kullanılan maç sohbet bileşeni
 // ============================================================
-function InlineChat({isPlayer,onJoin}){
+function InlineChat({canInput,showGuestOverlay,onJoin,inputDisabledText}){
   const chatRef=useRef(null);
   const inputRef=useRef(null);
   const [chatMsgs,setChatMsgs]=useState(CHAT_MSGS);
@@ -293,71 +299,107 @@ function InlineChat({isPlayer,onJoin}){
     setTimeout(()=>chatRef.current?.scrollTo({top:chatRef.current.scrollHeight,behavior:"smooth"}),50);
   };
 
-  return <div style={{margin:"0 16px 16px",position:"relative"}}>
-    <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,overflow:"hidden"}}>
-      <div ref={chatRef} style={{height:260,overflowY:"auto",padding:"12px 12px 8px",display:"flex",flexDirection:"column",gap:4,filter:!isPlayer?"blur(5px)":"none",userSelect:!isPlayer?"none":"auto",pointerEvents:!isPlayer?"none":"auto",transition:"filter .3s"}}>
+  return <div style={{position:"relative",flex:1,minHeight:0,padding:"0 16px"}}>
+    <style>{`
+      .sw-chat-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+      .sw-chat-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    `}</style>
+    <div
+      ref={chatRef}
+      className="sw-chat-scroll"
+      style={{
+        height:"100%",
+        overflowY:"auto",
+        padding:"8px 0 124px",
+        display:"flex",
+        flexDirection:"column",
+        gap:12,
+        filter:showGuestOverlay?"blur(5px)":"none",
+        userSelect:showGuestOverlay?"none":"auto",
+        pointerEvents:showGuestOverlay?"none":"auto",
+        transition:"filter .2s",
+      }}
+    >
         {chatMsgs.map((msg,idx)=>{
           const isMe=msg.from===ME_ID;
           const sender=uf(msg.from);
           const prev=chatMsgs[idx-1];
           const showName=!isMe&&(!prev||prev.from!==msg.from);
-          return <div key={msg.id} style={{alignSelf:isMe?"flex-end":"flex-start",maxWidth:"75%",marginTop:showName?6:0}}>
-            <div style={{display:"flex",gap:6,alignItems:"flex-start"}}>
-              {!isMe&&<div style={{width:24,flexShrink:0}}>{showName&&sender&&<Av i={sender.av} img={sender.img} s={24}/>}</div>}
+          return <div key={msg.id} style={{alignSelf:isMe?"flex-end":"flex-start",maxWidth:"78%"}}>
+            <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
+              {!isMe&&<div style={{width:28,flexShrink:0}}>{showName&&sender&&<Av i={sender.av} img={sender.img} s={28}/>}</div>}
               <div>
-                {showName&&sender&&<div style={{fontSize:10,fontWeight:600,color:T.accent,marginBottom:2}}>{sender.name.split(" ")[0]}</div>}
-                <div style={{background:isMe?T.accent:`${T.bgAlt}`,border:isMe?"none":`1px solid ${T.cardBorder}`,borderRadius:isMe?"12px 12px 3px 12px":"12px 12px 12px 3px",padding:"8px 12px"}}>
-                  <div style={{fontSize:13,color:isMe?"#fff":T.text,lineHeight:1.4,wordBreak:"break-word"}}>{msg.text}</div>
+                {showName&&sender&&<div style={{fontSize:10,fontWeight:600,color:T.accent,marginBottom:4}}>{sender.name.split(" ")[0]}</div>}
+                <div style={{background:isMe?T.accent:T.card,border:isMe?"none":`1px solid ${T.cardBorder}`,borderRadius:14,padding:"10px 12px"}}>
+                  <div style={{fontSize:13,color:isMe?T.onAccent:T.text,lineHeight:1.4,wordBreak:"break-word"}}>{msg.text}</div>
                 </div>
-                <div style={{fontSize:10,color:T.textMuted,marginTop:2,textAlign:isMe?"right":"left"}}>{msg.time}</div>
+                <div style={{fontSize:10,color:T.textMuted,marginTop:4,textAlign:isMe?"right":"left"}}>{msg.time}</div>
               </div>
             </div>
           </div>;
         })}
-      </div>
-      <div style={{borderTop:`1px solid ${T.cardBorder}`,padding:"8px 10px",display:"flex",alignItems:"center",gap:6,background:T.card,filter:!isPlayer?"blur(5px)":"none",pointerEvents:!isPlayer?"none":"auto",transition:"filter .3s"}}>
+    </div>
+    {canInput&&<div style={{position:"fixed",left:"50%",bottom:64,transform:"translateX(-50%)",width:"100%",maxWidth:430,padding:"0 16px",boxSizing:"border-box",zIndex:120}}>
+      <div style={{height:44,border:`1px solid ${T.cardBorder}`,borderRadius:14,background:T.card,display:"flex",alignItems:"center",gap:8,padding:"0 10px"}}>
         <div style={{cursor:"pointer",display:"flex",padding:2}} onClick={()=>alert("Fotoğraf ekleme (demo)")}>{I.attach(T.textDim)}</div>
-        <input ref={inputRef} value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChatMsg();}}} placeholder="Mesaj yaz..." style={{flex:1,padding:"8px 12px",borderRadius:16,border:`1.5px solid ${T.cardBorder}`,background:T.bg,color:T.text,fontSize:13,fontFamily:FB,outline:"none"}} onFocus={e=>e.target.style.borderColor=T.accent} onBlur={e=>e.target.style.borderColor=T.cardBorder}/>
+        <input ref={inputRef} value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChatMsg();}}} placeholder="Mesaj yaz..." style={{flex:1,height:"100%",background:"none",border:"none",color:T.text,fontSize:13,fontFamily:FB,outline:"none"}}/>
         <div onClick={sendChatMsg} style={{cursor:chatInput.trim()?"pointer":"default",display:"flex",padding:2,opacity:chatInput.trim()?1:.4,transition:"opacity .15s"}}>{I.send(chatInput.trim()?T.accent:T.textMuted)}</div>
       </div>
-    </div>
-    {!isPlayer&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,zIndex:10,borderRadius:14}}>
-      <div style={{fontSize:13,fontWeight:600,color:T.text,textAlign:"center"}}>Sohbete katılmak için maça katıl</div>
+    </div>}
+    {!canInput&&<div style={{position:"fixed",left:"50%",bottom:64,transform:"translateX(-50%)",width:"100%",maxWidth:430,padding:"0 16px",boxSizing:"border-box",zIndex:120}}>
+      <div style={{height:44,border:`1px solid ${T.cardBorder}`,borderRadius:14,background:T.card,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 10px"}}>
+        <span style={{fontSize:12,color:T.textMuted,fontWeight:600}}>{inputDisabledText||"Bu durumda mesaj gönderemezsin"}</span>
+      </div>
+    </div>}
+    {showGuestOverlay&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,zIndex:10,borderRadius:14}}>
+      <div style={{fontSize:13,fontWeight:600,color:T.text,textAlign:"center"}}>Sohbeti görmek ve yazmak için maça katıl</div>
       <Btn small primary onClick={onJoin}>Maça Katıl</Btn>
     </div>}
+  </div>;
+}
+
+function DevStateRibbon({viewRole,setViewRole,matchState,setMatchState}){
+  const roles=[["host","Host"],["participant","Participant"],["guest","Guest"]];
+  const states=[["pre_match","Maç Öncesi"],["post_match","Maç Sonrası"]];
+  return <div style={{padding:"6px 8px 2px",display:"flex",flexDirection:"column",gap:6}}>
+    <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+      <span style={{fontSize:10,color:T.textMuted,fontWeight:700}}>Role:</span>
+      {roles.map(([id,label])=><button key={id} onClick={()=>setViewRole(id)} style={{border:"none",cursor:"pointer",padding:"3px 8px",borderRadius:6,fontSize:11,fontWeight:600,background:viewRole===id?T.text:`${T.textDim}22`,color:viewRole===id?T.bg:T.textDim}}>{label}</button>)}
+    </div>
+    <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+      <span style={{fontSize:10,color:T.textMuted,fontWeight:700}}>State:</span>
+      {states.filter(([id])=>!(viewRole==="guest"&&id==="post_match")).map(([id,label])=><button key={id} onClick={()=>setMatchState(id)} style={{border:"none",cursor:"pointer",padding:"3px 8px",borderRadius:6,fontSize:11,fontWeight:600,background:matchState===id?T.text:`${T.textDim}22`,color:matchState===id?T.bg:T.textDim}}>{label}</button>)}
+    </div>
   </div>;
 }
 
 // ============================================================
 // S12: Planlanan Maç Detay (Henüz oynanmamış)
 // ============================================================
-function S12({onNav}){
+function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
   const m=PLANNED_MATCH;
   const host=uf(m.host);
-  // viewMode: "host" | "player" | "guest"
-  const [viewMode,setViewMode]=useState("host");
-  const [matchState,setMatchState]=useState(()=>{const s=new URLSearchParams(window.location.search).get("state");return s==="playing"?"playing":"planning";}); // "planning" | "playing"
-  const isHost=viewMode==="host";
-  const isPlayer=viewMode==="host"||viewMode==="player";
-  const [hostAfk30,setHostAfk30]=useState(false); // +30dk kuralı simülasyonu
+  const isHost=viewRole==="host";
+  const isParticipant=viewRole==="host"||viewRole==="participant";
+  const isGuest=viewRole==="guest";
   const [players,setPlayers]=useState(m.players);
   const [joined,setJoined]=useState(m.joined);
   const [tA,setTA]=useState(m.tA||[]);
   const [tB,setTB]=useState(m.tB||[]);
   const [showEditDrawer,setShowEditDrawer]=useState(false);
+  const [showParticipantsSheet,setShowParticipantsSheet]=useState(false);
   const [removeConfirm,setRemoveConfirm]=useState(null);
   const [showDotsMenu,setShowDotsMenu]=useState(false);
-  const [showLevelSheet,setShowLevelSheet]=useState(false);
-  const [selectedLevel,setSelectedLevel]=useState(null);
-  const [joinApplied,setJoinApplied]=useState(false);
-  const [editForm,setEditForm]=useState({title:m.title,date:m.date,time:m.time,loc:m.loc,fmt:m.fmt,level:m.level,vis:m.vis});
-  const [editLocMode,setEditLocMode]=useState("search");
+  const [editForm,setEditForm]=useState({title:m.title,date:m.date,time:m.time,loc:m.loc,description:m.desc||""});
+  const [editDrawer,setEditDrawer]=useState(null);
   const [editLocQuery,setEditLocQuery]=useState("");
   const [editSelectedLoc,setEditSelectedLoc]=useState(m.loc);
-  const [editSelCity,setEditSelCity]=useState(m.loc?.type==="area"?m.loc.city:null);
-  const [editSelDistrict,setEditSelDistrict]=useState(m.loc?.type==="area"?m.loc.district:null);
+  const [editTmpDate,setEditTmpDate]=useState("");
+  const [editTmpStartTime,setEditTmpStartTime]=useState("");
+  const [editTmpEndTime,setEditTmpEndTime]=useState("");
+  const [editTmpTitle,setEditTmpTitle]=useState("");
+  const [editTmpDesc,setEditTmpDesc]=useState("");
   const editLocFiltered=editLocQuery.length>=2?LOC_RESULTS.filter(l=>l.name.toLowerCase().includes(editLocQuery.toLowerCase())||l.addr.toLowerCase().includes(editLocQuery.toLowerCase())):[];
-  const [infoTab,setInfoTab]=useState("details"); // "details" | "players"
   const [toast,setToast]=useState(null);
   useEffect(()=>{if(toast){const t=setTimeout(()=>setToast(null),2000);return()=>clearTimeout(t);}},[toast]);
 
@@ -377,152 +419,103 @@ function S12({onNav}){
     setTA(a=>a.filter(x=>x!==m.host));
     setTB(b=>b.filter(x=>x!==m.host));
     setJoined(j=>j-1);
-    setViewMode("guest");
+    setViewRole("guest");
     setShowDotsMenu(false);
   };
-  const joinMatch=()=>setShowLevelSheet(true);
-  const confirmJoin=()=>{
-    setShowLevelSheet(false);
-    if(m.mode==="approval"){setJoinApplied(true);}
-    else{setPlayers(p=>[...p,1]);setJoined(j=>j+1);setViewMode("player");}
+  const joinMatch=()=>{
+    setPlayers(p=>p.includes(1)?p:[...p,1]);
+    setJoined(j=>players.includes(1)?j:j+1);
+    setViewRole("participant");
   };
   const leaveMatch=()=>{
     setPlayers(p=>p.filter(x=>x!==1));
     setTA(a=>a.filter(x=>x!==1));
     setTB(b=>b.filter(x=>x!==1));
     setJoined(j=>j-1);
-    setViewMode("guest");
+    setViewRole("guest");
   };
+  const visibleParticipantIds=players.slice(0,5);
+  const overflowCount=Math.max(0,joined-visibleParticipantIds.length);
+  const canEditMatch=isHost;
+  const canRemovePlayer=isHost&&matchState==="pre_match";
+  const canLeaveMatch=viewRole==="participant";
+  const canChatInput=!isGuest;
+  const guestCanViewChat=false;
 
-  return <div style={{paddingBottom:80}}>
-    {/* State switcher (dev only) */}
-    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
-      <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>STATE:</span>
-      {["host","player","guest"].map(m=><span key={m} onClick={()=>setViewMode(m)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:viewMode===m?T.accent:`${T.textDim}22`,color:viewMode===m?"#fff":T.textDim}}>{m==="host"?"Host":m==="player"?"Katılımcı":"Misafir"}</span>)}
-    </div>
-    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
-      <span style={{fontSize:10,color:T.textMuted,fontWeight:600,marginRight:4}}>MATCH:</span>
-      {["planning","playing"].map(s=><span key={s} onClick={()=>setMatchState(s)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",background:matchState===s?T.accent:`${T.textDim}22`,color:matchState===s?"#fff":T.textDim}}>{s==="planning"?"Maç Planlama":"Maç Oynanıyor"}</span>)}
-    </div>
-    <div style={{background:`${T.cardBorder}`,padding:"6px 12px",display:"flex",gap:6,alignItems:"center"}}>
-      <span onClick={()=>setHostAfk30(!hostAfk30)} style={{padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:600,cursor:"pointer",border:`1.5px solid ${hostAfk30?T.orange:"transparent"}`,background:hostAfk30?`${T.orange}15`:`${T.textDim}22`,color:hostAfk30?T.orange:T.textDim}}>⏰ +30dk Kuralı: {hostAfk30?"ON":"OFF"}</span>
-    </div>
-
+  return <div style={{paddingBottom:80,minHeight:"calc(100vh - 36px)",display:"flex",flexDirection:"column"}}>
     {/* Header */}
     <div style={{padding:"12px 16px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-        <div onClick={()=>window.location.assign(matchState==="playing"?"/03_matches?view=S10":"/03_matches")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{I.arrowLeft()}<span style={{fontSize:14,fontWeight:600,color:T.textDim}}>{matchState==="playing"?"Canlı Skor":"Maçlar"}</span></div>
+        <div onClick={()=>window.location.assign("/03_matches")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{I.arrowLeft()}<span style={{fontSize:14,fontWeight:600,color:T.textDim}}>Maçlar</span></div>
       </div>
     </div>
 
-    {/* Title + action buttons */}
-    <div style={{padding:"0 16px 0"}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-        <span style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>{m.title}</span>
+    {/* Compact match info card */}
+    <div style={{padding:"0 16px"}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+        <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,flex:1}}>{editForm.title}</span>
         {/* Share button */}
-        <div onClick={()=>onNav("S30","planned")} style={{width:36,height:36,borderRadius:10,background:T.card,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.share(T.textDim)}</div>
+        <div onClick={()=>onNav("S30","planned")} style={{width:32,height:32,borderRadius:10,background:T.card,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.share(T.textDim)}</div>
         {/* ⋮ Dots menu (katılımcı/host) */}
-        {isPlayer&&<div style={{position:"relative"}}>
-          <div onClick={()=>setShowDotsMenu(!showDotsMenu)} style={{width:36,height:36,borderRadius:10,background:showDotsMenu?`${T.accent}10`:T.card,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+        {isParticipant&&<div style={{position:"relative"}}>
+          <div onClick={()=>setShowDotsMenu(!showDotsMenu)} style={{width:32,height:32,borderRadius:10,background:showDotsMenu?`${T.accent}10`:T.card,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
             <span style={{fontSize:18,color:T.textDim,lineHeight:1,letterSpacing:2}}>⋮</span>
           </div>
-          {showDotsMenu&&<div style={{position:"absolute",right:0,top:42,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:4,minWidth:160,zIndex:100,boxShadow:"0 8px 24px rgba(0,0,0,.25)"}}>
-            {isHost&&<div onClick={()=>{setShowDotsMenu(false);setShowEditDrawer(true);}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>{I.edit(T.textDim)} Düzenle</div>}
-            {isHost&&m.mode==="approval"&&<div onClick={()=>{setShowDotsMenu(false);onNav("S13");}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>{I.users(T.textDim)} Başvurular</div>}
-            {!isHost&&isPlayer&&<div onClick={()=>{setShowDotsMenu(false);setToast("Host'a bildirim gönderildi — 2 saat içinde yanıt vermezse host yetkin olacak");setTimeout(()=>setToast(null),4000);}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.orange,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.orange}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>⚠️ Host Yanıt Vermiyor</div>}
-            <div onClick={()=>{setShowDotsMenu(false);isHost?hostLeave():leaveMatch();}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.red,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Maçtan Çık</div>
+          {showDotsMenu&&<div style={{position:"absolute",right:0,top:42,background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:4,minWidth:160,zIndex:100,boxShadow:T.shadowLg}}>
+            {canEditMatch&&<div onClick={()=>{setShowDotsMenu(false);setShowEditDrawer(true);}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>{I.edit(T.textDim)} Düzenle</div>}
+            {canEditMatch&&m.mode==="approval"&&<div onClick={()=>{setShowDotsMenu(false);onNav("S13");}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.textDim}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>{I.users(T.textDim)} Başvurular</div>}
+            {viewRole==="participant"&&matchState==="pre_match"&&<div onClick={()=>{setShowDotsMenu(false);setToast("Host'a bildirim gönderildi — 2 saat içinde yanıt vermezse host yetkin olacak");setTimeout(()=>setToast(null),4000);}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.orange,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.orange}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>⚠️ Host Yanıt Vermiyor</div>}
+            {isHost&&matchState==="pre_match"&&<div onClick={()=>{setShowDotsMenu(false);hostLeave();}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.red,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Maçtan Çık</div>}
+            {isHost&&matchState==="post_match"&&<div onClick={()=>{setShowDotsMenu(false);onNav("S10");}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.red,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Maçı Bitir</div>}
+            {canLeaveMatch&&matchState==="pre_match"&&<div onClick={()=>{setShowDotsMenu(false);leaveMatch();}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.red,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Maçtan Çık</div>}
+            {canLeaveMatch&&matchState==="post_match"&&<div onClick={()=>{setShowDotsMenu(false);onNav("S10");}} style={{padding:"10px 14px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:600,color:T.red,display:"flex",alignItems:"center",gap:8}} onMouseEnter={e=>e.currentTarget.style.background=`${T.red}10`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Maçı Bitir</div>}
           </div>}
         </div>}
       </div>
 
-      {/* Organizer */}
-      <div onClick={()=>onNav("S16",host.id)} style={{display:"flex",alignItems:"center",gap:10,marginBottom:16,cursor:"pointer"}}>
-        <Av i={host.av} img={host.img} s={32}/>
-        <div>
-          <div style={{fontSize:13,fontWeight:600,color:T.text}}>{host.name}</div>
-          <div style={{fontSize:11,color:T.textDim}}>Organizatör</div>
+      <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:12,marginBottom:12}}>
+        <div onClick={()=>onNav("S16",host.id)} style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8}}>
+          <Av i={host.av} img={host.img} s={28}/>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,fontWeight:700,color:T.text}}>{host.name}</div>
+            <div style={{fontSize:11,color:T.textMuted}}>Host</div>
+          </div>
+          <Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          <Badge c={T.accent}>{I.clock(T.accent)} {editForm.date}, {editForm.time}</Badge>
+          <Badge c={T.textDim}>{I.pin(T.textDim)} {editSelectedLoc?.type==="place"?editSelectedLoc?.name:`${editSelectedLoc?.city}, ${editSelectedLoc?.district}`}</Badge>
+          <Badge c={T.textDim}>{I.users(T.textDim)} {joined}/{m.max}</Badge>
         </div>
       </div>
-
-      {/* Description */}
-      {m.desc&&<div style={{fontSize:14,color:T.textDim,lineHeight:1.6,marginBottom:16}}>{m.desc}</div>}
-
-      {/* Info card with tabs */}
-      <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,marginBottom:0,overflow:"hidden"}}>
-        {/* Tab header */}
-        <div style={{display:"flex",borderBottom:`1px solid ${T.cardBorder}`}}>
-          {[{id:"details",l:"Detaylar"},{id:"players",l:`Katılımcılar (${joined})`}].map(t=>(
-            <div key={t.id} onClick={()=>setInfoTab(t.id)} style={{flex:1,textAlign:"center",padding:"11px 0",fontSize:13,fontWeight:600,color:infoTab===t.id?T.accent:T.textDim,borderBottom:infoTab===t.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>
-              {t.l}
-            </div>
-          ))}
+      <div onClick={()=>setShowParticipantsSheet(true)} style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:"10px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,cursor:"pointer"}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          {visibleParticipantIds.map(uid=>{
+            const u=uf(uid);
+            if(!u)return null;
+            return <div key={uid} onClick={e=>{e.stopPropagation();onNav("S16",uid);}} style={{display:"flex"}}>
+              <Av i={u.av} img={u.img} s={32}/>
+            </div>;
+          })}
+          {overflowCount>0&&<div style={{width:32,height:32,borderRadius:"50%",border:`1px solid ${T.cardBorder}`,background:T.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:T.textDim}}>{`+${overflowCount}`}</div>}
         </div>
-        {/* Tab content */}
-        <div style={{padding:16}}>
-          {infoTab==="details"&&<div style={{display:"flex",flexDirection:"column",gap:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <span style={{display:"flex",width:28}}>{I.clock(T.accent)}</span>
-              <span style={{fontSize:14,color:T.text,fontWeight:500}}>{m.date}, {m.time}</span>
-            </div>
-            <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <span style={{display:"flex",width:28}}>{I.pin(T.accent)}</span>
-              <div style={{flex:1}}>
-                <span style={{fontSize:14,color:T.text,fontWeight:500}}>{m.loc.type==="place"?m.loc.name:`${m.loc.city}, ${m.loc.district}`}</span>
-                {m.loc.addr&&<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{m.loc.addr}</div>}
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:5,padding:"5px 10px",borderRadius:8,border:`1px solid ${T.accent}55`,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
-                <span style={{display:"flex"}}>{I.pin(T.accent)}</span>
-                <span style={{fontSize:11,color:T.accent,fontWeight:600}}>Halısaha Seç</span>
-              </div>
-            </div>
-          </div>}
-          {infoTab==="players"&&<div style={{display:"flex",flexDirection:"column",gap:2}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-              <span style={{fontSize:13,fontWeight:700,color:T.text}}>{joined}/{m.max} katılımcı</span>
-              <div style={{flex:1,height:3,borderRadius:2,background:`${T.textDim}22`}}>
-                <div style={{height:3,borderRadius:2,background:(joined/m.max)>=.9?T.orange:T.accent,width:`${joined/m.max*100}%`,transition:"width .3s"}}/>
-              </div>
-              <span style={{fontSize:11,color:(m.max-joined)<=2?T.orange:T.textDim,whiteSpace:"nowrap"}}>{m.max-joined} yer kaldı</span>
-            </div>
-            {players.map((uid,idx)=>{
-              const u=uf(uid);if(!u)return null;
-              const isThisHost=uid===m.host;
-              const isCoHost=!isThisHost&&idx===1; // second player = co-host
-              return <div key={uid} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.cardBorder}33`}}>
-                <Av i={u.av} img={u.img} s={36}/>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:13,fontWeight:600,color:T.text,display:"flex",alignItems:"center",gap:6}}>
-                    {u.name}
-                    {isThisHost&&<Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>}
-                    {isCoHost&&<Badge c={T.accent}>Co-Host</Badge>}
-                  </div>
-                  <div style={{fontSize:11,color:T.textMuted}}>@{u.un}</div>
-                </div>
-                {isHost&&!isThisHost&&<div onClick={()=>setRemoveConfirm(uid)} style={{padding:"5px 10px",borderRadius:8,border:`1px solid ${T.red}44`,color:T.red,fontSize:11,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>Çıkar</div>}
-              </div>;
-            })}
-            {Array.from({length:m.max-joined}).map((_,i)=>(
-              <div key={`e${i}`} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.cardBorder}22`}}>
-                <div style={{width:36,height:36,borderRadius:"50%",border:`1.5px dashed ${T.cardBorder}`,background:"transparent",flexShrink:0}}/>
-                <span style={{fontSize:13,color:T.textMuted}}>Boş yer</span>
-              </div>
-            ))}
-          </div>}
-        </div>
+        <span style={{fontSize:12,fontWeight:600,color:T.textDim}}>Tümünü Gör</span>
       </div>
+
+      {editForm.description&&<div style={{fontSize:12,color:T.textDim,lineHeight:1.5,marginBottom:12}}>{editForm.description}</div>}
     </div>
 
-    {/* Chat section label */}
-    <div style={{padding:"12px 16px 8px",display:"flex",alignItems:"center",gap:8}}>
+    {/* Chat section */}
+    <div style={{padding:"4px 16px 8px",display:"flex",alignItems:"center",gap:8}}>
       {I.chat(T.textMuted)}
       <span style={{fontSize:12,fontWeight:700,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5}}>Maç Sohbeti</span>
     </div>
 
-    {/* === Inline Match Chat === */}
-    <InlineChat isPlayer={isPlayer} onJoin={joinMatch}/>
+    {/* Chat primary area */}
+    <InlineChat canInput={canChatInput&& (matchState==="pre_match"||matchState==="post_match")} showGuestOverlay={isGuest&& !guestCanViewChat} inputDisabledText="Sohbete erişmek için maça katıl" onJoin={joinMatch}/>
 
     {/* Remove player confirm modal (host) */}
-    {removeConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
+    {removeConfirm&&<div style={{position:"fixed",inset:0,background:T.overlayScrim,zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
       <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:360,width:"100%",border:`1px solid ${T.cardBorder}`}}>
         <div style={{fontSize:16,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:8}}>Oyuncuyu Çıkar</div>
         <div style={{fontSize:13,color:T.textDim,marginBottom:20}}><span style={{fontWeight:700,color:T.text}}>{uf(removeConfirm)?.name}</span> kişisini maçtan çıkartmak istediğinize emin misiniz?</div>
@@ -536,113 +529,234 @@ function S12({onNav}){
 
     {/* Edit Drawer (host) */}
     {showEditDrawer&&<div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
-      <div onClick={()=>setShowEditDrawer(false)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
-      <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301,maxHeight:"80vh",overflowY:"auto"}}>
-        <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
-        <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:20}}>Maçı Düzenle</div>
+      <div onClick={()=>{setShowEditDrawer(false);setEditDrawer(null);}} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
+      <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301,maxHeight:"82vh",overflowY:"auto"}}>
+        <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+          <div style={{fontSize:20,fontWeight:800,color:T.text,fontFamily:FH}}>Maçı Düzenle</div>
+          <div onClick={()=>{setShowEditDrawer(false);setEditDrawer(null);}} style={{width:32,height:32,borderRadius:8,background:T.bg,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.x(T.textDim)}</div>
+        </div>
+
         {[
-          {label:"Maç Başlığı",key:"title",placeholder:"ör. Cuma Akşamı Maçı"},
-          {label:"Tarih",key:"date",placeholder:"ör. 8 Mar"},
-          {label:"Saat",key:"time",placeholder:"ör. 20:00"},
-          {label:"Format",key:"fmt",placeholder:"ör. 6v6"},
-          {label:"Seviye",key:"level",placeholder:"ör. Herkes"},
-        ].map(f=><div key={f.key} style={{marginBottom:14}}>
-          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>{f.label}</div>
-          <input value={editForm[f.key]} onChange={e=>setEditForm(prev=>({...prev,[f.key]:e.target.value}))} placeholder={f.placeholder} style={{width:"100%",background:T.bg,border:`1.5px solid ${T.cardBorder}`,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+          {icon:I.pin(T.textDim),label:"Konum",value:editSelectedLoc?(editSelectedLoc.type==="place"?editSelectedLoc.name:`${editSelectedLoc.city}, ${editSelectedLoc.district}`):null,onClick:()=>setEditDrawer("location")},
+          {icon:I.calendar(T.textDim),label:"Tarih",value:editForm.date||null,onClick:()=>{setEditTmpDate("");setEditDrawer("date");}},
+          {icon:I.clock(T.textDim),label:"Saat",value:editForm.time||null,onClick:()=>{const parts=(editForm.time||"").split(" – ");setEditTmpStartTime(parts[0]||"");setEditTmpEndTime(parts[1]||"");setEditDrawer("time");}},
+          {icon:I.edit(T.textDim),label:"Maç Başlığı",value:editForm.title||null,onClick:()=>{setEditTmpTitle(editForm.title||"");setEditDrawer("title");}},
+          {icon:I.info(T.textDim),label:"Maç Açıklaması",value:editForm.description||null,onClick:()=>{setEditTmpDesc(editForm.description||"");setEditDrawer("desc")}},
+        ].map((row,idx)=><div key={row.label} onClick={row.onClick} style={{display:"flex",alignItems:"center",height:56,cursor:"pointer",borderBottom:`1px solid ${T.cardBorder}33`,borderTop:idx===0?`1px solid ${T.cardBorder}33`:"none"}}>
+          <span style={{marginRight:12,display:"flex",flexShrink:0}}>{row.icon}</span>
+          <span style={{fontSize:14,fontWeight:400,color:T.text,whiteSpace:"nowrap"}}>{row.label}</span>
+          {row.value&&<span style={{marginLeft:"auto",fontSize:13,fontWeight:500,color:T.accent,maxWidth:"50%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textAlign:"right"}}>{row.value}</span>}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft:row.value?8:"auto",flexShrink:0}}><polyline points="9,6 15,12 9,18"/></svg>
         </div>)}
-        {/* Konum düzenleme */}
-        <div style={{marginBottom:14}}>
-          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Konum</div>
-          {editSelectedLoc?<div style={{background:`${T.green}10`,borderRadius:10,border:`1.5px solid ${T.green}33`,padding:"12px 14px",display:"flex",alignItems:"center",gap:10}}>
-            {I.pin(T.green)}
-            <div style={{flex:1}}>
-              {editSelectedLoc.type==="place"
-                ?<><div style={{fontSize:13,fontWeight:600,color:T.text}}>{editSelectedLoc.name}</div><div style={{fontSize:11,color:T.textDim,marginTop:2}}>{editSelectedLoc.addr}</div></>
-                :<div style={{fontSize:13,fontWeight:600,color:T.text}}>{editSelectedLoc.city}, {editSelectedLoc.district}</div>}
+
+        <Btn primary full onClick={()=>{setEditForm(prev=>({...prev,loc:editSelectedLoc}));setShowEditDrawer(false);setEditDrawer(null);}} st={{marginTop:20,fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet</Btn>
+
+        {editDrawer==="location"&&<div style={{position:"fixed",inset:0,zIndex:320,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+          <div onClick={()=>setEditDrawer(null)} style={{position:"absolute",inset:0,background:T.overlayScrimStrong}}/>
+          <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",zIndex:321,maxHeight:"82vh",display:"flex",flexDirection:"column"}}>
+            <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"14px auto 0",flexShrink:0}}/>
+            <div style={{padding:"14px 20px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+              <div style={{fontSize:18,fontWeight:700,color:T.text}}>Konum Seç</div>
+              <div onClick={()=>setEditDrawer(null)} style={{width:32,height:32,borderRadius:8,background:T.bg,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.x(T.textDim)}</div>
             </div>
-            <span onClick={()=>{setEditSelectedLoc(null);setEditSelCity(null);setEditSelDistrict(null);setEditLocQuery("");}} style={{fontSize:12,color:T.accent,fontWeight:600,cursor:"pointer"}}>Değiştir</span>
-          </div>
-          :<div>
-            <div style={{display:"flex",gap:0,marginBottom:10,borderBottom:`1px solid ${T.cardBorder}`}}>
-              {[{id:"search",l:"📍 Saha Ara"},{id:"area",l:"🏙 İl / İlçe"}].map(t=><div key={t.id} onClick={()=>setEditLocMode(t.id)} style={{flex:1,textAlign:"center",padding:"7px 0",fontSize:12,fontWeight:600,color:editLocMode===t.id?T.accent:T.textDim,borderBottom:editLocMode===t.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{t.l}</div>)}
-            </div>
-            {editLocMode==="search"&&<>
-              <div style={{background:T.bg,borderRadius:10,border:`1.5px solid ${editLocQuery.length>=2?T.accent:T.cardBorder}`,padding:"10px 14px",display:"flex",alignItems:"center",gap:10,transition:"border-color .2s"}}>
+            <div style={{padding:"0 20px 12px",flexShrink:0}}>
+              <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${editLocQuery.length>=2?T.accent:T.cardBorder}`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
                 {I.search(editLocQuery.length>=2?T.accent:T.textDim)}
-                <input value={editLocQuery} onChange={e=>setEditLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:13,width:"100%",outline:"none",fontWeight:500}}/>
+                <input value={editLocQuery} onChange={e=>setEditLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." autoFocus style={{background:"none",border:"none",color:T.text,fontSize:15,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit"}}/>
                 {editLocQuery.length>0&&<span onClick={()=>setEditLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
               </div>
-              {editLocFiltered.length>0&&<div style={{background:T.bg,border:`1px solid ${T.cardBorder}`,borderTop:"none",borderRadius:"0 0 10px 10px",overflow:"hidden"}}>
-                {editLocFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setEditSelectedLoc({...loc,type:"place"});setEditLocQuery("");}} style={{padding:"10px 14px",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:10,borderTop:i>0?`1px solid ${T.cardBorder}`:"none",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=`${T.accent}08`} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                  <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.accent)}</span>
-                  <div><div style={{fontSize:13,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:11,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
-                </div>)}
-              </div>}
-              {editLocQuery.length>=2&&editLocFiltered.length===0&&<div style={{padding:"10px 0",textAlign:"center",fontSize:12,color:T.textMuted}}>Sonuç bulunamadı</div>}
-            </>}
-            {editLocMode==="area"&&<>
-              <div style={{fontSize:11,fontWeight:600,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>İl</div>
-              <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:editSelCity?10:0}}>
-                {CITIES.map(c=><span key={c} onClick={()=>{setEditSelCity(c);setEditSelDistrict(null);}} style={{padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:editSelCity===c?`${T.accent}18`:`${T.textDim}12`,color:editSelCity===c?T.accent:T.textDim,border:`1.5px solid ${editSelCity===c?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{c}</span>)}
-              </div>
-              {editSelCity&&<>
-                <div style={{fontSize:11,fontWeight:600,color:T.textMuted,marginBottom:6,marginTop:4,textTransform:"uppercase",letterSpacing:.5}}>İlçe</div>
-                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                  {(DISTRICTS[editSelCity]||[]).map(d=><span key={d} onClick={()=>{setEditSelDistrict(d);setEditSelectedLoc({city:editSelCity,district:d,type:"area"});}} style={{padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:editSelDistrict===d?`${T.accent}18`:`${T.textDim}12`,color:editSelDistrict===d?T.accent:T.textDim,border:`1.5px solid ${editSelDistrict===d?T.accent+"44":"transparent"}`,transition:"all .15s"}}>{d}</span>)}
-                </div>
-              </>}
-            </>}
-          </div>}
-        </div>
-        <div style={{marginBottom:14}}>
-          <div style={{fontSize:11,fontWeight:700,color:T.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:.5}}>Görünürlük</div>
-          <div style={{display:"flex",gap:8}}>
-            {["public","private"].map(v=><div key={v} onClick={()=>setEditForm(prev=>({...prev,vis:v}))} style={{flex:1,padding:"10px 0",textAlign:"center",borderRadius:10,border:`1.5px solid ${editForm.vis===v?T.accent:T.cardBorder}`,background:editForm.vis===v?`${T.accent}10`:"transparent",fontSize:13,fontWeight:600,color:editForm.vis===v?T.accent:T.textDim,cursor:"pointer"}}>{v==="public"?"Herkese Açık":"Sadece Katılımcılar"}</div>)}
+            </div>
+            <div style={{flex:1,overflowY:"auto",padding:"0 20px 32px"}}>
+              {editLocQuery.length<2&&LOC_RESULTS.map((loc,i)=><div key={loc.id} onClick={()=>{setEditSelectedLoc({...loc,type:"place"});setEditLocQuery("");setEditDrawer(null);}} style={{padding:"14px 0",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderBottom:i<LOC_RESULTS.length-1?`1px solid ${T.cardBorder}33`:"none"}}>
+                <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.textDim)}</span>
+                <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>{loc.addr}</div></div>
+              </div>)}
+              {editLocQuery.length>=2&&editLocFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setEditSelectedLoc({...loc,type:"place"});setEditLocQuery("");setEditDrawer(null);}} style={{padding:"14px 0",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderBottom:i<editLocFiltered.length-1?`1px solid ${T.cardBorder}33`:"none"}}>
+                <span style={{display:"flex",marginTop:2,flexShrink:0}}>{I.pin(T.textDim)}</span>
+                <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>{loc.addr}</div></div>
+              </div>)}
+              {editLocQuery.length>=2&&editLocFiltered.length===0&&<div style={{textAlign:"center",padding:"32px 0",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+            </div>
           </div>
-        </div>
-        <Btn full primary onClick={()=>{setEditForm(prev=>({...prev,loc:editSelectedLoc}));setShowEditDrawer(false);}} st={{marginTop:8}}>Kaydet</Btn>
+        </div>}
+
+        {editDrawer==="date"&&<div style={{position:"fixed",inset:0,zIndex:320,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+          <div onClick={()=>setEditDrawer(null)} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
+          <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:321,maxHeight:"80vh",overflowY:"auto"}}>
+            <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+            <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Tarih Seç</div>
+            <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"14px 16px",marginBottom:16}}>
+              <input type="date" value={editTmpDate} onChange={e=>setEditTmpDate(e.target.value)} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit"}}/>
+            </div>
+            <Btn primary full disabled={!editTmpDate} onClick={()=>{if(editTmpDate){const d=new Date(`${editTmpDate}T00:00`);const months=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];setEditForm(prev=>({...prev,date:`${d.getDate()} ${months[d.getMonth()]}`}));setEditDrawer(null);}}} st={{borderRadius:12}}>Tamam</Btn>
+          </div>
+        </div>}
+
+        {editDrawer==="time"&&<div style={{position:"fixed",inset:0,zIndex:320,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+          <div onClick={()=>setEditDrawer(null)} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
+          <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:321,maxHeight:"80vh",overflowY:"auto"}}>
+            <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+            <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Saat Seç</div>
+            <div style={{background:T.bg,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"14px 16px",marginBottom:16}}>
+              <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:11,color:T.textMuted,marginBottom:6}}>Başlangıç</div>
+                  <input type="time" value={editTmpStartTime} onChange={e=>setEditTmpStartTime(e.target.value)} style={{background:"none",border:`1.5px solid ${T.cardBorder}`,borderRadius:10,color:T.text,fontSize:15,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit",padding:"10px 12px"}}/>
+                </div>
+                <div style={{color:T.textMuted,paddingTop:18,fontSize:18,fontWeight:300}}>–</div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:11,color:T.textMuted,marginBottom:6}}>Bitiş</div>
+                  <input type="time" value={editTmpEndTime} onChange={e=>setEditTmpEndTime(e.target.value)} style={{background:"none",border:`1.5px solid ${T.cardBorder}`,borderRadius:10,color:T.text,fontSize:15,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit",padding:"10px 12px"}}/>
+                </div>
+              </div>
+            </div>
+            <Btn primary full disabled={!editTmpStartTime} onClick={()=>{if(editTmpStartTime){setEditForm(prev=>({...prev,time:editTmpStartTime+(editTmpEndTime?` – ${editTmpEndTime}`:"")}));setEditDrawer(null);}}} st={{borderRadius:12}}>Tamam</Btn>
+          </div>
+        </div>}
+
+        {editDrawer==="title"&&<div style={{position:"fixed",inset:0,zIndex:320,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+          <div onClick={()=>setEditDrawer(null)} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
+          <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:321,maxHeight:"80vh",overflowY:"auto"}}>
+            <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+            <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Maç Başlığı</div>
+            <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:16}}>
+              <input value={editTmpTitle} onChange={e=>setEditTmpTitle(e.target.value)} placeholder="Maç başlığı girin" style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit"}}/>
+            </div>
+            <Btn primary full onClick={()=>{setEditForm(prev=>({...prev,title:editTmpTitle.trim()||prev.title}));setEditDrawer(null);}} st={{borderRadius:12}}>Tamam</Btn>
+          </div>
+        </div>}
+
+        {editDrawer==="desc"&&<div style={{position:"fixed",inset:0,zIndex:320,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+          <div onClick={()=>setEditDrawer(null)} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
+          <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:321,maxHeight:"80vh",overflowY:"auto"}}>
+            <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
+            <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Maç Açıklaması</div>
+            <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:16,minHeight:100}}>
+              <textarea value={editTmpDesc} onChange={e=>setEditTmpDesc(e.target.value)} placeholder="Maç hakkında detay yazın..." rows={4} style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,resize:"none",fontFamily:"inherit"}}/>
+            </div>
+            <Btn primary full onClick={()=>{setEditForm(prev=>({...prev,description:editTmpDesc}));setEditDrawer(null);}} st={{borderRadius:12}}>Tamam</Btn>
+          </div>
+        </div>}
       </div>
     </div>}
 
 
-    {/* Level Selection Sheet (guest → katıl) */}
-    {showLevelSheet&&<div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
-      <div onClick={()=>{setShowLevelSheet(false);setSelectedLevel(null);}} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
-      <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301}}>
-        <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
-        <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:8}}>Seviyeni Seç</div>
-        <div style={{fontSize:13,color:T.textDim,marginBottom:20}}>Maça katılmadan önce seviyeni belirle</div>
-        <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:24}}>
-          {["Başlangıç","Orta","İyi","Profesyonel"].map(lv=>{
-            const sel=selectedLevel===lv;
-            const lvData={Başlangıç:T.green,Orta:T.accent,İyi:T.orange,Profesyonel:T.gold};
-            const c=lvData[lv]||T.accent;
-            return <div key={lv} onClick={()=>setSelectedLevel(lv)} style={{padding:"14px 16px",borderRadius:12,background:sel?`${c}12`:T.bg,border:`1.5px solid ${sel?c:T.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",transition:"all .2s"}}>
-              <span style={{fontSize:14,fontWeight:sel?700:500,color:sel?c:T.text}}>{lv}</span>
-              {sel&&<span style={{display:"flex"}}>{I.check(c)}</span>}
+    {/* Full participants list */}
+    {showParticipantsSheet&&<div style={{position:"fixed",inset:0,zIndex:320,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+      <div onClick={()=>setShowParticipantsSheet(false)} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
+      <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"18px 16px 24px",zIndex:321,maxHeight:"72vh",overflowY:"auto"}}>
+        <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+          <span style={{fontSize:16,fontWeight:800,color:T.text,fontFamily:FH}}>Katılımcılar ({joined})</span>
+          <span onClick={()=>setShowParticipantsSheet(false)} style={{fontSize:13,color:T.textDim,cursor:"pointer"}}>Kapat</span>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {players.map(uid=>{
+            const u=uf(uid);
+            if(!u)return null;
+            return <div key={uid} onClick={()=>onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
+              <Av i={u.av} img={u.img} s={32}/>
+              <div style={{flex:1}}>
+                <div style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</div>
+                <div style={{fontSize:11,color:T.textMuted}}>@{u.un}</div>
+              </div>
+              {uid===m.host&&<Badge c={T.gold}>{I.crown(T.gold)} Host</Badge>}
+              {canRemovePlayer&&uid!==m.host&&<button onClick={(e)=>{e.stopPropagation();setRemoveConfirm(uid);}} style={{border:`1px solid ${T.red}44`,background:"transparent",color:T.red,padding:"4px 8px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Çıkar</button>}
             </div>;
           })}
+          {(m.guests||[]).map(g=><div key={g.id} style={{display:"flex",alignItems:"center",gap:10,opacity:.85}}>
+            <Av i={g.name?.[0]?.toUpperCase()||"G"} s={32} c={T.textDim} st={{background:T.guestBg,color:T.white}}/>
+            <div style={{flex:1}}>
+              <div style={{fontSize:13,fontWeight:600,color:T.textDim}}>{g.name}</div>
+              <div style={{fontSize:11,color:T.textMuted}}>Misafir</div>
+            </div>
+          </div>)}
         </div>
-        <Btn full primary disabled={!selectedLevel} onClick={confirmJoin} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>{m.mode==="approval"?"Başvur":"Katıl"}</Btn>
       </div>
     </div>}
-
-    {/* CTA */}
-    <div style={{padding:"0 16px"}}>
-      {viewMode==="guest"
-        ?joinApplied
-          ?<Btn full disabled st={{marginBottom:8,background:`${T.accent}18`,color:T.accent,border:`1.5px solid ${T.accent}44`}}>{I.check(T.accent)} Başvuru Gönderildi</Btn>
-          :<Btn full primary onClick={joinMatch} st={{marginBottom:8}}>Maça Katıl ({m.max-joined} yer kaldı)</Btn>
-        :matchState==="playing"
-          ?<Btn full onClick={()=>window.location.assign("/03_matches?view=S10&page=end")} st={{marginBottom:8,background:T.red,color:"#fff"}}>Maçı Bitir</Btn>
-          :<Btn full onClick={()=>{isHost?hostLeave():leaveMatch();}} st={{marginBottom:8,background:T.accent,color:"#fff",border:"none"}}>Maçtan Çık</Btn>
-      }
-    </div>
-
     {/* Toast */}
-    {toast&&<div style={{position:"fixed",bottom:100,left:"50%",transform:"translateX(-50%)",background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:"10px 20px",zIndex:400,boxShadow:"0 4px 16px rgba(0,0,0,.3)"}}>
+    {toast&&<div style={{position:"fixed",bottom:100,left:"50%",transform:"translateX(-50%)",background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:"10px 20px",zIndex:400,boxShadow:T.shadowMd}}>
       <span style={{fontSize:13,fontWeight:600,color:T.text}}>{toast}</span>
     </div>}
+  </div>;
+}
+
+// ============================================================
+// S10: Maç Sonu
+// ============================================================
+function S10({onNav}){
+  const [canScore]=useState(true);
+  const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"},{id:"g1",name:"Tolga",av:"T",guest:true}]);
+  const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
+  const [score,setScore]=useState([3,2]);
+  const [goals,setGoals]=useState([
+    {id:1,team:"A",min:12,scorer:1,assist:2},
+    {id:2,team:"B",min:23,scorer:3,assist:null},
+    {id:3,team:"A",min:35,scorer:2,assist:1},
+    {id:4,team:"A",min:58,scorer:1,assist:null},
+    {id:5,team:"B",min:72,scorer:3,assist:null},
+  ]);
+  const [toast,setToast]=useState(null);
+
+  const getPlayerName=(id,team)=>{const list=team==="A"?teamA:teamB;const p=list.find(x=>x.id===id);return p?p.name:null;};
+  const addGoal=(team)=>{
+    const min=90;
+    const g={id:Date.now(),team,min,scorer:null,assist:null};
+    const ns=[...score];ns[team==="A"?0:1]++;
+    setScore(ns);setGoals(prev=>[g,...prev]);setToast(g.id);setTimeout(()=>setToast(null),5000);
+  };
+  const undoGoal=(gid)=>{const g=goals.find(x=>x.id===gid);if(!g)return;const ns=[...score];ns[g.team==="A"?0:1]--;setScore(ns);setGoals(goals.filter(x=>x.id!==gid));setToast(null);};
+  const removeGoal=(gid)=>{const g=goals.find(x=>x.id===gid);if(!g)return;const ns=[...score];ns[g.team==="A"?0:1]--;setScore(ns);setGoals(goals.filter(x=>x.id!==gid));};
+
+  return <div style={{paddingBottom:80,minHeight:"calc(100vh - 36px)",display:"flex",flexDirection:"column"}}>
+    <div style={{padding:"12px 16px 0"}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+        <span onClick={()=>onNav("S12")} style={{cursor:"pointer",display:"flex"}}>{I.arrowLeft()}</span>
+        <span style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH}}>Maç Sonu</span>
+      </div>
+    </div>
+
+    <div style={{padding:"0 16px"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
+        <div style={{flex:1,textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:700,color:T.accent,marginBottom:8}}>Takım A</div>
+          <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.accent}}>{score[0]}</div>
+          {canScore&&<><div onClick={()=>addGoal("A")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.onAccent,boxShadow:`0 4px 16px ${T.accent}44`}}>+</div>
+          <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div></>}
+        </div>
+        <div style={{fontSize:24,color:T.textMuted,fontWeight:300,padding:"0 8px"}}>–</div>
+        <div style={{flex:1,textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:700,color:T.orange,marginBottom:8}}>Takım B</div>
+          <div style={{fontSize:52,fontWeight:900,fontFamily:FH,color:T.orange}}>{score[1]}</div>
+          {canScore&&<><div onClick={()=>addGoal("B")} style={{margin:"12px auto 0",width:56,height:56,borderRadius:16,background:T.orange,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:22,fontWeight:900,color:T.onAccent,boxShadow:`0 4px 16px ${T.orange}44`}}>+</div>
+          <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Gol Ekle</div></>}
+        </div>
+      </div>
+
+      {toast&&<div style={{background:T.card,border:`1.5px solid ${T.accent}44`,borderRadius:12,padding:"12px 16px",marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:14,color:T.text}}>Gol eklendi</span>
+        <span onClick={()=>undoGoal(toast)} style={{fontSize:13,color:T.accent,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>{I.undo(T.accent)} Geri Al</span>
+      </div>}
+
+      {goals.length>0&&<div style={{background:T.card,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:20}}>
+        <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:8}}>GOL ZAMANÇİZELGESİ</div>
+        {goals.map(g=>{
+          const scorerName=g.scorer?getPlayerName(g.scorer,g.team):null;
+          const assistName=g.assist?getPlayerName(g.assist,g.team):null;
+          return <div key={g.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+              <span style={{fontSize:11,color:T.textMuted,width:28}}>{g.min}'</span>
+              <Badge c={g.team==="A"?T.accent:T.orange}>{scorerName||`Takım ${g.team}`}</Badge>
+              {assistName&&<span style={{fontSize:11,color:T.textDim}}>(Asist: {assistName})</span>}
+            </div>
+            {canScore&&<span onClick={()=>removeGoal(g.id)} style={{cursor:"pointer",display:"flex"}}>{I.trash()}</span>}
+          </div>;
+        })}
+      </div>}
+
+      <Btn primary full onClick={()=>onNav("S11")} st={{fontSize:15,fontWeight:700,padding:"14px 24px",borderRadius:12}}>Kaydet & Paylaş</Btn>
+    </div>
   </div>;
 }
 
@@ -687,7 +801,7 @@ function S13({onNav}){
           </div>
           <div style={{display:"flex",gap:8}}>
             <Btn small primary onClick={()=>approve(app.uid)} st={{flex:1}}>{I.check(T.bg)} Onayla</Btn>
-            <Btn small danger onClick={()=>reject(app.uid)} st={{flex:1}}>{I.x("#fff")} Reddet</Btn>
+            <Btn small danger onClick={()=>reject(app.uid)} st={{flex:1}}>{I.x(T.white)} Reddet</Btn>
           </div>
         </div>;
       }):<div style={{textAlign:"center",padding:"24px 0",color:T.textMuted,fontSize:13}}>Bekleyen başvuru yok</div>}
@@ -832,30 +946,39 @@ export default function SporWaveMatchDetail(){
   const [cur,setCur]=useState("S11");
   const [curId,setCurId]=useState(null);
   const [fade,setFade]=useState(true);
+  const [viewRole,setViewRole]=useState("host");
+  const [matchState,setMatchState]=useState("pre_match");
 
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
   useEffect(()=>{
     const view=new URLSearchParams(window.location.search).get("view");
-    const allowed=["S11","S12","S13","S30"];
+    const allowed=["S10","S11","S12","S13","S30"];
     if(view&&allowed.includes(view))setCur(view);
   },[]);
+  useEffect(()=>{
+    if(viewRole==="guest"&&matchState==="post_match") setMatchState("pre_match");
+  },[viewRole,matchState]);
 
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
   const pg=()=>{
     switch(cur){
+      case "S10":return <S10 onNav={nav}/>;
       case "S11":return <S11 onNav={nav}/>;
-      case "S12":return <S12 onNav={nav}/>;
+      case "S12":return <S12 onNav={nav} viewRole={viewRole} setViewRole={setViewRole} matchState={matchState} setMatchState={setMatchState}/>;
       case "S13":return <S13 onNav={nav}/>;
       case "S30":return <S30 onNav={nav} mode={curId}/>;
       default:return <S11 onNav={nav}/>;
     }
   };
 
-  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
+  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:T.shadowPage}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S11",l:"Geçmiş Maç"},{p:"S12",l:"Planlanan Maç"},{p:"S13",l:"Başvurular"},{p:"S30",l:"Paylaş"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S12",l:"Planlanan Maç"},{p:"S10",l:"Maç Sonu"},{p:"S11",l:"Geçmiş Maç"},{p:"S30",l:"Paylaş"},{p:"S13",l:"Başvurular"}].map(n=><span key={`${n.p}-${n.l}`} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.onAccent:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {IS_DEV&&cur==="S12"&&<div style={{width:"100%",marginTop:4,borderTop:`1px solid ${T.cardBorder}`}}>
+        <DevStateRibbon viewRole={viewRole} setViewRole={setViewRole} matchState={matchState} setMatchState={setMatchState}/>
+      </div>}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     <TabBar active="S08" onNav={nav}/>
