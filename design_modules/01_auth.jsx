@@ -79,10 +79,10 @@ const Icons = {
   ),
   google: () => (
     <svg width="20" height="20" viewBox="0 0 24 24">
-      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.97 11.97 0 001 12c0 1.94.46 3.77 1.18 5.07l3.66-2.84z" fill="#FBBC05"/>
-      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill={T.googleBlue}/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill={T.googleGreen}/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.97 11.97 0 001 12c0 1.94.46 3.77 1.18 5.07l3.66-2.84z" fill={T.googleYellow}/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill={T.googleRed}/>
     </svg>
   ),
   apple: () => (
@@ -142,7 +142,7 @@ function InputField({ placeholder, type = "text", icon, value, onChange, error }
 function Button({ children, primary, danger, ghost, full, small, onClick, disabled, style: s }) {
   const [hover, setHover] = useState(false);
   const bg = danger ? T.red : primary ? T.accent : "transparent";
-  const c = danger ? "#fff" : primary ? "#fff" : T.text;
+  const c = danger ? T.white : primary ? T.white : T.text;
   const border = !primary && !danger ? `1.5px solid ${ghost ? "transparent" : T.cardBorder}` : "1.5px solid transparent";
   return (
     <button
@@ -608,7 +608,7 @@ function S04({ onNavigate }) {
               {photoUploaded ? (
                 <div style={{
                   width: "100%", height: "100%",
-                  background: "linear-gradient(135deg, #E8EAED 0%, #D5D8DC 50%, #E8EAED 100%)",
+                  background: `linear-gradient(135deg, ${T.shimmerLight} 0%, ${T.shimmerMid} 50%, ${T.shimmerLight} 100%)`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <span style={{ fontSize: 48 }}>🧑</span>
@@ -652,7 +652,7 @@ function S04({ onNavigate }) {
         <div
           onClick={() => setPhotoSheet(false)}
           style={{
-            position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)",
+            position: "fixed", inset: 0, background: T.overlayScrim,
             zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center",
           }}
         >
@@ -831,7 +831,7 @@ export default function SporWaveAuth() {
       maxWidth: 430, margin: "0 auto", minHeight: "100vh",
       background: T.bg, color: T.text,
       fontFamily: FONT_BODY,
-      position: "relative", boxShadow: "0 0 40px rgba(0,0,0,.08)",
+      position: "relative", boxShadow: T.shadowPage,
       overflow: "hidden",
     }}>
       {/* Dev nav ribbon */}
@@ -849,7 +849,7 @@ export default function SporWaveAuth() {
             padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600,
             whiteSpace: "nowrap",
             background: current === n.p ? T.accent : `${T.textDim}22`,
-            color: current === n.p ? "#0D0D0D" : T.textDim,
+            color: current === n.p ? T.onAccent : T.textDim,
             cursor: "pointer", transition: "all .15s",
           }}>{n.l}</span>
         ))}

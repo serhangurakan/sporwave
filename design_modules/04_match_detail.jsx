@@ -36,8 +36,8 @@ const U=[
   {id:6,name:"Oğuz Han",un:"oguzhan",av:"OH",img:AVATARS[5],att:92,follow:false,level:"mid"},
   {id:7,name:"Kerem Aktaş",un:"keremm",av:"KA",img:AVATARS[6],att:78,follow:false,level:"beginner"},
   {id:8,name:"Burak Şen",un:"buraksen",av:"BŞ",img:AVATARS[7],att:90,follow:false,level:"mid"},
-  {id:9,name:"Tolga Sarı",un:"tolga",av:"TS",att:0,follow:false,level:"mid",guest:true},
-  {id:10,name:"Yusuf Eren",un:"yusuf",av:"YE",att:0,follow:false,level:"beginner",guest:true},
+  {id:9,name:"Tolga Sarı",un:"tolga",av:"TS",att:0,follow:false,level:"mid"},
+  {id:10,name:"Yusuf Eren",un:"yusuf",av:"YE",att:0,follow:false,level:"beginner"},
 ];
 const uf=id=>U.find(u=>u.id===id);
 
@@ -45,15 +45,14 @@ const uf=id=>U.find(u=>u.id===id);
 const PAST_MATCH={
   id:1,title:"Kadıköy Halısaha Maçı",date:"25 Şub",time:"20:00",loc:"Kadıköy Spor Tesisleri",fmt:"6v6",dur:"1s 20dk",
   sc:[6,3],host:1,mvp:[4],
-  guests:[{id:"g1",name:"Tolga"}],
-  tA:[1,2,4,"g1"],tB:[3,5,6],
+  tA:[1,2,4],tB:[3,5,6],
   noShow:[],
   goals:[
     {min:3,scorer:4,assist:1,team:"A"},
     {min:12,scorer:3,assist:null,team:"B"},
     {min:18,scorer:1,assist:2,team:"A"},
     {min:25,scorer:4,assist:null,team:"A"},
-    {min:30,scorer:"g1",assist:1,team:"A"},
+    {min:30,scorer:2,assist:1,team:"A"},
     {min:33,scorer:5,assist:3,team:"B"},
     {min:41,scorer:2,assist:4,team:"A"},
     {min:55,scorer:6,assist:5,team:"B"},
@@ -69,12 +68,11 @@ const PAST_MATCH={
 // Mock: Planned match (S12)
 const PLANNED_MATCH={
   id:101,title:"Cumartesi Akşam Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"1 Mar",time:"20:00",loc:{name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},fmt:"6v6",
-  host:2,joined:9,max:12,level:"Herkes",mode:"open",vis:"public",
+  host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",
   players:[2,1,4,3,7,8,5],
-  guests:[{id:"g1",name:"Tolga"},{id:"g2",name:"Yusuf"}],
   tA:[2,1,4], // Takım A (atanmış)
   tB:[3,7],   // Takım B (atanmış)
-  // players + guests içinde tA+tB dışındakiler → yedekler
+  // players içinde tA+tB dışındakiler → yedekler
   hostTakeover:null,
 };
 
@@ -174,8 +172,6 @@ function S11({onNav}){
   const m=PAST_MATCH;
   const host=uf(m.host);
   const mvps=m.mvp.map(id=>uf(id));
-  const gf11=(id)=>{const g=m.guests?.find(x=>x.id===id);return g?{id:g.id,name:g.name,av:g.name[0].toUpperCase(),guest:true}:null;};
-  const pf11=(id)=>typeof id==="string"?gf11(id):uf(id);
 
   // Count goals & assists per player
   const stats={};
@@ -185,17 +181,16 @@ function S11({onNav}){
   });
 
   const PlayerRow=({uid,team})=>{
-    const u=pf11(uid);if(!u)return null;
+    const u=uf(uid);if(!u)return null;
     const s=stats[uid];
     const isMvp=m.mvp.includes(uid);
     const isNoShow=m.noShow.includes(uid);
-    return <div onClick={()=>!u.guest&&onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,cursor:u.guest?"default":"pointer",opacity:isNoShow?.5:1}}>
-      <Av i={u.av} img={u.img} s={32} c={isMvp?T.accent:team==="A"?T.accent:T.orange} st={u.guest?{background:T.guestBg,color:T.white}:{}}/>
+    return <div onClick={()=>onNav("S16",uid)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:`1px solid ${T.cardBorder}`,cursor:"pointer",opacity:isNoShow?.5:1}}>
+      <Av i={u.av} img={u.img} s={32} c={isMvp?T.accent:team==="A"?T.accent:T.orange}/>
       <div style={{flex:1}}>
         <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
           {isMvp&&<span style={{display:"flex",flexShrink:0}}>{I.star(T.accent)}</span>}
-          <span style={{fontSize:13,fontWeight:600,color:u.guest?T.textDim:T.text}}>{u.name}</span>
-          {u.guest&&<Badge c={T.textMuted}>Misafir</Badge>}
+          <span style={{fontSize:13,fontWeight:600,color:T.text}}>{u.name}</span>
           {isNoShow&&<Badge c={T.red}>Katılmadı</Badge>}
         </div>
         {s&&<div style={{display:"flex",gap:8,fontSize:11,color:T.textDim,marginTop:3}}>
@@ -264,13 +259,13 @@ function S11({onNav}){
       <div style={{fontSize:12,fontWeight:700,color:T.textMuted,marginBottom:10,textTransform:"uppercase",letterSpacing:.5}}>Gol Zaman Çizelgesi</div>
       <div style={{background:T.card,borderRadius:14,border:`1px solid ${T.cardBorder}`,padding:"12px 14px"}}>
         {m.goals.map((g,i)=>{
-          const scorer=pf11(g.scorer);
-          const assister=g.assist?pf11(g.assist):null;
+          const scorer=uf(g.scorer);
+          const assister=g.assist?uf(g.assist):null;
           return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<m.goals.length-1?`1px solid ${T.cardBorder}`:"none"}}>
             <span style={{fontSize:11,color:T.textMuted,width:28,fontWeight:600}}>{g.min}'</span>
             <Badge c={g.team==="A"?T.accent:T.orange}>{g.team==="A"?"A":"B"}</Badge>
             <div style={{flex:1,fontSize:13}}>
-              <span onClick={scorer?.guest?undefined:()=>onNav("S16",scorer?.id)} style={{color:scorer?.guest?T.textDim:T.text,fontWeight:600,cursor:scorer?.guest?"default":"pointer"}}>{scorer?.name||"Belirtilmemiş"}</span>
+              <span onClick={()=>scorer?.id&&onNav("S16",scorer.id)} style={{color:T.text,fontWeight:600,cursor:scorer?.id?"pointer":"default"}}>{scorer?.name||"Belirtilmemiş"}</span>
               {assister&&<span style={{color:T.textDim}}> ({assister.name.split(" ")[0]} asist)</span>}
             </div>
           </div>;
@@ -359,7 +354,7 @@ function InlineChat({canInput,showGuestOverlay,onJoin,inputDisabledText}){
 }
 
 function DevStateRibbon({viewRole,setViewRole,matchState,setMatchState}){
-  const roles=[["host","Host"],["participant","Participant"],["guest","Guest"]];
+  const roles=[["host","Host"],["participant","Participant"]];
   const states=[["pre_match","Maç Öncesi"],["post_match","Maç Sonrası"]];
   return <div style={{padding:"6px 8px 2px",display:"flex",flexDirection:"column",gap:6}}>
     <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
@@ -368,7 +363,7 @@ function DevStateRibbon({viewRole,setViewRole,matchState,setMatchState}){
     </div>
     <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
       <span style={{fontSize:10,color:T.textMuted,fontWeight:700}}>State:</span>
-      {states.filter(([id])=>!(viewRole==="guest"&&id==="post_match")).map(([id,label])=><button key={id} onClick={()=>setMatchState(id)} style={{border:"none",cursor:"pointer",padding:"3px 8px",borderRadius:6,fontSize:11,fontWeight:600,background:matchState===id?T.text:`${T.textDim}22`,color:matchState===id?T.bg:T.textDim}}>{label}</button>)}
+      {states.map(([id,label])=><button key={id} onClick={()=>setMatchState(id)} style={{border:"none",cursor:"pointer",padding:"3px 8px",borderRadius:6,fontSize:11,fontWeight:600,background:matchState===id?T.text:`${T.textDim}22`,color:matchState===id?T.bg:T.textDim}}>{label}</button>)}
     </div>
   </div>;
 }
@@ -381,7 +376,6 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
   const host=uf(m.host);
   const isHost=viewRole==="host";
   const isParticipant=viewRole==="host"||viewRole==="participant";
-  const isGuest=viewRole==="guest";
   const [players,setPlayers]=useState(m.players);
   const [joined,setJoined]=useState(m.joined);
   const [tA,setTA]=useState(m.tA||[]);
@@ -419,28 +413,22 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
     setTA(a=>a.filter(x=>x!==m.host));
     setTB(b=>b.filter(x=>x!==m.host));
     setJoined(j=>j-1);
-    setViewRole("guest");
-    setShowDotsMenu(false);
-  };
-  const joinMatch=()=>{
-    setPlayers(p=>p.includes(1)?p:[...p,1]);
-    setJoined(j=>players.includes(1)?j:j+1);
     setViewRole("participant");
+    setShowDotsMenu(false);
   };
   const leaveMatch=()=>{
     setPlayers(p=>p.filter(x=>x!==1));
     setTA(a=>a.filter(x=>x!==1));
     setTB(b=>b.filter(x=>x!==1));
     setJoined(j=>j-1);
-    setViewRole("guest");
+    setViewRole("participant");
   };
   const visibleParticipantIds=players.slice(0,5);
   const overflowCount=Math.max(0,joined-visibleParticipantIds.length);
   const canEditMatch=isHost;
   const canRemovePlayer=isHost&&matchState==="pre_match";
   const canLeaveMatch=viewRole==="participant";
-  const canChatInput=!isGuest;
-  const guestCanViewChat=false;
+  const canChatInput=true;
 
   return <div style={{paddingBottom:80,minHeight:"calc(100vh - 36px)",display:"flex",flexDirection:"column"}}>
     {/* Header */}
@@ -512,7 +500,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
     </div>
 
     {/* Chat primary area */}
-    <InlineChat canInput={canChatInput&& (matchState==="pre_match"||matchState==="post_match")} showGuestOverlay={isGuest&& !guestCanViewChat} inputDisabledText="Sohbete erişmek için maça katıl" onJoin={joinMatch}/>
+    <InlineChat canInput={canChatInput&& (matchState==="pre_match"||matchState==="post_match")} showGuestOverlay={false} inputDisabledText="Sohbete erişmek için maça katıl"/>
 
     {/* Remove player confirm modal (host) */}
     {removeConfirm&&<div style={{position:"fixed",inset:0,background:T.overlayScrim,zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
@@ -665,14 +653,8 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
               {canRemovePlayer&&uid!==m.host&&<button onClick={(e)=>{e.stopPropagation();setRemoveConfirm(uid);}} style={{border:`1px solid ${T.red}44`,background:"transparent",color:T.red,padding:"4px 8px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Çıkar</button>}
             </div>;
           })}
-          {(m.guests||[]).map(g=><div key={g.id} style={{display:"flex",alignItems:"center",gap:10,opacity:.85}}>
-            <Av i={g.name?.[0]?.toUpperCase()||"G"} s={32} c={T.textDim} st={{background:T.guestBg,color:T.white}}/>
-            <div style={{flex:1}}>
-              <div style={{fontSize:13,fontWeight:600,color:T.textDim}}>{g.name}</div>
-              <div style={{fontSize:11,color:T.textMuted}}>Misafir</div>
-            </div>
-          </div>)}
         </div>
+        <Btn primary full onClick={()=>{setShowParticipantsSheet(false);setToast("Davet et akışı (demo)");}} st={{marginTop:16}}>Davet Et</Btn>
       </div>
     </div>}
     {/* Toast */}
@@ -687,7 +669,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
 // ============================================================
 function S10({onNav}){
   const [canScore]=useState(true);
-  const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"},{id:"g1",name:"Tolga",av:"T",guest:true}]);
+  const [teamA]=useState([{id:1,name:"Berk",av:"BY"},{id:2,name:"Ali",av:"AD"}]);
   const [teamB]=useState([{id:3,name:"Mehmet",av:"MK"}]);
   const [score,setScore]=useState([3,2]);
   const [goals,setGoals]=useState([
@@ -955,10 +937,6 @@ export default function SporWaveMatchDetail(){
     const allowed=["S10","S11","S12","S13","S30"];
     if(view&&allowed.includes(view))setCur(view);
   },[]);
-  useEffect(()=>{
-    if(viewRole==="guest"&&matchState==="post_match") setMatchState("pre_match");
-  },[viewRole,matchState]);
-
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
   const pg=()=>{

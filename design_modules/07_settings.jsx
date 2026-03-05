@@ -1,5 +1,5 @@
 import { useState } from "react";
-import T from "./theme.js";
+import T, { useThemeMode } from "./theme.js";
 
 // ============================================================
 // SPORWAVE MODULE 7 — Ayarlar & Güvenlik
@@ -55,9 +55,9 @@ const I={
 
 // Shared Components
 function Av({i,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:`1.5px solid ${c}44`,color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?T.white:primary?T.onAccent:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}if(tabId==="S08"){window.location.assign("/03_matches");return;}if(tabId==="S15"){window.location.assign("/05_profile");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer",padding:"6px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
-function Toggle({on,onToggle}){return <div onClick={onToggle} style={{width:44,height:24,borderRadius:12,background:on?T.accent:`${T.textMuted}44`,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0}}><div style={{position:"absolute",top:2,left:on?22:2,width:20,height:20,borderRadius:"50%",background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.3)"}}/></div>;}
+function Toggle({on,onToggle}){return <div onClick={onToggle} style={{width:44,height:24,borderRadius:12,background:on?T.accent:`${T.textMuted}44`,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0}}><div style={{position:"absolute",top:2,left:on?22:2,width:20,height:20,borderRadius:"50%",background:T.white,transition:"left .2s",boxShadow:T.shadowToggle}}/></div>;}
 
 // MenuItem helper
 function MenuItem({icon,label,desc,onClick,danger,right,badge}){
@@ -70,7 +70,7 @@ function MenuItem({icon,label,desc,onClick,danger,right,badge}){
       <div style={{fontSize:14,fontWeight:500,color:danger?T.red:T.text}}>{label}</div>
       {desc&&<div style={{fontSize:12,color:T.textMuted,marginTop:2}}>{desc}</div>}
     </div>
-    {badge&&<span style={{background:T.accent,color:"#0D0D0D",fontSize:10,fontWeight:700,borderRadius:10,padding:"1px 6px"}}>{badge}</span>}
+    {badge&&<span style={{background:T.accent,color:T.onAccent,fontSize:10,fontWeight:700,borderRadius:10,padding:"1px 6px"}}>{badge}</span>}
     {right||<div style={{display:"flex"}}>{I.chevRight(T.textMuted)}</div>}
   </div>;
 }
@@ -118,7 +118,7 @@ function S20({onNav}){
     <MenuItem icon={I.logout(T.red)} label="Çıkış Yap" danger onClick={()=>setConfirmLogout(true)} right={<span/>}/>
 
     {/* Logout Confirmation Dialog */}
-    {confirmLogout&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
+    {confirmLogout&&<div style={{position:"fixed",inset:0,background:T.overlayScrim,display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
       <div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:24,maxWidth:320,width:"100%",textAlign:"center"}}>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Çıkış Yap</div>
         <div style={{fontSize:14,color:T.textDim,marginBottom:24}}>Hesabından çıkış yapmak istediğine emin misin?</div>
@@ -134,8 +134,7 @@ function S20({onNav}){
 // ============================================================
 // S21: Ayarlar
 // ============================================================
-function S21({onNav,onBack}){
-  const[theme,setTheme]=useState("dark");
+function S21({onNav,onBack,themeMode,onThemeChange}){
   const[pushNotif,setPushNotif]=useState(true);
   const[notifLikes,setNotifLikes]=useState(true);
   const[notifComments,setNotifComments]=useState(true);
@@ -162,12 +161,12 @@ function S21({onNav,onBack}){
     <SectionTitle>Görünüm</SectionTitle>
     <div style={{padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
       <div style={{display:"flex",alignItems:"center",gap:12}}>
-        {theme==="dark"?I.moon(T.purple):I.sun(T.gold)}
+        {themeMode==="dark"?I.moon(T.purple):I.sun(T.gold)}
         <span style={{fontSize:14,color:T.text,fontWeight:500}}>Tema</span>
       </div>
       <div style={{display:"flex",background:T.card,borderRadius:8,border:`1px solid ${T.cardBorder}`,overflow:"hidden"}}>
         {[{id:"dark",label:"Koyu"},{id:"light",label:"Açık"}].map(o=>
-          <div key={o.id} onClick={()=>setTheme(o.id)} style={{padding:"6px 16px",fontSize:12,fontWeight:theme===o.id?700:500,color:theme===o.id?"#0D0D0D":T.textDim,background:theme===o.id?T.accent:"transparent",cursor:"pointer",transition:"all .2s"}}>{o.label}</div>
+          <div key={o.id} onClick={()=>onThemeChange(o.id)} style={{padding:"6px 16px",fontSize:12,fontWeight:themeMode===o.id?700:500,color:themeMode===o.id?T.onAccent:T.textDim,background:themeMode===o.id?T.accent:"transparent",cursor:"pointer",transition:"all .2s"}}>{o.label}</div>
         )}
       </div>
     </div>
@@ -249,7 +248,7 @@ function S21({onNav,onBack}){
     <MenuItem icon={I.trash(T.red)} label="Hesabı Sil" danger onClick={()=>setShowDeleteConfirm(true)} right={<span/>}/>
 
     {/* Delete Confirmation */}
-    {showDeleteConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
+    {showDeleteConfirm&&<div style={{position:"fixed",inset:0,background:T.overlayScrim,display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}}>
       <div style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:24,maxWidth:340,width:"100%",textAlign:"center"}}>
         <div style={{display:"flex",justifyContent:"center",marginBottom:12}}>{I.trash(T.red)}</div>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Hesabı Sil</div>
@@ -447,7 +446,7 @@ function S28({onClose,userName}){
   };
 
   if(submitted){
-    return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
+    return <div style={{position:"fixed",inset:0,background:T.overlayScrim,display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{background:T.card,borderRadius:"20px 20px 0 0",padding:"24px 20px 32px",maxWidth:430,width:"100%",textAlign:"center"}}>
         <div style={{width:60,height:60,borderRadius:"50%",background:`${T.green}18`,border:`2px solid ${T.green}44`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px"}}>{I.check(T.green)}</div>
         <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Rapor Gönderildi</div>
@@ -457,7 +456,7 @@ function S28({onClose,userName}){
     </div>;
   }
 
-  return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
+  return <div style={{position:"fixed",inset:0,background:T.overlayScrim,display:"flex",alignItems:"flex-end",justifyContent:"center",zIndex:200}} onClick={onClose}>
     <div onClick={e=>e.stopPropagation()} style={{background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",maxWidth:430,width:"100%"}}>
       {/* Handle */}
       <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 16px"}}/>
@@ -489,7 +488,7 @@ function S28({onClose,userName}){
 // S29: Engelle (Onay Dialog)
 // ============================================================
 function S29({userName,onConfirm,onCancel}){
-  return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}} onClick={onCancel}>
+  return <div style={{position:"fixed",inset:0,background:T.overlayScrim,display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:20}} onClick={onCancel}>
     <div onClick={e=>e.stopPropagation()} style={{background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:16,padding:24,maxWidth:340,width:"100%",textAlign:"center"}}>
       <div style={{display:"flex",justifyContent:"center",marginBottom:12}}>{I.block(T.red)}</div>
       <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:8}}>Bu kullanıcıyı engellemek istiyor musun?</div>
@@ -528,7 +527,7 @@ function S34({onRetry,onHome}){
 function DevRibbon({page,setPage}){
   const pages=["S20","S21","S24","S25","S26","S28","S29","S34"];
   const labels={S20:"Menü",S21:"Ayarlar",S24:"Davet",S25:"Kurallar",S26:"SSS",S28:"Raporla",S29:"Engelle",S34:"Hata"};
-  return <div style={{position:"fixed",top:0,left:0,right:0,zIndex:999,background:"rgba(11,15,20,.92)",backdropFilter:"blur(8px)",borderBottom:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",gap:0,padding:"0 4px",maxWidth:430,margin:"0 auto",height:36,overflowX:"auto"}}>
+  return <div style={{position:"fixed",top:0,left:0,right:0,zIndex:999,background:T.overlayHeader,backdropFilter:"blur(8px)",borderBottom:`1px solid ${T.cardBorder}`,display:"flex",alignItems:"center",gap:0,padding:"0 4px",maxWidth:430,margin:"0 auto",height:36,overflowX:"auto"}}>
     <style>{`::-webkit-scrollbar{display:none}`}</style>
     {pages.map(p=><div key={p} onClick={()=>setPage(p)} style={{padding:"8px 8px",fontSize:10,fontWeight:page===p?700:500,color:page===p?T.accent:T.textDim,cursor:"pointer",borderBottom:page===p?`2px solid ${T.accent}`:"2px solid transparent",transition:"all .15s",whiteSpace:"nowrap",flexShrink:0}}>{p} {labels[p]}</div>)}
   </div>;
@@ -538,6 +537,7 @@ function DevRibbon({page,setPage}){
 // Main App
 // ============================================================
 export default function SettingsModule(){
+  const { mode, setTheme } = useThemeMode();
   const[page,setPage]=useState("S20");
   const[showReport,setShowReport]=useState(false);
   const[showBlock,setShowBlock]=useState(false);
@@ -559,7 +559,7 @@ export default function SettingsModule(){
     <DevRibbon page={page} setPage={setPage}/>
     <div style={{paddingTop:36}}>
       {page==="S20"&&<S20 onNav={nav}/>}
-      {page==="S21"&&<S21 onNav={nav} onBack={goBack}/>}
+      {page==="S21"&&<S21 onNav={nav} onBack={goBack} themeMode={mode} onThemeChange={setTheme}/>}
       {page==="S24"&&<S24 onBack={goBack}/>}
       {page==="S25"&&<S25 onBack={goBack}/>}
       {page==="S26"&&<S26 onBack={goBack}/>}

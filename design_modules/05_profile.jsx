@@ -111,7 +111,7 @@ const I={
   home:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>,
   football:c=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/><path d="M2 12h20"/></svg>,
   instagram:c=><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c||T.purple} strokeWidth="2" strokeLinecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill={c||T.purple} stroke="none"/></svg>,
-  twitter:c=><svg width="14" height="14" viewBox="0 0 24 24" fill={c||"#1DA1F2"}><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>,
+  twitter:c=><svg width="14" height="14" viewBox="0 0 24 24" fill={c||T.twitterBrand}><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>,
   chevDown:c=><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c||T.textDim} strokeWidth="2.5" strokeLinecap="round"><polyline points="6,9 12,15 18,9"/></svg>,
   fire:c=><svg width="16" height="16" viewBox="0 0 24 24" fill={c||T.orange} stroke={c||T.orange} strokeWidth="1"><path d="M12 23c-4.97 0-9-2.69-9-6s2.69-6 6-6c0-4 3-8 3-8s3 4 3 8c3.31 0 6 2.69 6 6s-4.03 6-9 6z"/></svg>,
   star:c=><svg width="16" height="16" viewBox="0 0 24 24" fill={c||T.gold} stroke={c||T.gold} strokeWidth="1"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>,
@@ -125,7 +125,7 @@ const I={
 
 // Shared Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:"none",color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?"#fff":primary?"#fff":T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?T.white:primary?T.onAccent:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:c,background:`${c}15`,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}if(tabId==="S08"){window.location.assign("/03_matches");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer",padding:"6px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
 function StackAv({ids,max=3,s=24}){const vis=ids.slice(0,max);return <div style={{display:"flex"}}>{vis.map((uid,i)=>{const u=uf(uid);return u&&<div key={uid} style={{marginLeft:i>0?-8:0,zIndex:max-i,position:"relative"}}><Av i={u.av} img={u.img} s={s}/></div>;})}{ids.length>max&&<span style={{fontSize:10,color:T.textDim,marginLeft:4,fontWeight:600}}>+{ids.length-max}</span>}</div>;}
@@ -149,7 +149,7 @@ function MediaSlider({photoCount,imgs,scoreContent,onMatchNav}){
     </div>
     {cur>0&&<div onClick={prev} style={{position:"absolute",left:0,top:0,bottom:32,width:"35%",cursor:"pointer"}}/>}
     {cur<total-1&&<div onClick={next} style={{position:"absolute",right:0,top:0,bottom:32,width:"35%",cursor:"pointer"}}/>}
-    <div style={{position:"absolute",top:10,right:10,background:"rgba(0,0,0,.6)",borderRadius:20,padding:"3px 9px",fontSize:11,color:"#fff",fontWeight:600}}>{isScore?"📊":`${cur+1}/${photoCount}`}</div>
+    <div style={{position:"absolute",top:10,right:10,background:T.overlayDark,borderRadius:20,padding:"3px 9px",fontSize:11,color:T.white,fontWeight:600}}>{isScore?"📊":`${cur+1}/${photoCount}`}</div>
     <div style={{position:"absolute",bottom:10,left:0,right:0,display:"flex",justifyContent:"center",gap:5}}>
       {Array.from({length:total},(_,i)=><div key={i} onClick={()=>setCur(i)} style={{width:i===cur?16:6,height:6,borderRadius:3,background:i===cur?T.accent:i===total-1?`${T.accent}55`:`${T.text}33`,transition:"all .2s",cursor:"pointer"}}/>)}
     </div>
@@ -205,7 +205,7 @@ function PostCard({p,isOwn,onMenuAction,onNav}){
       </div>
       <div style={{position:"relative"}}>
         <span onClick={()=>setMenuOpen(!menuOpen)} style={{cursor:"pointer",display:"flex",padding:4}}>{I.more()}</span>
-        {menuOpen&&<div style={{position:"absolute",top:28,right:0,background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:8,zIndex:60,boxShadow:"0 4px 16px rgba(0,0,0,.1)",minWidth:160}}>
+        {menuOpen&&<div style={{position:"absolute",top:28,right:0,background:T.card,border:`1px solid ${T.cardBorder}`,borderRadius:12,padding:8,zIndex:60,boxShadow:T.shadowSm,minWidth:160}}>
           {isOwn?<>
             <div onClick={()=>{setMenuOpen(false);onMenuAction?.("edit",p.id);}} style={{padding:"12px 16px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",gap:12}}><span style={{display:"flex"}}>{I.edit()}</span><span style={{fontSize:13,color:T.text}}>Düzenle</span></div>
             <div onClick={()=>{setMenuOpen(false);onMenuAction?.(isHidden?"unhide":"hide",p.id);}} style={{padding:"12px 16px",borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",gap:12}}><span style={{display:"flex"}}>{I.eyeOff()}</span><span style={{fontSize:13,color:T.text}}>{isHidden?"Gizliliği Kaldır":"Gizle"}</span></div>
@@ -437,7 +437,7 @@ function S15({onNav}){
                 {I.star(T.accent)}
                 <span style={{fontSize:14,fontWeight:700,color:T.accent}}>{uf(mvpVote)?.name}</span>
               </div>
-              <div onClick={e=>{e.stopPropagation();setMvpSubmitted(prev=>({...prev,[m.id]:true}));setExpandedRating(null);setMvpVote(null);}} style={{width:36,height:36,borderRadius:10,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.check("#fff")}</div>
+              <div onClick={e=>{e.stopPropagation();setMvpSubmitted(prev=>({...prev,[m.id]:true}));setExpandedRating(null);setMvpVote(null);}} style={{width:36,height:36,borderRadius:10,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>{I.check(T.white)}</div>
             </div>}
           </div>}
         </div>;
@@ -452,7 +452,7 @@ function S15({onNav}){
     </div>
 
     {/* Delete confirm popup */}
-    {deleteConfirm!==null&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,padding:20}}>
+    {deleteConfirm!==null&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:T.overlayScrim,display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,padding:20}}>
       <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:320,width:"100%",textAlign:"center"}}>
         <div style={{fontSize:16,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:8}}>Postu Sil</div>
         <div style={{fontSize:13,color:T.textDim,marginBottom:20,lineHeight:1.4}}>Bu post kalici olarak silinecek. Bu islem geri alinamaz.</div>
@@ -466,7 +466,7 @@ function S15({onNav}){
       const ep=posts.find(p=>p.id===editPostId);
       const em=ep?mf(ep.matchId):null;
       return <div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
-        <div onClick={()=>setEditPostId(null)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.35)"}}/>
+        <div onClick={()=>setEditPostId(null)} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
         <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",zIndex:301,maxHeight:"80vh",overflowY:"auto"}}>
           <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
           <div style={{fontSize:18,fontWeight:800,color:T.text,fontFamily:FH,marginBottom:4}}>Post Düzenle</div>
@@ -582,7 +582,7 @@ function S16({onNav,userId}){
     </div>
 
     {/* Unfollow confirm */}
-    {unfollowConfirm&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.35)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,padding:20}}>
+    {unfollowConfirm&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:T.overlayScrim,display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,padding:20}}>
       <div style={{background:T.card,borderRadius:16,padding:24,maxWidth:320,width:"100%",textAlign:"center"}}>
         <Av i={u.av} img={u.img} s={56} c={T.accent} st={{margin:"0 auto 12"}}/>
         <div style={{fontSize:16,fontWeight:700,color:T.text,fontFamily:FH,marginBottom:4}}>Takipten Cik</div>
@@ -738,7 +738,7 @@ function S23({onNav}){
       <div>
         <label style={labelStyle}>Cinsiyet</label>
         <div style={{display:"flex",gap:8}}>
-          {genderOptions.map(g=><div key={g} onClick={()=>upd("gender",g)} style={{padding:"8px 14px",borderRadius:20,fontSize:12,fontWeight:600,background:form.gender===g?T.accent:`${T.textDim}22`,color:form.gender===g?"#0D0D0D":T.textDim,cursor:"pointer"}}>{g}</div>)}
+          {genderOptions.map(g=><div key={g} onClick={()=>upd("gender",g)} style={{padding:"8px 14px",borderRadius:20,fontSize:12,fontWeight:600,background:form.gender===g?T.accent:`${T.textDim}22`,color:form.gender===g?T.onAccent:T.textDim,cursor:"pointer"}}>{g}</div>)}
         </div>
       </div>
 
@@ -752,7 +752,7 @@ function S23({onNav}){
       <div>
         <label style={labelStyle}>Favori Sporlar</label>
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-          {sportOptions.map(s=><div key={s} onClick={()=>toggleSport(s)} style={{padding:"8px 14px",borderRadius:20,fontSize:12,fontWeight:600,background:form.sports.includes(s)?T.accent:`${T.textDim}22`,color:form.sports.includes(s)?"#0D0D0D":T.textDim,cursor:"pointer"}}>{s}</div>)}
+          {sportOptions.map(s=><div key={s} onClick={()=>toggleSport(s)} style={{padding:"8px 14px",borderRadius:20,fontSize:12,fontWeight:600,background:form.sports.includes(s)?T.accent:`${T.textDim}22`,color:form.sports.includes(s)?T.onAccent:T.textDim,cursor:"pointer"}}>{s}</div>)}
         </div>
       </div>
 
@@ -765,7 +765,7 @@ function S23({onNav}){
             <input value={form.ig} onChange={e=>upd("ig",e.target.value)} style={{...inputStyle,flex:1}} placeholder="Instagram kullanici adi"/>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            {I.twitter("#1DA1F2")}
+            {I.twitter(T.twitterBrand)}
             <input value={form.tw} onChange={e=>upd("tw",e.target.value)} style={{...inputStyle,flex:1}} placeholder="Twitter kullanici adi"/>
           </div>
         </div>
@@ -778,7 +778,7 @@ function S23({onNav}){
     </div>
 
     {/* Photo bottom sheet */}
-    {photoSheet&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.35)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={()=>setPhotoSheet(false)}>
+    {photoSheet&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:T.overlayScrim,zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={()=>setPhotoSheet(false)}>
       <div onClick={e=>e.stopPropagation()} style={{background:T.card,borderTopLeftRadius:20,borderTopRightRadius:20,padding:"20px 16px 32px",width:"100%",maxWidth:430}}>
         <div style={{width:40,height:4,borderRadius:2,background:T.textMuted,margin:"0 auto 16"}}/>
         <div style={{fontSize:16,fontWeight:700,fontFamily:FH,color:T.text,marginBottom:16}}>Profil Fotografi</div>
@@ -816,10 +816,10 @@ export default function SporWaveProfile(){
     }
   };
 
-  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:"0 0 40px rgba(0,0,0,.08)"}}>
+  return <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",background:T.bg,color:T.text,fontFamily:FB,position:"relative",boxShadow:T.shadowPage}}>
     {/* Dev ribbon */}
     <div style={{position:"sticky",top:0,zIndex:200,background:T.bgAlt,borderBottom:`1px solid ${T.cardBorder}`,padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap"}}>
-      {[{p:"S15",l:"Kendi Profil"},{p:"S16",l:"Baskasinin Profili"},{p:"S22",l:"Takipciler"},{p:"S23",l:"Profil Duzenle"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?"#fff":T.textDim,cursor:"pointer"}}>{n.l}</span>)}
+      {[{p:"S15",l:"Kendi Profil"},{p:"S16",l:"Baskasinin Profili"},{p:"S22",l:"Takipciler"},{p:"S23",l:"Profil Duzenle"}].map(n=><span key={n.p} onClick={()=>nav(n.p)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:cur===n.p?T.accent:`${T.textDim}22`,color:cur===n.p?T.white:T.textDim,cursor:"pointer"}}>{n.l}</span>)}
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
   </div>;

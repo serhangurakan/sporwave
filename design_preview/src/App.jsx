@@ -1,5 +1,7 @@
 import { useState, useEffect, Suspense, lazy } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
+import T, { useThemeMode } from "../../design_modules/theme.js";
+import "./form-ui-standard.css";
 
 // Auto-discover all .jsx files in design_modules/
 const modules = import.meta.glob("../../design_modules/*.jsx");
@@ -23,15 +25,6 @@ const labels = {
   "05_profile": "Profile",
   "06_messaging": "Messaging & Notifications",
   "07_settings": "Settings & Security",
-};
-
-const T = {
-  accent: "#B7F000",
-  bg: "#0B0F14",
-  card: "#141A22",
-  cardBorder: "#1E2730",
-  text: "#F0F2F5",
-  textDim: "#8A95A5",
 };
 
 function Home() {
@@ -95,7 +88,7 @@ function BackButton() {
         top: 12,
         left: 12,
         zIndex: 9999,
-        background: "rgba(11,15,20,0.85)",
+        background: T.overlayHeader,
         backdropFilter: "blur(8px)",
         border: `1px solid ${T.cardBorder}`,
         borderRadius: 10,
@@ -132,6 +125,8 @@ function Loading() {
 }
 
 export default function App() {
+  useThemeMode();
+
   return (
     <>
       <BackButton />
