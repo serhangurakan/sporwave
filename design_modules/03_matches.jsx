@@ -501,7 +501,7 @@ const LOC_RESULTS=[
   {id:"l4",name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046},
   {id:"l5",name:"Ataşehir Arena",addr:"Küçükbakkalköy Mah. Kayışdağı Cad. No:22, Ataşehir",lat:40.9923,lng:29.1145},
 ];
-const QUOTA_OPTIONS=[2,4,6,8,10,12,14,16,18,20,22,"∞"];
+
 const TR_DAYS=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 const TR_MONTHS_SHORT=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
 
@@ -513,7 +513,6 @@ function S31({onNav}){
   const [selectedLoc,setSelectedLoc]=useState(null);
   const [locQuery,setLocQuery]=useState("");
   const [locCity,setLocCity]=useState("İstanbul");
-  const [quota,setQuota]=useState(10);
   const [matchName,setMatchName]=useState("");
   const [titleEdited,setTitleEdited]=useState(false);
   const [description,setDescription]=useState("");
@@ -585,11 +584,11 @@ function S31({onNav}){
   };
 
   // Sub-components
-  const FieldRow=({icon,label,value,placeholder,onClick,error})=><div onClick={onClick} style={{display:"flex",alignItems:"center",height:56,cursor:"pointer",borderBottom:`1px solid ${error?T.red+"66":T.cardBorder+"33"}`}}>
+  const FieldRow=({icon,label,value,onClick,error})=><div onClick={onClick} style={{display:"flex",alignItems:"center",height:56,cursor:"pointer",borderBottom:`1px solid ${error?T.red+"66":T.cardBorder+"33"}`}}>
     <span style={{marginRight:12,display:"flex",flexShrink:0}}>{icon}</span>
     <span style={{fontSize:14,fontWeight:400,color:T.text,whiteSpace:"nowrap"}}>{label}</span>
-    <span style={{marginLeft:"auto",fontSize:13,fontWeight:500,color:value?T.accent:T.textMuted,maxWidth:"50%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textAlign:"right"}}>{value||placeholder}</span>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft:8,flexShrink:0}}><polyline points="9,6 15,12 9,18"/></svg>
+    {value&&<span style={{marginLeft:"auto",fontSize:13,fontWeight:500,color:T.accent,maxWidth:"55%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textAlign:"right"}}>{value}</span>}
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft:value?8:"auto",flexShrink:0}}><polyline points="9,6 15,12 9,18"/></svg>
   </div>;
 
   const DrawerWrap=({children})=><div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
@@ -611,18 +610,22 @@ function S31({onNav}){
     <div style={{fontSize:24,fontWeight:800,color:T.text,letterSpacing:"-0.5px",fontFamily:FH,marginBottom:20}}>Maç Oluştur</div>
 
     {/* Sport selector */}
-    <div style={{padding:"0 0 16px"}}>
-      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:10}}>Futbol</div>
-      <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
-        {["5v5","6v6","7v7","8v8","9v9","10v10","11v11","Kadınlar"].map(f=><span key={f} onClick={()=>setFmt(f)} style={{padding:"6px 16px",borderRadius:20,fontSize:13,fontWeight:600,whiteSpace:"nowrap",cursor:"pointer",flexShrink:0,background:fmt===f?T.accent:`${T.textDim}18`,color:fmt===f?"#fff":T.textDim,transition:"all .15s"}}>{f}</span>)}
+    <div style={{padding:"0 0 20px"}}>
+      <div style={{fontSize:11,fontWeight:600,color:T.textMuted,textTransform:"uppercase",letterSpacing:.6,marginBottom:2}}>Spor</div>
+      <div style={{fontSize:17,fontWeight:700,color:T.text,marginBottom:4}}>Futbol</div>
+      <div style={{fontSize:13,color:T.textDim,marginBottom:12}}>Maç Formatını Seç</div>
+      <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:2,scrollbarWidth:"none",msOverflowStyle:"none"}}>
+        {["5v5","6v6","7v7","8v8","9v9","10v10","11v11","Kadınlar"].map(f=>{
+          const w="calc(25% - 6px)";
+          return <div key={f} onClick={()=>setFmt(f)} style={{minWidth:w,flex:`0 0 ${w}`,padding:"12px 0",borderRadius:8,textAlign:"center",fontSize:13,fontWeight:600,whiteSpace:"nowrap",cursor:"pointer",background:fmt===f?T.accent:`${T.textDim}18`,color:fmt===f?"#fff":T.textDim,transition:"all .15s",border:"none"}}>{f}</div>;
+        })}
       </div>
     </div>
 
     {/* Field rows — ordered: Konum, Tarih, Saat, Kontenjan, Başlık */}
-    <FieldRow icon={FIELD_ICONS.pin} label="Konum" value={locDisplay} placeholder="Seçilmedi" onClick={()=>setDrawer("location")} error={locError}/>
-    <FieldRow icon={FIELD_ICONS.calendar} label="Tarih" value={dateDisplay} placeholder="Seçilmedi" onClick={()=>{setTmpDate(dateVal||"");setDrawer("date");}} error={dateError}/>
-    <FieldRow icon={FIELD_ICONS.clock} label="Saat" value={timeDisplay} placeholder="Seçilmedi" onClick={()=>{const parts=timeVal?timeVal.split(" – "):["",""];setTmpStartTime(parts[0]||"");setTmpEndTime(parts[1]||"");setDrawer("time");}} error={timeError}/>
-    <FieldRow icon={FIELD_ICONS.users} label="Kontenjan" value={quota==="∞"?"Limitsiz":`${quota} kişi`} onClick={()=>setDrawer("quota")}/>
+    <FieldRow icon={FIELD_ICONS.pin} label="Konum" value={locDisplay} onClick={()=>setDrawer("location")} error={locError}/>
+    <FieldRow icon={FIELD_ICONS.calendar} label="Tarih" value={dateDisplay} onClick={()=>{setTmpDate(dateVal||"");setDrawer("date");}} error={dateError}/>
+    <FieldRow icon={FIELD_ICONS.clock} label="Saat" value={timeDisplay} onClick={()=>{const parts=timeVal?timeVal.split(" – "):["",""];setTmpStartTime(parts[0]||"");setTmpEndTime(parts[1]||"");setDrawer("time");}} error={timeError}/>
     <FieldRow icon={FIELD_ICONS.edit} label="Maç Başlığı" value={displayTitle} onClick={()=>{setTmpTitle(displayTitle);setDrawer("title");}}/>
 
     {/* Validation errors */}
@@ -635,7 +638,7 @@ function S31({onNav}){
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft:"auto",transition:"transform .2s",transform:showAdvanced?"rotate(90deg)":"rotate(0deg)"}}><polyline points="9,6 15,12 9,18"/></svg>
     </div>
     {showAdvanced&&<>
-      <FieldRow icon={FIELD_ICONS.desc} label="Açıklama" value={description||null} placeholder="Opsiyonel" onClick={()=>{setTmpDesc(description);setDrawer("desc");}}/>
+      <FieldRow icon={FIELD_ICONS.desc} label="Açıklama" value={description||null} onClick={()=>{setTmpDesc(description);setDrawer("desc");}}/>
       <FieldRow icon={FIELD_ICONS.unlock} label="Kabul Modu" value={accept==="open"?"Herkesi Kabul Et":"Onay ile Kabul Et"} onClick={()=>setDrawer("accept")}/>
       <FieldRow icon={FIELD_ICONS.eye} label="Gizlilik" value={privacy==="public"?"Herkese Açık":"Sadece Davet"} onClick={()=>setDrawer("privacy")}/>
     </>}
@@ -648,38 +651,38 @@ function S31({onNav}){
 
     {/* ===== DRAWERS ===== */}
 
-    {/* Konum Drawer — full-height */}
-    {drawer==="location"&&<div style={{position:"fixed",inset:0,zIndex:300,background:T.card,maxWidth:430,margin:"0 auto",display:"flex",flexDirection:"column"}}>
-      <div style={{padding:"16px 16px 12px",display:"flex",alignItems:"center",gap:12,borderBottom:`1px solid ${T.cardBorder}`}}>
-        <div onClick={()=>setDrawer(null)} style={{width:36,height:36,borderRadius:10,background:T.bg,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    {/* Konum Drawer — bottom sheet */}
+    {drawer==="location"&&<div style={{position:"fixed",inset:0,zIndex:300,display:"flex",alignItems:"flex-end",maxWidth:430,margin:"0 auto"}}>
+      <div onClick={()=>setDrawer(null)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.45)"}}/>
+      <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",zIndex:301,maxHeight:"82vh",display:"flex",flexDirection:"column"}}>
+        <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"14px auto 0",flexShrink:0}}/>
+        <div style={{padding:"14px 20px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+          <div style={{fontSize:18,fontWeight:700,color:T.text}}>Konum Seç</div>
+          <div onClick={()=>setDrawer(null)} style={{width:32,height:32,borderRadius:8,background:T.bg,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
         </div>
-        <div style={{fontSize:18,fontWeight:700,color:T.text}}>Konum Seç</div>
-      </div>
-      <div style={{padding:"12px 16px"}}>
-        <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${locQuery.length>=2?T.accent:T.cardBorder}`,padding:"10px 16px",display:"flex",alignItems:"center",gap:10,transition:"border-color .2s"}}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={locQuery.length>=2?T.accent:T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." style={{background:"none",border:"none",color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit"}}/>
-          {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
+        <div style={{padding:"0 20px 12px",flexShrink:0}}>
+          <div style={{background:T.bg,borderRadius:12,border:`1.5px solid ${locQuery.length>=2?T.accent:T.cardBorder}`,padding:"14px 16px",display:"flex",alignItems:"center",gap:12,transition:"border-color .2s"}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={locQuery.length>=2?T.accent:T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input value={locQuery} onChange={e=>setLocQuery(e.target.value)} placeholder="Saha adı veya adres ara..." autoFocus style={{background:"none",border:"none",color:T.text,fontSize:15,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit"}}/>
+            {locQuery.length>0&&<span onClick={()=>setLocQuery("")} style={{cursor:"pointer",display:"flex",flexShrink:0}}>{I.x(T.textDim)}</span>}
+          </div>
         </div>
-      </div>
-      <div style={{flex:1,overflowY:"auto",padding:"0 16px"}}>
-        <div style={{fontSize:12,fontWeight:600,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:8,marginTop:4}}>İl</div>
-        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:12,marginBottom:4}}>
-          {["İstanbul","Ankara","İzmir","Bursa","Antalya"].map(c=><span key={c} onClick={()=>setLocCity(c)} style={{padding:"6px 14px",borderRadius:20,fontSize:13,fontWeight:600,whiteSpace:"nowrap",cursor:"pointer",flexShrink:0,background:locCity===c?T.accent:`${T.textDim}18`,color:locCity===c?"#fff":T.textDim,transition:"all .15s"}}>{c}</span>)}
-        </div>
-        {locQuery.length<2&&<>
-          <div style={{fontSize:12,fontWeight:600,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:8}}>Yakındaki Sahalar</div>
-          {LOC_RESULTS.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");setDrawer(null);}} style={{padding:"12px 0",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderBottom:i<LOC_RESULTS.length-1?`1px solid ${T.cardBorder}33`:"none"}}>
+        <div style={{flex:1,overflowY:"auto",padding:"0 20px 32px"}}>
+          {locQuery.length<2&&<>
+            <div style={{fontSize:12,fontWeight:600,color:T.textMuted,textTransform:"uppercase",letterSpacing:.5,marginBottom:10}}>Yakındaki Sahalar</div>
+            {LOC_RESULTS.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");setDrawer(null);}} style={{padding:"14px 0",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderBottom:i<LOC_RESULTS.length-1?`1px solid ${T.cardBorder}33`:"none"}}>
+              <span style={{display:"flex",marginTop:2,flexShrink:0}}>{FIELD_ICONS.pin}</span>
+              <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>{loc.addr}</div></div>
+            </div>)}
+          </>}
+          {locQuery.length>=2&&locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");setDrawer(null);}} style={{padding:"14px 0",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderBottom:i<locFiltered.length-1?`1px solid ${T.cardBorder}33`:"none"}}>
             <span style={{display:"flex",marginTop:2,flexShrink:0}}>{FIELD_ICONS.pin}</span>
-            <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
+            <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:3}}>{loc.addr}</div></div>
           </div>)}
-        </>}
-        {locQuery.length>=2&&locFiltered.map((loc,i)=><div key={loc.id} onClick={()=>{setSelectedLoc({...loc,type:"place"});setLocQuery("");setDrawer(null);}} style={{padding:"12px 0",cursor:"pointer",display:"flex",alignItems:"flex-start",gap:12,borderBottom:i<locFiltered.length-1?`1px solid ${T.cardBorder}33`:"none"}}>
-          <span style={{display:"flex",marginTop:2,flexShrink:0}}>{FIELD_ICONS.pin}</span>
-          <div><div style={{fontSize:14,fontWeight:600,color:T.text}}>{loc.name}</div><div style={{fontSize:12,color:T.textDim,marginTop:2}}>{loc.addr}</div></div>
-        </div>)}
-        {locQuery.length>=2&&locFiltered.length===0&&<div style={{textAlign:"center",padding:"24px 0",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+          {locQuery.length>=2&&locFiltered.length===0&&<div style={{textAlign:"center",padding:"32px 0",fontSize:13,color:T.textMuted}}>Sonuç bulunamadı</div>}
+        </div>
       </div>
     </div>}
 
@@ -712,43 +715,41 @@ function S31({onNav}){
     {/* Saat Drawer */}
     {drawer==="time"&&<DrawerWrap>
       <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Saat Seç</div>
-      <div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:16}}>
+      {/* 4 period cards */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}>
         {[
-          {label:"Sabah",sublabel:"06:00 – 09:00",times:["06:00","07:00","08:00","09:00"]},
-          {label:"Gün İçi",sublabel:"09:00 – 16:00",times:["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"]},
-          {label:"Akşam",sublabel:"16:00 – 21:00",times:["16:00","17:00","18:00","19:00","20:00","21:00"]},
-          {label:"Gece",sublabel:"21:00 – 00:00",times:["21:00","22:00","23:00","00:00"]},
-        ].map(period=><div key={period.label}>
-          <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:6}}>{period.label} <span style={{fontWeight:400}}>{period.sublabel}</span></div>
-          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            {period.times.map(t=>{const sel=tmpStartTime===t;return <div key={t} onClick={()=>setTmpStartTime(t)} style={{padding:"6px 12px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:sel?700:500,background:sel?T.accent:`${T.textDim}18`,color:sel?"#fff":T.textDim,transition:"all .15s"}}>{t}</div>;})}
-          </div>
-        </div>)}
+          {id:"morning",label:"Morning",sub:"Sabah",range:"12:00 AM – 9:00 AM",start:"06:00",end:"09:00"},
+          {id:"day",label:"Day",sub:"Gündüz",range:"9:00 AM – 4:00 PM",start:"09:00",end:"16:00"},
+          {id:"evening",label:"Evening",sub:"Akşam",range:"4:00 PM – 9:00 PM",start:"16:00",end:"21:00"},
+          {id:"night",label:"Night",sub:"Gece",range:"9:00 PM – 12:00 AM",start:"21:00",end:"00:00"},
+        ].map(p=>{
+          const sel=tmpStartTime===p.start&&tmpEndTime===p.end;
+          return <div key={p.id} onClick={()=>{setTmpStartTime(p.start);setTmpEndTime(p.end);}} style={{padding:"16px 14px",borderRadius:10,cursor:"pointer",background:sel?`${T.accent}15`:T.bg,border:`1.5px solid ${sel?T.accent:T.cardBorder}`,transition:"all .15s"}}>
+            <div style={{fontSize:15,fontWeight:700,color:sel?T.accent:T.text,marginBottom:2}}>{p.label}</div>
+            <div style={{fontSize:11,fontWeight:600,color:sel?T.accent:T.textDim,marginBottom:6}}>{p.sub}</div>
+            <div style={{fontSize:11,color:T.textMuted,lineHeight:1.4}}>{p.range}</div>
+          </div>;
+        })}
       </div>
-      <div style={{background:T.bg,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"12px 16px",marginBottom:16}}>
-        <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:10}}>Özel Saat Gir</div>
+      {/* Custom time */}
+      <div style={{background:T.bg,borderRadius:12,border:`1px solid ${T.cardBorder}`,padding:"14px 16px",marginBottom:16}}>
+        <div style={{fontSize:12,fontWeight:600,color:T.textMuted,marginBottom:12}}>Özel bir saat girebilirsiniz</div>
         <div style={{display:"flex",gap:12,alignItems:"center"}}>
           <div style={{flex:1}}>
-            <div style={{fontSize:11,color:T.textMuted,marginBottom:4}}>Başlangıç</div>
-            <input type="time" value={tmpStartTime} onChange={e=>setTmpStartTime(e.target.value)} style={{background:"none",border:`1px solid ${T.cardBorder}`,borderRadius:8,color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit",padding:"8px 10px"}}/>
+            <div style={{fontSize:11,color:T.textMuted,marginBottom:6}}>Başlangıç</div>
+            <input type="time" value={tmpStartTime} onChange={e=>setTmpStartTime(e.target.value)} style={{background:"none",border:`1.5px solid ${T.cardBorder}`,borderRadius:10,color:T.text,fontSize:15,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit",padding:"10px 12px"}}/>
           </div>
-          <div style={{color:T.textMuted,paddingTop:16}}>–</div>
+          <div style={{color:T.textMuted,paddingTop:18,fontSize:18,fontWeight:300}}>–</div>
           <div style={{flex:1}}>
-            <div style={{fontSize:11,color:T.textMuted,marginBottom:4}}>Bitiş</div>
-            <input type="time" value={tmpEndTime} onChange={e=>setTmpEndTime(e.target.value)} style={{background:"none",border:`1px solid ${T.cardBorder}`,borderRadius:8,color:T.text,fontSize:14,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit",padding:"8px 10px"}}/>
+            <div style={{fontSize:11,color:T.textMuted,marginBottom:6}}>Bitiş</div>
+            <input type="time" value={tmpEndTime} onChange={e=>setTmpEndTime(e.target.value)} style={{background:"none",border:`1.5px solid ${T.cardBorder}`,borderRadius:10,color:T.text,fontSize:15,width:"100%",outline:"none",fontWeight:500,fontFamily:"inherit",padding:"10px 12px"}}/>
           </div>
         </div>
       </div>
       <Btn primary full disabled={!tmpStartTime} onClick={()=>{if(tmpStartTime){setTimeVal(tmpStartTime+(tmpEndTime?` – ${tmpEndTime}`:""));setDrawer(null);}}} st={{borderRadius:12}}>Tamam</Btn>
     </DrawerWrap>}
 
-    {/* Kontenjan Drawer */}
-    {drawer==="quota"&&<DrawerWrap>
-      <div style={{fontSize:16,fontWeight:700,color:T.text,marginBottom:16}}>Kontenjan</div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-        {QUOTA_OPTIONS.map(n=>{const val=n==="∞"?"∞":n;const sel=quota===val;return <div key={n} onClick={()=>{setQuota(val);setDrawer(null);}} style={{padding:"14px 0",borderRadius:12,textAlign:"center",cursor:"pointer",fontSize:15,fontWeight:sel?700:600,background:sel?`${T.accent}15`:T.bg,color:sel?T.accent:T.textDim,border:`1.5px solid ${sel?T.accent:T.cardBorder}`,transition:"all .15s"}}>{n==="∞"?"∞":n}</div>;})}
-      </div>
-    </DrawerWrap>}
+
 
     {/* Maç Başlığı Drawer */}
     {drawer==="title"&&<DrawerWrap>
