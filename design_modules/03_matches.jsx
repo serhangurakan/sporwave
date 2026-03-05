@@ -241,8 +241,8 @@ function MatchListCard({m,isMine}){
   const host=uf(m.host);
   const spotsLeft=m.max-m.joined;
   const friends=m.friendsInMatch||[];
-  // Katılımcı avatarları: host + ilk 2 katılımcı dummy (mock)
-  const participantIds=[m.host,...[1,3,7,8,5].filter(id=>id!==m.host)].slice(0,m.joined>3?3:m.joined);
+  const friendUsers=friends.map(name=>U.find(u=>u.name.split(" ")[0]===name)).filter(Boolean);
+  const participantIds=[m.host,...[1,3,7,8,5].filter(id=>id!==m.host)].slice(0,Math.min(m.joined,3));
   const overflowCount=Math.max(0,m.joined-participantIds.length);
   const [pressed,setPressed]=useState(false);
 
@@ -257,28 +257,32 @@ function MatchListCard({m,isMine}){
       margin:"0 16px 12px",
       background:T.card,
       borderRadius:16,
-      border:`1px solid rgba(0,0,0,.08)`,
+      border:`1px solid rgba(0,0,0,.06)`,
       padding:16,
       cursor:"pointer",
       transform:pressed?"scale(0.98)":"scale(1)",
-      transition:"transform .15s ease, background .15s",
+      transition:"transform .15s ease",
       position:"relative",
       overflow:"hidden",
     }}
   >
     {/* Katılıyorsun badge */}
-    {isMine&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>
+    {isMine&&<div style={{display:"flex",marginBottom:8}}>
       <Badge c={T.accent}>{I.check(T.onAccent)} Katılıyorsun</Badge>
     </div>}
-    {/* Friend badge */}
-    {!isMine&&friends.length>0&&<div style={{display:"flex",marginBottom:8}}>
-      <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"3px 10px",borderRadius:20,fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}14`}}>{I.users(T.accent)} Takip ettiğin {friends.length} kişi bu maçta</span>
+
+    {/* Friend badge — avatar + isim */}
+    {!isMine&&friendUsers.length>0&&<div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+      <Av i={friendUsers[0].av} img={friendUsers[0].img} s={18}/>
+      <span style={{fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}12`,padding:"2px 8px",borderRadius:20}}>
+        {friendUsers[0].name.split(" ")[0]}{friendUsers.length>1?` +${friendUsers.length-1} kişi`:""} bu maçta
+      </span>
     </div>}
 
     {/* Title + arrow */}
     <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8,marginBottom:8}}>
       <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.3}}>{m.title}</div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textMuted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:3}}><polyline points="9,6 15,12 9,18"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity={0.4} style={{flexShrink:0,marginTop:3}}><polyline points="9,6 15,12 9,18"/></svg>
     </div>
 
     {/* Location + time */}
@@ -296,28 +300,25 @@ function MatchListCard({m,isMine}){
     {/* Host + format */}
     <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12,fontSize:12,color:T.textDim}}>
       <Av i={host?.av} img={host?.img} s={18}/>
-      <span style={{fontWeight:600,color:T.textDim}}>{host?.name?.split(" ")[0]} (Host)</span>
+      <span style={{fontWeight:600,color:T.textDim}}>{host?.name?.split(" ")[0]}</span>
+      <span style={{fontSize:13}}>🏆</span>
+      <span style={{fontWeight:600,color:T.textDim}}>Host</span>
       <span style={{color:T.textMuted}}>•</span>
-      <span style={{fontWeight:600,color:T.textDim}}>{m.fmt}</span>
+      <span style={{fontWeight:600,color:T.textDim}}>⚽ {m.fmt}</span>
     </div>
 
     {/* Participants avatars */}
-    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12}}>
-      <div style={{display:"flex"}}>
-        {participantIds.map((uid,idx)=>{const u=uf(uid);if(!u)return null;return <div key={uid} style={{marginLeft:idx===0?0:-8,zIndex:participantIds.length-idx}}><Av i={u.av} img={u.img} s={26} st={{border:`2px solid ${T.card}`}}/></div>;})}
-        {overflowCount>0&&<div style={{marginLeft:-8,width:26,height:26,borderRadius:"50%",background:T.bgAlt,border:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:T.textDim}}>+{overflowCount}</div>}
-      </div>
+    <div style={{display:"flex",marginBottom:12}}>
+      {participantIds.map((uid,idx)=>{const u=uf(uid);if(!u)return null;return <div key={uid} style={{marginLeft:idx===0?0:-6,zIndex:participantIds.length-idx}}><Av i={u.av} img={u.img} s={32} st={{border:`2px solid ${T.card}`}}/></div>;})}
+      {overflowCount>0&&<div style={{marginLeft:-6,width:32,height:32,borderRadius:"50%",background:T.bgAlt,border:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:T.textDim}}>+{overflowCount}</div>}
     </div>
 
-    {/* Capacity bar + count */}
-    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+    {/* Capacity bar + single-line count */}
+    <div style={{display:"flex",flexDirection:"column",gap:5}}>
       <div style={{height:4,borderRadius:2,background:`${T.textDim}18`,overflow:"hidden"}}>
         <div style={{height:4,borderRadius:2,background:spotsLeft<=2?T.orange:T.accent,width:`${m.joined/m.max*100}%`,transition:"width .3s"}}/>
       </div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <span style={{fontSize:12,fontWeight:600,color:T.textDim}}>{m.joined} / {m.max} oyuncu</span>
-        <span style={{fontSize:12,fontWeight:600,color:spotsLeft<=2?T.orange:T.textMuted}}>{spotsLeft} yer kaldı</span>
-      </div>
+      <span style={{fontSize:12,fontWeight:500,color:T.textMuted}}>{m.joined} / {m.max} oyuncu • <span style={{color:spotsLeft<=2?T.orange:T.textMuted}}>{spotsLeft} yer kaldı</span></span>
     </div>
   </div>;
 }
