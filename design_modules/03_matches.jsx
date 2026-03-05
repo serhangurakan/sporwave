@@ -81,7 +81,7 @@ const VENUES=[
 ];
 
 // S08: Matches Page (2 tabs: Maç Bul | Maçlarım)
-function S08({onNav,hasActiveWidget}){
+function S08({hasActiveWidget}){
   const [pageMode,setPageMode]=useState("matches"); // "matches" | "venues"
   const [dropOpen,setDropOpen]=useState(false);
   const [flash,setFlash]=useState(false);
@@ -221,14 +221,14 @@ function S08({onNav,hasActiveWidget}){
       {/* === Maç Bul tab === */}
       {activeTab==="find"&&<div>
         {openMatches.length>0
-          ? openMatches.map((m,i)=><div key={m.id}>{i>0&&<div style={{height:8,background:T.bgAlt}}/>}<MatchListCard m={m} onNav={onNav} isMine={false}/></div>)
+          ? openMatches.map((m)=><MatchListCard key={m.id} m={m} isMine={false}/>)
           : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
         }
       </div>}
       {/* === Maçlarım tab === */}
       {activeTab==="mine"&&<div>
         {myMatches.length>0
-          ? myMatches.map((m,i)=><div key={m.id}>{i>0&&<div style={{height:8,background:T.bgAlt}}/>}<MatchListCard m={m} onNav={onNav} isMine={true}/></div>)
+          ? myMatches.map((m)=><MatchListCard key={m.id} m={m} isMine={true}/>)
           : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:15,fontWeight:600,color:T.textDim,marginBottom:6}}>Henüz bir maça katılmadın.</div><div style={{fontSize:14,color:T.textMuted,lineHeight:1.5}}>Açık maçlara göz at ve ilk maçına katıl!</div></div>
         }
       </div>}
@@ -237,47 +237,88 @@ function S08({onNav,hasActiveWidget}){
   </div>;
 }
 
-function MatchListCard({m,onNav,isMine}){
+function MatchListCard({m,isMine}){
   const host=uf(m.host);
   const spotsLeft=m.max-m.joined;
-  const almostFull=spotsLeft<=2;
-  const levelLabel = m.level && m.level !== "Herkes" ? m.level : "Herkes";
-  const levelColor = m.level && m.level !== "Herkes" ? T.orange : T.textDim;
-  const acceptLabel = m.mode === "approval" ? "Onay gerekli" : "Açık";
-  const acceptColor = m.mode === "approval" ? T.purple : T.textDim;
   const friends=m.friendsInMatch||[];
-  const statusBadge = isMine
-    ? <Badge c={T.accent}>{I.check(T.onAccent)} Katılıyorsun</Badge>
-    : null;
-  return <div onClick={()=>window.location.assign("/04_match_detail?view=S12")} style={{background:isMine?`${T.accent}14`:"none",borderRadius:0,borderLeft:isMine?`4px solid ${T.accent}`:`4px solid ${T.cardBorder}`,borderBottom:`1px solid ${T.cardBorder}`,padding:"14px 16px",cursor:"pointer"}}>
-    {/* Status row */}
-    {statusBadge&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>{statusBadge}</div>}
-    {/* Friend badge (Maç Bul tab) */}
-    {!isMine&&friends.length>0&&<div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+  // Katılımcı avatarları: host + ilk 2 katılımcı dummy (mock)
+  const participantIds=[m.host,...[1,3,7,8,5].filter(id=>id!==m.host)].slice(0,m.joined>3?3:m.joined);
+  const overflowCount=Math.max(0,m.joined-participantIds.length);
+  const [pressed,setPressed]=useState(false);
+
+  return <div
+    onClick={()=>window.location.assign("/04_match_detail?view=S12")}
+    onMouseDown={()=>setPressed(true)}
+    onMouseUp={()=>setPressed(false)}
+    onMouseLeave={()=>setPressed(false)}
+    onTouchStart={()=>setPressed(true)}
+    onTouchEnd={()=>setPressed(false)}
+    style={{
+      margin:"0 16px 12px",
+      background:T.card,
+      borderRadius:16,
+      border:`1px solid rgba(0,0,0,.08)`,
+      padding:16,
+      cursor:"pointer",
+      transform:pressed?"scale(0.98)":"scale(1)",
+      transition:"transform .15s ease, background .15s",
+      position:"relative",
+      overflow:"hidden",
+    }}
+  >
+    {/* Katılıyorsun badge */}
+    {isMine&&<div style={{display:"flex",justifyContent:"flex-start",marginBottom:8}}>
+      <Badge c={T.accent}>{I.check(T.onAccent)} Katılıyorsun</Badge>
+    </div>}
+    {/* Friend badge */}
+    {!isMine&&friends.length>0&&<div style={{display:"flex",marginBottom:8}}>
       <span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"3px 10px",borderRadius:20,fontSize:11,fontWeight:600,color:T.accent,background:`${T.accent}14`}}>{I.users(T.accent)} Takip ettiğin {friends.length} kişi bu maçta</span>
     </div>}
-    {/* Title row */}
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:4}}>
-      <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.4}}>{m.title}</div>
+
+    {/* Title + arrow */}
+    <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8,marginBottom:8}}>
+      <div style={{fontWeight:700,fontSize:16,color:T.text,fontFamily:FH,flex:1,lineHeight:1.3}}>{m.title}</div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textMuted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:3}}><polyline points="9,6 15,12 9,18"/></svg>
     </div>
-    {/* Description */}
-    {m.desc&&<div style={{fontSize:14,color:T.textDim,lineHeight:1.5,marginBottom:8,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{m.desc}</div>}
-    {/* Date / location */}
-    <div style={{display:"flex",gap:10,fontSize:12,color:T.textDim,marginBottom:8,flexWrap:"wrap",alignItems:"center",lineHeight:1.4}}>
-      <span style={{display:"flex",alignItems:"center",gap:3}}>{I.clock()} {m.date} · {m.time}</span>
-      <span style={{display:"flex",alignItems:"center",gap:3,color:T.accent}}>{I.pin(T.accent)} {m.loc.name?.split(" ")[0]||m.loc.district}</span>
-    </div>
-    {/* Host row + almost full */}
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8,lineHeight:1.4}}>
-      <div style={{display:"flex",alignItems:"center",gap:8}}>
-        <Av i={host?.av} img={host?.img} s={20}/>
-        <span style={{fontSize:12,color:T.textDim}}>{host?.name?.split(" ")[0]}</span>
-        <span style={{fontSize:11,color:T.textMuted}}>·</span>
-        <Badge c={T.textDim}>{m.fmt}</Badge>
+
+    {/* Location + time */}
+    <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:10}}>
+      <div style={{display:"flex",alignItems:"center",gap:5,fontSize:13,color:T.textDim}}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span style={{fontWeight:500}}>{m.loc.name?.split(" ")[0]||m.loc.district}</span>
       </div>
-      {almostFull&&<span style={{fontSize:11,fontWeight:700,color:T.text}}>Son {spotsLeft} yer!</span>}
+      <div style={{display:"flex",alignItems:"center",gap:5,fontSize:13,color:T.textDim}}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        <span>{m.date} • {m.time}</span>
+      </div>
     </div>
-    <CapacityBar joined={m.joined} max={m.max}/>
+
+    {/* Host + format */}
+    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12,fontSize:12,color:T.textDim}}>
+      <Av i={host?.av} img={host?.img} s={18}/>
+      <span style={{fontWeight:600,color:T.textDim}}>{host?.name?.split(" ")[0]} (Host)</span>
+      <span style={{color:T.textMuted}}>•</span>
+      <span style={{fontWeight:600,color:T.textDim}}>{m.fmt}</span>
+    </div>
+
+    {/* Participants avatars */}
+    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12}}>
+      <div style={{display:"flex"}}>
+        {participantIds.map((uid,idx)=>{const u=uf(uid);if(!u)return null;return <div key={uid} style={{marginLeft:idx===0?0:-8,zIndex:participantIds.length-idx}}><Av i={u.av} img={u.img} s={26} st={{border:`2px solid ${T.card}`}}/></div>;})}
+        {overflowCount>0&&<div style={{marginLeft:-8,width:26,height:26,borderRadius:"50%",background:T.bgAlt,border:`2px solid ${T.card}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:T.textDim}}>+{overflowCount}</div>}
+      </div>
+    </div>
+
+    {/* Capacity bar + count */}
+    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+      <div style={{height:4,borderRadius:2,background:`${T.textDim}18`,overflow:"hidden"}}>
+        <div style={{height:4,borderRadius:2,background:spotsLeft<=2?T.orange:T.accent,width:`${m.joined/m.max*100}%`,transition:"width .3s"}}/>
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:12,fontWeight:600,color:T.textDim}}>{m.joined} / {m.max} oyuncu</span>
+        <span style={{fontSize:12,fontWeight:600,color:spotsLeft<=2?T.orange:T.textMuted}}>{spotsLeft} yer kaldı</span>
+      </div>
+    </div>
   </div>;
 }
 
