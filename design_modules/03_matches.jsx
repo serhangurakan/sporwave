@@ -31,10 +31,10 @@ const U=[
 const uf=id=>U.find(u=>u.id===id);
 
 const PLANNED=[
-  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:{name:"Kadıköy Arena",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy",lat:40.9901,lng:29.0234,type:"place"},fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendsInMatch:[]},
-  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var. Seviye fark etmez herkes gelsin.",date:"1 Mar",time:"20:00",loc:{name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Emre"]},
-  {id:103,title:"Ataşehir Turnuva",desc:"Ataşehir'de düzenlenen hafta sonu turnuvası, kayıt ücretsiz.",date:"5 Mar",time:"19:00",loc:{city:"İstanbul",district:"Ataşehir",type:"area"},fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Ali","Emre"]},
-  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:{name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046,type:"place"},fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[]},
+  {id:104,title:"Kadıköy Gece Maçı",desc:"Her seviyeden oyuncu bekliyoruz, keyifli bir maç olacak. Sahada buluşalım!",date:"8 Mar",time:"21:30",loc:{name:"Kadıköy Arena",addr:"Rasimpaşa Mah. Rıhtım Cad. No:44, Kadıköy",lat:40.9901,lng:29.0234,type:"place"},fmt:"6v6",host:1,joined:10,max:12,level:"İyi",mode:"open",vis:"followers",myMatch:true,friendsInMatch:[],distance:0.8},
+  {id:101,title:"Cumartesi Akşam Maçı",desc:"Rekabetçi bir maç planlıyoruz, kaleci var. Seviye fark etmez herkes gelsin.",date:"1 Mar",time:"20:00",loc:{name:"Kadıköy Spor Tesisleri",addr:"Caferağa Mah. Moda Cad. No:12, Kadıköy",lat:40.9867,lng:29.0287,type:"place"},fmt:"6v6",host:2,joined:7,max:12,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Emre"],distance:1.2},
+  {id:103,title:"Ataşehir Turnuva",desc:"Ataşehir'de düzenlenen hafta sonu turnuvası, kayıt ücretsiz.",date:"5 Mar",time:"19:00",loc:{city:"İstanbul",district:"Ataşehir",type:"area"},fmt:"7v7",host:3,joined:4,max:14,level:"Herkes",mode:"open",vis:"public",myMatch:false,friendsInMatch:["Ali","Emre"],distance:8.4},
+  {id:102,title:"Pazar Sabah Maçı",desc:"Sabah erken maçı, uyanabilen gelsin. Maç sonrası kahvaltı yapıyoruz.",date:"2 Mar",time:"10:00",loc:{name:"Beşiktaş Halısaha",addr:"Sinanpaşa Mah. Beşiktaş Cad. No:5, Beşiktaş",lat:41.0422,lng:29.0046,type:"place"},fmt:"5v5",host:6,joined:9,max:10,level:"Orta+",mode:"approval",vis:"public",myMatch:false,friendsInMatch:[],distance:5.7},
 ];
 
 // Icons
@@ -68,6 +68,7 @@ const I={
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:"none",color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
 function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?T.white:primary?T.onAccent:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:T.white,background:c,whiteSpace:"nowrap",...st}}>{children}</span>;}
+function SectionLabel({children,mt=16}){return <div style={{margin:`${mt}px 16px 8px`,fontSize:14,fontWeight:600,color:"#6B7280",letterSpacing:"0.02em"}}>{children}</div>;}
 
 function TabBar({active,onNav}){const tabs=[{id:"S05",ic:I.home,l:"Ana Sayfa"},{id:"S08",ic:I.football,l:"Maçlar"},{id:"S15",ic:I.user,l:"Profil"}];const handleTabClick=(tabId)=>{if(tabId==="S05"){window.location.assign("/02_feed");return;}if(tabId==="S15"){window.location.assign("/05_profile");return;}onNav(tabId);};return <div style={{position:"fixed",bottom:0,left:0,right:0,height:56,background:T.bgAlt,borderTop:`1px solid ${T.cardBorder}`,display:"flex",justifyContent:"space-around",alignItems:"center",zIndex:100,maxWidth:430,margin:"0 auto"}}>{tabs.map(t=><div key={t.id} onClick={()=>handleTabClick(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",padding:"8px 20px"}}><span style={{display:"flex"}}>{t.ic(active===t.id?T.accent:T.textMuted)}</span><span style={{fontSize:10,fontWeight:active===t.id?700:500,color:active===t.id?T.accent:T.textMuted}}>{t.l}</span></div>)}</div>;}
 
@@ -80,12 +81,10 @@ const VENUES=[
   {id:3,name:"Ataşehir Premium Halısaha",address:"Küçükbakkalköy Mah. Bostancı Yolu, Ataşehir",rating:4.9,reviews:210,open:false,price:"400₺/saat",img:null,tags:["Işıklı","Kapalı","Duş","Kafeterya"]},
 ];
 
-// S08: Matches Page (2 tabs: Maç Bul | Maçlarım)
 function S08({hasActiveWidget}){
   const [pageMode,setPageMode]=useState("matches"); // "matches" | "venues"
   const [dropOpen,setDropOpen]=useState(false);
   const [flash,setFlash]=useState(false);
-  const [activeTab,setActiveTab]=useState("find"); // "find" | "mine"
   const [filter,setFilter]=useState(false);
   const cities=["İstanbul","Ankara","İzmir","Bursa","Antalya","Adana"];
   const [city,setCity]=useState("İstanbul"); // default: kullanıcının profil şehri
@@ -95,8 +94,11 @@ function S08({hasActiveWidget}){
   const [districtOpen,setDistrictOpen]=useState(false);
   const [dateFilter,setDateFilter]=useState(null);
 
-  const openMatches=PLANNED.filter(m=>!m.myMatch);
-  const myMatches=PLANNED.filter(m=>m.myMatch);
+  const upcomingMatch=PLANNED.find(m=>m.myMatch)||null;
+  const openMatches=[...PLANNED.filter(m=>!m.myMatch)].sort((a,b)=>{
+    if(a.distance!=null&&b.distance!=null) return a.distance-b.distance;
+    return 0; // fallback: data order (already date-sorted)
+  });
 
   return <div style={{paddingBottom:hasActiveWidget?156:80}}>
     {/* Header — sticky */}
@@ -116,7 +118,7 @@ function S08({hasActiveWidget}){
             </div>)}
           </div>}
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:8,visibility:activeTab==="find"&&pageMode==="matches"?"visible":"hidden"}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,visibility:pageMode==="matches"?"visible":"hidden"}}>
           {/* City dropdown */}
           <div style={{position:"relative"}}>
             <div onClick={()=>{setCityOpen(!cityOpen);setDistrictOpen(false);}} style={{display:"flex",alignItems:"center",gap:4,padding:"6px 10px",borderRadius:8,border:`1px solid ${cityOpen?T.accent:T.cardBorder}`,cursor:"pointer",background:cityOpen?`${T.accent}08`:"transparent",transition:"all .2s"}}>
@@ -135,17 +137,11 @@ function S08({hasActiveWidget}){
           <span onClick={()=>{setFilter(!filter);setDistrictOpen(false);setCityOpen(false);}} style={{cursor:"pointer",display:"flex",padding:6,borderRadius:8,background:filter?`${T.accent}10`:"transparent"}}>{I.filter(filter?T.accent:T.textDim)}</span>
         </div>
       </div>
-      {/* Tabs — sadece Maçlar modunda */}
-      {pageMode==="matches"
-        ? <div style={{display:"flex",padding:"8px 16px 0",borderBottom:`1px solid ${T.cardBorder}`}}>
-            {[{id:"find",label:"Maç Bul"},{id:"mine",label:"Maçlarım"}].map(tab=><div key={tab.id} onClick={()=>{setActiveTab(tab.id);if(tab.id==="mine")setFilter(false);}} style={{flex:1,textAlign:"center",padding:"10px 0",fontSize:13,fontWeight:700,color:activeTab===tab.id?T.accent:T.textDim,borderBottom:activeTab===tab.id?`2px solid ${T.accent}`:"2px solid transparent",cursor:"pointer",transition:"all .2s"}}>{tab.label}</div>)}
-          </div>
-        : <div style={{borderBottom:`1px solid ${T.cardBorder}`}}/>
-      }
+      <div style={{borderBottom:`1px solid ${T.cardBorder}`}}/>
     </div>
 
-    {/* Filter drawer (only Maç Bul tab) */}
-    {activeTab==="find"&&filter&&<div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
+    {/* Filter drawer */}
+    {filter&&<div style={{position:"fixed",bottom:0,left:0,right:0,top:0,maxWidth:430,margin:"0 auto",zIndex:150,display:"flex",alignItems:"flex-end"}}>
       <div onClick={()=>{setFilter(false);setDistrictOpen(false);}} style={{position:"absolute",inset:0,background:T.overlayScrim}}/>
       <div style={{position:"relative",width:"100%",background:T.card,borderRadius:"20px 20px 0 0",padding:"20px 20px 32px",marginBottom:56,zIndex:151}}>
         <div style={{width:40,height:4,borderRadius:2,background:T.cardBorder,margin:"0 auto 20px"}}/>
@@ -221,20 +217,20 @@ function S08({hasActiveWidget}){
 
     {/* === Maçlar modu === */}
     {pageMode==="matches"&&<div style={{paddingTop:16}}>
-      {/* === Maç Bul tab === */}
-      {activeTab==="find"&&<div>
-        {openMatches.length>0
-          ? openMatches.map((m)=><MatchListCard key={m.id} m={m} isMine={false}/>)
-          : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
-        }
-      </div>}
-      {/* === Maçlarım tab === */}
-      {activeTab==="mine"&&<div>
-        {myMatches.length>0
-          ? myMatches.map((m)=><MatchListCard key={m.id} m={m} isMine={true}/>)
-          : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:15,fontWeight:600,color:T.textDim,marginBottom:6}}>Henüz bir maça katılmadın.</div><div style={{fontSize:14,color:T.textMuted,lineHeight:1.5}}>Açık maçlara göz at ve ilk maçına katıl!</div></div>
-        }
-      </div>}
+      {/* Section 1: Yaklaşan Maçın */}
+      {upcomingMatch&&<>
+        <SectionLabel mt={0}>Yaklaşan Maçın</SectionLabel>
+        <MatchListCard m={upcomingMatch} isMine={true}/>
+      </>}
+
+      {/* Section 2: Yakınındaki Maçlar */}
+      {openMatches.length>0
+        ? <>
+            <SectionLabel mt={upcomingMatch?24:0}>Yakınındaki Maçlar</SectionLabel>
+            {openMatches.map(m=><MatchListCard key={m.id} m={m} isMine={false}/>)}
+          </>
+        : <div style={{textAlign:"center",padding:"48px 24px"}}><div style={{marginBottom:12,opacity:.5}}>{I.football(T.textMuted)}</div><div style={{fontSize:14,color:T.textDim}}>Şu an açık maç yok</div><div style={{fontSize:12,color:T.textMuted,marginTop:4}}>İlk maçı sen oluştur!</div></div>
+      }
     </div>}
 
   </div>;
@@ -250,7 +246,7 @@ function MatchListCard({m,isMine}){
   const [pressed,setPressed]=useState(false);
 
   return <div
-    onClick={()=>window.location.assign("/04_match_detail?view=S12")}
+    onClick={()=>window.location.assign(`/04_match_detail?view=S12&role=${isMine?"host":"guest"}`)}
     onMouseDown={()=>setPressed(true)}
     onMouseUp={()=>setPressed(false)}
     onMouseLeave={()=>setPressed(false)}
@@ -292,7 +288,8 @@ function MatchListCard({m,isMine}){
     <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:5,fontSize:13,color:T.textDim}}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-        <span style={{fontWeight:500}}>{m.loc.name?.split(" ")[0]||m.loc.district}</span>
+        <span style={{fontWeight:500,flex:1}}>{m.loc.name?.split(" ")[0]||m.loc.district}</span>
+        {m.distance!=null&&<span style={{fontSize:11,color:T.textMuted,fontWeight:500}}>{m.distance} km</span>}
       </div>
       <div style={{display:"flex",alignItems:"center",gap:5,fontSize:13,color:T.textDim}}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
@@ -819,7 +816,7 @@ export default function SporWaveMatches(){
     </div>
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {/* Fixed elements OUTSIDE transform div */}
-    {isMatchesView&&<div style={{position:"fixed",bottom:72,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
+    {isMatchesView&&<div style={{position:"fixed",bottom:80,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
       <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus(T.onAccent)}</div>
     </div>}
     {cur==="S14"&&<S14 onNav={nav}/>}

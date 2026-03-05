@@ -354,7 +354,7 @@ function InlineChat({canInput,showGuestOverlay,onJoin,inputDisabledText}){
 }
 
 function DevStateRibbon({viewRole,setViewRole,matchState,setMatchState}){
-  const roles=[["host","Host"],["participant","Participant"]];
+  const roles=[["host","Host"],["participant","Participant"],["guest","Guest"]];
   const states=[["pre_match","Maç Öncesi"],["post_match","Maç Sonrası"]];
   return <div style={{padding:"6px 8px 2px",display:"flex",flexDirection:"column",gap:6}}>
     <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
@@ -375,6 +375,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
   const m=PLANNED_MATCH;
   const host=uf(m.host);
   const isHost=viewRole==="host";
+  const isGuest=viewRole==="guest";
   const isParticipant=viewRole==="host"||viewRole==="participant";
   const [players,setPlayers]=useState(m.players);
   const [joined,setJoined]=useState(m.joined);
@@ -428,7 +429,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
   const canEditMatch=isHost;
   const canRemovePlayer=isHost&&matchState==="pre_match";
   const canLeaveMatch=viewRole==="participant";
-  const canChatInput=true;
+  const canChatInput=!isGuest;
 
   return <div style={{paddingBottom:80,minHeight:"calc(100vh - 36px)",display:"flex",flexDirection:"column"}}>
     {/* Header */}
@@ -500,7 +501,7 @@ function S12({onNav,viewRole,setViewRole,matchState,setMatchState}){
     </div>
 
     {/* Chat primary area */}
-    <InlineChat canInput={canChatInput&& (matchState==="pre_match"||matchState==="post_match")} showGuestOverlay={false} inputDisabledText="Sohbete erişmek için maça katıl"/>
+    <InlineChat canInput={canChatInput&&(matchState==="pre_match"||matchState==="post_match")} showGuestOverlay={isGuest} onJoin={()=>setViewRole("participant")} inputDisabledText="Sohbete erişmek için maça katıl"/>
 
     {/* Remove player confirm modal (host) */}
     {removeConfirm&&<div style={{position:"fixed",inset:0,background:T.overlayScrim,zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
@@ -933,9 +934,12 @@ export default function SporWaveMatchDetail(){
 
   useEffect(()=>{if(!document.querySelector('link[href*="Plus+Jakarta+Sans"]')){const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);}},[]);
   useEffect(()=>{
-    const view=new URLSearchParams(window.location.search).get("view");
+    const params=new URLSearchParams(window.location.search);
+    const view=params.get("view");
+    const role=params.get("role");
     const allowed=["S10","S11","S12","S13","S30"];
     if(view&&allowed.includes(view))setCur(view);
+    if(role==="host"||role==="guest")setViewRole(role);
   },[]);
   const nav=(p,id)=>{setFade(false);setTimeout(()=>{setCur(p);setCurId(id||null);setFade(true);},120);};
 
