@@ -66,7 +66,7 @@ const I={
 
 // Components
 function Av({i,img,s=32,c=T.accent,onClick,st}){return <div onClick={onClick} style={{width:s,height:s,borderRadius:"50%",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:`${c}18`,border:"none",color:c,fontSize:s*.34,fontWeight:700,cursor:onClick?"pointer":"default",flexShrink:0,...st}}>{img?<img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:i}</div>;}
-function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?T.white:primary?T.onAccent:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"all .2s",transform:h&&!disabled?"translateY(-1px)":"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
+function Btn({children,primary,danger,small,full,ghost,onClick,disabled,st}){const[h,setH]=useState(false);const[p,setP]=useState(false);return <button disabled={disabled} onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>{setH(false);setP(false);}} onMouseDown={()=>setP(true)} onMouseUp={()=>setP(false)} onTouchStart={()=>setP(true)} onTouchEnd={()=>setP(false)} style={{padding:small?"7px 14px":"12px 20px",borderRadius:10,border:primary||danger?"none":`1.5px solid ${ghost?"transparent":T.cardBorder}`,background:disabled?`${T.textDim}22`:danger?T.red:primary?T.accent:"transparent",color:disabled?T.textDim:danger?T.white:primary?T.onAccent:T.text,fontSize:small?12:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",width:full?"100%":"auto",transition:"transform .12s ease, opacity .15s",transform:p&&!disabled?"scale(0.97)":h&&!disabled?"translateY(-1px)":"none",opacity:disabled?0.4:1,outline:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,...st}}>{children}</button>;}
 function Badge({children,c=T.accent,st}){return <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:20,fontSize:11,fontWeight:600,color:T.white,background:c,whiteSpace:"nowrap",...st}}>{children}</span>;}
 function SectionLabel({children,mt=16}){return <div style={{margin:`${mt}px 16px 8px`,fontSize:14,fontWeight:600,color:"#6B7280",letterSpacing:"0.02em"}}>{children}</div>;}
 
@@ -268,7 +268,7 @@ function MatchListCard({m,isMine}){
   >
     {/* Katılıyorsun badge */}
     {isMine&&<div style={{display:"flex",marginBottom:8}}>
-      <Badge c={T.accent}>{I.check(T.onAccent)} Katılıyorsun</Badge>
+      <Badge c={T.accent} st={{background:`${T.accent}18`,color:T.accent,border:`1px solid ${T.accent}55`}}>{I.check(T.accent)} Katılıyorsun</Badge>
     </div>}
 
     {/* Friend badge — avatar + isim */}
