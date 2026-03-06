@@ -256,7 +256,8 @@ function MatchListCard({m,isMine}){
       margin:"0 16px 16px",
       background:T.card,
       borderRadius:16,
-      border:`1px solid rgba(0,0,0,.06)`,
+      border:`1px solid ${T.cardBorder}`,
+      boxShadow:T.shadowCard,
       padding:18,
       cursor:"pointer",
       transform:pressed?"scale(0.98)":"scale(1)",
@@ -311,7 +312,7 @@ function MatchListCard({m,isMine}){
 
     {/* Capacity bar + single-line count */}
     <div style={{display:"flex",flexDirection:"column",gap:6}}>
-      <div style={{height:4,borderRadius:2,background:`${T.textDim}18`,overflow:"hidden"}}>
+      <div style={{height:4,borderRadius:2,background:T.progressTrack,overflow:"hidden"}}>
         <div style={{height:4,borderRadius:2,background:spotsLeft<=2?T.orange:T.accent,width:`${m.joined/m.max*100}%`,transition:"width .3s"}}/>
       </div>
       <span style={{fontSize:12,fontWeight:500,color:T.textMuted}}>{m.joined} / {m.max} oyuncu • <span style={{color:spotsLeft<=2?T.orange:T.textMuted,fontWeight:700}}>{spotsLeft} yer kaldı</span></span>
@@ -817,7 +818,7 @@ export default function SporWaveMatches(){
     <div style={{opacity:fade?1:0,transform:fade?"none":"translateY(6px)",transition:"all .12s ease"}}>{pg()}</div>
     {/* Fixed elements OUTSIDE transform div */}
     {isMatchesView&&<div style={{position:"fixed",bottom:80,left:0,right:0,maxWidth:430,margin:"0 auto",pointerEvents:"none",zIndex:90,display:"flex",justifyContent:"flex-end",paddingRight:24}}>
-      <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:`0 4px 24px ${T.accent}44`,pointerEvents:"auto"}}>{I.plus(T.onAccent)}</div>
+      <div onClick={()=>nav("S31")} style={{width:56,height:56,borderRadius:16,background:T.accent,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:T.shadowFab,pointerEvents:"auto"}}>{I.plus(T.onAccent)}</div>
     </div>}
     {cur==="S14"&&<S14 onNav={nav}/>}
     {isMatchesView&&<TabBar active="S08" onNav={nav}/>}
