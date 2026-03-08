@@ -1,6 +1,9 @@
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Load .env for local development — Firebase deploy loads .env.production automatically
+if (process.env.FUNCTIONS_EMULATOR) {
+  const dotenv = require('dotenv') as typeof import('dotenv');
+  const path = require('path') as typeof import('path');
+  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+}
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
