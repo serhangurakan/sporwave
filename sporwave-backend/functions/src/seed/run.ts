@@ -9,7 +9,7 @@ import { SEED_USERS, SEED_MATCHES, SEED_PARTICIPANTS, SEED_MESSAGES } from './da
 
 // Initialize without service account for emulator, or with SA for production
 if (!admin.apps.length) {
-  admin.initializeApp({ projectId: 'sporwave-mvp' });
+  admin.initializeApp({ projectId: 'sporwave-f042c' });
 }
 
 const db = admin.firestore();
