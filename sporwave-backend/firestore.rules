@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All reads/writes go through Cloud Functions (HTTP endpoints)
+    // Direct client access is locked down
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
