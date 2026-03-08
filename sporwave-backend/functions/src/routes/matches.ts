@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as admin from 'firebase-admin';
+import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
 import { apiError } from '../utils/response';
 import { haversineKm, DISTRICT_COORDS } from '../utils/distance';
@@ -37,8 +38,8 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
       const start = new Date(`${yyyy}-${mm}-${dd}T00:00:00Z`);
       const end = new Date(`${yyyy}-${mm}-${dd}T23:59:59Z`);
       query = query
-        .where('startsAt', '>=', admin.firestore.Timestamp.fromDate(start))
-        .where('startsAt', '<=', admin.firestore.Timestamp.fromDate(end));
+        .where('startsAt', '>=', Timestamp.fromDate(start))
+        .where('startsAt', '<=', Timestamp.fromDate(end));
     }
 
     if (cursor) {
@@ -188,7 +189,7 @@ router.post('/:matchId/join', requireAuth, async (req: AuthRequest, res) => {
       return apiError(res, 409, 'ALREADY_JOINED', 'You have already joined this match');
     }
 
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
     const batch = db().batch();
 
     batch.set(participantRef, {
@@ -203,12 +204,12 @@ router.post('/:matchId/join', requireAuth, async (req: AuthRequest, res) => {
     });
 
     batch.update(matchRef, {
-      joinedCount: admin.firestore.FieldValue.increment(1),
+      joinedCount: FieldValue.increment(1),
       updatedAt: now,
     });
 
     batch.update(db().collection('users').doc(uid), {
-      totalMatches: admin.firestore.FieldValue.increment(1),
+      totalMatches: FieldValue.increment(1),
       updatedAt: now,
     });
 
@@ -243,7 +244,7 @@ router.post('/:matchId/leave', requireAuth, async (req: AuthRequest, res) => {
       return apiError(res, 400, 'NOT_JOINED', 'You are not joined to this match');
     }
 
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
     const batch = db().batch();
 
     batch.update(participantRef, {
@@ -253,12 +254,12 @@ router.post('/:matchId/leave', requireAuth, async (req: AuthRequest, res) => {
     });
 
     batch.update(matchRef, {
-      joinedCount: admin.firestore.FieldValue.increment(-1),
+      joinedCount: FieldValue.increment(-1),
       updatedAt: now,
     });
 
     batch.update(db().collection('users').doc(uid), {
-      totalMatches: admin.firestore.FieldValue.increment(-1),
+      totalMatches: FieldValue.increment(-1),
       updatedAt: now,
     });
 
@@ -342,7 +343,7 @@ router.post('/:matchId/messages', requireAuth, async (req: AuthRequest, res) => 
       return apiError(res, 403, 'NOT_PARTICIPANT', 'You must join the match to send messages');
     }
 
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
     const messageRef = await db().collection('matchMessages').add({
       matchId,
       userId: uid,

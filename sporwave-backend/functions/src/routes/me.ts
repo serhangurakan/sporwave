@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as admin from 'firebase-admin';
+import { Timestamp } from 'firebase-admin/firestore';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
 import { apiError, formatUserResponse } from '../utils/response';
 
@@ -38,7 +39,7 @@ router.put('/onboarding', requireAuth, async (req: AuthRequest, res) => {
   }
 
   try {
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
     const update: Record<string, unknown> = {
       city: city.trim(),
       sports,

@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import express from 'express';

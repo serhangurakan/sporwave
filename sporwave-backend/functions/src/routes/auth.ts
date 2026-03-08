@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as admin from 'firebase-admin';
-import bcrypt from 'bcryptjs';
+import { Timestamp } from 'firebase-admin/firestore';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { apiError, formatUserResponse } from '../utils/response';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
   try {
     const firebaseUser = await admin.auth().createUser({ email, password, displayName: name });
     const uid = firebaseUser.uid;
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
 
     const userDoc = {
       email,
@@ -130,8 +130,8 @@ router.post('/refresh', async (req, res) => {
     // Rotate session
     await session.ref.update({
       refreshTokenHash: hashToken(newRefresh),
-      expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      updatedAt: admin.firestore.Timestamp.now(),
+      expiresAt: Timestamp.fromMillis(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      updatedAt: Timestamp.now(),
     });
 
     return res.json({ tokens: { accessToken: newAccess, refreshToken: newRefresh } });
@@ -153,7 +153,7 @@ router.post('/social/google', async (req, res) => {
 
     const ref = db().collection('users').doc(uid);
     const snap = await ref.get();
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
 
     if (!snap.exists) {
       await ref.set({
@@ -198,7 +198,7 @@ router.post('/social/apple', async (req, res) => {
 
     const ref = db().collection('users').doc(uid);
     const snap = await ref.get();
-    const now = admin.firestore.Timestamp.now();
+    const now = Timestamp.now();
 
     if (!snap.exists) {
       await ref.set({
@@ -279,8 +279,8 @@ function hashToken(token: string): string {
 }
 
 async function storeSession(uid: string, refreshToken: string): Promise<void> {
-  const now = admin.firestore.Timestamp.now();
-  const expiresAt = admin.firestore.Timestamp.fromMillis(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const now = Timestamp.now();
+  const expiresAt = Timestamp.fromMillis(Date.now() + 30 * 24 * 60 * 60 * 1000);
   await db().collection('userSessions').add({
     userId: uid,
     refreshTokenHash: hashToken(refreshToken),

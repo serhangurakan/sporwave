@@ -1,0 +1,880 @@
+[debug] [2026-03-08T11:06:57.924Z] ----------------------------------------------------------------------
+[debug] [2026-03-08T11:06:57.928Z] Command:       /opt/homebrew/Cellar/node/23.11.0/bin/node /opt/homebrew/bin/firebase emulators:start --only auth,functions,firestore
+[debug] [2026-03-08T11:06:57.928Z] CLI Version:   15.9.0
+[debug] [2026-03-08T11:06:57.928Z] Platform:      darwin
+[debug] [2026-03-08T11:06:57.928Z] Node Version:  v23.11.0
+[debug] [2026-03-08T11:06:57.929Z] Time:          Sun Mar 08 2026 14:06:57 GMT+0300 (GMT+03:00)
+[debug] [2026-03-08T11:06:57.929Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-08T11:06:58.687Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-08T11:06:58.687Z] > authorizing via signed-in user (serhan.gurakan@gmail.com)
+[debug] [2026-03-08T11:06:58.842Z] openjdk version "25.0.2" 2026-01-20 LTS
+
+[debug] [2026-03-08T11:06:58.842Z] OpenJDK Runtime Environment Temurin-25.0.2+10 (build 25.0.2+10-LTS)
+OpenJDK 64-Bit Server VM Temurin-25.0.2+10 (build 25.0.2+10-LTS, mixed mode, sharing)
+
+[debug] [2026-03-08T11:06:58.848Z] Parsed Java major version: 25
+[info] i  emulators: Starting emulators: auth, functions, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore"}}
+[debug] [2026-03-08T11:06:59.337Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.337Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.337Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.337Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.337Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-03-08T11:06:59.339Z] Write emulator hub locator at /var/folders/_9/jzwdklln6jz8tx4sy_sqd7440000gn/T/hub-sporwave-f042c.json
+[debug] [2026-03-08T11:06:59.583Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.583Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.583Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-08T11:06:59.584Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, database, hosting, pubsub, storage, dataconnect"}}
+[debug] [2026-03-08T11:07:02.589Z] defaultcredentials: writing to file /Users/serhangurakan/.config/firebase/serhan_gurakan_gmail.com_application_default_credentials.json
+[debug] [2026-03-08T11:07:02.590Z] Setting GAC to /Users/serhangurakan/.config/firebase/serhan_gurakan_gmail.com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/serhangurakan/.config/firebase/serhan_gurakan_gmail.com_application_default_credentials.json"}}
+[debug] [2026-03-08T11:07:02.591Z] Checked if tokens are valid: true, expires at: 1772971017365
+[debug] [2026-03-08T11:07:02.591Z] Checked if tokens are valid: true, expires at: 1772971017365
+[debug] [2026-03-08T11:07:02.592Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/sporwave-f042c/adminSdkConfig [none]
+[debug] [2026-03-08T11:07:02.974Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/sporwave-f042c/adminSdkConfig 200
+[debug] [2026-03-08T11:07:02.974Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/sporwave-f042c/adminSdkConfig {"projectId":"sporwave-f042c","storageBucket":"sporwave-f042c.firebasestorage.app"}
+[debug] [2026-03-08T11:07:02.990Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-03-08T11:07:02.990Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2026-03-08T11:07:02.990Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/Users/serhangurakan/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","sporwave-f042c","--rules","/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/firestore.rules","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/Users/serhangurakan/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"sporwave-f042c\",\"--rules\",\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/firestore.rules\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to firestore-debug.log"}}
+[debug] [2026-03-08T11:07:03.230Z] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/Users/serhangurakan/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar)
+WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+ {"metadata":{"emulator":{"name":"firestore"},"message":"WARNING: A terminally deprecated method in sun.misc.Unsafe has been called\nWARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/Users/serhangurakan/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar)\nWARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2\nWARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release\n"}}
+[debug] [2026-03-08T11:07:03.723Z] Mar 08, 2026 2:07:03 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://127.0.0.1:9150
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 08, 2026 2:07:03 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
+[debug] [2026-03-08T11:07:03.740Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2026-03-08T11:07:03.740Z] 127.0.0.1:8080
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
+
+If you are running a Firestore in Datastore Mode project, run:
+
+   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080
+
+Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
+Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
+[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
+[info] i  functions: Watching "/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions\" for Cloud Functions..."}}
+[debug] [2026-03-08T11:07:06.639Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-08T11:07:07.080Z] > [functions] package.json contents: {
+  "name": "sporwave-functions",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions",
+    "seed": "npx ts-node -P tsconfig.json src/seed/run.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
+[debug] [2026-03-08T11:07:07.080Z] Building nodejs source
+[debug] [2026-03-08T11:07:07.080Z] Failed to find version of module node: reached end of search path /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2026-03-08T11:07:07.081Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-08T11:07:07.086Z] Found firebase-functions binary at '/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8849
+
+[info] [dotenv@17.3.1] injecting env (3) from ../.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+
+[debug] [2026-03-08T11:07:07.389Z] Got response from /__/functions.yaml {"endpoints":{"api":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[info] ✔  functions[us-central1-api]: http function initialized (http://127.0.0.1:5001/sporwave-f042c/us-central1/api). {"metadata":{"emulator":{"name":"functions"},"message":"http function initialized (http://127.0.0.1:5001/sporwave-f042c/us-central1/api)."}}
+[debug] [2026-03-08T11:07:11.406Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Functions      │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
+└────────────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500, 9150
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2026-03-08T11:07:27.496Z] Mar 08, 2026 2:07:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 08, 2026 2:07:27 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2026-03-08T11:08:56.294Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:08:56.294Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:08:56.294Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:08:56.294Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:08:56.294Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:08:56.296Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:08:56.296Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:08:56.301Z] [worker-pool] addWorker(us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(us-central1-api)"}}
+[debug] [2026-03-08T11:08:56.302Z] [worker-pool] Adding worker with key us-central1-api, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key us-central1-api, total=1"}}
+[debug] [2026-03-08T11:08:56.954Z] [runtime-status] [59297] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js\"}"}}
+[debug] [2026-03-08T11:08:56.955Z] [runtime-status] [59297] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"5.1.1\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js\"}"}}
+[debug] [2026-03-08T11:08:56.955Z] [runtime-status] [59297] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Outgoing network have been stubbed. [{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"net\",\"status\":\"mocked\"}]"}}
+[debug] [2026-03-08T11:08:56.955Z] [runtime-status] [59297] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"5.1.1\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js\"}"}}
+[debug] [2026-03-08T11:08:57.045Z] [runtime-status] [59297] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js\"}"}}
+[debug] [2026-03-08T11:08:57.046Z] [runtime-status] [59297] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"5.1.1\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js\"}"}}
+[debug] [2026-03-08T11:08:57.124Z] [runtime-status] [59297] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"12.7.0","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] firebase-admin has been stubbed. {\"adminResolution\":{\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js\"}}"}}
+[info] >  [dotenv@17.3.1] injecting env (3) from ../.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2 {"user":"[dotenv@17.3.1] injecting env (3) from ../.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">  [dotenv@17.3.1] injecting env (3) from ../.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2"}}
+[debug] [2026-03-08T11:08:57.180Z] [runtime-status] [59297] initializeApp(DEFAULT) {"storageBucket":"sporwave-f042c.firebasestorage.app","projectId":"sporwave-f042c"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] initializeApp(DEFAULT) {\"storageBucket\":\"sporwave-f042c.firebasestorage.app\",\"projectId\":\"sporwave-f042c\"}"}}
+[debug] [2026-03-08T11:08:57.183Z] [runtime-status] [59297] Functions runtime initialized. {"cwd":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions","node_version":"23.11.0"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Functions runtime initialized. {\"cwd\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions\",\"node_version\":\"23.11.0\"}"}}
+[debug] [2026-03-08T11:08:57.183Z] [runtime-status] [59297] Listening to port: /var/folders/_9/jzwdklln6jz8tx4sy_sqd7440000gn/T/fire_emu_b0f6e2ccb7ba79ae.sock {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [59297] Listening to port: /var/folders/_9/jzwdklln6jz8tx4sy_sqd7440000gn/T/fire_emu_b0f6e2ccb7ba79ae.sock"}}
+[debug] [2026-03-08T11:08:57.213Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE"}}
+[debug] [2026-03-08T11:08:57.214Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:08:57.214Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY"}}
+[debug] [2026-03-08T11:08:57.234Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:08:57.234Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"e7082fa9-c49b-4d9f-b1b1-bd385e12358a","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:08:57.234Z","data":{"uid":"ol8XEpwarILWQv1pafAVLeT4RdAh","email":"test@sporwave.dev","emailVerified":false,"displayName":"Test User","metadata":{"creationTime":"2026-03-08T11:08:57.233Z","lastSignInTime":"2026-03-08T11:08:57.233Z"},"customClaims":{},"providerData":[{"rawId":"test@sporwave.dev","providerId":"password","displayName":"Test User","email":"test@sporwave.dev","federatedId":"test@sporwave.dev"}]}}
+[debug] [2026-03-08T11:08:57.238Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:08:57.238Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[info] >  TypeError: Cannot read properties of undefined (reading 'now') {"user":"TypeError: Cannot read properties of undefined (reading 'now')","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">  TypeError: Cannot read properties of undefined (reading 'now')"}}
+[info] >      at /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js:52:47 {"user":"    at /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js:52:47","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js:52:47"}}
+[info] >      at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {"user":"    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}}
+[debug] [2026-03-08T11:08:57.243Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 29.251625ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 29.251625ms"}}
+[debug] [2026-03-08T11:08:57.243Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE"}}
+[debug] [2026-03-08T11:08:57.243Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:08:57.243Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:08:57.243Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:02.607Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:09:02.607Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:02.607Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:09:02.607Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:09:02.607Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:09:02.608Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:09:02.608Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:09:02.608Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:09:02.608Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY"}}
+[debug] [2026-03-08T11:09:02.614Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 5.709416ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 5.709416ms"}}
+[debug] [2026-03-08T11:09:02.614Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE"}}
+[debug] [2026-03-08T11:09:02.614Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:09:02.614Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:09:02.614Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:12.813Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:09:12.813Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:12.813Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:09:12.813Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:09:12.813Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:09:12.814Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:09:12.814Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:09:12.814Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:09:12.814Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY"}}
+[debug] [2026-03-08T11:09:12.818Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:09:12.818Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"f03361df-f1f4-46eb-8d79-8607f5affbd9","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:09:12.818Z","data":{"uid":"MQTKRHqnRqKMW2Ygu1IqDhMkBdbW","email":"test2@sporwave.dev","emailVerified":false,"displayName":"Test User","metadata":{"creationTime":"2026-03-08T11:09:12.818Z","lastSignInTime":"2026-03-08T11:09:12.818Z"},"customClaims":{},"providerData":[{"rawId":"test2@sporwave.dev","providerId":"password","displayName":"Test User","email":"test2@sporwave.dev","federatedId":"test2@sporwave.dev"}]}}
+[debug] [2026-03-08T11:09:12.821Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:09:12.821Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[info] >  TypeError: Cannot read properties of undefined (reading 'now') {"user":"TypeError: Cannot read properties of undefined (reading 'now')","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">  TypeError: Cannot read properties of undefined (reading 'now')"}}
+[info] >      at /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js:52:47 {"user":"    at /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js:52:47","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js:52:47"}}
+[info] >      at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {"user":"    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}}
+[debug] [2026-03-08T11:09:12.822Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 8.067167ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 8.067167ms"}}
+[debug] [2026-03-08T11:09:12.823Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE"}}
+[debug] [2026-03-08T11:09:12.823Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:09:12.823Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:09:12.823Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:12.924Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/me-2026-03-08T11:09:12.924Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:12.925Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/me-2026-03-08T11:09:12.924Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:09:12.925Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/me --> us-central1-api
+[debug] [2026-03-08T11:09:12.926Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:09:12.926Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/me, mapping to path=/api/v1/me {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/me, mapping to path=/api/v1/me"}}
+[debug] [2026-03-08T11:09:12.926Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:09:12.926Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY"}}
+[debug] [2026-03-08T11:09:12.927Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.352458ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.352458ms"}}
+[debug] [2026-03-08T11:09:12.927Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE"}}
+[debug] [2026-03-08T11:09:12.927Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:09:12.927Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:09:12.927Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:12.959Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches-2026-03-08T11:09:12.959Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:09:12.959Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches-2026-03-08T11:09:12.959Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:09:12.959Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/matches?city=Istanbul --> us-central1-api
+[debug] [2026-03-08T11:09:12.961Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:09:12.961Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches?city=Istanbul, mapping to path=/api/v1/matches?city=Istanbul {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches?city=Istanbul, mapping to path=/api/v1/matches?city=Istanbul"}}
+[debug] [2026-03-08T11:09:12.961Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:09:12.961Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: BUSY"}}
+[debug] [2026-03-08T11:09:12.963Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.804791ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.804791ms"}}
+[debug] [2026-03-08T11:09:12.963Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: IDLE"}}
+[debug] [2026-03-08T11:09:12.963Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:09:12.963Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:09:12.963Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:10:05.518Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/auth.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/auth.ts changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:06.519Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-08T11:10:07.001Z] > [functions] package.json contents: {
+  "name": "sporwave-functions",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions",
+    "seed": "npx ts-node -P tsconfig.json src/seed/run.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
+[debug] [2026-03-08T11:10:07.001Z] Building nodejs source
+[debug] [2026-03-08T11:10:07.001Z] Failed to find version of module node: reached end of search path /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2026-03-08T11:10:07.001Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-08T11:10:07.002Z] Found firebase-functions binary at '/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8151
+
+[info] [dotenv@17.3.1] injecting env (3) from ../.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+
+[debug] [2026-03-08T11:10:07.300Z] Got response from /__/functions.yaml {"endpoints":{"api":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[debug] [2026-03-08T11:10:11.310Z] [worker-pool] Shutting down IDLE worker (us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Shutting down IDLE worker (us-central1-api)"}}
+[debug] [2026-03-08T11:10:11.310Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: FINISHING {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: FINISHING"}}
+[debug] [2026-03-08T11:10:11.313Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: exited {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: exited"}}
+[debug] [2026-03-08T11:10:11.313Z] [worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: FINISHED {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-08bbfcfa-be00-45b3-8c82-ff2fc81505be]: FINISHED"}}
+[debug] [2026-03-08T11:10:13.064Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/auth.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/auth.ts changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:14.066Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-08T11:10:14.361Z] > [functions] package.json contents: {
+  "name": "sporwave-functions",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions",
+    "seed": "npx ts-node -P tsconfig.json src/seed/run.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
+[debug] [2026-03-08T11:10:14.361Z] Building nodejs source
+[debug] [2026-03-08T11:10:14.361Z] Failed to find version of module node: reached end of search path /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2026-03-08T11:10:14.361Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-08T11:10:14.362Z] Found firebase-functions binary at '/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8283
+
+[info] [dotenv@17.3.1] injecting env (3) from ../.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+[debug] [2026-03-08T11:10:14.536Z] Got response from /__/functions.yaml {"endpoints":{"api":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[debug] [2026-03-08T11:10:28.321Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/me.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/me.ts changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:28.322Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/matches.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/matches.ts changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:29.323Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-08T11:10:29.614Z] > [functions] package.json contents: {
+  "name": "sporwave-functions",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions",
+    "seed": "npx ts-node -P tsconfig.json src/seed/run.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
+[debug] [2026-03-08T11:10:29.614Z] Building nodejs source
+[debug] [2026-03-08T11:10:29.614Z] Failed to find version of module node: reached end of search path /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2026-03-08T11:10:29.614Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-08T11:10:29.615Z] Found firebase-functions binary at '/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8163
+
+[info] [dotenv@17.3.1] injecting env (3) from ../.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+[debug] [2026-03-08T11:10:29.794Z] Got response from /__/functions.yaml {"endpoints":{"api":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[debug] [2026-03-08T11:10:36.175Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/auth.ts changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/src/routes/auth.ts changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:37.176Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-08T11:10:37.466Z] > [functions] package.json contents: {
+  "name": "sporwave-functions",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions",
+    "seed": "npx ts-node -P tsconfig.json src/seed/run.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
+[debug] [2026-03-08T11:10:37.466Z] Building nodejs source
+[debug] [2026-03-08T11:10:37.466Z] Failed to find version of module node: reached end of search path /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2026-03-08T11:10:37.466Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-08T11:10:37.467Z] Found firebase-functions binary at '/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8757
+
+[info] [dotenv@17.3.1] injecting env (3) from ../.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+[debug] [2026-03-08T11:10:37.643Z] Got response from /__/functions.yaml {"endpoints":{"api":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/index.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/index.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/distance.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/distance.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/index.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/index.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/me.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/me.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/run.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/run.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/run.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/run.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/data.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/data.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/response.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/response.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/matches.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/matches.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.306Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/me.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/me.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/auth.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/distance.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/distance.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/response.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/response.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/middleware/auth.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/middleware/auth.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/jwt.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/jwt.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/middleware/auth.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/middleware/auth.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/jwt.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/utils/jwt.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/matches.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/routes/matches.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/types/index.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/types/index.js changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/types/index.js.map changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/types/index.js.map changed, reloading triggers"}}
+[debug] [2026-03-08T11:10:41.307Z] File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/data.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/lib/seed/data.js changed, reloading triggers"}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[debug] [2026-03-08T11:10:42.308Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-08T11:10:42.595Z] > [functions] package.json contents: {
+  "name": "sporwave-functions",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "deploy": "firebase deploy --only functions",
+    "seed": "npx ts-node -P tsconfig.json src/seed/run.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
+[debug] [2026-03-08T11:10:42.595Z] Building nodejs source
+[debug] [2026-03-08T11:10:42.595Z] Failed to find version of module node: reached end of search path /Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "23". Using node@23 from host. 
+[debug] [2026-03-08T11:10:42.595Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-08T11:10:42.596Z] Found firebase-functions binary at '/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8141
+
+[info] [dotenv@17.3.1] injecting env (3) from ../.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+[debug] [2026-03-08T11:10:42.773Z] Got response from /__/functions.yaml {"endpoints":{"api":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: api. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: api."}}
+[debug] [2026-03-08T11:10:55.591Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:10:55.591Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:10:55.592Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:10:55.591Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:10:55.592Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:10:55.593Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:10:55.594Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:10:55.594Z] [worker-pool] Cleaned up workers for us-central1-api: 1 --> 0 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Cleaned up workers for us-central1-api: 1 --> 0"}}
+[debug] [2026-03-08T11:10:55.595Z] [worker-pool] addWorker(us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(us-central1-api)"}}
+[debug] [2026-03-08T11:10:55.596Z] [worker-pool] Adding worker with key us-central1-api, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key us-central1-api, total=1"}}
+[debug] [2026-03-08T11:10:56.330Z] [runtime-status] [60224] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js\"}"}}
+[debug] [2026-03-08T11:10:56.330Z] [runtime-status] [60224] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"5.1.1\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js\"}"}}
+[debug] [2026-03-08T11:10:56.331Z] [runtime-status] [60224] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Outgoing network have been stubbed. [{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"net\",\"status\":\"mocked\"}]"}}
+[debug] [2026-03-08T11:10:56.331Z] [runtime-status] [60224] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"5.1.1\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js\"}"}}
+[debug] [2026-03-08T11:10:56.375Z] [runtime-status] [60224] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js\"}"}}
+[debug] [2026-03-08T11:10:56.376Z] [runtime-status] [60224] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"5.1.1\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-functions/lib/v1/index.js\"}"}}
+[debug] [2026-03-08T11:10:56.427Z] [runtime-status] [60224] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"12.7.0","resolution":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] firebase-admin has been stubbed. {\"adminResolution\":{\"declared\":true,\"installed\":true,\"version\":\"12.7.0\",\"resolution\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions/node_modules/firebase-admin/lib/index.js\"}}"}}
+[info] >  [dotenv@17.3.1] injecting env (3) from ../.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com {"user":"[dotenv@17.3.1] injecting env (3) from ../.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">  [dotenv@17.3.1] injecting env (3) from ../.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com"}}
+[debug] [2026-03-08T11:10:56.457Z] [runtime-status] [60224] initializeApp(DEFAULT) {"storageBucket":"sporwave-f042c.firebasestorage.app","projectId":"sporwave-f042c"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] initializeApp(DEFAULT) {\"storageBucket\":\"sporwave-f042c.firebasestorage.app\",\"projectId\":\"sporwave-f042c\"}"}}
+[debug] [2026-03-08T11:10:56.460Z] [runtime-status] [60224] Functions runtime initialized. {"cwd":"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions","node_version":"23.11.0"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Functions runtime initialized. {\"cwd\":\"/Users/serhangurakan/Documents/GitHub/sporwave-1/sporwave-backend/functions\",\"node_version\":\"23.11.0\"}"}}
+[debug] [2026-03-08T11:10:56.460Z] [runtime-status] [60224] Listening to port: /var/folders/_9/jzwdklln6jz8tx4sy_sqd7440000gn/T/fire_emu_675c3ec717bfa9a7.sock {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[runtime-status] [60224] Listening to port: /var/folders/_9/jzwdklln6jz8tx4sy_sqd7440000gn/T/fire_emu_675c3ec717bfa9a7.sock"}}
+[debug] [2026-03-08T11:10:56.509Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:10:56.509Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:10:56.509Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:10:56.523Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:10:56.523Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"7cea8c2c-fa69-4bb3-ba83-ccffa64c5971","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:10:56.523Z","data":{"uid":"tmBntFd3pSXX14e0xqvIUgvDzOr7","email":"newtest@sporwave.dev","emailVerified":false,"displayName":"Test User","metadata":{"creationTime":"2026-03-08T11:10:56.523Z","lastSignInTime":"2026-03-08T11:10:56.523Z"},"customClaims":{},"providerData":[{"rawId":"newtest@sporwave.dev","providerId":"password","displayName":"Test User","email":"newtest@sporwave.dev","federatedId":"newtest@sporwave.dev"}]}}
+[debug] [2026-03-08T11:10:56.526Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:10:56.526Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2026-03-08T11:10:56.697Z] Mar 08, 2026 2:10:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 08, 2026 2:10:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2026-03-08T11:10:56.715Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 206.3925ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 206.3925ms"}}
+[debug] [2026-03-08T11:10:56.716Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:10:56.716Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:10:56.716Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:10:56.716Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.404Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:11:25.404Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.404Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:11:25.404Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:25.404Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:11:25.405Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:25.405Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:11:25.405Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:25.405Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:25.409Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:11:25.410Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"ebae4345-c785-4330-bb73-d5cc97559dc5","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:11:25.409Z","data":{"uid":"A4XuqFyOu88A83NUDPq0Lg8l8IG3","email":"t3@sporwave.dev","emailVerified":false,"displayName":"T2","metadata":{"creationTime":"2026-03-08T11:11:25.409Z","lastSignInTime":"2026-03-08T11:11:25.409Z"},"customClaims":{},"providerData":[{"rawId":"t3@sporwave.dev","providerId":"password","displayName":"T2","email":"t3@sporwave.dev","federatedId":"t3@sporwave.dev"}]}}
+[debug] [2026-03-08T11:11:25.411Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:11:25.411Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2026-03-08T11:11:25.427Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 21.290958ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 21.290958ms"}}
+[debug] [2026-03-08T11:11:25.427Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:25.427Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:25.427Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:25.427Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.457Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/me-2026-03-08T11:11:25.457Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.457Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/me-2026-03-08T11:11:25.457Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:25.457Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/me --> us-central1-api
+[debug] [2026-03-08T11:11:25.458Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:25.458Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/me, mapping to path=/api/v1/me {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/me, mapping to path=/api/v1/me"}}
+[debug] [2026-03-08T11:11:25.458Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:25.458Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:25.480Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 21.720208ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 21.720208ms"}}
+[debug] [2026-03-08T11:11:25.480Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:25.480Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:25.480Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:25.480Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.494Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/me/onboarding-2026-03-08T11:11:25.494Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.494Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/me/onboarding-2026-03-08T11:11:25.494Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:25.494Z] Accepted request PUT /sporwave-f042c/us-central1/api/api/v1/me/onboarding --> us-central1-api
+[debug] [2026-03-08T11:11:25.494Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:25.494Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/me/onboarding, mapping to path=/api/v1/me/onboarding {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/me/onboarding, mapping to path=/api/v1/me/onboarding"}}
+[debug] [2026-03-08T11:11:25.494Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:25.495Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:25.508Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 13.499083ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 13.499083ms"}}
+[debug] [2026-03-08T11:11:25.508Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:25.508Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:25.508Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:25.508Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.528Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches-2026-03-08T11:11:25.528Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:25.528Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches-2026-03-08T11:11:25.528Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:25.528Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/matches?city=Istanbul --> us-central1-api
+[debug] [2026-03-08T11:11:25.529Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:25.529Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches?city=Istanbul, mapping to path=/api/v1/matches?city=Istanbul {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches?city=Istanbul, mapping to path=/api/v1/matches?city=Istanbul"}}
+[debug] [2026-03-08T11:11:25.529Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:25.529Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:25.593Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 63.697792ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 63.697792ms"}}
+[debug] [2026-03-08T11:11:25.593Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:25.593Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:25.593Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:25.593Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.186Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/login-2026-03-08T11:11:37.186Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.186Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/login-2026-03-08T11:11:37.186Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:37.186Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/login --> us-central1-api
+[debug] [2026-03-08T11:11:37.187Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:37.187Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/login, mapping to path=/api/v1/auth/login {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/login, mapping to path=/api/v1/auth/login"}}
+[debug] [2026-03-08T11:11:37.187Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:37.187Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:37.551Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 363.9205ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 363.9205ms"}}
+[debug] [2026-03-08T11:11:37.551Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:37.551Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:37.551Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:37.551Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.563Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101-2026-03-08T11:11:37.563Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.563Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101-2026-03-08T11:11:37.563Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:37.563Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/matches/m_101 --> us-central1-api
+[debug] [2026-03-08T11:11:37.563Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:37.563Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101, mapping to path=/api/v1/matches/m_101 {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101, mapping to path=/api/v1/matches/m_101"}}
+[debug] [2026-03-08T11:11:37.563Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:37.563Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:37.564Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.325875ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.325875ms"}}
+[debug] [2026-03-08T11:11:37.565Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:37.565Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:37.565Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:37.565Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.599Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join-2026-03-08T11:11:37.599Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.599Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join-2026-03-08T11:11:37.599Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:37.599Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/join --> us-central1-api
+[debug] [2026-03-08T11:11:37.599Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:37.599Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join, mapping to path=/api/v1/matches/m_101/join {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join, mapping to path=/api/v1/matches/m_101/join"}}
+[debug] [2026-03-08T11:11:37.600Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:37.600Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:37.601Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.230584ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.230584ms"}}
+[debug] [2026-03-08T11:11:37.601Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:37.601Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:37.601Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:37.601Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.633Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:11:37.633Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.633Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:11:37.633Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:37.633Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages --> us-central1-api
+[debug] [2026-03-08T11:11:37.633Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:37.633Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages"}}
+[debug] [2026-03-08T11:11:37.633Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:37.634Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:37.635Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.201708ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.201708ms"}}
+[debug] [2026-03-08T11:11:37.635Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:37.635Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:37.635Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:37.635Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.666Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:11:37.666Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:11:37.666Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:11:37.666Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:11:37.666Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages --> us-central1-api
+[debug] [2026-03-08T11:11:37.667Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:11:37.667Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages"}}
+[debug] [2026-03-08T11:11:37.667Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:11:37.667Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:11:37.669Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.749834ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.749834ms"}}
+[debug] [2026-03-08T11:11:37.669Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:11:37.669Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:11:37.669Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:11:37.669Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[info] >  SyntaxError: Bad escaped character in JSON at position 39 (line 1 column 40) {"user":"SyntaxError: Bad escaped character in JSON at position 39 (line 1 column 40)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">  SyntaxError: Bad escaped character in JSON at position 39 (line 1 column 40)"}}
+[info] >      at JSON.parse (<anonymous>) {"user":"    at JSON.parse (<anonymous>)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at JSON.parse (<anonymous>)"}}
+[info] >      at parse (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/types/json.js:92:19) {"user":"    at parse (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/types/json.js:92:19)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at parse (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/types/json.js:92:19)"}}
+[info] >      at /opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/read.js:128:18 {"user":"    at /opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/read.js:128:18","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at /opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/read.js:128:18"}}
+[info] >      at AsyncResource.runInAsyncScope (node:async_hooks:214:14) {"user":"    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at AsyncResource.runInAsyncScope (node:async_hooks:214:14)"}}
+[info] >      at invokeCallback (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:238:16) {"user":"    at invokeCallback (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:238:16)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at invokeCallback (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:238:16)"}}
+[info] >      at done (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:227:7) {"user":"    at done (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:227:7)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at done (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:227:7)"}}
+[info] >      at IncomingMessage.onEnd (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:287:7) {"user":"    at IncomingMessage.onEnd (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:287:7)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at IncomingMessage.onEnd (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:287:7)"}}
+[info] >      at IncomingMessage.emit (node:events:507:28) {"user":"    at IncomingMessage.emit (node:events:507:28)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at IncomingMessage.emit (node:events:507:28)"}}
+[info] >      at endReadableNT (node:internal/streams/readable:1696:12) {"user":"    at endReadableNT (node:internal/streams/readable:1696:12)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at endReadableNT (node:internal/streams/readable:1696:12)"}}
+[info] >      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {"user":"    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}}
+[debug] [2026-03-08T11:11:51.878Z] Mar 08, 2026 2:11:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 08, 2026 2:11:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2026-03-08T11:12:02.908Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:02.908Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:02.908Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:02.908Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:02.908Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:12:02.909Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:02.909Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:12:02.909Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:02.910Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:02.912Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:12:02.912Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"1a257cee-4fb2-4457-b953-ae3c2c01a0e7","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:12:02.912Z","data":{"uid":"TmGZs8S5swMT5GPz5eop3o9tExXS","email":"tester99@sporwave.dev","emailVerified":false,"displayName":"Tester","metadata":{"creationTime":"2026-03-08T11:12:02.912Z","lastSignInTime":"2026-03-08T11:12:02.912Z"},"customClaims":{},"providerData":[{"rawId":"tester99@sporwave.dev","providerId":"password","displayName":"Tester","email":"tester99@sporwave.dev","federatedId":"tester99@sporwave.dev"}]}}
+[debug] [2026-03-08T11:12:02.914Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:12:02.914Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2026-03-08T11:12:02.925Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 15.626583ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 15.626583ms"}}
+[debug] [2026-03-08T11:12:02.925Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:02.925Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:02.925Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:02.925Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:02.985Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101-2026-03-08T11:12:02.985Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:02.986Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101-2026-03-08T11:12:02.985Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:02.986Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/matches/m_101 --> us-central1-api
+[debug] [2026-03-08T11:12:02.986Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:02.986Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101, mapping to path=/api/v1/matches/m_101 {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101, mapping to path=/api/v1/matches/m_101"}}
+[debug] [2026-03-08T11:12:02.986Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:02.986Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:03.010Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 23.733ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 23.733ms"}}
+[debug] [2026-03-08T11:12:03.010Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:03.010Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:03.010Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:03.010Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.295Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:14.295Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.296Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:14.295Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.296Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:12:14.297Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.297Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:12:14.297Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.297Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.300Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:12:14.300Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"7553133b-e8b6-43b9-9911-0e948b34503f","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:12:14.300Z","data":{"uid":"swa4Hqahtz0z6ltd1doWkM6YLKEE","email":"t4@sporwave.dev","emailVerified":false,"displayName":"T4","metadata":{"creationTime":"2026-03-08T11:12:14.300Z","lastSignInTime":"2026-03-08T11:12:14.300Z"},"customClaims":{},"providerData":[{"rawId":"t4@sporwave.dev","providerId":"password","displayName":"T4","email":"t4@sporwave.dev","federatedId":"t4@sporwave.dev"}]}}
+[debug] [2026-03-08T11:12:14.301Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:12:14.301Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2026-03-08T11:12:14.332Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 34.9295ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 34.9295ms"}}
+[debug] [2026-03-08T11:12:14.332Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.332Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.332Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.332Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.354Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join-2026-03-08T11:12:14.354Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.354Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join-2026-03-08T11:12:14.354Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.354Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/join --> us-central1-api
+[debug] [2026-03-08T11:12:14.355Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.355Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join, mapping to path=/api/v1/matches/m_101/join {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join, mapping to path=/api/v1/matches/m_101/join"}}
+[debug] [2026-03-08T11:12:14.355Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.355Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.378Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 23.117042ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 23.117042ms"}}
+[debug] [2026-03-08T11:12:14.378Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.378Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.378Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.378Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.390Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:12:14.390Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.390Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:12:14.390Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.390Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages --> us-central1-api
+[debug] [2026-03-08T11:12:14.391Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.391Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages"}}
+[debug] [2026-03-08T11:12:14.391Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.391Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.392Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 1.043791ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 1.043791ms"}}
+[debug] [2026-03-08T11:12:14.392Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.392Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.392Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.392Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[info] >  SyntaxError: Bad escaped character in JSON at position 23 (line 1 column 24) {"user":"SyntaxError: Bad escaped character in JSON at position 23 (line 1 column 24)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">  SyntaxError: Bad escaped character in JSON at position 23 (line 1 column 24)"}}
+[info] >      at JSON.parse (<anonymous>) {"user":"    at JSON.parse (<anonymous>)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at JSON.parse (<anonymous>)"}}
+[info] >      at parse (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/types/json.js:92:19) {"user":"    at parse (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/types/json.js:92:19)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at parse (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/types/json.js:92:19)"}}
+[info] >      at /opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/read.js:128:18 {"user":"    at /opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/read.js:128:18","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at /opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/lib/read.js:128:18"}}
+[info] >      at AsyncResource.runInAsyncScope (node:async_hooks:214:14) {"user":"    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at AsyncResource.runInAsyncScope (node:async_hooks:214:14)"}}
+[info] >      at invokeCallback (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:238:16) {"user":"    at invokeCallback (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:238:16)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at invokeCallback (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:238:16)"}}
+[info] >      at done (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:227:7) {"user":"    at done (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:227:7)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at done (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:227:7)"}}
+[info] >      at IncomingMessage.onEnd (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:287:7) {"user":"    at IncomingMessage.onEnd (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:287:7)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at IncomingMessage.onEnd (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/body-parser/node_modules/raw-body/index.js:287:7)"}}
+[info] >      at IncomingMessage.emit (node:events:507:28) {"user":"    at IncomingMessage.emit (node:events:507:28)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at IncomingMessage.emit (node:events:507:28)"}}
+[info] >      at endReadableNT (node:internal/streams/readable:1696:12) {"user":"    at endReadableNT (node:internal/streams/readable:1696:12)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at endReadableNT (node:internal/streams/readable:1696:12)"}}
+[info] >      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {"user":"    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":">      at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}}
+[debug] [2026-03-08T11:12:14.424Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:12:14.424Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.425Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:12:14.424Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.425Z] Accepted request GET /sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages --> us-central1-api
+[debug] [2026-03-08T11:12:14.425Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.425Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages"}}
+[debug] [2026-03-08T11:12:14.425Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.426Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.436Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 11.027667ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 11.027667ms"}}
+[debug] [2026-03-08T11:12:14.437Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.437Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.437Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.437Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.460Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/leave-2026-03-08T11:12:14.460Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.461Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/leave-2026-03-08T11:12:14.460Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.461Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/leave --> us-central1-api
+[debug] [2026-03-08T11:12:14.461Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.461Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/leave, mapping to path=/api/v1/matches/m_101/leave {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/leave, mapping to path=/api/v1/matches/m_101/leave"}}
+[debug] [2026-03-08T11:12:14.461Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.461Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.474Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 12.792ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 12.792ms"}}
+[debug] [2026-03-08T11:12:14.474Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.474Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.474Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.475Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.496Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:14.496Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.496Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:14.496Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.496Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:12:14.496Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.496Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:12:14.496Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.496Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.499Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:12:14.499Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"132201b2-8db2-470d-ac09-0b0ddb4d48da","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:12:14.499Z","data":{"uid":"ILAmoJkv1wHSUotbd2Xao1dgIXe3","email":"t5@sporwave.dev","emailVerified":false,"displayName":"T5","metadata":{"creationTime":"2026-03-08T11:12:14.499Z","lastSignInTime":"2026-03-08T11:12:14.499Z"},"customClaims":{},"providerData":[{"rawId":"t5@sporwave.dev","providerId":"password","displayName":"T5","email":"t5@sporwave.dev","federatedId":"t5@sporwave.dev"}]}}
+[debug] [2026-03-08T11:12:14.501Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:12:14.501Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2026-03-08T11:12:14.509Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 12.510333ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 12.510333ms"}}
+[debug] [2026-03-08T11:12:14.509Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.509Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.509Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.509Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.531Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/refresh-2026-03-08T11:12:14.531Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:14.531Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/refresh-2026-03-08T11:12:14.531Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:14.531Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/refresh --> us-central1-api
+[debug] [2026-03-08T11:12:14.531Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:14.531Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/refresh, mapping to path=/api/v1/auth/refresh {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/refresh, mapping to path=/api/v1/auth/refresh"}}
+[debug] [2026-03-08T11:12:14.531Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:14.531Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:14.541Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 10.054791ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 10.054791ms"}}
+[debug] [2026-03-08T11:12:14.541Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:14.541Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:14.541Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:14.541Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:23.341Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:23.341Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:23.341Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/auth/register-2026-03-08T11:12:23.341Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:23.341Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/auth/register --> us-central1-api
+[debug] [2026-03-08T11:12:23.343Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:23.343Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/auth/register, mapping to path=/api/v1/auth/register"}}
+[debug] [2026-03-08T11:12:23.343Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:23.343Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:23.346Z] >>> [apiv2][query] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast [none]
+[debug] [2026-03-08T11:12:23.346Z] >>> [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"eventId":"0d9a55b6-77d4-4758-8343-b482ef957f3e","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/sporwave-f042c","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2026-03-08T11:12:23.346Z","data":{"uid":"eNNiRI5WpbNqeRibORTiu5lUc4oI","email":"t6@sporwave.dev","emailVerified":false,"displayName":"T6","metadata":{"creationTime":"2026-03-08T11:12:23.345Z","lastSignInTime":"2026-03-08T11:12:23.345Z"},"customClaims":{},"providerData":[{"rawId":"t6@sporwave.dev","providerId":"password","displayName":"T6","email":"t6@sporwave.dev","federatedId":"t6@sporwave.dev"}]}}
+[debug] [2026-03-08T11:12:23.357Z] <<< [apiv2][status] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast 200
+[debug] [2026-03-08T11:12:23.357Z] <<< [apiv2][body] POST http://127.0.0.1:5001/functions/projects/sporwave-f042c/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2026-03-08T11:12:23.375Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 32.18125ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 32.18125ms"}}
+[debug] [2026-03-08T11:12:23.375Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:23.375Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:23.375Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:23.375Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:23.402Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join-2026-03-08T11:12:23.402Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:23.402Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join-2026-03-08T11:12:23.402Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:23.402Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/join --> us-central1-api
+[debug] [2026-03-08T11:12:23.403Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:23.403Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join, mapping to path=/api/v1/matches/m_101/join {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/join, mapping to path=/api/v1/matches/m_101/join"}}
+[debug] [2026-03-08T11:12:23.403Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:23.403Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:23.420Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 17.6785ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 17.6785ms"}}
+[debug] [2026-03-08T11:12:23.421Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:23.421Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:23.421Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:23.421Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:23.431Z] [work-queue] {"queuedWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:12:23.431Z"],"queueLength":1,"runningWork":[],"workRunningCount":0}
+[debug] [2026-03-08T11:12:23.431Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":["/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages-2026-03-08T11:12:23.431Z"],"workRunningCount":1}
+[debug] [2026-03-08T11:12:23.431Z] Accepted request POST /sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages --> us-central1-api
+[debug] [2026-03-08T11:12:23.432Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2026-03-08T11:12:23.432Z] [functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/sporwave-f042c/us-central1/api/api/v1/matches/m_101/messages, mapping to path=/api/v1/matches/m_101/messages"}}
+[debug] [2026-03-08T11:12:23.432Z] [worker-pool] submitRequest(triggerId=us-central1-api) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitRequest(triggerId=us-central1-api)"}}
+[info] i  functions: Beginning execution of "us-central1-api" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Beginning execution of \"us-central1-api\""}}
+[debug] [2026-03-08T11:12:23.432Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: BUSY"}}
+[debug] [2026-03-08T11:12:23.440Z] Finishing up request with event=pause {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=pause"}}
+[info] i  functions: Finished "us-central1-api" in 8.104042ms {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finished \"us-central1-api\" in 8.104042ms"}}
+[debug] [2026-03-08T11:12:23.440Z] [worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"[worker-us-central1-api-7777545f-3107-4392-a174-38e59975f335]: IDLE"}}
+[debug] [2026-03-08T11:12:23.440Z] Finishing up request with event=finish {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=finish"}}
+[debug] [2026-03-08T11:12:23.440Z] Finishing up request with event=close {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"extension":{},"message":"Finishing up request with event=close"}}
+[debug] [2026-03-08T11:12:23.440Z] [work-queue] {"queuedWork":[],"queueLength":0,"runningWork":[],"workRunningCount":0}
